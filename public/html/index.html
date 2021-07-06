@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" href="image/maple-leaf.png" />
+    <title>유니온 배치기</title>
+    <script async src="js/tiler.js"></script>
+    <script async src="js/main.js"></script>
+  </head>
+  <body>
+    <div class="map box-yellow">
+      <table></table>
+      <div class="map-tool">
+        <img src="image/icon/trash.svg" alt="초기화" title="점령대 초기화" />
+        <img src="image/icon/help.svg" alt="키 가이드" title="키 가이드" />
+        <h6>0</h6>
+        <img class="map-tool-play" src="image/icon/play-button-o.svg" alt="시작" title="시작" />
+      </div>
+    </div>
+    <div class="card box-gray">
+      <div class="card-stats">
+        <h4>유니온 캐릭터</h4>
+        <h6>0</h6>
+        <img src="image/icon/maplem.svg" alt="메이플M" title="메이플M" />
+        <img src="image/icon/check-r.svg" alt="자동선택" title="자동선택" />
+        <img src="image/icon/trash.svg" alt="초기화" title="캐릭터 초기화" />
+      </div>
+      <div class="card-list">
+        <div style="width: 5px; order: 999; box-shadow: none"></div>
+        <div class="box-yellow" style="display: none">
+          <div class="card-rank">
+            <h2>RK</h2>
+            <h6>레벨</h6>
+            <img src="image/icon/sync.svg" />
+            <img src="image/icon/close.svg" />
+          </div>
+          <div class="card-image">
+            <img src="image/deco/no-char.png" />
+          </div>
+          <p>직업</p>
+          <div class="card-name">
+            <img />
+            <h6>닉네임</h6>
+          </div>
+          <img />
+        </div>
+      </div>
+    </div>
+    <div class="stats box-gray">
+      <h1>노비스 유니온 I</h1>
+      <div class="stats-leaf">
+        <img src="image/deco/leaf.svg" />
+        <img src="image/deco/leaf.svg" />
+        <h5>NOVICE UNION I</h5>
+      </div>
+      <div class="stats-level">
+        <img src="image/rank/novice-union-1.png" width="116" />
+        <div>
+          <h5>TOTAL LEVEL</h5>
+          <h1>0</h1>
+        </div>
+        <div>
+          <h5>RAID MEMBER</h5>
+          <h1>0/9</h1>
+        </div>
+      </div>
+      <table class="stats-mino"></table>
+    </div>
+    <div class="input box-gray">
+      <div class="input-login">
+        <h6>아이디 또는 이메일</h6>
+        <input type="text" id="id" placeholder="" />
+        <h6>비밀번호</h6>
+        <input type="password" id="password" placeholder="" />
+        <div class="input-login-type">
+          <input type="radio" name="login" id="login-nexon" value="nexon" disabled />
+          <label for="login-nexon"><span>넥슨</span></label>
+          <input type="radio" name="login" id="login-maple" value="maple" checked />
+          <label for="login-maple"><span>메이플</span></label>
+        </div>
+        <button id="login" onclick="onBtnLoginClick()">계정에서 가져오기</button>
+      </div>
+      <div class="input-deco">
+        <hr />
+        <p>▶</p>
+        <hr />
+      </div>
+      <div class="input-apply">
+        <textarea
+          id="apply-name"
+          placeholder="1. 메이플스토리 홈페이지에 로그인&#13;&#10;&#10;2. 마이메이플 > 대표캐릭터 변경&#13;&#10;&#10;3. 전체선택(Ctrl + A) 후 복사(Ctrl + C)&#13;&#10;&#10;4. 이 곳에 붙여넣기(Ctrl + V)"
+        ></textarea>
+        <button id="apply" onclick="onBtnApplyClick()">캐릭터 등록</button>
+      </div>
+    </div>
+  </body>
+</html>
