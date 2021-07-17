@@ -13,17 +13,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/chch1213/maple.git"
+    "url": "git+https://github.com/geoje/MapleUnionTiler.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/chch1213/maple/issues"
+    "url": "https://github.com/geoje/MapleUnionTiler/issues"
   },
-  "homepage": "https://gitlab.com/chch1213/maple#readme",
+  "homepage": "https://github.com/geoje/MapleUnionTiler",
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "livereload": "^0.9.1"
+    "livereload": "^0.9.1",
+    "pm2": "^5.1.0"
   }
 }
