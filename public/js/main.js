@@ -1020,7 +1020,7 @@ let stats = {
 
       stats.raidMember[1] = 8 + union.detailLevel;
     }
-    union.imgSrc = `image/rank/${union.titleEn.toLowerCase().replace(' ', '-')}-${union.detailLevel}.png`;
+    union.imgSrc = `image/rank/${union.titleEn.toLowerCase().replace(/\s/g, '-')}-${union.detailLevel}.png`;
 
     let romeNum = ' I';
     if (union.detailLevel == 5) romeNum = ' V';
