@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="icon" href="image/maple-leaf.png" />
     <title>유니온 배치기</title>
-    <script async src="js/tiler.js"></script>
-    <script async src="js/main.js"></script>
   </head>
   <body>
     <div class="map box-yellow">
@@ -20,7 +18,12 @@
         <img src="image/icon/trash.svg" alt="초기화" title="점령대 초기화" />
         <img src="image/icon/help.svg" alt="키 가이드" title="키 가이드" />
         <h6>0</h6>
-        <img class="map-tool-play" src="image/icon/play-button-o.svg" alt="시작" title="시작" />
+        <img
+          class="map-tool-play"
+          src="image/icon/play-button-o.svg"
+          alt="시작"
+          title="시작"
+        />
       </div>
     </div>
     <div class="card box-gray">
@@ -73,20 +76,34 @@
       <table class="stats-mino"></table>
     </div>
     <div class="input box-gray">
-      <div class="input-login" style="display: none;">
+      <div class="input-login" style="display: none">
         <h6>아이디 또는 이메일</h6>
         <input type="text" id="id" placeholder="" />
         <h6>비밀번호</h6>
         <input type="password" id="password" placeholder="" />
         <div class="input-login-type">
-          <input type="radio" name="login" id="login-nexon" value="nexon" disabled />
+          <input
+            type="radio"
+            name="login"
+            id="login-nexon"
+            value="nexon"
+            disabled
+          />
           <label for="login-nexon"><span>넥슨</span></label>
-          <input type="radio" name="login" id="login-maple" value="maple" checked />
+          <input
+            type="radio"
+            name="login"
+            id="login-maple"
+            value="maple"
+            checked
+          />
           <label for="login-maple"><span>메이플</span></label>
         </div>
-        <button id="login" onclick="onBtnLoginClick()">계정에서 가져오기</button>
+        <button id="login" onclick="onBtnLoginClick()">
+          계정에서 가져오기
+        </button>
       </div>
-      <div class="input-deco" style="display: none;">
+      <div class="input-deco" style="display: none">
         <hr />
         <p>▶</p>
         <hr />
@@ -99,5 +116,7 @@
         <button id="apply" onclick="onBtnApplyClick()">캐릭터 등록</button>
       </div>
     </div>
+    <script src="js/tiler.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>

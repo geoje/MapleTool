@@ -1,578 +1,3 @@
-const TILE = {
-  ROW: 20,
-  COL: 22,
-  COLOR: {
-    BACK: [
-      "rgb(57, 57, 57)",
-      "rgb(76, 76, 76)",
-      "rgb(34, 34, 34)",
-      "rgb(43, 43, 43)",
-    ],
-    SELECTED: "rgb(170, 150, 129)",
-    BOUNDARY: "rgb(200, 200, 200)",
-    MINO: {
-      WARRIOR: "rgb(155, 37, 69)",
-      WIZARD: "rgb(60, 117, 144)",
-      ARCHER: "rgb(99, 121, 49)",
-      THIEF: "rgb(102, 75, 168)",
-      PIRATE: "rgb(85, 85, 85)",
-      XENON: "rgb(102, 75, 168)",
-      MAPLEM: "rgb(204, 85, 0)",
-    },
-  },
-  GROUP: [
-    [
-      //int
-      { x: 12, y: 9 },
-      { x: 13, y: 8 },
-      { x: 13, y: 9 },
-      { x: 14, y: 7 },
-      { x: 14, y: 8 },
-      { x: 14, y: 9 },
-      { x: 15, y: 6 },
-      { x: 15, y: 7 },
-      { x: 15, y: 8 },
-      { x: 15, y: 9 },
-      { x: 16, y: 5 },
-      { x: 16, y: 6 },
-      { x: 16, y: 7 },
-      { x: 16, y: 8 },
-      { x: 16, y: 9 },
-    ],
-    [
-      //dex
-      { x: 11, y: 9 },
-      { x: 11, y: 8 },
-      { x: 11, y: 7 },
-      { x: 11, y: 6 },
-      { x: 11, y: 5 },
-      { x: 12, y: 5 },
-      { x: 12, y: 6 },
-      { x: 12, y: 7 },
-      { x: 12, y: 8 },
-      { x: 13, y: 5 },
-      { x: 13, y: 6 },
-      { x: 13, y: 7 },
-      { x: 14, y: 5 },
-      { x: 14, y: 6 },
-      { x: 15, y: 5 },
-    ],
-    [
-      //str
-      { x: 6, y: 5 },
-      { x: 7, y: 5 },
-      { x: 7, y: 6 },
-      { x: 8, y: 5 },
-      { x: 8, y: 6 },
-      { x: 8, y: 7 },
-      { x: 9, y: 5 },
-      { x: 9, y: 6 },
-      { x: 9, y: 7 },
-      { x: 9, y: 8 },
-      { x: 10, y: 5 },
-      { x: 10, y: 6 },
-      { x: 10, y: 7 },
-      { x: 10, y: 8 },
-      { x: 10, y: 9 },
-    ],
-    [
-      //mp
-      { x: 5, y: 5 },
-      { x: 5, y: 6 },
-      { x: 5, y: 7 },
-      { x: 5, y: 8 },
-      { x: 5, y: 9 },
-      { x: 6, y: 6 },
-      { x: 6, y: 7 },
-      { x: 6, y: 8 },
-      { x: 6, y: 9 },
-      { x: 7, y: 7 },
-      { x: 7, y: 8 },
-      { x: 7, y: 9 },
-      { x: 8, y: 8 },
-      { x: 8, y: 9 },
-      { x: 9, y: 9 },
-    ],
-    [
-      //hp
-      { x: 5, y: 10 },
-      { x: 5, y: 11 },
-      { x: 5, y: 12 },
-      { x: 5, y: 13 },
-      { x: 5, y: 14 },
-      { x: 6, y: 10 },
-      { x: 6, y: 11 },
-      { x: 6, y: 12 },
-      { x: 6, y: 13 },
-      { x: 7, y: 10 },
-      { x: 7, y: 11 },
-      { x: 7, y: 12 },
-      { x: 8, y: 10 },
-      { x: 8, y: 11 },
-      { x: 9, y: 10 },
-    ],
-    [
-      //ap
-      { x: 6, y: 14 },
-      { x: 7, y: 13 },
-      { x: 7, y: 14 },
-      { x: 8, y: 12 },
-      { x: 8, y: 13 },
-      { x: 8, y: 14 },
-      { x: 9, y: 11 },
-      { x: 9, y: 12 },
-      { x: 9, y: 13 },
-      { x: 9, y: 14 },
-      { x: 10, y: 10 },
-      { x: 10, y: 11 },
-      { x: 10, y: 12 },
-      { x: 10, y: 13 },
-      { x: 10, y: 14 },
-    ],
-    [
-      //ad
-      { x: 11, y: 10 },
-      { x: 11, y: 11 },
-      { x: 11, y: 12 },
-      { x: 11, y: 13 },
-      { x: 11, y: 14 },
-      { x: 12, y: 11 },
-      { x: 12, y: 12 },
-      { x: 12, y: 13 },
-      { x: 12, y: 14 },
-      { x: 13, y: 12 },
-      { x: 13, y: 13 },
-      { x: 13, y: 14 },
-      { x: 14, y: 13 },
-      { x: 14, y: 14 },
-      { x: 15, y: 14 },
-    ],
-    [
-      //luk
-      { x: 12, y: 10 },
-      { x: 13, y: 10 },
-      { x: 13, y: 11 },
-      { x: 14, y: 10 },
-      { x: 14, y: 11 },
-      { x: 14, y: 12 },
-      { x: 15, y: 10 },
-      { x: 15, y: 11 },
-      { x: 15, y: 12 },
-      { x: 15, y: 13 },
-      { x: 16, y: 10 },
-      { x: 16, y: 11 },
-      { x: 16, y: 12 },
-      { x: 16, y: 13 },
-      { x: 16, y: 14 },
-    ],
-    [
-      //critical probability
-      { x: 17, y: 4 },
-      { x: 17, y: 5 },
-      { x: 17, y: 6 },
-      { x: 17, y: 7 },
-      { x: 17, y: 8 },
-      { x: 17, y: 9 },
-      { x: 18, y: 3 },
-      { x: 18, y: 4 },
-      { x: 18, y: 5 },
-      { x: 18, y: 6 },
-      { x: 18, y: 7 },
-      { x: 18, y: 8 },
-      { x: 18, y: 9 },
-      { x: 19, y: 2 },
-      { x: 19, y: 3 },
-      { x: 19, y: 4 },
-      { x: 19, y: 5 },
-      { x: 19, y: 6 },
-      { x: 19, y: 7 },
-      { x: 19, y: 8 },
-      { x: 19, y: 9 },
-      { x: 20, y: 1 },
-      { x: 20, y: 2 },
-      { x: 20, y: 3 },
-      { x: 20, y: 4 },
-      { x: 20, y: 5 },
-      { x: 20, y: 6 },
-      { x: 20, y: 7 },
-      { x: 20, y: 8 },
-      { x: 20, y: 9 },
-      { x: 21, y: 0 },
-      { x: 21, y: 1 },
-      { x: 21, y: 2 },
-      { x: 21, y: 3 },
-      { x: 21, y: 4 },
-      { x: 21, y: 5 },
-      { x: 21, y: 6 },
-      { x: 21, y: 7 },
-      { x: 21, y: 8 },
-      { x: 21, y: 9 },
-    ],
-    [
-      //experience
-      { x: 11, y: 0 },
-      { x: 11, y: 1 },
-      { x: 11, y: 2 },
-      { x: 11, y: 3 },
-      { x: 11, y: 4 },
-      { x: 12, y: 0 },
-      { x: 12, y: 1 },
-      { x: 12, y: 2 },
-      { x: 12, y: 3 },
-      { x: 12, y: 4 },
-      { x: 13, y: 0 },
-      { x: 13, y: 1 },
-      { x: 13, y: 2 },
-      { x: 13, y: 3 },
-      { x: 13, y: 4 },
-      { x: 14, y: 0 },
-      { x: 14, y: 1 },
-      { x: 14, y: 2 },
-      { x: 14, y: 3 },
-      { x: 14, y: 4 },
-      { x: 15, y: 0 },
-      { x: 15, y: 1 },
-      { x: 15, y: 2 },
-      { x: 15, y: 3 },
-      { x: 15, y: 4 },
-      { x: 16, y: 0 },
-      { x: 16, y: 1 },
-      { x: 16, y: 2 },
-      { x: 16, y: 3 },
-      { x: 16, y: 4 },
-      { x: 17, y: 0 },
-      { x: 17, y: 1 },
-      { x: 17, y: 2 },
-      { x: 17, y: 3 },
-      { x: 18, y: 0 },
-      { x: 18, y: 1 },
-      { x: 18, y: 2 },
-      { x: 19, y: 0 },
-      { x: 19, y: 1 },
-      { x: 20, y: 0 },
-    ],
-    [
-      //tolerance
-      { x: 1, y: 0 },
-      { x: 2, y: 0 },
-      { x: 2, y: 1 },
-      { x: 3, y: 0 },
-      { x: 3, y: 1 },
-      { x: 3, y: 2 },
-      { x: 4, y: 0 },
-      { x: 4, y: 1 },
-      { x: 4, y: 2 },
-      { x: 4, y: 3 },
-      { x: 5, y: 0 },
-      { x: 5, y: 1 },
-      { x: 5, y: 2 },
-      { x: 5, y: 3 },
-      { x: 5, y: 4 },
-      { x: 6, y: 0 },
-      { x: 6, y: 1 },
-      { x: 6, y: 2 },
-      { x: 6, y: 3 },
-      { x: 6, y: 4 },
-      { x: 7, y: 0 },
-      { x: 7, y: 1 },
-      { x: 7, y: 2 },
-      { x: 7, y: 3 },
-      { x: 7, y: 4 },
-      { x: 8, y: 0 },
-      { x: 8, y: 1 },
-      { x: 8, y: 2 },
-      { x: 8, y: 3 },
-      { x: 8, y: 4 },
-      { x: 9, y: 0 },
-      { x: 9, y: 1 },
-      { x: 9, y: 2 },
-      { x: 9, y: 3 },
-      { x: 9, y: 4 },
-      { x: 10, y: 0 },
-      { x: 10, y: 1 },
-      { x: 10, y: 2 },
-      { x: 10, y: 3 },
-      { x: 10, y: 4 },
-    ],
-    [
-      //critical damage
-      { x: 0, y: 0 },
-      { x: 0, y: 1 },
-      { x: 0, y: 2 },
-      { x: 0, y: 3 },
-      { x: 0, y: 4 },
-      { x: 0, y: 5 },
-      { x: 0, y: 6 },
-      { x: 0, y: 7 },
-      { x: 0, y: 8 },
-      { x: 0, y: 9 },
-      { x: 1, y: 1 },
-      { x: 1, y: 2 },
-      { x: 1, y: 3 },
-      { x: 1, y: 4 },
-      { x: 1, y: 5 },
-      { x: 1, y: 6 },
-      { x: 1, y: 7 },
-      { x: 1, y: 8 },
-      { x: 1, y: 9 },
-      { x: 2, y: 2 },
-      { x: 2, y: 3 },
-      { x: 2, y: 4 },
-      { x: 2, y: 5 },
-      { x: 2, y: 6 },
-      { x: 2, y: 7 },
-      { x: 2, y: 8 },
-      { x: 2, y: 9 },
-      { x: 3, y: 3 },
-      { x: 3, y: 4 },
-      { x: 3, y: 5 },
-      { x: 3, y: 6 },
-      { x: 3, y: 7 },
-      { x: 3, y: 8 },
-      { x: 3, y: 9 },
-      { x: 4, y: 4 },
-      { x: 4, y: 5 },
-      { x: 4, y: 6 },
-      { x: 4, y: 7 },
-      { x: 4, y: 8 },
-      { x: 4, y: 9 },
-    ],
-    [
-      //defense
-      { x: 0, y: 10 },
-      { x: 0, y: 11 },
-      { x: 0, y: 12 },
-      { x: 0, y: 13 },
-      { x: 0, y: 14 },
-      { x: 0, y: 15 },
-      { x: 0, y: 16 },
-      { x: 0, y: 17 },
-      { x: 0, y: 18 },
-      { x: 0, y: 19 },
-      { x: 1, y: 10 },
-      { x: 1, y: 11 },
-      { x: 1, y: 12 },
-      { x: 1, y: 13 },
-      { x: 1, y: 14 },
-      { x: 1, y: 15 },
-      { x: 1, y: 16 },
-      { x: 1, y: 17 },
-      { x: 1, y: 18 },
-      { x: 2, y: 10 },
-      { x: 2, y: 11 },
-      { x: 2, y: 12 },
-      { x: 2, y: 13 },
-      { x: 2, y: 14 },
-      { x: 2, y: 15 },
-      { x: 2, y: 16 },
-      { x: 2, y: 17 },
-      { x: 3, y: 10 },
-      { x: 3, y: 11 },
-      { x: 3, y: 12 },
-      { x: 3, y: 13 },
-      { x: 3, y: 14 },
-      { x: 3, y: 15 },
-      { x: 3, y: 16 },
-      { x: 4, y: 10 },
-      { x: 4, y: 11 },
-      { x: 4, y: 12 },
-      { x: 4, y: 13 },
-      { x: 4, y: 14 },
-      { x: 4, y: 15 },
-    ],
-    [
-      //buff
-      { x: 1, y: 19 },
-      { x: 2, y: 18 },
-      { x: 2, y: 19 },
-      { x: 3, y: 17 },
-      { x: 3, y: 18 },
-      { x: 3, y: 19 },
-      { x: 4, y: 16 },
-      { x: 4, y: 17 },
-      { x: 4, y: 18 },
-      { x: 4, y: 19 },
-      { x: 5, y: 15 },
-      { x: 5, y: 16 },
-      { x: 5, y: 17 },
-      { x: 5, y: 18 },
-      { x: 5, y: 19 },
-      { x: 6, y: 15 },
-      { x: 6, y: 16 },
-      { x: 6, y: 17 },
-      { x: 6, y: 18 },
-      { x: 6, y: 19 },
-      { x: 7, y: 15 },
-      { x: 7, y: 16 },
-      { x: 7, y: 17 },
-      { x: 7, y: 18 },
-      { x: 7, y: 19 },
-      { x: 8, y: 15 },
-      { x: 8, y: 16 },
-      { x: 8, y: 17 },
-      { x: 8, y: 18 },
-      { x: 8, y: 19 },
-      { x: 9, y: 15 },
-      { x: 9, y: 16 },
-      { x: 9, y: 17 },
-      { x: 9, y: 18 },
-      { x: 9, y: 19 },
-      { x: 10, y: 15 },
-      { x: 10, y: 16 },
-      { x: 10, y: 17 },
-      { x: 10, y: 18 },
-      { x: 10, y: 19 },
-    ],
-    [
-      //stance
-      { x: 11, y: 15 },
-      { x: 11, y: 16 },
-      { x: 11, y: 17 },
-      { x: 11, y: 18 },
-      { x: 11, y: 19 },
-      { x: 12, y: 15 },
-      { x: 12, y: 16 },
-      { x: 12, y: 17 },
-      { x: 12, y: 18 },
-      { x: 12, y: 19 },
-      { x: 13, y: 15 },
-      { x: 13, y: 16 },
-      { x: 13, y: 17 },
-      { x: 13, y: 18 },
-      { x: 13, y: 19 },
-      { x: 14, y: 15 },
-      { x: 14, y: 16 },
-      { x: 14, y: 17 },
-      { x: 14, y: 18 },
-      { x: 14, y: 19 },
-      { x: 15, y: 15 },
-      { x: 15, y: 16 },
-      { x: 15, y: 17 },
-      { x: 15, y: 18 },
-      { x: 15, y: 19 },
-      { x: 16, y: 15 },
-      { x: 16, y: 16 },
-      { x: 16, y: 17 },
-      { x: 16, y: 18 },
-      { x: 16, y: 19 },
-      { x: 17, y: 16 },
-      { x: 17, y: 17 },
-      { x: 17, y: 18 },
-      { x: 17, y: 19 },
-      { x: 18, y: 17 },
-      { x: 18, y: 18 },
-      { x: 18, y: 19 },
-      { x: 19, y: 18 },
-      { x: 19, y: 19 },
-      { x: 20, y: 19 },
-    ],
-    [
-      //boss
-      { x: 17, y: 10 },
-      { x: 17, y: 11 },
-      { x: 17, y: 12 },
-      { x: 17, y: 13 },
-      { x: 17, y: 14 },
-      { x: 17, y: 15 },
-      { x: 18, y: 10 },
-      { x: 18, y: 11 },
-      { x: 18, y: 12 },
-      { x: 18, y: 13 },
-      { x: 18, y: 14 },
-      { x: 18, y: 15 },
-      { x: 18, y: 16 },
-      { x: 19, y: 10 },
-      { x: 19, y: 11 },
-      { x: 19, y: 12 },
-      { x: 19, y: 13 },
-      { x: 19, y: 14 },
-      { x: 19, y: 15 },
-      { x: 19, y: 16 },
-      { x: 19, y: 17 },
-      { x: 20, y: 10 },
-      { x: 20, y: 11 },
-      { x: 20, y: 12 },
-      { x: 20, y: 13 },
-      { x: 20, y: 14 },
-      { x: 20, y: 15 },
-      { x: 20, y: 16 },
-      { x: 20, y: 17 },
-      { x: 20, y: 18 },
-      { x: 21, y: 10 },
-      { x: 21, y: 11 },
-      { x: 21, y: 12 },
-      { x: 21, y: 13 },
-      { x: 21, y: 14 },
-      { x: 21, y: 15 },
-      { x: 21, y: 16 },
-      { x: 21, y: 17 },
-      { x: 21, y: 18 },
-      { x: 21, y: 19 },
-    ],
-  ],
-  MINO_POS: [
-    [[2]], // B // All
-    [[2, 2]], // A // All
-    [
-      [2, 1], // S // Warrior, Pirate
-      [1, 0],
-    ],
-    [[1, 2, 1]], // S // Wizard, Archer, Thief, Maplem
-    [
-      [2, 2], // SS // Warrior
-      [2, 2],
-    ],
-    [
-      [1, 2, 1], // SS // Wizard
-      [0, 1, 0],
-    ],
-    [[1, 2, 2, 1]], // SS // Archer, Maplem
-    [
-      [1, 2, 1], // SS // Thief
-      [0, 0, 1],
-    ],
-    [
-      [0, 1], // SS // Pirate
-      [2, 2],
-      [1, 0],
-    ],
-    [
-      [2, 1, 1], // SSS // Warrior
-      [1, 1, 0],
-    ],
-    [
-      [0, 1, 0], // SSS // Wizard
-      [1, 2, 1],
-      [0, 1, 0],
-    ],
-    [[1, 1, 2, 1, 1]], // SSS // Archer
-    [
-      [0, 0, 1], // SSS // Thief
-      [1, 2, 1],
-      [0, 0, 1],
-    ],
-    [
-      [0, 1], // SSS // Pirate
-      [0, 1],
-      [2, 1],
-      [1, 0],
-    ],
-    [
-      [1, 0, 0], // SSS // Xenon
-      [1, 2, 1],
-      [0, 0, 1],
-    ],
-  ],
-  MINO_INDEX: {
-    WARRIOR: [0, 1, 2, 4, 9],
-    WIZARD: [0, 1, 3, 5, 10],
-    ARCHER: [0, 1, 3, 6, 11],
-    THIEF: [0, 1, 3, 7, 12],
-    PIRATE: [0, 1, 2, 8, 13],
-    XENON: [0, 1, 3, 7, 14],
-    MAPLEM: [0, 1, 3, 6],
-  },
-};
 const element = {
   div: {
     map: document.querySelector(".map"),
@@ -790,9 +215,9 @@ let character = {
 
     // job icon
     let jobClass = "";
-    for (let i in character.JOB) {
-      if (character.JOB[i].indexOf(info.job) != -1) {
-        jobClass = i.toLowerCase();
+    for (jobClass in character.JOB) {
+      if (character.JOB[jobClass].indexOf(info.job) != -1) {
+        jobClass = jobClass.toLowerCase();
         if (jobClass == "nounion") break;
         e.querySelector(".card-name > img").src = `image/job/${jobClass}.svg`;
         break;
@@ -1590,27 +1015,69 @@ function onTableTouchMove(event) {
 function onPlay() {
   switch (element.img.play.className) {
     case "map-tool-play":
-      if (map.tileCount != 0) {
-        inform.show(
-          inform.DANGER,
-          `타일 개수 ${map.tileCount > 0 ? "부족" : "초과"}`,
-          `타일 ${Math.abs(map.tileCount)}개를 ${
-            map.tileCount > 0 ? "더 선택" : "선택 해제"
-          } 해주세요.`
-        );
-        return;
-      }
+      // 잔여 타일이 0이 아니면 오류 메세지 출력
+      // if (map.tileCount != 0) {
+      //   inform.show(
+      //     inform.DANGER,
+      //     `타일 개수 ${map.tileCount > 0 ? "부족" : "초과"}`,
+      //     `타일 ${Math.abs(map.tileCount)}개를 ${
+      //       map.tileCount > 0 ? "더 선택" : "선택 해제"
+      //     } 해주세요.`
+      //   );
+      //   return;
+      // }
 
       element.img.play.className = "map-tool-stop";
       element.img.play.src = "image/icon/play-stop-o.svg";
       element.img.play.setAttribute("alt", "중지");
       element.img.play.setAttribute("title", "중지");
       element.div.map.style.borderColor = "rgb(231, 76, 60)";
-      inform.show(
-        inform.DANGER,
-        "점령대 배치 계산 시작",
-        "[SSS]\n도적x1\n\n[SS]\n전사x11, 마법사x6, 궁수x5, 도적x6, 해적x7, 메이플M, 제논"
-      );
+
+      // 계산 시작 시 타일 요약 메세지 내용
+      let rankIdx = 4,
+        content = "";
+      const jobClassKor = {
+          warrior: "전사",
+          wizard: "마법사",
+          archer: "궁수",
+          thief: "도적",
+          pirate: "해적",
+          xenon: "제논",
+          maplem: "메이플M",
+        },
+        rankStrArr = ["B", "A", "S", "SS", "SSS"];
+      // SSS
+      for (let jobClass in stats.minoCount) {
+        if (jobClass == "maplem") continue;
+
+        // 타일이 1개 이상 존재할 경우
+        if (stats.minoCount[jobClass][rankIdx] > 0) {
+          // 아직 "[SSS]" 타이틀이 들어가지 않았을 경우 추가
+          if (content.length == 0) content = "[SSS]\n";
+
+          content += `${jobClassKor[jobClass]}(${stats.minoCount[jobClass][rankIdx]})`;
+        }
+      }
+
+      // SS ~ B
+      for (rankIdx--; rankIdx >= 0; rankIdx--) {
+        let contentPart = "";
+        for (let jobClass in stats.minoCount)
+          if (stats.minoCount[jobClass][rankIdx] > 0) {
+            // 아직 "[SS~B]" 타이틀이 들어가지 않았을 경우 추가
+            if (contentPart.length == 0)
+              contentPart = `[${rankStrArr[rankIdx]}]\n`;
+            else contentPart += ", ";
+
+            contentPart += `${jobClassKor[jobClass]}(${stats.minoCount[jobClass][rankIdx]})`;
+          }
+
+        // 내용이 이미 존재할 경우 분리를 위해 2번 줄바꿈
+        if (contentPart.length > 0 && content.length > 0) content += "\n\n";
+        content += contentPart;
+      }
+      inform.show(inform.DANGER, "점령대 배치 계산 시작", content);
+      map.tiler.Solve();
       break;
     case "map-tool-stop":
       element.img.play.className = "map-tool-play";
