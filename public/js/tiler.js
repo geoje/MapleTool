@@ -1728,7 +1728,7 @@ class Tiler {
           pos.adj = this.GetAdjacentNum(pos);
           spot.push(pos);
         }
-    spot.sort((a, b) => b.adj - a.adj);
+    spot.sort((a, b) => a.adj - b.adj);
 
     return spot;
   }
@@ -1798,13 +1798,33 @@ class Tiler {
       y++;
     });
 
-    this.placedStack.push();
+    // 첫 위치부터 탐색하게 하기
+    currentSpot.posIdx = -1;
 
-    // 사용된 미노 Stack에 Push
-    //this.placedMinos.push({ });
+    // 사용된 미노 기존 배열에서 뺴고 Stack에 Push
+    this.minos.splice(currentSpot.minoIdx, 1);
+    this.placedStack.push(node);
   }
   // 가장 최근에 추가된 미노 Pop 하기
-  UnPlaceLastMino() {}
+  BacktrackingLastMino() {
+    const node = this.placedStack.pop();
+
+    // spot 복구
+    this.minos.splice(node.minoIdx, 0, node.mino);
+    spot[node.type].posIdx = node.posIdx;
+    spot[node.type].minoIdx = node.minoIdx;
+    spot[node.type].shapeIdx = node.shapeIdx;
+
+    // map 복구
+    while (node.posArr.length) {
+      const pos = node.posArr.pop();
+      spot[node.type].posArr.splice(pos.i, 0, { x: pos.x, y: pos.y });
+      this.map[pos.y][pos.x] = 1;
+    }
+
+    // 디자인
+    map.UnPlace(node.pos, node.mino.shapes[node.shapeIdx]);
+  }
 
   async Solve(batchSize = 3000) {
     // 연산 시간 체크 및 초기설정
@@ -1821,11 +1841,11 @@ class Tiler {
     // 먼저 중심 영역 계산
     spot.center.posArr = this.GetCenterSpot();
 
+    let backtracking = false;
     while (true) {
       // 사용자 중지
       if (this.abort) return { success: -1 };
-      let unPlace = true,
-        backtrack = false;
+      let unPlace = true;
 
       // 중심 영역 채우기
       if (spot.center.posArr.length) {
@@ -1833,13 +1853,13 @@ class Tiler {
         for (; unPlace && spot.center.posIdx < spot.center.posArr.length; spot.center.posIdx++)
           // 모든 미노 체크
           for (
-            !backtrack ? (spot.center.minoIdx = 0) : 0;
+            !backtracking ? (spot.center.minoIdx = 0) : 0;
             unPlace && spot.center.minoIdx < this.minos.length;
             spot.center.minoIdx++
           )
             // 모든 변형 도형 체크
             for (
-              !backtrack ? (spot.center.shapeIdx = 0) : 0;
+              !backtracking ? (spot.center.shapeIdx = 0) : 0;
               unPlace && spot.center.shapeIdx < this.minos[spot.center.minoIdx].shapes.length;
               spot.center.shapeIdx++
             ) {
@@ -1860,7 +1880,9 @@ class Tiler {
           spot.center.posArr.length &&
           spot.center.posArr.length == spot.center.posIdx &&
           this.minos.length &&
-          this.minos.length == spot.center.minoIdx
+          this.minos.length == spot.center.minoIdx &&
+          this.minos[this.minos.length - 1].shapes.length &&
+          this.minos[this.minos.length - 1].shapes.length == spot.center.shapeIdx
         )
           break;
 
@@ -1876,16 +1898,22 @@ class Tiler {
         for (; unPlace && spot.bridge.posIdx < spot.bridge.posArr.length; spot.bridge.posIdx++)
           // 모든 미노 체크
           for (
-            !backtrack ? (spot.bridge.minoIdx = 0) : 0;
+            !backtracking ? (spot.bridge.minoIdx = 0) : 0;
             unPlace && spot.bridge.minoIdx < this.minos.length;
             spot.bridge.minoIdx++
           )
             // 모든 변형 도형 체크
             for (
-              !backtrack ? (spot.bridge.shapeIdx = 0) : 0;
+              !backtracking ? (spot.bridge.shapeIdx = 0) : 0;
               unPlace && spot.bridge.shapeIdx < this.minos[spot.bridge.minoIdx].shapes.length;
               spot.bridge.shapeIdx++
             ) {
+              // 백트래킹으로 올 경우 백트래킹 해제하고 한단계 다음 경우로 넘기기
+              if (backtracking) {
+                backtracking = false;
+                continue;
+              }
+
               // 놓을 수 있을 경우 놓기
               if (
                 this.IsPlaceable(
@@ -1895,21 +1923,30 @@ class Tiler {
               ) {
                 this.Place("bridge");
                 unPlace = false;
+
+                // 테스트 코드: 동작 하나하나를 보기 위함
+                // await new Promise((resolve) => setTimeout(resolve, 0));
+                // const _sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+                // await _sleep(1000);
               }
             }
 
-        // 중심 영역 채우기의 모든 경우를 다 해봤을 경우 백트래킹
+        // 다리 영역 채우기의 모든 경우를 다 해봤을 경우 백트래킹
         if (
           spot.bridge.posArr.length &&
           spot.bridge.posArr.length == spot.bridge.posIdx &&
           this.minos.length &&
-          this.minos.length == spot.bridge.minoIdx
-        )
-          UnPlaceLastMino();
+          this.minos.length == spot.bridge.minoIdx &&
+          this.minos[this.minos.length - 1].shapes.length &&
+          this.minos[this.minos.length - 1].shapes.length == spot.bridge.shapeIdx
+        ) {
+          this.BacktrackingLastMino();
+          backtracking = true;
+        }
 
         // 다리 영역을 모두 채웠을 경우 일반 영역 좌표 계산해주기
         if (spot.bridge.posArr.length == 0) {
-          spot.normal.posArr = this.GetNormalSpot();
+          // spot.normal.posArr = this.GetNormalSpot();
         }
       }
 
