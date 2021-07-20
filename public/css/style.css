@@ -9,7 +9,7 @@ html {
   min-width: 1068px;
   min-height: 800px;
 
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   background-color: rgb(102, 102, 102);
 }
 body {
@@ -45,7 +45,7 @@ button,
 input,
 textarea {
   color: white;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
 }
 button:hover,
 button[disabled] {
@@ -98,9 +98,16 @@ button:active:not([disabled]),
   border: 1px solid rgb(100, 100, 100);
 }
 .map > table td::after {
-  content: '';
+  content: "";
   display: block;
   margin-top: 100%;
+}
+.map > table td > img {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 13px;
+  height: 13px;
 }
 .map .tile-hover {
   position: absolute;
@@ -170,8 +177,8 @@ button:active:not([disabled]),
   padding: 0 5px;
   cursor: pointer;
 }
-.card-stats > img[title='전체 선택해제'] {
-  content: url('../image/icon/close-r.svg');
+.card-stats > img[title="전체 선택해제"] {
+  content: url("../image/icon/close-r.svg");
 }
 .card-list {
   display: flex;
@@ -260,16 +267,16 @@ button:active:not([disabled]),
 }
 @keyframes raid {
   0% {
-    content: url('../image/deco/card-raid-0.svg');
+    content: url("../image/deco/card-raid-0.svg");
   }
   25% {
-    content: url('../image/deco/card-raid-1.svg');
+    content: url("../image/deco/card-raid-1.svg");
   }
   50% {
-    content: url('../image/deco/card-raid-2.svg');
+    content: url("../image/deco/card-raid-2.svg");
   }
   75% {
-    content: url('../image/deco/card-raid-3.svg');
+    content: url("../image/deco/card-raid-3.svg");
   }
 }
 .card-list > div.raid {
