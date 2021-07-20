@@ -1673,8 +1673,8 @@ class Tiler {
     shape.matrix.forEach((row) => {
       row.forEach((num) => {
         if (num > 0) {
-          if (x > 1 && this.map[y][x - 1] == 1) posArr.push({ x: x - 1, y: y });
-          if (y > 1 && this.map[y - 1][x] == 1) posArr.push({ x: x, y: y - 1 });
+          if (x > 0 && this.map[y][x - 1] == 1) posArr.push({ x: x - 1, y: y });
+          if (y > 0 && this.map[y - 1][x] == 1) posArr.push({ x: x, y: y - 1 });
           if (x < TILE.COL - 1 && this.map[y][x + 1] == 1) posArr.push({ x: x + 1, y: y });
           if (y < TILE.ROW - 1 && this.map[y + 1][x] == 1) posArr.push({ x: x, y: y + 1 });
         }
@@ -1758,16 +1758,17 @@ class Tiler {
     const min = this.minos[this.minos.length - 1].rankIdx;
 
     const posArr = this.GetAdjacentSpot(pos, shape);
-    for (let i = 0; i < posArr.length; i++) if (this.GetAdjacentNum(posArr[i]) < min) return false;
+    for (let i = 0; i < posArr.length; i++) {
+      if (this.GetAdjacentNum(posArr[i]) < /*min*/ 1) return false;
+    }
     return true;
   }
   // 주변 위치들 adj 값 업데이트
   UpdateAdjacent(pos, shape) {
     let posArr = this.GetAdjacentSpot(pos, shape);
     for (let i = 0; i < posArr.length; i++)
-      spot.normal.posArr.find((p) => p.x == posArr[i].x && p.y == posArr[i].y).adj = GetAdjacentNum(
-        posArr[i]
-      );
+      spot.normal.posArr.find((p) => p.x == posArr[i].x && p.y == posArr[i].y).adj =
+        this.GetAdjacentNum(posArr[i]);
 
     spot.normal.posArr.sort((a, b) => a.adj - b.adj);
   }
@@ -1793,7 +1794,6 @@ class Tiler {
     let y = pos.y - shape.center.y;
     let head = true;
 
-    console.log(shape.matrix);
     shape.matrix.forEach((row) => {
       row.forEach((num) => {
         if (num > 0) {
@@ -1841,9 +1841,9 @@ class Tiler {
       const pos = node.posArr.pop();
       this.map[pos.y][pos.x] = 1;
 
-      if (type == "normal") pos.adj = this.GetAdjacentNum(pos);
       if (pos.i != -1) spot[node.type].posArr.splice(pos.i, 0, { x: pos.x, y: pos.y });
     }
+    if (type == "normal") this.UpdateAdjacent(node.pos, node.mino.shapes[node.shapeIdx]);
   }
 
   async Solve(batchSize = 3000) {
@@ -1896,13 +1896,25 @@ class Tiler {
                 this.Place("normal");
                 unPlace = false;
 
+                // 주변에 고립된 공간이 생겼을 경우
+                if (!this.IsAdjacentValid(pos, shape)) {
+                  this.BacktrackingLastMino("normal");
+                  backtracking = false;
+                  unPlace = true;
+                  continue;
+                }
+
                 // 놓은 곳 주변 adj 값 업데이트
+                this.UpdateAdjacent(pos, shape);
+
+                // adj 값에 따라 순서가 바뀌었으니 처음으로 다시 서칭하도록 지정
+                spot.normal.posIdx = 0;
 
                 // 테스트 코드: 동작 하나하나를 보기 위함
-                await new Promise((resolve) => setTimeout(resolve, 0));
-                const _sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-                DrawSolution();
-                await _sleep(1000);
+                // await new Promise((resolve) => setTimeout(resolve, 0));
+                // const _sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+                // DrawSolution();
+                // await _sleep(100);
               }
             }
 
