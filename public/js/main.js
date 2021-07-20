@@ -49,6 +49,7 @@ const element = {
 };
 
 let map = {
+  solving: false,
   drawing: true, // true: draw, false: erase
   click: 0, // 0: none click, 1: single, 2: double
 
@@ -62,48 +63,70 @@ let map = {
   tiler: undefined,
   tileCount: 0,
 
-  findSelectedIndex: (pos) =>
+  FindSelectedIndex: (pos) =>
     map.selectedPos.findIndex((p) => p.x == pos.x && p.y == pos.y),
-  findGroupIndex: (pos) =>
+  FindGroupIndex: (pos) =>
     TILE.GROUP.findIndex(
       (area) => area.findIndex((p) => p.x == pos.x && p.y == pos.y) != -1
     ),
 
-  hover: (pos) => {
+  Hover: (pos) => {
+    if (map.solving) return;
+
     const div = document.createElement("div");
     div.className = "tile-hover";
     div.style.zIndex = 1;
     div.style.background = TILE.COLOR.HOVER;
     element.tile[pos.y][pos.x].appendChild(div);
   },
-  isHover: (pos) => pos.x == map.hoverPos.x && pos.y == map.hoverPos.y,
-  isNotHover: (pos) => pos.x != map.hoverPos.x || pos.y != map.hoverPos.y,
-  unHover: (pos) => {
+  IsHover: (pos) => pos.x == map.hoverPos.x && pos.y == map.hoverPos.y,
+  IsNotHover: (pos) => pos.x != map.hoverPos.x || pos.y != map.hoverPos.y,
+  UnHover: (pos) => {
     if (pos.x == -1) return;
     element.tile[pos.y][pos.x].childNodes.forEach((e) => {
       if (e.className == "tile-hover") e.remove();
     });
   },
 
-  select: (pos) => {
+  Select: (pos) => {
+    if (map.solving) return;
+
     element.tile[pos.y][pos.x].style.backgroundColor = TILE.COLOR.SELECTED;
     map.selectedPos.push({ x: pos.x, y: pos.y });
-    map.updateTileCount();
+    map.UpdateTileCount();
   },
-  isSelected: (pos) => !map.isNotSelected(pos),
-  isNotSelected: (pos) => map.findSelectedIndex(pos) == -1,
-  unSelect: (pos) => {
+  IsSelected: (pos) => !map.IsNotSelected(pos),
+  IsNotSelected: (pos) => map.FindSelectedIndex(pos) == -1,
+  UnSelect: (pos) => {
+    if (map.solving) return;
+
     element.tile[pos.y][pos.x].style.backgroundColor = "";
-    map.selectedPos.splice(map.findSelectedIndex(pos), 1);
-    map.updateTileCount();
+    map.selectedPos.splice(map.FindSelectedIndex(pos), 1);
+    map.UpdateTileCount();
   },
-  updateTileCount: () => {
+  UpdateTileCount: () => {
     map.tileCount = stats.tileableCount - map.selectedPos.length;
     element.txt.tileCount.innerText = map.tileCount;
 
     if (map.tileCount < 0)
       element.txt.tileCount.style.color = "rgb(231, 76, 60)";
     else element.txt.tileCount.style.color = "";
+  },
+
+  PlaceTile: (job, posArr) => {
+    posArr.forEach(
+      (pos) =>
+        (element.tile[pos.y][pos.x].style.backgroundColor =
+          TILE.COLOR.MINO[job.toLowerCase()])
+    );
+  },
+  UnPlaceTile: (posArr) => {
+    posArr.forEach(
+      (pos) =>
+        (element.tile[pos.y][pos.x].style.backgroundColor = map.IsSelected(pos)
+          ? TILE.COLOR.SELECTED
+          : "")
+    );
   },
 };
 let character = {
@@ -207,8 +230,8 @@ let character = {
     NOUNION: ["초보자", "노블레스", "시티즌"],
   },
 
-  getMinoIconSrc: (jobStr) => `image/job/${jobStr.toLowerCase()}.svg`,
-  add: (info) => {
+  GetMinoIconSrc: (jobStr) => `image/job/${jobStr.toLowerCase()}.svg`,
+  Add: (info) => {
     // info: { name, level, job, imgUrl }
     const e = element.div.cardSpecimen.cloneNode(true);
     e.style = "";
@@ -307,8 +330,8 @@ let character = {
 
       info = character.infoList.find((o) => o.name == event.target.alt);
       if (info) {
-        character.remove(info);
-        stats.updateLevel();
+        character.Remove(info);
+        stats.UpdateLevel();
       }
     });
 
@@ -327,7 +350,7 @@ let character = {
     e.addEventListener("click", () => {
       const idx = character.infoList.findIndex((o) => o.name == info.name);
       if (idx == -1) return;
-      character.raid(character.infoList[idx]);
+      character.Raid(character.infoList[idx]);
     });
 
     // update info
@@ -345,7 +368,7 @@ let character = {
       (o) => o.level
     ).length;
   },
-  addGhost: (name) => {
+  AddGhost: (name) => {
     const e = element.div.cardSpecimen.cloneNode(true);
     e.style = "";
     e.style.order = "99";
@@ -379,7 +402,7 @@ let character = {
     });
     onImgSyncClick({ target: imgSync });
   },
-  remove: (info) => {
+  Remove: (info) => {
     info.element.remove();
     character.infoList.splice(
       character.infoList.findIndex((o) => o.name == info.name),
@@ -388,28 +411,28 @@ let character = {
     element.txt.cardCount.innerText = character.infoList.filter(
       (o) => o.level
     ).length;
-    if (info.raid) stats.unsetRaid(info.rankIdx, info.jobClass);
+    if (info.raid) stats.UnsetRaid(info.rankIdx, info.jobClass);
   },
-  removeGhost: (name) => {
+  RemoveGhost: (name) => {
     const idx = character.infoList.findIndex((o) => o.name == name);
     if (idx == -1) return;
 
     character.infoList[idx].element.remove();
     character.infoList.splice(idx, 1);
   },
-  raid: (info) => {
+  Raid: (info) => {
     if (info.raid) {
-      stats.unsetRaid(info.rankIdx, info.jobClass);
+      stats.UnsetRaid(info.rankIdx, info.jobClass);
       info.element.classList.remove("raid");
       info.raid = false;
     } else {
-      if (stats.setRaid(info.rankIdx, info.jobClass)) {
+      if (stats.SetRaid(info.rankIdx, info.jobClass)) {
         info.element.classList.add("raid");
         info.raid = true;
       }
     }
   },
-  sort: () => {
+  Sort: () => {
     character.infoList.sort((a, b) => {
       const diff = b.level - a.level;
       if (diff) return diff;
@@ -434,7 +457,7 @@ let stats = {
     maplem: [0, 0, 0, 0],
   },
 
-  updateLevel: () => {
+  UpdateLevel: () => {
     // Set level
     let tl = 0;
     let maxNum = Math.min(character.infoList.length, 40);
@@ -492,27 +515,27 @@ let stats = {
     element.img.rank.src = union.imgSrc;
     element.txt.raidMember.innerText = `${stats.raidMember[0]}/${stats.raidMember[1]}`;
   },
-  setRaid: (rankIdx, jobClass) => {
+  SetRaid: (rankIdx, jobClass) => {
     if (jobClass != "maplem") {
       if (stats.raidMember[0] >= stats.raidMember[1]) {
-        inform.show(inform.DANGER, "공격대원 가득참", "");
+        inform.Show(inform.DANGER, "공격대원 가득참", "");
         return false;
       }
       element.txt.raidMember.innerText = `${++stats.raidMember[0]}/${
         stats.raidMember[1]
       }`;
     }
-    stats.increaseMino(rankIdx, jobClass);
+    stats.IncreaseMino(rankIdx, jobClass);
     return true;
   },
-  unsetRaid: (rankIdx, jobClass) => {
+  UnsetRaid: (rankIdx, jobClass) => {
     if (jobClass != "maplem")
       element.txt.raidMember.innerText = `${--stats.raidMember[0]}/${
         stats.raidMember[1]
       }`;
-    stats.decreaseMino(rankIdx, jobClass);
+    stats.DecreaseMino(rankIdx, jobClass);
   },
-  increaseMino: (rankIdx, jobClass) => {
+  IncreaseMino: (rankIdx, jobClass) => {
     if (rankIdx != -1) {
       if (jobClass == "xenon" || jobClass == "maplem") {
         const mino = element.mino[jobClass][0];
@@ -529,10 +552,10 @@ let stats = {
           .minoCount[jobClass][rankIdx];
       }
       stats.tileableCount += rankIdx + 1;
-      map.updateTileCount();
+      map.UpdateTileCount();
     }
   },
-  decreaseMino: (rankIdx, jobClass) => {
+  DecreaseMino: (rankIdx, jobClass) => {
     if (rankIdx != -1) {
       if (jobClass == "xenon" || jobClass == "maplem") {
         const mino = element.mino[jobClass][0];
@@ -550,7 +573,7 @@ let stats = {
       }
     }
     stats.tileableCount -= rankIdx + 1;
-    map.updateTileCount();
+    map.UpdateTileCount();
   },
 };
 let inform = {
@@ -558,7 +581,7 @@ let inform = {
   DANGER: 2,
   DEFAULT_DURATION: 3000,
 
-  show: (type, title, text, duration = inform.DEFAULT_DURATION) => {
+  Show: (type, title, text, duration = inform.DEFAULT_DURATION) => {
     const div = document.createElement("div");
     const hDiv = document.createElement("div");
     const img = document.createElement("img");
@@ -586,13 +609,13 @@ let inform = {
     setTimeout(() => (div.style.top = "20px"), 100);
     div.style.visibility = "";
     div.addEventListener("click", (event) =>
-      inform.remove(event.path.find((e) => e.className == "inform"))
+      inform.Remove(event.path.find((e) => e.className == "inform"))
     );
 
     if (duration) setTimeout(inform.remove, duration, div);
     return div;
   },
-  remove: (element) => {
+  Remove: (element) => {
     element.style.opacity = "0";
     setTimeout(() => element.remove(), 300);
   },
@@ -610,8 +633,8 @@ function Main() {
 
   // Map event
   element.table.addEventListener("mouseleave", () => {
-    if (map.click == 2) TILE.GROUP[map.hoverPos.g].forEach(map.unHover);
-    else map.unHover(map.hoverPos);
+    if (map.click == 2) TILE.GROUP[map.hoverPos.g].forEach(map.UnHover);
+    else map.UnHover(map.hoverPos);
     map.click = 0;
     map.hoverPos = { x: -1, y: -1, g: -1 };
   });
@@ -630,10 +653,10 @@ function Main() {
 
   // Map tool event
   element.img.trashMap.addEventListener("click", () =>
-    map.selectedPos.slice().forEach(map.unSelect)
+    map.selectedPos.slice().forEach(map.UnSelect)
   );
   element.img.help.addEventListener("click", () =>
-    inform.show(
+    inform.Show(
       inform.INFO,
       "키 가이드",
       "[클릭 또는 터치]\n타일이 없으면: 생성\n타일이 있으면: 삭제\n\n" +
@@ -649,12 +672,12 @@ function Main() {
     const removeM = character.infoList.find((o) => o.job == "메이플M");
     let prevLv = 0;
     if (removeM) {
-      character.remove(removeM);
+      character.Remove(removeM);
       prevLv = removeM.level;
     }
 
     if (prevLv != 120) {
-      character.add({
+      character.Add({
         name: "메이플M",
         level: prevLv == 0 ? 30 : prevLv == 30 ? 50 : prevLv == 50 ? 70 : 120,
         job: "메이플M",
@@ -664,7 +687,7 @@ function Main() {
       const idx = character.infoList.findIndex((o) => o.job == "메이플M");
       if (idx == -1) return;
       info = character.infoList[idx];
-      if (stats.setRaid(info.rankIdx, info.jobClass)) {
+      if (stats.SetRaid(info.rankIdx, info.jobClass)) {
         info.element.classList.add("raid");
         info.raid = true;
       }
@@ -674,16 +697,16 @@ function Main() {
     const maplemInfo = character.infoList.find((o) => o.job == "메이플M");
 
     if (element.img.autoSelect.title == "전체 선택해제") {
-      character.infoList.filter((info) => info.raid).forEach(character.raid);
+      character.infoList.filter((info) => info.raid).forEach(character.Raid);
       element.img.autoSelect.title = "자동선택";
       element.img.autoSelect.alt = "자동선택";
     } else {
       character.infoList.forEach((info, i) => {
         if (stats.raidMember[0] < stats.raidMember[1] && info.job.length > 0)
-          character.raid(info);
+          character.Raid(info);
         else return;
       });
-      if (maplemInfo && !maplemInfo.raid) character.raid(maplemInfo);
+      if (maplemInfo && !maplemInfo.raid) character.Raid(maplemInfo);
 
       if (
         (stats.raidMember[1] && stats.raidMember[0] == stats.raidMember[1]) ||
@@ -695,8 +718,8 @@ function Main() {
     }
   });
   element.img.trashCard.addEventListener("click", () => {
-    character.infoList.slice().forEach(character.remove);
-    stats.updateLevel();
+    character.infoList.slice().forEach(character.Remove);
+    stats.UpdateLevel();
   });
 
   // Preload images
@@ -782,7 +805,7 @@ function DrawStatsMino() {
           td.style.backgroundColor = TILE.COLOR.MINO[jobStr.toUpperCase()];
           if (noIcon && posSet[y][x] == 2) {
             const img = document.createElement("img");
-            img.src = character.getMinoIconSrc(jobStr);
+            img.src = character.GetMinoIconSrc(jobStr);
             td.appendChild(img);
             noIcon = false;
           }
@@ -834,6 +857,7 @@ function DrawStatsMino() {
     minoTable.childNodes[row - 1 - i].appendChild(td);
   }
 }
+function DrawSolution() {}
 
 function onTileMouseEnter(event) {
   event.stopPropagation();
@@ -845,25 +869,25 @@ function onTileMouseEnter(event) {
   };
 
   if (map.click == 2) {
-    hoverPos.g = map.findGroupIndex(hoverPos);
+    hoverPos.g = map.FindGroupIndex(hoverPos);
     if (hoverPos.g != map.hoverPos.g) {
       // 더블 클릭 때 타일 변화
       if (map.drawing)
-        TILE.GROUP[hoverPos.g].filter(map.isNotSelected).forEach(map.select);
-      else TILE.GROUP[hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
+        TILE.GROUP[hoverPos.g].filter(map.IsNotSelected).forEach(map.Select);
+      else TILE.GROUP[hoverPos.g].filter(map.IsSelected).forEach(map.UnSelect);
 
-      TILE.GROUP[map.hoverPos.g].forEach(map.unHover);
-      TILE.GROUP[hoverPos.g].forEach(map.hover);
+      TILE.GROUP[map.hoverPos.g].forEach(map.UnHover);
+      TILE.GROUP[hoverPos.g].forEach(map.Hover);
     }
   } else {
     if (map.click == 1) {
       // 싱글 클릭 때 타일 변화
       if (map.drawing) {
-        if (map.isNotSelected(hoverPos)) map.select(hoverPos);
-      } else if (map.isSelected(hoverPos)) map.unSelect(hoverPos);
+        if (map.IsNotSelected(hoverPos)) map.Select(hoverPos);
+      } else if (map.IsSelected(hoverPos)) map.UnSelect(hoverPos);
     }
-    map.unHover(map.hoverPos);
-    map.hover(hoverPos);
+    map.UnHover(map.hoverPos);
+    map.Hover(hoverPos);
   }
 
   map.hoverPos = hoverPos;
@@ -883,7 +907,7 @@ function onTileMouseDown(event) {
     map.doubleClickPos.x == map.hoverPos.x &&
     map.doubleClickPos.y == map.hoverPos.y
   ) {
-    map.hoverPos.g = map.findGroupIndex(map.hoverPos);
+    map.hoverPos.g = map.FindGroupIndex(map.hoverPos);
     map.click = 2;
 
     clearTimeout(map.doubleClickTid);
@@ -893,19 +917,19 @@ function onTileMouseDown(event) {
   if (map.click == 2) {
     // 더블 클릭에 타일 변화
     if (map.drawing)
-      TILE.GROUP[map.hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+      TILE.GROUP[map.hoverPos.g].filter(map.IsNotSelected).forEach(map.Select);
     else
-      TILE.GROUP[map.hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
+      TILE.GROUP[map.hoverPos.g].filter(map.IsSelected).forEach(map.UnSelect);
 
-    TILE.GROUP[map.hoverPos.g].filter(map.isNotHover).forEach(map.hover);
+    TILE.GROUP[map.hoverPos.g].filter(map.IsNotHover).forEach(map.Hover);
   } else {
     // 싱글 클릭에 드로잉 설정과 타일 변화
-    if (map.isNotSelected(map.hoverPos)) {
+    if (map.IsNotSelected(map.hoverPos)) {
       map.drawing = true;
-      map.select(map.hoverPos);
+      map.Select(map.hoverPos);
     } else {
       map.drawing = false;
-      map.unSelect(map.hoverPos);
+      map.UnSelect(map.hoverPos);
     }
   }
 }
@@ -913,7 +937,7 @@ function onTileMouseUp(event) {
   if (event.button != 0) return;
 
   if (map.click == 2)
-    TILE.GROUP[map.hoverPos.g].filter(map.isNotHover).forEach(map.unHover);
+    TILE.GROUP[map.hoverPos.g].filter(map.IsNotHover).forEach(map.UnHover);
   map.click = 0;
 }
 function onTableTouchStart(event) {
@@ -948,7 +972,7 @@ function onTableTouchStart(event) {
       map.doubleClickPos.x == map.hoverPos.x &&
       map.doubleClickPos.y == map.hoverPos.y
     ) {
-      map.hoverPos.g = map.findGroupIndex(map.hoverPos);
+      map.hoverPos.g = map.FindGroupIndex(map.hoverPos);
       map.click = 2;
 
       clearTimeout(map.doubleClickTid);
@@ -959,18 +983,18 @@ function onTableTouchStart(event) {
       // 연속 터치에 타일 변화
       if (map.drawing)
         TILE.GROUP[map.hoverPos.g]
-          .filter(map.isNotSelected)
-          .forEach(map.select);
+          .filter(map.IsNotSelected)
+          .forEach(map.Select);
       else
-        TILE.GROUP[map.hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
+        TILE.GROUP[map.hoverPos.g].filter(map.IsSelected).forEach(map.UnSelect);
     } else {
       // 싱글 클릭에 드로잉 설정과 타일 변화
-      if (map.isNotSelected(map.hoverPos)) {
+      if (map.IsNotSelected(map.hoverPos)) {
         map.drawing = true;
-        map.select(map.hoverPos);
+        map.Select(map.hoverPos);
       } else {
         map.drawing = false;
-        map.unSelect(map.hoverPos);
+        map.UnSelect(map.hoverPos);
       }
     }
   }
@@ -994,99 +1018,107 @@ function onTableTouchMove(event) {
   if (hoverPos.x == map.hoverPos.x && hoverPos.y == map.hoverPos.y) return;
 
   if (map.click == 2) {
-    hoverPos.g = map.findGroupIndex(hoverPos);
+    hoverPos.g = map.FindGroupIndex(hoverPos);
     if (hoverPos.g != map.hoverPos.g) {
       // 더블 클릭 때 타일 변화
       if (map.drawing)
-        TILE.GROUP[hoverPos.g].filter(map.isNotSelected).forEach(map.select);
-      else TILE.GROUP[hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
+        TILE.GROUP[hoverPos.g].filter(map.IsNotSelected).forEach(map.Select);
+      else TILE.GROUP[hoverPos.g].filter(map.IsSelected).forEach(map.UnSelect);
     }
   } else {
     if (map.click == 1) {
       // 싱글 클릭 때 타일 변화
       if (map.drawing) {
-        if (map.isNotSelected(hoverPos)) map.select(hoverPos);
-      } else if (map.isSelected(hoverPos)) map.unSelect(hoverPos);
+        if (map.IsNotSelected(hoverPos)) map.Select(hoverPos);
+      } else if (map.IsSelected(hoverPos)) map.UnSelect(hoverPos);
     }
   }
 
   map.hoverPos = hoverPos;
 }
-function onPlay() {
-  switch (element.img.play.className) {
-    case "map-tool-play":
-      // 잔여 타일이 0이 아니면 오류 메세지 출력
-      // if (map.tileCount != 0) {
-      //   inform.show(
-      //     inform.DANGER,
-      //     `타일 개수 ${map.tileCount > 0 ? "부족" : "초과"}`,
-      //     `타일 ${Math.abs(map.tileCount)}개를 ${
-      //       map.tileCount > 0 ? "더 선택" : "선택 해제"
-      //     } 해주세요.`
-      //   );
-      //   return;
-      // }
+function onPlay(event) {
+  if (
+    element.img.play.className == "map-tool-stop" ||
+    (event.message && event.message.length > 0)
+  ) {
+    element.img.play.className = "map-tool-play";
+    element.img.play.src = "image/icon/play-button-o.svg";
+    element.img.play.setAttribute("alt", "시작");
+    element.img.play.setAttribute("title", "시작");
+    element.div.map.removeAttribute("style");
+    map.solving = false;
+    map.tiler.abort = true;
 
-      element.img.play.className = "map-tool-stop";
-      element.img.play.src = "image/icon/play-stop-o.svg";
-      element.img.play.setAttribute("alt", "중지");
-      element.img.play.setAttribute("title", "중지");
-      element.div.map.style.borderColor = "rgb(231, 76, 60)";
+    inform.Show(
+      inform.INFO,
+      "점령대 배치 계산 중지",
+      event.message ? event.message : ""
+    );
+  } else if (element.img.play.className == "map-tool-play") {
+    // 잔여 타일이 0이 아니면 오류 메세지 출력
+    if (map.tileCount != 0) {
+      inform.Show(
+        inform.DANGER,
+        `타일 개수 ${map.tileCount > 0 ? "부족" : "초과"}`,
+        `타일 ${Math.abs(map.tileCount)}개를 ${
+          map.tileCount > 0 ? "더 선택" : "선택 해제"
+        } 해주세요.`
+      );
+      return;
+    }
 
-      // 계산 시작 시 타일 요약 메세지 내용
-      let rankIdx = 4,
-        content = "";
-      const jobClassKor = {
-          warrior: "전사",
-          wizard: "마법사",
-          archer: "궁수",
-          thief: "도적",
-          pirate: "해적",
-          xenon: "제논",
-          maplem: "메이플M",
-        },
-        rankStrArr = ["B", "A", "S", "SS", "SSS"];
-      // SSS
-      for (let jobClass in stats.minoCount) {
-        if (jobClass == "maplem") continue;
+    element.img.play.className = "map-tool-stop";
+    element.img.play.src = "image/icon/play-stop-o.svg";
+    element.img.play.setAttribute("alt", "중지");
+    element.img.play.setAttribute("title", "중지");
+    element.div.map.style.borderColor = "rgb(231, 76, 60)";
 
-        // 타일이 1개 이상 존재할 경우
+    // 계산 시작 시 타일 요약 메세지 내용
+    let rankIdx = 4,
+      content = "";
+    const jobClassKor = {
+        warrior: "전사",
+        wizard: "마법사",
+        archer: "궁수",
+        thief: "도적",
+        pirate: "해적",
+        xenon: "제논",
+        maplem: "메이플M",
+      },
+      rankStrArr = ["B", "A", "S", "SS", "SSS"];
+    // SSS
+    for (let jobClass in stats.minoCount) {
+      if (jobClass == "maplem") continue;
+
+      // 타일이 1개 이상 존재할 경우
+      if (stats.minoCount[jobClass][rankIdx] > 0) {
+        // 아직 "[SSS]" 타이틀이 들어가지 않았을 경우 추가
+        if (content.length == 0) content = "[SSS]\n";
+
+        content += `${jobClassKor[jobClass]}(${stats.minoCount[jobClass][rankIdx]})`;
+      }
+    }
+
+    // SS ~ B
+    for (rankIdx--; rankIdx >= 0; rankIdx--) {
+      let contentPart = "";
+      for (let jobClass in stats.minoCount)
         if (stats.minoCount[jobClass][rankIdx] > 0) {
-          // 아직 "[SSS]" 타이틀이 들어가지 않았을 경우 추가
-          if (content.length == 0) content = "[SSS]\n";
+          // 아직 "[SS~B]" 타이틀이 들어가지 않았을 경우 추가
+          if (contentPart.length == 0)
+            contentPart = `[${rankStrArr[rankIdx]}]\n`;
+          else contentPart += ", ";
 
-          content += `${jobClassKor[jobClass]}(${stats.minoCount[jobClass][rankIdx]})`;
+          contentPart += `${jobClassKor[jobClass]}(${stats.minoCount[jobClass][rankIdx]})`;
         }
-      }
 
-      // SS ~ B
-      for (rankIdx--; rankIdx >= 0; rankIdx--) {
-        let contentPart = "";
-        for (let jobClass in stats.minoCount)
-          if (stats.minoCount[jobClass][rankIdx] > 0) {
-            // 아직 "[SS~B]" 타이틀이 들어가지 않았을 경우 추가
-            if (contentPart.length == 0)
-              contentPart = `[${rankStrArr[rankIdx]}]\n`;
-            else contentPart += ", ";
-
-            contentPart += `${jobClassKor[jobClass]}(${stats.minoCount[jobClass][rankIdx]})`;
-          }
-
-        // 내용이 이미 존재할 경우 분리를 위해 2번 줄바꿈
-        if (contentPart.length > 0 && content.length > 0) content += "\n\n";
-        content += contentPart;
-      }
-      inform.show(inform.DANGER, "점령대 배치 계산 시작", content);
-      map.tiler.Solve();
-      break;
-    case "map-tool-stop":
-      element.img.play.className = "map-tool-play";
-      element.img.play.src = "image/icon/play-button-o.svg";
-      element.img.play.setAttribute("alt", "시작");
-      element.img.play.setAttribute("title", "시작");
-      element.div.map.removeAttribute("style");
-      inform.show(inform.INFO, "점령대 배치 계산 중지", "");
-      break;
+      // 내용이 이미 존재할 경우 분리를 위해 2번 줄바꿈
+      if (contentPart.length > 0 && content.length > 0) content += "\n\n";
+      content += contentPart;
+    }
+    inform.Show(inform.DANGER, "점령대 배치 계산 시작", content);
+    map.solving = true;
+    map.tiler.Solve();
   }
 }
 
@@ -1096,14 +1128,14 @@ function onBtnLoginClick() {
     password: element.txt.password.value.trim(),
   };
   if (!account.id) {
-    inform.show(
+    inform.Show(
       inform.DANGER,
       "계정 정보 없음",
       "아이디 또는 이메일을 입력해주세요."
     );
     return;
   } else if (!account.password) {
-    inform.show(inform.DANGER, "계정 정보 없음", "비밀번호를 입력해주세요.");
+    inform.Show(inform.DANGER, "계정 정보 없음", "비밀번호를 입력해주세요.");
     return;
   }
 
@@ -1113,13 +1145,13 @@ function onBtnLoginClick() {
   xhr.send(JSON.stringify(account));
   xhr.addEventListener("load", () => {
     if (xhr.status != 200)
-      inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
+      inform.Show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
       if (data.error)
-        inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
+        inform.Show(inform.DANGER, data.error[0], data.error[1], 5000);
       else {
-        inform.show(
+        inform.Show(
           inform.INFO,
           `${account.id} 가져오기 완료 (${data.charArr.length})`,
           data.charArr.join(", ")
@@ -1145,7 +1177,7 @@ function onBtnApplyClick() {
 
   // Empty character names
   if (charNames.length == 0 || charNames[0].length == 0) {
-    inform.show(
+    inform.Show(
       inform.DANGER,
       "캐릭터 이름 없음",
       "캐릭터 이름 리스트를 입력해주세요."
@@ -1157,7 +1189,7 @@ function onBtnApplyClick() {
     (name) => character.infoList.findIndex((obj2) => obj2.name == name) != -1
   );
   if (existsChars.length) {
-    inform.show(
+    inform.Show(
       inform.DANGER,
       `이미 등록 됨 (${existsChars.length})`,
       existsChars.join(", ")
@@ -1171,21 +1203,21 @@ function onBtnApplyClick() {
   xhr.send(JSON.stringify({ charNames: charNames.join(",") }));
   xhr.addEventListener("load", () => {
     if (xhr.status != 200)
-      inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
+      inform.Show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
       console.log(data);
       if (data.error)
-        inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
+        inform.Show(inform.DANGER, data.error[0], data.error[1], 5000);
       else {
         // Success POST
         let content = "";
 
         // Info
         if (data.info && data.info.length) {
-          data.info.forEach(character.add);
-          character.sort();
-          stats.updateLevel();
+          data.info.forEach(character.Add);
+          character.Sort();
+          stats.UpdateLevel();
 
           const list = data.info.map((obj) => obj.name);
           content += `[등록됨 (${list.length})]\n${list.join(", ")}`;
@@ -1193,7 +1225,7 @@ function onBtnApplyClick() {
 
         // Sync
         if (data.sync && data.sync.length) {
-          data.sync.forEach(character.addGhost);
+          data.sync.forEach(character.AddGhost);
 
           content += `${content ? "\n\n" : ""}[동기화 중 (${
             data.sync.length
@@ -1201,7 +1233,7 @@ function onBtnApplyClick() {
         }
 
         element.txt.applyName.value = "";
-        inform.show(inform.INFO, "등록 완료", content);
+        inform.Show(inform.INFO, "등록 완료", content);
       }
     }
 
@@ -1227,23 +1259,23 @@ function onImgSyncClick(event) {
   xhr.send(JSON.stringify({ name: info.name }));
   xhr.addEventListener("load", () => {
     if (xhr.status != 200)
-      inform.show(inform.DANGER, "동기화 실패", `응답 코드: ${xhr.status}`);
+      inform.Show(inform.DANGER, "동기화 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
       if (data.error) {
-        character.removeGhost(info.name);
-        inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
+        character.RemoveGhost(info.name);
+        inform.Show(inform.DANGER, data.error[0], data.error[1], 5000);
       } else {
-        character.remove(info);
-        character.add(data);
+        character.Remove(info);
+        character.Add(data);
         if (info.raid)
-          character.raid(character.infoList[character.infoList.length - 1]);
+          character.Raid(character.infoList[character.infoList.length - 1]);
 
-        character.sort();
-        stats.updateLevel();
+        character.Sort();
+        stats.UpdateLevel();
 
         element.txt.applyName.value = "";
-        inform.show(inform.INFO, "동기화 완료", info.name);
+        inform.Show(inform.INFO, "동기화 완료", info.name);
       }
     }
 

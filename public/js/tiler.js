@@ -574,18 +574,30 @@ const TILE = {
   },
 };
 
-Array.copy2d = (arr2d) => {
+Array.Copy2d = (arr2d) => {
   let result = [];
   arr2d.forEach((arr1d) => result.push(arr1d.slice()));
   return result;
 };
 
 class Tiler {
-  tiles = [];
-
   constructor() {
+    this.minos = [];
+    this.abort = false;
+    this.iteration = 0;
+
+    // 값에 따른 상태
+    // 1: 선택된 곳이지만 타일이 없음
+    // 100+n: 타일이 배치된 곳 (n은 배치된 타일이 있는 this.tiles의 index)
+    // 200+n: 배치된 타일 중 Head가 배치된 곳
+    this.map = [];
+    this.centerSpot = [];
+    this.bridgeSpot = [];
+    this.normalSpot = [];
+
     setTimeout(() => {
       this.Q();
+      onPlay({ message: "" });
     }, 100);
   }
 
@@ -881,53 +893,658 @@ class Tiler {
         },
       ];
     })();
-    infoList.forEach(character.add);
-    character.sort();
-    stats.updateLevel();
+    infoList.forEach(character.Add);
+    character.Sort();
+    stats.UpdateLevel();
 
     const event = document.createEvent("MouseEvent");
     event.initEvent("click", false, true);
     element.img.autoSelect.dispatchEvent(event);
     for (let i = 0; i < 4; i++) element.img.maplem.dispatchEvent(event);
+
+    const posList = (() => {
+      return [
+        {
+          x: 0,
+          y: 0,
+        },
+        {
+          x: 0,
+          y: 1,
+        },
+        {
+          x: 0,
+          y: 2,
+        },
+        {
+          x: 0,
+          y: 3,
+        },
+        {
+          x: 0,
+          y: 4,
+        },
+        {
+          x: 0,
+          y: 5,
+        },
+        {
+          x: 0,
+          y: 6,
+        },
+        {
+          x: 0,
+          y: 7,
+        },
+        {
+          x: 0,
+          y: 8,
+        },
+        {
+          x: 0,
+          y: 9,
+        },
+        {
+          x: 1,
+          y: 1,
+        },
+        {
+          x: 1,
+          y: 2,
+        },
+        {
+          x: 1,
+          y: 3,
+        },
+        {
+          x: 1,
+          y: 4,
+        },
+        {
+          x: 1,
+          y: 5,
+        },
+        {
+          x: 1,
+          y: 6,
+        },
+        {
+          x: 1,
+          y: 7,
+        },
+        {
+          x: 1,
+          y: 8,
+        },
+        {
+          x: 1,
+          y: 9,
+        },
+        {
+          x: 2,
+          y: 2,
+        },
+        {
+          x: 2,
+          y: 3,
+        },
+        {
+          x: 2,
+          y: 4,
+        },
+        {
+          x: 2,
+          y: 5,
+        },
+        {
+          x: 2,
+          y: 6,
+        },
+        {
+          x: 2,
+          y: 7,
+        },
+        {
+          x: 2,
+          y: 8,
+        },
+        {
+          x: 2,
+          y: 9,
+        },
+        {
+          x: 3,
+          y: 3,
+        },
+        {
+          x: 3,
+          y: 4,
+        },
+        {
+          x: 3,
+          y: 5,
+        },
+        {
+          x: 3,
+          y: 6,
+        },
+        {
+          x: 3,
+          y: 7,
+        },
+        {
+          x: 3,
+          y: 8,
+        },
+        {
+          x: 3,
+          y: 9,
+        },
+        {
+          x: 4,
+          y: 4,
+        },
+        {
+          x: 4,
+          y: 5,
+        },
+        {
+          x: 4,
+          y: 6,
+        },
+        {
+          x: 4,
+          y: 7,
+        },
+        {
+          x: 4,
+          y: 8,
+        },
+        {
+          x: 4,
+          y: 9,
+        },
+        {
+          x: 0,
+          y: 10,
+        },
+        {
+          x: 0,
+          y: 11,
+        },
+        {
+          x: 0,
+          y: 12,
+        },
+        {
+          x: 0,
+          y: 13,
+        },
+        {
+          x: 0,
+          y: 14,
+        },
+        {
+          x: 0,
+          y: 15,
+        },
+        {
+          x: 0,
+          y: 16,
+        },
+        {
+          x: 0,
+          y: 17,
+        },
+        {
+          x: 0,
+          y: 18,
+        },
+        {
+          x: 0,
+          y: 19,
+        },
+        {
+          x: 1,
+          y: 10,
+        },
+        {
+          x: 1,
+          y: 11,
+        },
+        {
+          x: 1,
+          y: 12,
+        },
+        {
+          x: 1,
+          y: 13,
+        },
+        {
+          x: 1,
+          y: 14,
+        },
+        {
+          x: 1,
+          y: 15,
+        },
+        {
+          x: 1,
+          y: 16,
+        },
+        {
+          x: 1,
+          y: 17,
+        },
+        {
+          x: 1,
+          y: 18,
+        },
+        {
+          x: 2,
+          y: 10,
+        },
+        {
+          x: 2,
+          y: 11,
+        },
+        {
+          x: 2,
+          y: 12,
+        },
+        {
+          x: 2,
+          y: 13,
+        },
+        {
+          x: 2,
+          y: 14,
+        },
+        {
+          x: 2,
+          y: 15,
+        },
+        {
+          x: 2,
+          y: 16,
+        },
+        {
+          x: 2,
+          y: 17,
+        },
+        {
+          x: 3,
+          y: 10,
+        },
+        {
+          x: 3,
+          y: 11,
+        },
+        {
+          x: 3,
+          y: 12,
+        },
+        {
+          x: 3,
+          y: 13,
+        },
+        {
+          x: 3,
+          y: 14,
+        },
+        {
+          x: 3,
+          y: 15,
+        },
+        {
+          x: 3,
+          y: 16,
+        },
+        {
+          x: 4,
+          y: 10,
+        },
+        {
+          x: 4,
+          y: 11,
+        },
+        {
+          x: 4,
+          y: 12,
+        },
+        {
+          x: 4,
+          y: 13,
+        },
+        {
+          x: 4,
+          y: 14,
+        },
+        {
+          x: 4,
+          y: 15,
+        },
+        {
+          x: 5,
+          y: 9,
+        },
+        {
+          x: 6,
+          y: 9,
+        },
+        {
+          x: 7,
+          y: 9,
+        },
+        {
+          x: 8,
+          y: 9,
+        },
+        {
+          x: 9,
+          y: 9,
+        },
+        {
+          x: 10,
+          y: 9,
+        },
+        {
+          x: 11,
+          y: 9,
+        },
+        {
+          x: 12,
+          y: 9,
+        },
+        {
+          x: 13,
+          y: 9,
+        },
+        {
+          x: 14,
+          y: 9,
+        },
+        {
+          x: 15,
+          y: 9,
+        },
+        {
+          x: 16,
+          y: 9,
+        },
+        {
+          x: 17,
+          y: 9,
+        },
+        {
+          x: 17,
+          y: 10,
+        },
+        {
+          x: 17,
+          y: 11,
+        },
+        {
+          x: 17,
+          y: 12,
+        },
+        {
+          x: 17,
+          y: 13,
+        },
+        {
+          x: 17,
+          y: 14,
+        },
+        {
+          x: 17,
+          y: 15,
+        },
+        {
+          x: 18,
+          y: 10,
+        },
+        {
+          x: 18,
+          y: 11,
+        },
+        {
+          x: 18,
+          y: 12,
+        },
+        {
+          x: 18,
+          y: 13,
+        },
+        {
+          x: 18,
+          y: 14,
+        },
+        {
+          x: 18,
+          y: 15,
+        },
+        {
+          x: 18,
+          y: 16,
+        },
+        {
+          x: 19,
+          y: 10,
+        },
+        {
+          x: 19,
+          y: 11,
+        },
+        {
+          x: 19,
+          y: 12,
+        },
+        {
+          x: 19,
+          y: 13,
+        },
+        {
+          x: 19,
+          y: 14,
+        },
+        {
+          x: 19,
+          y: 15,
+        },
+        {
+          x: 19,
+          y: 16,
+        },
+        {
+          x: 19,
+          y: 17,
+        },
+        {
+          x: 20,
+          y: 10,
+        },
+        {
+          x: 20,
+          y: 11,
+        },
+        {
+          x: 20,
+          y: 12,
+        },
+        {
+          x: 20,
+          y: 13,
+        },
+        {
+          x: 20,
+          y: 14,
+        },
+        {
+          x: 20,
+          y: 15,
+        },
+        {
+          x: 20,
+          y: 16,
+        },
+        {
+          x: 20,
+          y: 17,
+        },
+        {
+          x: 20,
+          y: 18,
+        },
+        {
+          x: 21,
+          y: 10,
+        },
+        {
+          x: 21,
+          y: 11,
+        },
+        {
+          x: 21,
+          y: 12,
+        },
+        {
+          x: 21,
+          y: 13,
+        },
+        {
+          x: 21,
+          y: 14,
+        },
+        {
+          x: 21,
+          y: 15,
+        },
+        {
+          x: 21,
+          y: 16,
+        },
+        {
+          x: 21,
+          y: 17,
+        },
+        {
+          x: 21,
+          y: 18,
+        },
+        {
+          x: 21,
+          y: 19,
+        },
+        {
+          x: 18,
+          y: 9,
+        },
+        {
+          x: 19,
+          y: 9,
+        },
+        {
+          x: 20,
+          y: 9,
+        },
+        {
+          x: 21,
+          y: 9,
+        },
+        {
+          x: 21,
+          y: 8,
+        },
+        {
+          x: 20,
+          y: 8,
+        },
+        {
+          x: 19,
+          y: 8,
+        },
+        {
+          x: 18,
+          y: 8,
+        },
+        {
+          x: 17,
+          y: 8,
+        },
+        {
+          x: 17,
+          y: 7,
+        },
+        {
+          x: 18,
+          y: 7,
+        },
+        {
+          x: 19,
+          y: 7,
+        },
+        {
+          x: 20,
+          y: 7,
+        },
+        {
+          x: 21,
+          y: 7,
+        },
+        {
+          x: 21,
+          y: 6,
+        },
+        {
+          x: 20,
+          y: 6,
+        },
+      ];
+    })();
+    posList.forEach(map.Select);
   }
 
-  GetPosListFromJobRank(jobClass, rankIdx) {
+  // "thief" 와 "3" 을 통해 SS랭크인 도적 모양의 2차원 배열 생성
+  GetShapeFromJobRank(jobClass, rankIdx) {
     // 원본
     const minoIdx = TILE.MINO_INDEX[jobClass.toUpperCase()][rankIdx];
     let matrix,
-      result = [TILE.MINO_POS[minoIdx]],
-      row = result[0].length,
-      col = result[0][0].length;
+      shapes = [{ matrix: TILE.MINO_POS[minoIdx] }],
+      row = shapes[0].matrix.length,
+      col = shapes[0].matrix[0].length;
 
     // 상하 대칭
     if ([7, 8, 9, 13, 14].indexOf(minoIdx) != -1) {
-      matrix = Array.copy2d(matrix);
-      result.push(matrix.reverse());
+      matrix = Array.Copy2d(shapes[0].matrix);
+      shapes.push({ matrix: matrix.reverse() });
     }
 
     // 반시계방향 90deg 회전
     matrix = Array.from(Array(col), () => new Array(row));
     if ([1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 13, 14].indexOf(minoIdx) != -1) {
       for (let i = 0; i < col; i++)
-        for (let j = 0; j < row; j++) matrix[i][j] = result[0][j][col - i - 1];
-      result.push(matrix);
+        for (let j = 0; j < row; j++)
+          matrix[i][j] = shapes[0].matrix[j][col - i - 1];
+      shapes.push({ matrix: matrix });
 
       // 좌우 대칭
       if ([7, 8, 9, 13, 14].indexOf(minoIdx) != -1) {
-        matrix = Array.copy2d(matrix);
-        result.push(matrix.map((r) => r.reverse()));
+        matrix = Array.Copy2d(matrix);
+        shapes.push({ matrix: matrix.map((r) => r.reverse()) });
       }
     }
 
     // 반시계방향 180deg 회전
-    matrix = Array.copy2d(result[0]);
+    matrix = Array.Copy2d(shapes[0].matrix);
     if ([2, 5, 7, 9, 12, 13].indexOf(minoIdx) != -1) {
-      result.push(matrix.map((r) => r.reverse()).reverse());
+      matrix.forEach((r) => r.reverse());
+      shapes.push({ matrix: matrix.reverse() });
 
       // 상하 대칭
       if ([7, 9, 13].indexOf(minoIdx) != -1) {
-        matrix = Array.copy2d(matrix);
-        result.push(matrix.reverse());
+        matrix = Array.Copy2d(matrix);
+        shapes.push({ matrix: matrix.reverse() });
       }
     }
 
@@ -935,46 +1552,178 @@ class Tiler {
     matrix = Array.from(Array(col), () => new Array(row));
     if ([2, 5, 7, 9, 12, 13].indexOf(minoIdx) != -1) {
       for (let i = 0; i < col; i++)
-        for (let j = 0; j < row; j++) matrix[i][j] = result[0][row - j - 1][i];
-      result.push(matrix);
+        for (let j = 0; j < row; j++)
+          matrix[i][j] = shapes[0].matrix[row - j - 1][i];
+      shapes.push({ matrix: matrix });
 
       // 좌우 대칭
       if ([7, 9, 13].indexOf(minoIdx) != -1) {
-        matrix = Array.copy2d(matrix);
-        result.push(matrix.map((r) => r.reverse()));
+        matrix = Array.Copy2d(matrix);
+        shapes.push({ matrix: matrix.map((r) => r.reverse()) });
       }
     }
 
+    // 중심 위치 지정
+    for (let i = 0; i < shapes.length; i++)
+      for (let y = 0; y < shapes[i].matrix.length; y++)
+        for (let x = 0; x < shapes[i].matrix[0].length; x++)
+          if (shapes[i].matrix[y][x] == 2) {
+            shapes[i].center = { x, y };
+            y = shapes[i].matrix.length;
+            break;
+          }
+
     // 반환
-    return result;
+    return shapes;
   }
-  LoadMinosFromCharList() {
-    this.tiles = [];
-    let posList;
+  // stats.minoCount 를 통해 회전, 대칭 등으로 만들 수 있는 모든 미노들을 레이드 맴버 수에 맞게 생성
+  GetMinosFromStats() {
+    let minos = [];
 
     // SSS
     let rankIdx = 4;
     for (let jobClass in stats.minoCount) {
       if (jobClass == "maplem") continue;
-      for (let count = stats.minoCount[jobClass][rankIdx]; count > 0; count--)
-        this.tiles.push({
-          job: jobClass,
-          rankIdx: rankIdx,
-          pos: this.GetPosListFromJobRank(jobClass, rankIdx),
+      for (let count = stats.minoCount[jobClass][rankIdx]; count > 0; count--) {
+        minos.push({
+          jobClass: jobClass,
+          shapes: this.GetShapeFromJobRank(jobClass, rankIdx),
         });
+      }
     }
 
     // SS ~ B
     for (rankIdx--; rankIdx >= 0; rankIdx--)
       for (let jobClass in stats.minoCount)
         for (let count = stats.minoCount[jobClass][rankIdx]; count > 0; count--)
-          this.tiles.push({
-            job: jobClass,
-            rankIdx: rankIdx,
-            pos: this.GetPosListFromJobRank(jobClass, rankIdx),
+          minos.push({
+            jobClass: jobClass,
+            shapes: this.GetShapeFromJobRank(jobClass, rankIdx),
           });
+
+    return minos;
   }
-  Solve() {
-    this.LoadMinosFromCharList();
+  // 헤드가 들어가야할 중앙 4곳 중 선택된 곳 반환
+  GetCenterSpot() {
+    const my = TILE.ROW / 2,
+      mx = TILE.COL / 2;
+    let spot = [];
+    [
+      [-1, -1],
+      [-1, 0],
+      [0, -1],
+      [0, 0],
+    ].forEach((p) => {
+      if (this.map[my + p[0]][mx + p[1]] == 1)
+        spot.push({ x: mx + p[0], y: my + p[1] });
+    });
+
+    return spot;
+  }
+  // 미배치 영역 중 일자로만 연결된 영역 반환
+  GetBridgeSpot() {
+    let spot = [];
+
+    for (let i = 0; i < TILE.ROW; i++)
+      for (let j = 0; j < TILE.COL; j++)
+        if (this.map[i][j] == 1) {
+          // 가로
+          if (
+            j > 0 &&
+            this.map[i][j - 1] == 1 &&
+            j < TILE.COL - 1 &&
+            this.map[i][j + 1] == 1 &&
+            i > 0 &&
+            this.map[i - 1][j] == 0 &&
+            i < TILE.ROW - 1 &&
+            this.map[i + 1][j] == 0
+          )
+            spot.push({ x: j, y: i });
+
+          // 세로
+          if (
+            j > 0 &&
+            this.map[i][j - 1] == 0 &&
+            j < TILE.COL - 1 &&
+            this.map[i][j + 1] == 0 &&
+            i > 0 &&
+            this.map[i - 1][j] == 1 &&
+            i < TILE.ROW - 1 &&
+            this.map[i + 1][j] == 1
+          )
+            spot.push({ x: j, y: i });
+        }
+
+    return spot;
+  }
+  // 미배치 영역을 인접된 미배치 영역 개수를 포함해서 반환
+  GetNormalSpot() {
+    let spot = [];
+
+    for (let i = 0; i < TILE.ROW; i++)
+      for (let j = 0; j < TILE.COL; j++)
+        if (this.map[i][j] == 1) {
+          let adjacent = 0;
+          if (j > 0 && this.map[i][j - 1] == 1) adjacent++;
+          if (i > 0 && this.map[i - 1][j] == 1) adjacent++;
+          if (j < TILE.COL - 1 && this.map[i][j + 1] == 1) adjacent++;
+          if (i < TILE.ROW - 1 && this.map[i + 1][j] == 1) adjacent++;
+
+          spot.push({ x: j, y: i, adjacent: adjacent });
+        }
+
+    return spot;
+  }
+
+  // position 위치에 shape.center가 중심이 되는 shape.matrix 모양이 배치가 될 수 있는가
+  IsPlaceable(position, shape) {}
+
+  // position 위치에 shape.cetner가 중심이 되는 shape.matrix 배치
+  Place(position, shape) {}
+  // position 위치에 shape.cetner가 중심이 되는 shape.matrix 배치 해제
+  UnPlace(position, shape) {}
+
+  async Solve(batchSize = 30000) {
+    // 캐릭터 리스트로부터 폴리오미노 세팅
+    this.minos = this.GetMinosFromStats();
+
+    // 선택된 곳은 1로 설정된 2차원 배열
+    this.map = Array.from(Array(TILE.ROW), () => Array(TILE.COL).fill(0));
+    map.selectedPos.forEach((p) => (this.map[p.y][p.x] = 1));
+
+    // 중심 영역 계산
+    this.centerSpot = this.GetCenterSpot();
+    console.log(this.centerSpot);
+
+    // 다리 영역 계산
+    this.bridgeSpot = this.GetBridgeSpot();
+    console.log(this.bridgeSpot);
+
+    // 일반 영역 계산
+    this.normalSpot = this.GetNormalSpot();
+    console.log(this.normalSpot);
+
+    while (true) {
+      if (this.abort) return false;
+
+      // 중심 영역 채우기
+      if (this.centerSpot.length) {
+      }
+
+      // 다리 영역 채우기
+      else if (this.bridgeSpot.length) {
+      }
+
+      // 일반 영역 채우기
+      else if (this.normalSpot.length) {
+      }
+
+      // 배치 끝
+      else {
+      }
+
+      if (this.iteration++ % batchSize == 0)
+        await new Promise((resolve) => setTimeout(resolve, 0));
+    }
   }
 }
