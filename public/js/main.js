@@ -146,27 +146,6 @@ let map = {
         }
       }
   },
-  UnPlace: (pos, shape) => {
-    let x = pos.x - shape.center.x;
-    let y = pos.y - shape.center.y;
-
-    shape.matrix.forEach((row) => {
-      row.forEach((num) => {
-        const td = element.tile[y][x];
-        if (num > 0) {
-          td.style.backgroundColor = TILE.COLOR.SELECTED;
-          td.style.borderTopColor = "";
-          td.style.borderLeftColor = "";
-          td.style.borderBottomColor = ""; // ToDo 아래쪽도 마찬가지
-          td.style.borderRightColor = ""; // ToDo 오른쪽에 배치되어 있을경우 제거하지 않기
-          td.innerHTML = "";
-        }
-        x++;
-      });
-      x = pos.x - shape.center.x;
-      y++;
-    });
-  },
 };
 let character = {
   infoList: [],
@@ -772,26 +751,36 @@ function DrawBoard() {
     }
     element.table.appendChild(tr);
   }
+  RedrawBoard();
+}
+function RedrawBoard() {
+  // clear
+  for (y = 0; y < TILE.ROW; y++) for (x = 0; x < TILE.COL; x++) element.tile[y][x].style = "";
 
-  //group background
+  // select background
+  map.selectedPos.forEach(
+    (p) => (element.tile[p.y][p.x].style.backgroundColor = TILE.COLOR.SELECTED)
+  );
+
+  // group background
   TILE.GROUP.forEach((g, gidx) => {
     let c = TILE.COLOR.BACK[(gidx >= 8 ? 2 : 0) + (gidx % 2)];
     g.forEach((p) => (element.tile[p.y][p.x].style.color = c));
   });
 
-  //axis
+  // axis
   for (x = 0, y = TILE.ROW / 2 - 1; x < TILE.COL; x++)
     element.tile[y][x].style.borderBottomColor = TILE.COLOR.BOUNDARY;
   for (y = 0, x = TILE.COL / 2 - 1; y < TILE.ROW; y++)
     element.tile[y][x].style.borderRightColor = TILE.COLOR.BOUNDARY;
 
-  //inner boundary
+  // inner boundary
   for (x = 5, y = [4, 14]; x <= 16; x++)
     y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
   for (y = 5, x = [4, 16]; y <= 14; y++)
     x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
 
-  //stair
+  // stair
   for (x = 1, y = [0, 18]; x < 10; x++, y[0]++, y[1]--)
     y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
   for (x = 20, y = [0, 18]; x > 11; x--, y[0]++, y[1]--)
@@ -801,6 +790,8 @@ function DrawBoard() {
     x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
   for (y = 19, x = [0, 20]; y > 9; y--, x[0]++, x[1]--)
     x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
+
+  element.tile.forEach((row) => row.forEach((e) => (e.innerHTML = "")));
 }
 function DrawStatsMino() {
   const minoTable = document.querySelector(".stats-mino");
@@ -865,7 +856,12 @@ function DrawStatsMino() {
     minoTable.childNodes[row - 1 - i].appendChild(td);
   }
 }
-function DrawSolution() {}
+function DrawSolution() {
+  RedrawBoard();
+  map.tiler.placedStack.forEach((node) => {
+    map.Place(node.pos, node.mino.shapes[node.shapeIdx], node.mino.jobClass);
+  });
+}
 
 function onTileMouseEnter(event) {
   event.stopPropagation();
