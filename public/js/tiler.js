@@ -1756,10 +1756,10 @@ class Tiler {
   }
   // 주변에 위치들이 내가 가진 최소의 블럭으로 넣을 수 있는지
   // 완벽하지 않음!!
-  IsAdjacentValid(pos, shape) {
+  IsAdjacentValid(pos, shape, min) {
     const posArr = this.GetAdjacentSpot(pos, shape);
     for (let i = 0; i < posArr.length; i++) {
-      if (this.GetAdjacentNum(posArr[i]) < 2) return false;
+      if (this.GetAdjacentNum(posArr[i]) < min) return false;
     }
     return true;
   }
@@ -1898,7 +1898,7 @@ class Tiler {
                 unPlace = false;
 
                 // 주변에 고립된 공간이 생겼을 경우
-                if (!this.IsAdjacentValid(pos, shape)) {
+                if (!this.IsAdjacentValid(pos, shape, 1)) {
                   this.BacktrackingLastMino("normal");
                   backtracking = false;
                   unPlace = true;
