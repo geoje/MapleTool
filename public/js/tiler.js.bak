@@ -871,9 +871,9 @@ class Tiler {
           },
         ];
       })();
-      infoList.forEach(character.add);
-      character.sort();
-      stats.updateLevel();
+      infoList.forEach(character.Add);
+      character.Sort();
+      stats.UpdateLevel();
 
       const event = document.createEvent("MouseEvent");
       event.initEvent("click", false, true);
@@ -1480,11 +1480,11 @@ class Tiler {
           },
         ];
       })();
-      posList.forEach(map.select);
+      posList.forEach(map.Select);
       onPlay({ message: "" });
     }, 100);
   }
-  init() {
+  Init() {
     this.minos = [];
     this.abort = false;
     this.iteration = 0;
@@ -1497,15 +1497,29 @@ class Tiler {
     this.placedStack = [];
 
     spot = {
-      posArr: [], // x, y 위치 들어가 있고 normal엔 인접 개수인 adj도 있음
-      posIdx: 0, // 현재 보고있는 위치의 Index
-      minoIdx: 0, // 현재 보고있는 미노의 Index
-      shapeIdx: 0, // 현재 보고있는 미노 변형 도형의 Index
+      center: {
+        posArr: [], // x, y 위치 들어가 있고 normal엔 인접 개수인 adj도 있음
+        posIdx: 0, // 현재 보고있는 위치의 Index
+        minoIdx: 0, // 현재 보고있는 미노의 Index
+        shapeIdx: 0, // 현재 보고있는 미노 변형 도형의 Index
+      },
+      bridge: {
+        posArr: [],
+        posIdx: 0,
+        minoIdx: 0,
+        shapeIdx: 0,
+      },
+      normal: {
+        posArr: [],
+        posIdx: 0,
+        minoIdx: 0,
+        shapeIdx: 0,
+      },
     };
   }
 
   // "thief" 와 "3" 을 통해 SS랭크인 도적 모양의 2차원 배열 생성
-  getShapesFromJobRank(jobClass, rankIdx) {
+  GetShapesFromJobRank(jobClass, rankIdx) {
     // 원본
     const minoIdx = TILE.MINO_INDEX[jobClass.toUpperCase()][rankIdx];
     let matrix,
@@ -1574,47 +1588,95 @@ class Tiler {
     return shapes;
   }
   // stats.minoCount 를 통해 회전, 대칭 등으로 만들 수 있는 모든 미노들을 레이드 맴버 수에 맞게 생성
-  getMinosFromStats() {
-    let minoArr = [];
+  GetMinosFromStats() {
+    let minos = [];
 
-    for (let jobClass in stats.minoCount)
-      stats.minoCount[jobClass].forEach((count, rankIdx) => {
-        if (count)
-          minoArr.push({
-            jobClass,
-            rankIdx,
-            count,
-            shapes: this.getShapesFromJobRank(jobClass, rankIdx),
+    // SSS
+    let rankIdx = 4;
+    for (let jobClass in stats.minoCount) {
+      if (jobClass == "maplem") continue;
+      for (let count = stats.minoCount[jobClass][rankIdx]; count > 0; count--) {
+        minos.push({
+          jobClass: jobClass,
+          rankIdx: rankIdx,
+          shapes: this.GetShapesFromJobRank(jobClass, rankIdx),
+        });
+      }
+    }
+
+    // SS ~ B
+    for (rankIdx--; rankIdx >= 0; rankIdx--)
+      for (let jobClass in stats.minoCount)
+        for (let count = stats.minoCount[jobClass][rankIdx]; count > 0; count--)
+          minos.push({
+            jobClass: jobClass,
+            rankIdx: rankIdx,
+            shapes: this.GetShapesFromJobRank(jobClass, rankIdx),
           });
-      });
 
-    return minoArr.sort((a, b) => b.rankIdx - a.rankIdx);
+    return minos;
   }
-  // 인접 영역 개수를 반환
-  getAdjacentNum(x, y) {
+  IsCenter(pos) {
+    const cy = TILE.ROW / 2,
+      cx = TILE.COL / 2;
+
+    for (let i = -1; i <= 0; i++)
+      for (let j = -1; j <= 0; j++) if (pos.y == cy + i && pos.x == cx + j) return true;
+    return false;
+  }
+  IsBridge(pos) {
+    // 가로
+    if (
+      pos.x > 0 &&
+      this.map[pos.y][pos.x - 1] &&
+      pos.x < TILE.COL - 1 &&
+      this.map[pos.y][pos.x + 1] &&
+      pos.y > 0 &&
+      this.map[pos.y - 1][pos.x] == 0 &&
+      pos.y < TILE.ROW - 1 &&
+      this.map[pos.y + 1][pos.x] == 0
+    )
+      return true;
+
+    // 세로
+    if (
+      pos.x > 0 &&
+      this.map[pos.y][pos.x - 1] == 0 &&
+      pos.x < TILE.COL - 1 &&
+      this.map[pos.y][pos.x + 1] == 0 &&
+      pos.y > 0 &&
+      this.map[pos.y - 1][pos.x] &&
+      pos.y < TILE.ROW - 1 &&
+      this.map[pos.y + 1][pos.x]
+    )
+      return true;
+
+    return false;
+  }
+  GetAdjacentNum(pos) {
     let adj = 0;
 
-    if (x > 0 && this.map[y][x - 1] == 1) adj++;
-    if (y > 0 && this.map[y - 1][x] == 1) adj++;
-    if (x < TILE.COL - 1 && this.map[y][x + 1] == 1) adj++;
-    if (y < TILE.ROW - 1 && this.map[y + 1][x] == 1) adj++;
+    if (pos.x > 0 && this.map[pos.y][pos.x - 1] == 1) adj++;
+    if (pos.y > 0 && this.map[pos.y - 1][pos.x] == 1) adj++;
+    if (pos.x < TILE.COL - 1 && this.map[pos.y][pos.x + 1] == 1) adj++;
+    if (pos.y < TILE.ROW - 1 && this.map[pos.y + 1][pos.x] == 1) adj++;
 
     return adj;
   }
   // 해당 위치의 도형의 인접 부분들에 대한 좌표들을 반환
-  getAdjacentSpot(x, y, shape) {
-    let cx = x - shape.center.x;
-    let cy = y - shape.center.y;
+  GetAdjacentSpot(pos, shape) {
+    let x = pos.x - shape.center.x;
+    let y = pos.y - shape.center.y;
     let posArr = [];
 
     // 영역 둘러싼 부분 추가
     shape.matrix.forEach((row) => {
       row.forEach((num) => {
         if (num > 0) {
-          if (cx > 0 && this.map[y][x - 1] == 1) posArr.push({ x: x - 1, y: y });
-          if (cy > 0 && this.map[y - 1][x] == 1) posArr.push({ x: x, y: y - 1 });
-          if (cx < TILE.COL - 1 && this.map[y][x + 1] == 1) posArr.push({ x: x + 1, y: y });
-          if (cy < TILE.ROW - 1 && this.map[y + 1][x] == 1) posArr.push({ x: x, y: y + 1 });
+          if (x > 0 && this.map[y][x - 1] == 1) posArr.push({ x: x - 1, y: y });
+          if (y > 0 && this.map[y - 1][x] == 1) posArr.push({ x: x, y: y - 1 });
+          if (x < TILE.COL - 1 && this.map[y][x + 1] == 1) posArr.push({ x: x + 1, y: y });
+          if (y < TILE.ROW - 1 && this.map[y + 1][x] == 1) posArr.push({ x: x, y: y + 1 });
         }
         x++;
       });
@@ -1627,9 +1689,8 @@ class Tiler {
 
     return posArr;
   }
-
   // 헤드가 들어가야할 중앙 4곳 중 선택된 곳 반환
-  getCenterSpot() {
+  GetCenterSpot() {
     const cy = TILE.ROW / 2,
       cx = TILE.COL / 2;
     let posArr = [];
@@ -1644,15 +1705,28 @@ class Tiler {
 
     return posArr;
   }
+  // 미배치 영역 중 일자로만 연결된 영역 반환
+  GetBridgeSpot() {
+    let posArr = [];
+
+    for (let i = 0; i < TILE.ROW; i++)
+      for (let j = 0; j < TILE.COL; j++)
+        if (this.map[i][j] == 1) {
+          const pos = { x: j, y: i };
+          if (this.IsBridge(pos)) posArr.push(pos);
+        }
+
+    return posArr;
+  }
   // 미배치 영역을 인접된 미배치 영역 개수를 포함해서 반환
-  getSpot() {
+  GetNormalSpot() {
     let posArr = [];
 
     for (let y = 0; y < TILE.ROW; y++)
       for (let x = 0; x < TILE.COL; x++)
         if (this.map[y][x] == 1) {
           let pos = { x, y };
-          pos.adj = this.getAdjacentNum(pos);
+          pos.adj = this.GetAdjacentNum(pos);
           posArr.push(pos);
         }
 
@@ -1663,7 +1737,7 @@ class Tiler {
   }
 
   // pos 위치에 shape.center가 중심이 되는 shape.matrix 모양이 배치가 될 수 있는가
-  isPlaceable(pos, shape) {
+  IsPlaceable(pos, shape) {
     let sx = pos.x - shape.center.x;
     let sy = pos.y - shape.center.y;
     if (
@@ -1682,26 +1756,26 @@ class Tiler {
   }
   // 주변에 위치들이 내가 가진 최소의 블럭으로 넣을 수 있는지
   // 완벽하지 않음!!
-  isAdjacentValid(pos, shape, min) {
-    const posArr = this.getAdjacentSpot(pos, shape);
+  IsAdjacentValid(pos, shape, min) {
+    const posArr = this.GetAdjacentSpot(pos, shape);
     for (let i = 0; i < posArr.length; i++) {
-      if (this.getAdjacentNum(posArr[i]) < min) return false;
+      if (this.GetAdjacentNum(posArr[i]) < min) return false;
     }
     return true;
   }
   // 주변 위치들 adj 값 업데이트
-  updateAdjacent(pos, shape) {
-    let posArr = this.getAdjacentSpot(pos, shape);
+  UpdateAdjacent(pos, shape) {
+    let posArr = this.GetAdjacentSpot(pos, shape);
     for (let i = 0; i < posArr.length; i++)
       spot.normal.posArr.find((p) => p.x == posArr[i].x && p.y == posArr[i].y).adj =
-        this.getAdjacentNum(posArr[i]);
+        this.GetAdjacentNum(posArr[i]);
 
     let v;
     spot.normal.posArr.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x) ? v : a.adj - b.adj));
   }
 
   // type에 따라 전역변수를 이용해서 해당 위치에 배치 후 값 세팅
-  place(type) {
+  Place(type) {
     // type에 따른 데이터 세팅
     const currentSpot = spot[type];
     let pos = currentSpot.posArr[currentSpot.posIdx];
@@ -1754,7 +1828,7 @@ class Tiler {
     this.placedStack.push(node);
   }
   // 가장 최근에 추가된 미노 Pop 하기
-  backtrackingLastMino(type) {
+  BacktrackingLastMino(type) {
     const node = this.placedStack.pop();
 
     // spot 복구
@@ -1770,43 +1844,197 @@ class Tiler {
 
       if (pos.i != -1) spot[node.type].posArr.splice(pos.i, 0, { x: pos.x, y: pos.y });
     }
-    if (type == "normal") this.updateAdjacent(node.pos, node.mino.shapes[node.shapeIdx]);
+    if (type == "normal") this.UpdateAdjacent(node.pos, node.mino.shapes[node.shapeIdx]);
   }
 
-  async solve(batchSize = 3000) {
+  async Solve(batchSize = 3000) {
     // 연산 시간 체크 및 초기설정
-    this.init();
-    let valid = true;
+    this.Init();
     const startTime = +new Date();
 
     // 캐릭터 리스트로부터 폴리오미노 세팅
-    this.minos = this.getMinosFromStats();
-    console.log("GetMinosFromStats()", this.minos);
+    this.minos = this.GetMinosFromStats();
 
     // 선택된 곳은 1로 지정된 2차원 배열 this.map 세팅
     this.map = Array.from(Array(TILE.ROW), () => Array(TILE.COL).fill(0));
     map.selectedPos.forEach((p) => (this.map[p.y][p.x] = 1));
-    console.log("this.map", this.map);
 
     // 먼저 중심 영역 계산
-    spot.posArr = this.getSpot();
-    console.log("getSpot()", spot.posArr);
+    spot.center.posArr = this.GetCenterSpot();
 
+    let backtracking = false;
     while (true) {
       // 사용자 중지
       if (this.abort) return { success: -1 };
+      let unPlace = true;
 
-      // 연산
-      if (valid) {
-        // calc
-      } else {
-        // backtracking
+      // 일반 영역 채우기
+      if (spot.normal.posArr.length) {
+        // 모든 일반 영역 체크
+        for (; unPlace && spot.normal.posIdx < spot.normal.posArr.length; spot.normal.posIdx++)
+          // 모든 미노 체크
+          for (
+            !backtracking ? (spot.normal.minoIdx = 0) : 0;
+            unPlace && spot.normal.minoIdx < this.minos.length;
+            spot.normal.minoIdx++
+          )
+            // 모든 변형 도형 체크
+            for (
+              !backtracking ? (spot.normal.shapeIdx = 0) : 0;
+              unPlace && spot.normal.shapeIdx < this.minos[spot.normal.minoIdx].shapes.length;
+              spot.normal.shapeIdx++
+            ) {
+              // 백트래킹으로 올 경우 백트래킹 해제하고 한단계 다음 경우로 넘기기
+              if (backtracking) {
+                backtracking = false;
+                continue;
+              }
+
+              // 놓을 수 있을 경우 놓기
+              const pos = spot.normal.posArr[spot.normal.posIdx];
+              const shape = this.minos[spot.normal.minoIdx].shapes[spot.normal.shapeIdx];
+              if (this.IsPlaceable(pos, shape)) {
+                this.Place("normal");
+                unPlace = false;
+
+                // 주변에 고립된 공간이 생겼을 경우
+                if (!this.IsAdjacentValid(pos, shape, 1)) {
+                  this.BacktrackingLastMino("normal");
+                  backtracking = false;
+                  unPlace = true;
+                  continue;
+                }
+
+                // 놓은 곳 주변 adj 값 업데이트
+                this.UpdateAdjacent(pos, shape);
+
+                // adj 값에 따라 순서가 바뀌었으니 처음으로 다시 서칭하도록 지정
+                spot.normal.posIdx = 0;
+
+                // 테스트 코드: 동작 하나하나를 보기 위함
+                // await new Promise((resolve) => setTimeout(resolve, 0));
+                // const _sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+                // DrawSolution();
+                // await _sleep(100);
+              }
+            }
+
+        if (
+          spot.normal.posArr.length &&
+          spot.normal.posArr.length == spot.normal.posIdx &&
+          this.minos.length &&
+          this.minos.length == spot.normal.minoIdx &&
+          this.minos[this.minos.length - 1].shapes.length &&
+          this.minos[this.minos.length - 1].shapes.length == spot.normal.shapeIdx
+        ) {
+          this.BacktrackingLastMino("normal");
+          backtracking = true;
+        }
+      }
+
+      // 다리 영역 채우기
+      else if (spot.bridge.posArr.length) {
+        // 모든 다리 영역 체크
+        for (; unPlace && spot.bridge.posIdx < spot.bridge.posArr.length; spot.bridge.posIdx++)
+          // 모든 미노 체크
+          for (
+            !backtracking ? (spot.bridge.minoIdx = 0) : 0;
+            unPlace && spot.bridge.minoIdx < this.minos.length;
+            spot.bridge.minoIdx++
+          )
+            // 모든 변형 도형 체크
+            for (
+              !backtracking ? (spot.bridge.shapeIdx = 0) : 0;
+              unPlace && spot.bridge.shapeIdx < this.minos[spot.bridge.minoIdx].shapes.length;
+              spot.bridge.shapeIdx++
+            ) {
+              // 백트래킹으로 올 경우 백트래킹 해제하고 한단계 다음 경우로 넘기기
+              if (backtracking) {
+                backtracking = false;
+                continue;
+              }
+
+              // 놓을 수 있을 경우 놓기
+              const pos = spot.bridge.posArr[spot.bridge.posIdx];
+              const shape = this.minos[spot.bridge.minoIdx].shapes[spot.bridge.shapeIdx];
+              if (this.IsPlaceable(pos, shape)) {
+                this.Place("bridge");
+
+                // 주변에 고립된 공간이 생겼을 경우
+                if (!this.IsAdjacentValid(pos, shape, 2)) {
+                  this.BacktrackingLastMino("bridge");
+                  backtracking = false;
+                  continue;
+                }
+
+                unPlace = false;
+              }
+            }
+
+        // 다리 영역 채우기의 모든 경우를 다 해봤을 경우 일반 영역에서 해주길 바램
+        // 일반 영역에서도 못할 경우 다리 영역 것 까지 백트래킹 해줄 것임
+        if (
+          spot.bridge.posArr.length &&
+          spot.bridge.posArr.length == spot.bridge.posIdx &&
+          this.minos.length &&
+          this.minos.length == spot.bridge.minoIdx &&
+          this.minos[this.minos.length - 1].shapes.length &&
+          this.minos[this.minos.length - 1].shapes.length == spot.bridge.shapeIdx
+        )
+          spot.normal.posArr = this.GetNormalSpot();
+
+        // 다리 영역을 모두 채웠을 경우 일반 영역 좌표 계산해주기
+        if (spot.bridge.posArr.length == 0) spot.normal.posArr = this.GetNormalSpot();
+      }
+
+      // 중심 영역 채우기
+      else if (spot.center.posArr.length) {
+        // 모든 중심 영역 체크
+        for (; unPlace && spot.center.posIdx < spot.center.posArr.length; spot.center.posIdx++)
+          // 모든 미노 체크
+          for (
+            !backtracking ? (spot.center.minoIdx = 0) : 0;
+            unPlace && spot.center.minoIdx < this.minos.length;
+            spot.center.minoIdx++
+          )
+            // 모든 변형 도형 체크
+            for (
+              !backtracking ? (spot.center.shapeIdx = 0) : 0;
+              unPlace && spot.center.shapeIdx < this.minos[spot.center.minoIdx].shapes.length;
+              spot.center.shapeIdx++
+            ) {
+              // 놓을 수 있을 경우 놓기
+              if (
+                this.IsPlaceable(
+                  spot.center.posArr[spot.center.posIdx],
+                  this.minos[spot.center.minoIdx].shapes[spot.center.shapeIdx]
+                )
+              ) {
+                this.Place("center");
+                unPlace = false;
+              }
+            }
+
+        // 중심 영역 채우기의 모든 경우를 다 해봤을 경우 실패 처리
+        if (
+          spot.center.posArr.length &&
+          spot.center.posArr.length == spot.center.posIdx &&
+          this.minos.length &&
+          this.minos.length == spot.center.minoIdx &&
+          this.minos[this.minos.length - 1].shapes.length &&
+          this.minos[this.minos.length - 1].shapes.length == spot.center.shapeIdx
+        )
+          break;
+
+        // 중심 영역을 모두 채웠을 경우 다리 영역 좌표 계산해주기
+        if (spot.center.posArr.length == 0) spot.bridge.posArr = this.GetBridgeSpot();
       }
 
       // 배치 성공
-      // return { success: 1, time: +new Date() - startTime };
+      else {
+        return { success: 1, time: +new Date() - startTime };
+      }
 
-      // 화면 갱신
       if (this.iteration++ % batchSize == 0) {
         DrawSolution();
         await new Promise((resolve) => setTimeout(resolve, 0));

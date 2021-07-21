@@ -63,11 +63,11 @@ let map = {
   tiler: undefined,
   tileCount: 0,
 
-  FindSelectedIndex: (pos) => map.selectedPos.findIndex((p) => p.x == pos.x && p.y == pos.y),
-  FindGroupIndex: (pos) =>
+  findSelectedIndex: (pos) => map.selectedPos.findIndex((p) => p.x == pos.x && p.y == pos.y),
+  findGroupIndex: (pos) =>
     TILE.GROUP.findIndex((area) => area.findIndex((p) => p.x == pos.x && p.y == pos.y) != -1),
 
-  Hover: (pos) => {
+  hover: (pos) => {
     if (map.solve) return;
 
     const div = document.createElement("div");
@@ -76,32 +76,32 @@ let map = {
     div.style.background = TILE.COLOR.HOVER;
     element.tile[pos.y][pos.x].appendChild(div);
   },
-  IsHover: (pos) => pos.x == map.hoverPos.x && pos.y == map.hoverPos.y,
-  IsNotHover: (pos) => pos.x != map.hoverPos.x || pos.y != map.hoverPos.y,
-  UnHover: (pos) => {
+  isHover: (pos) => pos.x == map.hoverPos.x && pos.y == map.hoverPos.y,
+  isNotHover: (pos) => pos.x != map.hoverPos.x || pos.y != map.hoverPos.y,
+  unHover: (pos) => {
     if (pos.x == -1) return;
     element.tile[pos.y][pos.x].childNodes.forEach((e) => {
       if (e.className == "tile-hover") e.remove();
     });
   },
 
-  Select: (pos) => {
+  select: (pos) => {
     if (map.solve) return;
 
     element.tile[pos.y][pos.x].style.backgroundColor = TILE.COLOR.SELECTED;
     map.selectedPos.push({ x: pos.x, y: pos.y });
-    map.UpdateTileCount();
+    map.updateTileCount();
   },
-  IsSelected: (pos) => !map.IsNotSelected(pos),
-  IsNotSelected: (pos) => map.FindSelectedIndex(pos) == -1,
-  UnSelect: (pos) => {
+  isSelected: (pos) => !map.isNotSelected(pos),
+  isNotSelected: (pos) => map.findSelectedIndex(pos) == -1,
+  unSelect: (pos) => {
     if (map.solve) return;
 
     element.tile[pos.y][pos.x].style.backgroundColor = "";
-    map.selectedPos.splice(map.FindSelectedIndex(pos), 1);
-    map.UpdateTileCount();
+    map.selectedPos.splice(map.findSelectedIndex(pos), 1);
+    map.updateTileCount();
   },
-  UpdateTileCount: () => {
+  updateTileCount: () => {
     map.tileCount = stats.tileableCount - map.selectedPos.length;
     element.txt.tileCount.innerText = map.tileCount;
 
@@ -109,7 +109,7 @@ let map = {
     else element.txt.tileCount.style.color = "";
   },
 
-  Place: (pos, shape, jobClass) => {
+  place: (pos, shape, jobClass) => {
     let sx = pos.x - shape.center.x;
     let sy = pos.y - shape.center.y;
     let noIcon = true;
@@ -139,7 +139,7 @@ let map = {
 
           // 중심 아이콘
           if (noIcon && shape.matrix[i][j] == 2) {
-            img.src = character.GetMinoIconSrc(jobClass);
+            img.src = character.getMinoIconSrc(jobClass);
             td.appendChild(img);
             noIcon = false;
           }
@@ -248,8 +248,8 @@ let character = {
     NOUNION: ["초보자", "노블레스", "시티즌"],
   },
 
-  GetMinoIconSrc: (jobStr) => `image/job/${jobStr.toLowerCase()}.svg`,
-  Add: (info) => {
+  getMinoIconSrc: (jobStr) => `image/job/${jobStr.toLowerCase()}.svg`,
+  add: (info) => {
     // info: { name, level, job, imgUrl }
     const e = element.div.cardSpecimen.cloneNode(true);
     e.style = "";
@@ -348,8 +348,8 @@ let character = {
 
       info = character.infoList.find((o) => o.name == event.target.alt);
       if (info) {
-        character.Remove(info);
-        stats.UpdateLevel();
+        character.remove(info);
+        stats.updateLevel();
       }
     });
 
@@ -368,7 +368,7 @@ let character = {
     e.addEventListener("click", () => {
       const idx = character.infoList.findIndex((o) => o.name == info.name);
       if (idx == -1) return;
-      character.Raid(character.infoList[idx]);
+      character.raid(character.infoList[idx]);
     });
 
     // update info
@@ -384,7 +384,7 @@ let character = {
     });
     element.txt.cardCount.innerText = character.infoList.filter((o) => o.level).length;
   },
-  AddGhost: (name) => {
+  addGhost: (name) => {
     const e = element.div.cardSpecimen.cloneNode(true);
     e.style = "";
     e.style.order = "99";
@@ -418,35 +418,35 @@ let character = {
     });
     onImgSyncClick({ target: imgSync });
   },
-  Remove: (info) => {
+  remove: (info) => {
     info.element.remove();
     character.infoList.splice(
       character.infoList.findIndex((o) => o.name == info.name),
       1
     );
     element.txt.cardCount.innerText = character.infoList.filter((o) => o.level).length;
-    if (info.raid) stats.UnsetRaid(info.rankIdx, info.jobClass);
+    if (info.raid) stats.unsetRaid(info.rankIdx, info.jobClass);
   },
-  RemoveGhost: (name) => {
+  removeGhost: (name) => {
     const idx = character.infoList.findIndex((o) => o.name == name);
     if (idx == -1) return;
 
     character.infoList[idx].element.remove();
     character.infoList.splice(idx, 1);
   },
-  Raid: (info) => {
+  raid: (info) => {
     if (info.raid) {
-      stats.UnsetRaid(info.rankIdx, info.jobClass);
+      stats.unsetRaid(info.rankIdx, info.jobClass);
       info.element.classList.remove("raid");
       info.raid = false;
     } else {
-      if (stats.SetRaid(info.rankIdx, info.jobClass)) {
+      if (stats.setRaid(info.rankIdx, info.jobClass)) {
         info.element.classList.add("raid");
         info.raid = true;
       }
     }
   },
-  Sort: () => {
+  sort: () => {
     character.infoList.sort((a, b) => {
       const diff = b.level - a.level;
       if (diff) return diff;
@@ -469,7 +469,7 @@ let stats = {
     maplem: [0, 0, 0, 0],
   },
 
-  UpdateLevel: () => {
+  updateLevel: () => {
     // Set level
     let tl = 0;
     let maxNum = Math.min(character.infoList.length, 40);
@@ -526,7 +526,7 @@ let stats = {
     element.img.rank.src = union.imgSrc;
     element.txt.raidMember.innerText = `${stats.raidMember[0]}/${stats.raidMember[1]}`;
   },
-  SetRaid: (rankIdx, jobClass) => {
+  setRaid: (rankIdx, jobClass) => {
     if (jobClass != "maplem") {
       if (stats.raidMember[0] >= stats.raidMember[1]) {
         inform.Show(inform.DANGER, "공격대원 가득참", "");
@@ -534,15 +534,15 @@ let stats = {
       }
       element.txt.raidMember.innerText = `${++stats.raidMember[0]}/${stats.raidMember[1]}`;
     }
-    stats.IncreaseMino(rankIdx, jobClass);
+    stats.increaseMino(rankIdx, jobClass);
     return true;
   },
-  UnsetRaid: (rankIdx, jobClass) => {
+  unsetRaid: (rankIdx, jobClass) => {
     if (jobClass != "maplem")
       element.txt.raidMember.innerText = `${--stats.raidMember[0]}/${stats.raidMember[1]}`;
-    stats.DecreaseMino(rankIdx, jobClass);
+    stats.decreaseMino(rankIdx, jobClass);
   },
-  IncreaseMino: (rankIdx, jobClass) => {
+  increaseMino: (rankIdx, jobClass) => {
     if (rankIdx != -1) {
       if (jobClass == "xenon" || jobClass == "maplem") {
         const mino = element.mino[jobClass][0];
@@ -559,10 +559,10 @@ let stats = {
         ];
       }
       stats.tileableCount += rankIdx + 1;
-      map.UpdateTileCount();
+      map.updateTileCount();
     }
   },
-  DecreaseMino: (rankIdx, jobClass) => {
+  decreaseMino: (rankIdx, jobClass) => {
     if (rankIdx != -1) {
       if (jobClass == "xenon" || jobClass == "maplem") {
         const mino = element.mino[jobClass][0];
@@ -579,7 +579,7 @@ let stats = {
       }
     }
     stats.tileableCount -= rankIdx + 1;
-    map.UpdateTileCount();
+    map.updateTileCount();
   },
 };
 let inform = {
@@ -587,7 +587,7 @@ let inform = {
   DANGER: 2,
   DEFAULT_DURATION: 3000,
 
-  Show: (type, title, text, duration = inform.DEFAULT_DURATION) => {
+  show: (type, title, text, duration = inform.DEFAULT_DURATION) => {
     const div = document.createElement("div");
     const hDiv = document.createElement("div");
     const img = document.createElement("img");
@@ -615,13 +615,13 @@ let inform = {
     setTimeout(() => (div.style.top = "20px"), 100);
     div.style.visibility = "";
     div.addEventListener("click", (event) =>
-      inform.Remove(event.path.find((e) => e.className == "inform"))
+      inform.remove(event.path.find((e) => e.className == "inform"))
     );
 
-    if (duration) setTimeout(inform.Remove, duration, div);
+    if (duration) setTimeout(inform.remove, duration, div);
     return div;
   },
-  Remove: (element) => {
+  remove: (element) => {
     element.style.opacity = "0";
     setTimeout(() => element.remove(), 300);
   },
@@ -638,8 +638,8 @@ function Main() {
 
   // Map event
   element.table.addEventListener("mouseleave", () => {
-    if (map.click == 2) TILE.GROUP[map.hoverPos.g].forEach(map.UnHover);
-    else map.UnHover(map.hoverPos);
+    if (map.click == 2) TILE.GROUP[map.hoverPos.g].forEach(map.unHover);
+    else map.unHover(map.hoverPos);
     map.click = 0;
     map.hoverPos = { x: -1, y: -1, g: -1 };
   });
@@ -661,7 +661,7 @@ function Main() {
     if (map.solve) {
       RedrawBoard();
       map.solve = false;
-    } else map.selectedPos.slice().forEach(map.UnSelect);
+    } else map.selectedPos.slice().forEach(map.unSelect);
   });
   element.img.help.addEventListener("click", () =>
     inform.Show(
@@ -680,12 +680,12 @@ function Main() {
     const removeM = character.infoList.find((o) => o.job == "메이플M");
     let prevLv = 0;
     if (removeM) {
-      character.Remove(removeM);
+      character.remove(removeM);
       prevLv = removeM.level;
     }
 
     if (prevLv != 120) {
-      character.Add({
+      character.add({
         name: "메이플M",
         level: prevLv == 0 ? 30 : prevLv == 30 ? 50 : prevLv == 50 ? 70 : 120,
         job: "메이플M",
@@ -695,7 +695,7 @@ function Main() {
       const idx = character.infoList.findIndex((o) => o.job == "메이플M");
       if (idx == -1) return;
       info = character.infoList[idx];
-      if (stats.SetRaid(info.rankIdx, info.jobClass)) {
+      if (stats.setRaid(info.rankIdx, info.jobClass)) {
         info.element.classList.add("raid");
         info.raid = true;
       }
@@ -705,15 +705,15 @@ function Main() {
     const maplemInfo = character.infoList.find((o) => o.job == "메이플M");
 
     if (element.img.autoSelect.title == "전체 선택해제") {
-      character.infoList.filter((info) => info.raid).forEach(character.Raid);
+      character.infoList.filter((info) => info.raid).forEach(character.raid);
       element.img.autoSelect.title = "자동선택";
       element.img.autoSelect.alt = "자동선택";
     } else {
       character.infoList.forEach((info, i) => {
-        if (stats.raidMember[0] < stats.raidMember[1] && info.job.length > 0) character.Raid(info);
+        if (stats.raidMember[0] < stats.raidMember[1] && info.job.length > 0) character.raid(info);
         else return;
       });
-      if (maplemInfo && !maplemInfo.raid) character.Raid(maplemInfo);
+      if (maplemInfo && !maplemInfo.raid) character.raid(maplemInfo);
 
       if (
         (stats.raidMember[1] && stats.raidMember[0] == stats.raidMember[1]) ||
@@ -725,8 +725,8 @@ function Main() {
     }
   });
   element.img.trashCard.addEventListener("click", () => {
-    character.infoList.slice().forEach(character.Remove);
-    stats.UpdateLevel();
+    character.infoList.slice().forEach(character.remove);
+    stats.updateLevel();
   });
 
   // Preload images
@@ -809,7 +809,7 @@ function DrawStatsMino() {
           td.style.backgroundColor = TILE.COLOR.MINO[jobStr.toUpperCase()];
           if (noIcon && posSet[y][x] == 2) {
             const img = document.createElement("img");
-            img.src = character.GetMinoIconSrc(jobStr);
+            img.src = character.getMinoIconSrc(jobStr);
             td.appendChild(img);
             noIcon = false;
           }
@@ -862,7 +862,7 @@ function DrawStatsMino() {
 function DrawSolution() {
   RedrawBoard();
   map.tiler.placedStack.forEach((node) => {
-    map.Place(node.pos, node.mino.shapes[node.shapeIdx], node.mino.jobClass);
+    map.place(node.pos, node.mino.shapes[node.shapeIdx], node.mino.jobClass);
   });
 }
 
@@ -876,24 +876,24 @@ function onTileMouseEnter(event) {
   };
 
   if (map.click == 2) {
-    hoverPos.g = map.FindGroupIndex(hoverPos);
+    hoverPos.g = map.findGroupIndex(hoverPos);
     if (hoverPos.g != map.hoverPos.g) {
       // 더블 클릭 때 타일 변화
-      if (map.drawing) TILE.GROUP[hoverPos.g].filter(map.IsNotSelected).forEach(map.Select);
-      else TILE.GROUP[hoverPos.g].filter(map.IsSelected).forEach(map.UnSelect);
+      if (map.drawing) TILE.GROUP[hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+      else TILE.GROUP[hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
 
-      TILE.GROUP[map.hoverPos.g].forEach(map.UnHover);
-      TILE.GROUP[hoverPos.g].forEach(map.Hover);
+      TILE.GROUP[map.hoverPos.g].forEach(map.unHover);
+      TILE.GROUP[hoverPos.g].forEach(map.hover);
     }
   } else {
     if (map.click == 1) {
       // 싱글 클릭 때 타일 변화
       if (map.drawing) {
-        if (map.IsNotSelected(hoverPos)) map.Select(hoverPos);
-      } else if (map.IsSelected(hoverPos)) map.UnSelect(hoverPos);
+        if (map.isNotSelected(hoverPos)) map.select(hoverPos);
+      } else if (map.isSelected(hoverPos)) map.unSelect(hoverPos);
     }
-    map.UnHover(map.hoverPos);
-    map.Hover(hoverPos);
+    map.unHover(map.hoverPos);
+    map.hover(hoverPos);
   }
 
   map.hoverPos = hoverPos;
@@ -907,7 +907,7 @@ function onTileMouseDown(event) {
     map.doubleClickPos = { x: map.hoverPos.x, y: map.hoverPos.y };
     map.doubleClickTid = setTimeout(() => (map.doubleClickTid = 0), map.doubleClickDuration);
   } else if (map.doubleClickPos.x == map.hoverPos.x && map.doubleClickPos.y == map.hoverPos.y) {
-    map.hoverPos.g = map.FindGroupIndex(map.hoverPos);
+    map.hoverPos.g = map.findGroupIndex(map.hoverPos);
     map.click = 2;
 
     clearTimeout(map.doubleClickTid);
@@ -916,25 +916,25 @@ function onTileMouseDown(event) {
 
   if (map.click == 2) {
     // 더블 클릭에 타일 변화
-    if (map.drawing) TILE.GROUP[map.hoverPos.g].filter(map.IsNotSelected).forEach(map.Select);
-    else TILE.GROUP[map.hoverPos.g].filter(map.IsSelected).forEach(map.UnSelect);
+    if (map.drawing) TILE.GROUP[map.hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+    else TILE.GROUP[map.hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
 
-    TILE.GROUP[map.hoverPos.g].filter(map.IsNotHover).forEach(map.Hover);
+    TILE.GROUP[map.hoverPos.g].filter(map.isNotHover).forEach(map.hover);
   } else {
     // 싱글 클릭에 드로잉 설정과 타일 변화
-    if (map.IsNotSelected(map.hoverPos)) {
+    if (map.isNotSelected(map.hoverPos)) {
       map.drawing = true;
-      map.Select(map.hoverPos);
+      map.select(map.hoverPos);
     } else {
       map.drawing = false;
-      map.UnSelect(map.hoverPos);
+      map.unSelect(map.hoverPos);
     }
   }
 }
 function onTileMouseUp(event) {
   if (event.button != 0) return;
 
-  if (map.click == 2) TILE.GROUP[map.hoverPos.g].filter(map.IsNotHover).forEach(map.UnHover);
+  if (map.click == 2) TILE.GROUP[map.hoverPos.g].filter(map.isNotHover).forEach(map.unHover);
   map.click = 0;
 }
 function onTableTouchStart(event) {
@@ -963,7 +963,7 @@ function onTableTouchStart(event) {
       map.doubleClickPos = { x: map.hoverPos.x, y: map.hoverPos.y };
       map.doubleClickTid = setTimeout(() => (map.doubleClickTid = 0), map.doubleClickDuration);
     } else if (map.doubleClickPos.x == map.hoverPos.x && map.doubleClickPos.y == map.hoverPos.y) {
-      map.hoverPos.g = map.FindGroupIndex(map.hoverPos);
+      map.hoverPos.g = map.findGroupIndex(map.hoverPos);
       map.click = 2;
 
       clearTimeout(map.doubleClickTid);
@@ -972,16 +972,16 @@ function onTableTouchStart(event) {
 
     if (map.click == 2) {
       // 연속 터치에 타일 변화
-      if (map.drawing) TILE.GROUP[map.hoverPos.g].filter(map.IsNotSelected).forEach(map.Select);
-      else TILE.GROUP[map.hoverPos.g].filter(map.IsSelected).forEach(map.UnSelect);
+      if (map.drawing) TILE.GROUP[map.hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+      else TILE.GROUP[map.hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
     } else {
       // 싱글 클릭에 드로잉 설정과 타일 변화
-      if (map.IsNotSelected(map.hoverPos)) {
+      if (map.isNotSelected(map.hoverPos)) {
         map.drawing = true;
-        map.Select(map.hoverPos);
+        map.select(map.hoverPos);
       } else {
         map.drawing = false;
-        map.UnSelect(map.hoverPos);
+        map.unSelect(map.hoverPos);
       }
     }
   }
@@ -1005,18 +1005,18 @@ function onTableTouchMove(event) {
   if (hoverPos.x == map.hoverPos.x && hoverPos.y == map.hoverPos.y) return;
 
   if (map.click == 2) {
-    hoverPos.g = map.FindGroupIndex(hoverPos);
+    hoverPos.g = map.findGroupIndex(hoverPos);
     if (hoverPos.g != map.hoverPos.g) {
       // 더블 클릭 때 타일 변화
-      if (map.drawing) TILE.GROUP[hoverPos.g].filter(map.IsNotSelected).forEach(map.Select);
-      else TILE.GROUP[hoverPos.g].filter(map.IsSelected).forEach(map.UnSelect);
+      if (map.drawing) TILE.GROUP[hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+      else TILE.GROUP[hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
     }
   } else {
     if (map.click == 1) {
       // 싱글 클릭 때 타일 변화
       if (map.drawing) {
-        if (map.IsNotSelected(hoverPos)) map.Select(hoverPos);
-      } else if (map.IsSelected(hoverPos)) map.UnSelect(hoverPos);
+        if (map.isNotSelected(hoverPos)) map.select(hoverPos);
+      } else if (map.isSelected(hoverPos)) map.unSelect(hoverPos);
     }
   }
 
@@ -1038,7 +1038,7 @@ function onPlay(event) {
   } else if (element.img.play.className == "map-tool-play") {
     // 잔여 타일이 0이 아니면 오류 메세지 출력
     if (map.tileCount != 0) {
-      inform.Show(
+      inform.show(
         inform.DANGER,
         `타일 개수 ${map.tileCount > 0 ? "부족" : "초과"}`,
         `타일 ${Math.abs(map.tileCount)}개를 ${
@@ -1096,9 +1096,9 @@ function onPlay(event) {
       if (contentPart.length > 0 && content.length > 0) content += "\n\n";
       content += contentPart;
     }
-    inform.Show(inform.DANGER, "점령대 배치 계산 시작", content);
+    inform.show(inform.DANGER, "점령대 배치 계산 시작", content);
     map.solve = true;
-    map.tiler.Solve().then((result) => {
+    map.tiler.solve().then((result) => {
       if (result.success == -1) return;
 
       element.img.play.className = "map-tool-play";
@@ -1109,13 +1109,13 @@ function onPlay(event) {
       map.tiler.abort = true;
 
       if (result.success == 0)
-        inform.Show(
+        inform.show(
           inform.DANGER,
           "점령대 배치 계산 실패",
           `${result.message}\n\n소요 시간: ${result.time}ms`
         );
       else if (result.success == 1)
-        inform.Show(inform.INFO, "점령대 배치 계산 성공", `소요 시간: ${result.time}ms`);
+        inform.show(inform.INFO, "점령대 배치 계산 성공", `소요 시간: ${result.time}ms`);
     });
   }
 }
@@ -1197,9 +1197,9 @@ function onBtnApplyClick() {
 
         // Info
         if (data.info && data.info.length) {
-          data.info.forEach(character.Add);
-          character.Sort();
-          stats.UpdateLevel();
+          data.info.forEach(character.add);
+          character.sort();
+          stats.updateLevel();
 
           const list = data.info.map((obj) => obj.name);
           content += `[등록됨 (${list.length})]\n${list.join(", ")}`;
@@ -1207,7 +1207,7 @@ function onBtnApplyClick() {
 
         // Sync
         if (data.sync && data.sync.length) {
-          data.sync.forEach(character.AddGhost);
+          data.sync.forEach(character.addGhost);
 
           content += `${content ? "\n\n" : ""}[동기화 중 (${data.sync.length})]\n${data.sync.join(
             ", "
@@ -1243,15 +1243,15 @@ function onImgSyncClick(event) {
     else {
       const data = JSON.parse(xhr.responseText);
       if (data.error) {
-        character.RemoveGhost(info.name);
+        character.removeGhost(info.name);
         inform.Show(inform.DANGER, data.error[0], data.error[1], 5000);
       } else {
-        character.Remove(info);
-        character.Add(data);
-        if (info.raid) character.Raid(character.infoList[character.infoList.length - 1]);
+        character.remove(info);
+        character.add(data);
+        if (info.raid) character.raid(character.infoList[character.infoList.length - 1]);
 
-        character.Sort();
-        stats.UpdateLevel();
+        character.sort();
+        stats.updateLevel();
 
         element.txt.applyName.value = "";
         inform.Show(inform.INFO, "동기화 완료", info.name);
