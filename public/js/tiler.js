@@ -1729,7 +1729,9 @@ class Tiler {
           pos.adj = this.GetAdjacentNum(pos);
           posArr.push(pos);
         }
-    posArr.sort((a, b) => a.adj - b.adj);
+
+    let v;
+    posArr.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x) ? v : a.adj - b.adj));
 
     return posArr;
   }
@@ -1748,18 +1750,16 @@ class Tiler {
 
     for (let i = 0, row = shape.matrix.length; i < row; i++)
       for (let j = 0, col = shape.matrix[0].length; j < col; j++)
-        if (this.map[sy + i][sx + j] != 1) return false;
+        if (shape.matrix[i][j] > 0 && this.map[sy + i][sx + j] != 1) return false;
 
     return true;
   }
   // 주변에 위치들이 내가 가진 최소의 블럭으로 넣을 수 있는지
   // 완벽하지 않음!!
   IsAdjacentValid(pos, shape) {
-    const min = this.minos[this.minos.length - 1].rankIdx;
-
     const posArr = this.GetAdjacentSpot(pos, shape);
     for (let i = 0; i < posArr.length; i++) {
-      if (this.GetAdjacentNum(posArr[i]) < /*min*/ 1) return false;
+      if (this.GetAdjacentNum(posArr[i]) < 2) return false;
     }
     return true;
   }
@@ -1770,7 +1770,8 @@ class Tiler {
       spot.normal.posArr.find((p) => p.x == posArr[i].x && p.y == posArr[i].y).adj =
         this.GetAdjacentNum(posArr[i]);
 
-    spot.normal.posArr.sort((a, b) => a.adj - b.adj);
+    let v;
+    spot.normal.posArr.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x) ? v : a.adj - b.adj));
   }
 
   // type에 따라 전역변수를 이용해서 해당 위치에 배치 후 값 세팅
@@ -1960,7 +1961,7 @@ class Tiler {
                 this.Place("bridge");
 
                 // 주변에 고립된 공간이 생겼을 경우
-                if (!this.IsAdjacentValid(pos, shape)) {
+                if (!this.IsAdjacentValid(pos, shape, 2)) {
                   this.BacktrackingLastMino("bridge");
                   backtracking = false;
                   continue;

@@ -657,9 +657,12 @@ function Main() {
   element.txt.applyName.addEventListener("paste", onTxtClipboardPaste);
 
   // Map tool event
-  element.img.trashMap.addEventListener("click", () =>
-    map.selectedPos.slice().forEach(map.UnSelect)
-  );
+  element.img.trashMap.addEventListener("click", () => {
+    if (map.solve) {
+      RedrawBoard();
+      map.solve = false;
+    } else map.selectedPos.slice().forEach(map.UnSelect);
+  });
   element.img.help.addEventListener("click", () =>
     inform.Show(
       inform.INFO,
