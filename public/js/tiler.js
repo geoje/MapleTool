@@ -1797,7 +1797,9 @@ class Tiler {
                 this.minos[spot.minoIdx].shapes[spot.shapeIdx].matrix
               );
               // 배치 가능 여부
-              const placeable = this.minos[spot.minoIdx].isPlaceable(spot.points[0], spot.shapeIdx);
+              let placeable = { able: this.minos[spot.minoIdx].count > 0 };
+              if (placeable.able)
+                placeable = this.minos[spot.minoIdx].isPlaceable(spot.points[0], spot.shapeIdx);
               if (placeable.able) {
                 console.log(
                   `[Place-${spotName}] ${placeable.point.x}, ${placeable.point.y} / ${
@@ -1843,8 +1845,9 @@ class Tiler {
                 this.spots.restricted.points.sort((a, b) => a.adj - b.adj);
                 console.log("[RestrictedPoints]", this.spots.restricted.points);
 
-                // 스택에 노드 추가 후 다음 탐색을 위해 서칭 변수 초기화
+                // 스택에 노드 추가, 미노 개수 감소, 다음 탐색을 위해 서칭 변수 초기화
                 this.stack.push(new Node(spotName, placeable.point, spot.minoIdx, spot.shapeIdx));
+                this.minos[spot.minoIdx].count--;
                 spot.shapeIdx = 0;
                 spot.minoIdx = 0;
               }
@@ -1876,6 +1879,7 @@ class Tiler {
           const spot = this.spots[node.spotName];
           spot.minoIdx = node.minoIdx;
           spot.shapeIdx = node.shapeIdx;
+          this.minos[spot.minoIdx].count++;
           console.log(`[Backtracking-${node.spotName}]`, node);
 
           // adj 업데이트하고 복구할 포인트들 세팅
