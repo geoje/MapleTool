@@ -110,8 +110,8 @@ let map = {
   },
 
   place: (pos, shape, jobClass) => {
-    let sx = pos.x - shape.center.x;
-    let sy = pos.y - shape.center.y;
+    let sx = pos.x;
+    let sy = pos.y;
     let noIcon = true;
 
     for (let i = 0, row = shape.matrix.length; i < row; i++)
@@ -461,9 +461,9 @@ let stats = {
   tileableCount: 0,
   minoCount: {
     warrior: [0, 0, 0, 0, 0],
+    thief: [0, 0, 0, 0, 0],
     wizard: [0, 0, 0, 0, 0],
     archer: [0, 0, 0, 0, 0],
-    thief: [0, 0, 0, 0, 0],
     pirate: [0, 0, 0, 0, 0],
     xenon: [0, 0, 0, 0, 0],
     maplem: [0, 0, 0, 0],
@@ -861,8 +861,12 @@ function DrawStatsMino() {
 }
 function DrawSolution() {
   RedrawBoard();
-  map.tiler.placedStack.forEach((node) => {
-    map.place(node.pos, node.mino.shapes[node.shapeIdx], node.mino.jobClass);
+  map.tiler.stack.forEach((node) => {
+    map.place(
+      node.point,
+      map.tiler.minos[node.minoIdx].shapes[node.shapeIdx],
+      map.tiler.minos[node.minoIdx].jobClass
+    );
   });
 }
 
