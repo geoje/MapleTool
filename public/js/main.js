@@ -461,9 +461,9 @@ let stats = {
   tileableCount: 0,
   minoCount: {
     warrior: [0, 0, 0, 0, 0],
-    thief: [0, 0, 0, 0, 0],
     wizard: [0, 0, 0, 0, 0],
     archer: [0, 0, 0, 0, 0],
+    thief: [0, 0, 0, 0, 0],
     pirate: [0, 0, 0, 0, 0],
     xenon: [0, 0, 0, 0, 0],
     maplem: [0, 0, 0, 0],

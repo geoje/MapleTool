@@ -1779,77 +1779,84 @@ class Tiler {
     while (!this.abort) {
       if (valid) {
         // 한정된 영역
-        if (
-          res.points.length &&
-          res.minoIdx < this.minos.length &&
-          res.shapeIdx < this.minos[res.minoIdx].shapes.length
-        ) {
-          console.log(
-            "[Searching]",
-            res.points[0].x,
-            res.points[0].y,
-            this.minos[res.minoIdx].jobClass,
-            this.minos[res.minoIdx].shapes[res.shapeIdx].matrix
-          );
-          // 배치 가능 여부
-          const placeable = this.minos[res.minoIdx].isPlaceable(res.points[0], res.shapeIdx);
-          if (placeable.able) {
+        if (res.points.length) {
+          // 테스트 코드
+          await new Promise((resolve) => setTimeout(resolve, 0));
+          const _sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+          DrawSolution();
+          await _sleep(1);
+
+          if (
+            res.minoIdx < this.minos.length &&
+            res.shapeIdx < this.minos[res.minoIdx].shapes.length
+          ) {
             console.log(
-              `[Place] ${placeable.point.x}, ${placeable.point.y} / ${
-                this.minos[res.minoIdx].jobClass
-              }`,
-              this.minos[res.minoIdx].shapes[res.shapeIdx]
+              `[Searching] (${res.points[0].x}, ${res.points[0].y}) ${res.minoIdx}-${res.shapeIdx}`,
+              this.minos[res.minoIdx].jobClass,
+              this.minos[res.minoIdx].shapes[res.shapeIdx].matrix
             );
+            // 배치 가능 여부
+            const placeable = this.minos[res.minoIdx].isPlaceable(res.points[0], res.shapeIdx);
+            if (placeable.able) {
+              console.log(
+                `[Place] ${placeable.point.x}, ${placeable.point.y} / ${
+                  this.minos[res.minoIdx].jobClass
+                }`,
+                this.minos[res.minoIdx].shapes[res.shapeIdx]
+              );
 
-            // 배치 후 영역에서 배치된 좌표들 제거
-            const placedPoints = this.minos[res.minoIdx].place(placeable.point, res.shapeIdx);
-            let findIdx;
-            placedPoints.forEach((pp) => {
-              for (let spotName in this.spots)
-                if (
-                  (findIdx = this.spots[spotName].points.findIndex(
-                    (p) => p.x == pp.x && p.y == pp.y
-                  )) != -1
-                ) {
-                  console.log(`[removePoint-${spotName}] ${pp.x}, ${pp.y}`);
-                  this.spots[spotName].points.splice(findIdx, 1);
-                }
-            });
+              // 배치 후 영역에서 배치된 좌표들 제거
+              const placedPoints = this.minos[res.minoIdx].place(placeable.point, res.shapeIdx);
+              let findIdx;
+              placedPoints.forEach((pp) => {
+                for (let spotName in this.spots)
+                  if (
+                    (findIdx = this.spots[spotName].points.findIndex(
+                      (p) => p.x == pp.x && p.y == pp.y
+                    )) != -1
+                  ) {
+                    console.log(`[removePoint-${spotName}] ${pp.x}, ${pp.y}`);
+                    this.spots[spotName].points.splice(findIdx, 1);
+                  }
+              });
 
-            // 배치된 미노 주변 영역 adj 값 업데이트
-            this.minos[res.minoIdx].getArroundSpot(placeable.point, res.shapeIdx).forEach((pp) => {
-              // 일반 영역 업데이트
-              let point = this.spots.normal.points.find((p) => p.x == pp.x && p.y == pp.y);
-              if (point) point.updateAdjacent();
+              // 배치된 미노 주변 영역 adj 값 업데이트
+              this.minos[res.minoIdx]
+                .getArroundSpot(placeable.point, res.shapeIdx)
+                .forEach((pp) => {
+                  // 일반 영역 업데이트
+                  let point = this.spots.normal.points.find((p) => p.x == pp.x && p.y == pp.y);
+                  if (point) point.updateAdjacent();
 
-              // 제한 영역 업데이트
-              point = this.spots.restricted.points.find((p) => p.x == pp.x && p.y == pp.y);
-              if (point) point.updateAdjacent();
-              // 제한 영역에 없는 좌표일 경우 adj값 측정하고 비교해서 추가
-              else if (pp.updateAdjacent() <= 1) {
-                this.spots.restricted.points.push(pp);
-                console.log("[NewRestrictedPoint]", pp);
-              }
-            });
+                  // 제한 영역 업데이트
+                  point = this.spots.restricted.points.find((p) => p.x == pp.x && p.y == pp.y);
+                  if (point) point.updateAdjacent();
+                  // 제한 영역에 없는 좌표일 경우 adj값 측정하고 비교해서 추가
+                  else if (pp.updateAdjacent() <= 1) {
+                    this.spots.restricted.points.push(pp);
+                    console.log("[NewRestrictedPoint]", pp);
+                  }
+                });
 
-            // 제한된 영역에 새로운 것이 추가될 경우를 위해 재정렬
-            this.spots.restricted.points.sort((a, b) => a.adj - b.adj);
-            console.log("[FirstRestrictedPoint]", this.spots.restricted.points[0]);
+              // 제한된 영역에 새로운 것이 추가될 경우를 위해 재정렬
+              this.spots.restricted.points.sort((a, b) => a.adj - b.adj);
+              console.log("[RestrictedPoints]", this.spots.restricted.points);
 
-            // 스택에 노드 추가 후 다음 탐색을 위해 서칭 변수 초기화
-            this.stack.push(new Node("restricted", placeable.point, res.minoIdx, res.shapeIdx));
-            res.shapeIdx = 0;
-            res.minoIdx = 0;
-          }
+              // 스택에 노드 추가 후 다음 탐색을 위해 서칭 변수 초기화
+              this.stack.push(new Node("restricted", placeable.point, res.minoIdx, res.shapeIdx));
+              res.shapeIdx = 0;
+              res.minoIdx = 0;
+            }
 
-          // 불가능시 인덱스 증가
-          else {
+            // 인덱스 증가
             if (++res.shapeIdx == this.minos[res.minoIdx].shapes.length) {
               res.shapeIdx = 0;
               res.minoIdx++;
             }
             if (res.minoIdx == this.minos.length) valid = false;
           }
+          // 더 볼 미노가 없을 경우
+          else valid = false;
         }
         // 일반 영역
         else if (nor.points.length) {
@@ -1862,7 +1869,7 @@ class Tiler {
         }
       } else {
         // 백트래킹
-        if (false && this.stack.length) {
+        if (this.stack.length) {
           // 스택에서 pop하고 index들 복구
           valid = true;
           const node = this.stack.pop();
@@ -1871,47 +1878,50 @@ class Tiler {
           spot.shapeIdx = node.shapeIdx;
           console.log("[Backtracking]", node);
 
-          // 복구한 index 다음 것을 볼 때 증가 값 계산
+          // adj 업데이트하고 복구할 포인트들 세팅
+          let needUpdateAdjPoints = this.minos[spot.minoIdx].getArroundSpot(
+            node.point,
+            spot.shapeIdx
+          );
+          needUpdateAdjPoints = needUpdateAdjPoints.concat(
+            this.minos[spot.minoIdx].unPlace(node.point, spot.shapeIdx)
+          );
+          console.log("[RecoverPoints]", needUpdateAdjPoints);
+
+          // 일반 영역에 포인트들 복구
+          needUpdateAdjPoints.forEach((up) => {
+            let sp = this.spots.normal.points.find((p) => p.x == up.x && p.y == up.y);
+            if (sp) sp.updateAdjacent();
+            else {
+              up.updateAdjacent();
+              this.spots.normal.points.push(up);
+            }
+          });
+
+          // 왼쪽 위 좌표가 먼저오도록 정렬
+          let v;
+          this.spots.normal.points.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x)));
+
+          // 제한된 영역 좌표 갱신
+          this.spots.restricted.points = this.spots.normal.points.filter((p) => p.adj <= 1);
+          console.log("[RestrictedPoints]", this.spots.restricted.points);
+
+          // 안되는거 다음부터 봐야하니깐 인덱스 증가
           if (++spot.shapeIdx == this.minos[spot.minoIdx].shapes.length) {
             spot.shapeIdx = 0;
             spot.minoIdx++;
           }
           if (spot.minoIdx == this.minos.length) valid = false;
-          else {
-            // adj 업데이트하고 복구할 포인트들 세팅
-            let needUpdateAdjPoints = this.minos[spot.minoIdx].getArroundSpot(
-              node.point,
-              spot.shapeIdx
-            );
-            needUpdateAdjPoints = needUpdateAdjPoints.concat(
-              this.minos[spot.minoIdx].unPlace(node.point, spot.shapeIdx)
-            );
-
-            // 일반 영역에 포인트들 복구
-            needUpdateAdjPoints.forEach((up) => {
-              let sp = this.spots.normal.points.find((p) => p.x == up.x && p.y == up.y);
-              if (sp) sp.updateAdjacent();
-              else {
-                up.updateAdjacent();
-                this.spots.normal.points.push(up);
-              }
-            });
-
-            // 왼쪽 위 좌표가 먼저오도록 정렬
-            let v;
-            this.spots.normal.points.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x)));
-
-            // 제한된 영역 좌표 갱신
-            this.spots.restricted.points = this.spots.normal.points.filter((p) => p.adj <= 1);
-          }
         }
         // 배치 불가능
-        else
+        else {
+          DrawSolution();
           return {
             success: 0,
             time: +new Date() - startTime,
             message: "가능한 배치가 존재하지 않습니다.",
           };
+        }
       }
 
       if (this.iteration++ % batchSize == 0) {
