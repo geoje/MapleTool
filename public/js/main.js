@@ -664,7 +664,7 @@ function Main() {
     } else map.selectedPos.slice().forEach(map.unSelect);
   });
   element.img.help.addEventListener("click", () =>
-    inform.Show(
+    inform.show(
       inform.INFO,
       "키 가이드",
       "[클릭 또는 터치]\n타일이 없으면: 생성\n타일이 있으면: 삭제\n\n" +
@@ -1038,7 +1038,7 @@ function onPlay(event) {
     element.div.map.removeAttribute("style");
     map.tiler.abort = true;
 
-    inform.Show(inform.INFO, "점령대 배치 계산 중지", event.message ? event.message : "");
+    inform.show(inform.INFO, "점령대 배치 계산 중지", event.message ? event.message : "");
   } else if (element.img.play.className == "map-tool-play") {
     // 잔여 타일이 0이 아니면 오류 메세지 출력
     if (map.tileCount != 0) {

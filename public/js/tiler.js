@@ -719,7 +719,7 @@ class Mino {
         for (let j = 0; j < col; j++)
           if (shape.matrix[i][j] > 0 && board[y + i][x + j] != 1) {
             able = false;
-            i = col;
+            i = row;
             break;
           }
 
@@ -814,7 +814,7 @@ class Tiler {
   constructor() {
     setTimeout(() => {
       this.chch2316();
-      //onPlay({ message: "" });
+      onPlay({ message: "" });
     }, 100);
   }
   chch2316() {
@@ -1784,6 +1784,13 @@ class Tiler {
           res.minoIdx < this.minos.length &&
           res.shapeIdx < this.minos[res.minoIdx].shapes.length
         ) {
+          console.log(
+            "[Searching]",
+            res.points[0].x,
+            res.points[0].y,
+            this.minos[res.minoIdx].jobClass,
+            this.minos[res.minoIdx].shapes[res.shapeIdx].matrix
+          );
           // 배치 가능 여부
           const placeable = this.minos[res.minoIdx].isPlaceable(res.points[0], res.shapeIdx);
           if (placeable.able) {
@@ -1841,14 +1848,7 @@ class Tiler {
               res.shapeIdx = 0;
               res.minoIdx++;
             }
-            console.log(
-              res.minoIdx,
-              this.minos.length,
-              res.shapeIdx,
-              this.minos[res.minoIdx].shapes.length
-            );
             if (res.minoIdx == this.minos.length) valid = false;
-            if (!valid) console.log("Invalid!!!!");
           }
         }
         // 일반 영역
@@ -1862,39 +1862,48 @@ class Tiler {
         }
       } else {
         // 백트래킹
-        console.log("[Backtracking]");
-        if (this.stack.length) {
+        if (false && this.stack.length) {
           // 스택에서 pop하고 index들 복구
+          valid = true;
           const node = this.stack.pop();
           const spot = this.spots[node.spotName];
           spot.minoIdx = node.minoIdx;
           spot.shapeIdx = node.shapeIdx;
+          console.log("[Backtracking]", node);
 
-          // adj 업데이트하고 복구할 포인트들 세팅
-          let needUpdateAdjPoints = this.minos[spot.minoIdx].getArroundSpot(
-            node.point,
-            spot.shapeIdx
-          );
-          needUpdateAdjPoints = needUpdateAdjPoints.concat(
-            this.minos[spot.minoIdx].unPlace(node.point, spot.shapeIdx)
-          );
+          // 복구한 index 다음 것을 볼 때 증가 값 계산
+          if (++spot.shapeIdx == this.minos[spot.minoIdx].shapes.length) {
+            spot.shapeIdx = 0;
+            spot.minoIdx++;
+          }
+          if (spot.minoIdx == this.minos.length) valid = false;
+          else {
+            // adj 업데이트하고 복구할 포인트들 세팅
+            let needUpdateAdjPoints = this.minos[spot.minoIdx].getArroundSpot(
+              node.point,
+              spot.shapeIdx
+            );
+            needUpdateAdjPoints = needUpdateAdjPoints.concat(
+              this.minos[spot.minoIdx].unPlace(node.point, spot.shapeIdx)
+            );
 
-          // 일반 영역에 포인트들 복구
-          needUpdateAdjPoints.forEach((up) => {
-            let sp = this.spots.normal.points.find((p) => p.x == up.x && p.y == up.y);
-            if (sp) sp.updateAdjacent();
-            else {
-              up.updateAdjacent();
-              this.spots.normal.points.push(up);
-            }
-          });
+            // 일반 영역에 포인트들 복구
+            needUpdateAdjPoints.forEach((up) => {
+              let sp = this.spots.normal.points.find((p) => p.x == up.x && p.y == up.y);
+              if (sp) sp.updateAdjacent();
+              else {
+                up.updateAdjacent();
+                this.spots.normal.points.push(up);
+              }
+            });
 
-          // 왼쪽 위 좌표가 먼저오도록 정렬
-          let v;
-          this.spots.normal.points.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x)));
+            // 왼쪽 위 좌표가 먼저오도록 정렬
+            let v;
+            this.spots.normal.points.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x)));
 
-          // 제한된 영역 좌표 갱신
-          this.spots.restricted.points = this.spots.normal.points.filter((p) => p.adj <= 1);
+            // 제한된 영역 좌표 갱신
+            this.spots.restricted.points = this.spots.normal.points.filter((p) => p.adj <= 1);
+          }
         }
         // 배치 불가능
         else
@@ -1911,6 +1920,7 @@ class Tiler {
       }
     }
     // 사용자 중지
+    DrawSolution();
     return { success: -1 };
   }
 }
