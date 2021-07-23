@@ -49,7 +49,7 @@ const element = {
 };
 
 let map = {
-  solve: false,
+  solve: 0,
   drawing: true, // true: draw, false: erase
   click: 0, // 0: none click, 1: single, 2: double
 
@@ -658,9 +658,9 @@ function Main() {
 
   // Map tool event
   element.img.trashMap.addEventListener("click", () => {
-    if (map.solve) {
+    if (map.solve == 2) {
       RedrawBoard();
-      map.solve = false;
+      map.solve = 0;
     } else map.selectedPos.slice().forEach(map.unSelect);
   });
   element.img.help.addEventListener("click", () =>
@@ -1101,8 +1101,9 @@ function onPlay(event) {
       content += contentPart;
     }
     inform.show(inform.DANGER, "점령대 배치 계산 시작", content);
-    map.solve = true;
+    map.solve = 1;
     map.tiler.solve().then((result) => {
+      map.solve = 2;
       if (result.success == -1) return;
 
       element.img.play.className = "map-tool-play";
@@ -1112,14 +1113,15 @@ function onPlay(event) {
       element.div.map.removeAttribute("style");
       map.tiler.abort = true;
 
-      if (result.success == 0)
+      if (result.success == 0) {
+        map.solve = 0;
         inform.show(
           inform.DANGER,
           "점령대 배치 계산 실패",
           `${result.message}\n\n소요 시간: ${result.time}ms`
         );
-      else if (result.success == 1)
-        inform.show(inform.INFO, "점령대 배치 계산 성공", `소요 시간: ${result.time}ms`);
+      } else if (result.success == 1)
+        inform.show(inform.INFO, "점령대 배치 계산 성공", `소요 시간: ${result.time}ms`, 0);
     });
   }
 }
