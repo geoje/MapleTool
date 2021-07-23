@@ -2,7 +2,24 @@ const TILE = {
   ROW: 20,
   COL: 22,
   COLOR: {
-    BACK: ["rgb(57, 57, 57)", "rgb(76, 76, 76)", "rgb(34, 34, 34)", "rgb(43, 43, 43)"],
+    GROUP: [
+      "rgb(57, 57, 57)",
+      "rgb(76, 76, 76)",
+      "rgb(57, 57, 57)",
+      "rgb(76, 76, 76)",
+      "rgb(57, 57, 57)",
+      "rgb(76, 76, 76)",
+      "rgb(57, 57, 57)",
+      "rgb(76, 76, 76)",
+      "rgb(34, 34, 34)",
+      "rgb(43, 43, 43)",
+      "rgb(34, 34, 34)",
+      "rgb(43, 43, 43)",
+      "rgb(34, 34, 34)",
+      "rgb(43, 43, 43)",
+      "rgb(34, 34, 34)",
+      "rgb(43, 43, 43)",
+    ],
     SELECTED: "rgb(170, 150, 129)",
     BOUNDARY: "rgb(200, 200, 200)",
     MINO: {
@@ -505,28 +522,6 @@ const TILE = {
       { x: 21, y: 19 },
     ],
   ],
-  GROUPE: [
-    [11, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 8],
-    [11, 11, 10, 10, 10, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 8],
-    [11, 11, 11, 10, 10, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 9, 8, 8, 8],
-    [11, 11, 11, 11, 10, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 8, 8, 8, 8],
-    [11, 11, 11, 11, 11, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 8, 8, 8, 8, 8],
-    [11, 11, 11, 11, 11, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 0, 8, 8, 8, 8, 8],
-    [11, 11, 11, 11, 11, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 8, 8, 8, 8, 8],
-    [11, 11, 11, 11, 11, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 8, 8, 8, 8, 8],
-    [11, 11, 11, 11, 11, 3, 3, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0, 8, 8, 8, 8, 8],
-    [11, 11, 11, 11, 11, 3, 3, 3, 3, 3, 2, 1, 0, 0, 0, 0, 0, 8, 8, 8, 8, 8],
-    [12, 12, 12, 12, 12, 4, 4, 4, 4, 4, 5, 6, 7, 7, 7, 7, 7, 15, 15, 15, 15, 15],
-    [12, 12, 12, 12, 12, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 7, 7, 15, 15, 15, 15, 15],
-    [12, 12, 12, 12, 12, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 15, 15, 15, 15, 15],
-    [12, 12, 12, 12, 12, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 15, 15, 15, 15, 15],
-    [12, 12, 12, 12, 12, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7, 15, 15, 15, 15, 15],
-    [12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15],
-    [12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 15, 15, 15, 15],
-    [12, 12, 12, 13, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 15, 15, 15],
-    [12, 12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 15, 15],
-    [12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 15],
-  ],
   MINO_POS: [
     [[2]], // 0 // B // All
     [[2, 2]], // 1 // A // All
@@ -828,9 +823,9 @@ class Node {
 class Tiler {
   constructor() {
     setTimeout(() => {
-      this.Test();
-      //this.chch2316();
-      //onPlay({ message: "" });
+      // this.Test();
+      // this.chch2316();
+      // onPlay({ message: "" });
     }, 100);
   }
   Test() {
@@ -1224,10 +1219,6 @@ class Tiler {
       ];
     })();
     posList.forEach(map.select);
-
-    board = Array.from(Array(TILE.ROW), () => Array(TILE.COL).fill(0));
-    TILE.GROUP.forEach((g, i) => g.forEach((p) => (board[p.y][p.x] = i)));
-    console.log(board);
   }
   chch2316() {
     const infoList = (() => {
@@ -2179,11 +2170,16 @@ class Tiler {
     return false;
   }
 
-  async solve(batchSize = 30000) {
+  async solve(batchSize = 40000) {
     // 초기 세팅
     this.init();
     const startTime = +new Date();
     let valid = true;
+
+    const log = (...args) => {
+      return;
+      console.log(...args);
+    };
 
     // 연산
     while (!this.abort) {
@@ -2192,20 +2188,21 @@ class Tiler {
         // await new Promise((resolve) => setTimeout(resolve, 0));
         // const _sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
         // DrawSolution();
-        // await _sleep(1000);
+        // await _sleep(40);
 
         for (let spotName in this.spots) {
+          log(`>>> Start ${spotName} >>>`);
           let spot = this.spots[spotName];
           if (spot.points.length) {
             if (
               spot.minoIdx < this.minos.length &&
               spot.shapeIdx < this.minos[spot.minoIdx].shapes.length
             ) {
-              // console.log(
-              //   `[Searching-${spotName}] (${spot.points[0].x}, ${spot.points[0].y}) ${spot.minoIdx}-${spot.shapeIdx}`,
-              //   this.minos[spot.minoIdx].jobClass,
-              //   this.minos[spot.minoIdx].shapes[spot.shapeIdx].matrix
-              // );
+              log(
+                `[Searching-${spotName}] (${spot.points[0].x}, ${spot.points[0].y}) ${spot.minoIdx}-${spot.shapeIdx}`,
+                this.minos[spot.minoIdx].jobClass,
+                this.minos[spot.minoIdx].shapes[spot.shapeIdx].matrix
+              );
 
               // 제한 영역에서 adj가 0일 때 최소 미노가 1개짜리가 없으면 invalid
               if (
@@ -2221,12 +2218,12 @@ class Tiler {
               if (placeable.able)
                 placeable = this.minos[spot.minoIdx].isPlaceable(spot.points[0], spot.shapeIdx);
               if (placeable.able) {
-                // console.log(
-                //   `[Place-${spotName}] ${placeable.point.x}, ${placeable.point.y} / ${
-                //     this.minos[spot.minoIdx].jobClass
-                //   }`,
-                //   this.minos[spot.minoIdx].shapes[spot.shapeIdx]
-                // );
+                log(
+                  `[Place-${spotName}] ${placeable.point.x}, ${placeable.point.y} / ${
+                    this.minos[spot.minoIdx].jobClass
+                  }`,
+                  this.minos[spot.minoIdx].shapes[spot.shapeIdx]
+                );
 
                 // 배치 후 영역에서 배치된 좌표들 제거
                 const placedPoints = this.minos[spot.minoIdx].place(placeable.point, spot.shapeIdx);
@@ -2238,7 +2235,7 @@ class Tiler {
                         (p) => p.x == pp.x && p.y == pp.y
                       )) != -1
                     ) {
-                      // console.log(`[removePoint-${spotName}] ${pp.x}, ${pp.y}`);
+                      // log(`[removePoint-${spotName}] ${pp.x}, ${pp.y}`);
                       this.spots[spotName].points.splice(findIdx, 1);
                     }
                 });
@@ -2257,19 +2254,21 @@ class Tiler {
                     // 제한 영역에 없는 좌표일 경우 adj값 측정하고 비교해서 추가
                     else if (pp.updateAdjacent() <= 1) {
                       this.spots.restricted.points.push(pp);
-                      // console.log("[NewRestrictedPoint]", pp);
                     }
                   });
 
                 // 제한된 영역에 새로운 것이 추가될 경우를 위해 재정렬
                 this.spots.restricted.points.sort((a, b) => a.adj - b.adj);
-                // console.log("[RestrictedPoints]", this.spots.restricted.points);
+                log("[RestrictedPoints]", this.spots.restricted.points);
+                log("[NormalPoints]", this.spots.normal.points);
 
                 // 스택에 노드 추가, 미노 개수 감소, 다음 탐색을 위해 서칭 변수 초기화
                 this.stack.push(new Node(spotName, placeable.point, spot.minoIdx, spot.shapeIdx));
                 this.minos[spot.minoIdx].count--;
-                spot.shapeIdx = 0;
-                spot.minoIdx = 0;
+                this.spots.restricted.shapeIdx = 0;
+                this.spots.restricted.minoIdx = 0;
+                this.spots.normal.shapeIdx = 0;
+                this.spots.normal.minoIdx = 0;
               }
               // 배치가 불가능 할 경우
               else {
@@ -2283,6 +2282,7 @@ class Tiler {
             }
             // 계속 배치 해야하는데 더 볼 미노가 없을 경우
             else valid = false;
+            log("[EndSummary]", valid, this.minos, spot);
             break;
           }
 
@@ -2302,7 +2302,7 @@ class Tiler {
           spot.minoIdx = node.minoIdx;
           spot.shapeIdx = node.shapeIdx;
           this.minos[spot.minoIdx].count++;
-          // console.log(`[Backtracking-${node.spotName}]`, node);
+          log(`[Backtracking-${node.spotName}]`, node);
 
           // adj 업데이트하고 복구할 포인트들 세팅
           let needUpdateAdjPoints = this.minos[spot.minoIdx].getArroundSpot(
@@ -2312,7 +2312,6 @@ class Tiler {
           needUpdateAdjPoints = needUpdateAdjPoints.concat(
             this.minos[spot.minoIdx].unPlace(node.point, spot.shapeIdx)
           );
-          // console.log("[RecoverPoints]", needUpdateAdjPoints);
 
           // 일반 영역에 포인트들 복구
           needUpdateAdjPoints.forEach((up) => {
@@ -2330,7 +2329,8 @@ class Tiler {
 
           // 제한된 영역 좌표 갱신
           this.spots.restricted.points = this.spots.normal.points.filter((p) => p.adj <= 1);
-          // console.log("[RestrictedPoints]", this.spots.restricted.points);
+          log("[RestrictedPoints]", this.spots.restricted.points);
+          log("[NormalPoints]", this.spots.normal.points.slice());
 
           // 안되는거 다음부터 봐야하니깐 인덱스 증가
           if (++spot.shapeIdx == this.minos[spot.minoIdx].shapes.length) {

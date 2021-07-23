@@ -758,7 +758,13 @@ function DrawBoard() {
 }
 function RedrawBoard() {
   // clear
-  for (y = 0; y < TILE.ROW; y++) for (x = 0; x < TILE.COL; x++) element.tile[y][x].style = "";
+
+  element.tile.forEach((row) =>
+    row.forEach((e) => {
+      e.style = "";
+      e.innerHTML = "";
+    })
+  );
 
   // select background
   map.selectedPos.forEach(
@@ -767,7 +773,7 @@ function RedrawBoard() {
 
   // group background
   TILE.GROUP.forEach((g, gidx) => {
-    let c = TILE.COLOR.BACK[(gidx >= 8 ? 2 : 0) + (gidx % 2)];
+    let c = TILE.COLOR.GROUP[gidx];
     g.forEach((p) => (element.tile[p.y][p.x].style.color = c));
   });
 
@@ -793,8 +799,6 @@ function RedrawBoard() {
     x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
   for (y = 19, x = [0, 20]; y > 9; y--, x[0]++, x[1]--)
     x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
-
-  element.tile.forEach((row) => row.forEach((e) => (e.innerHTML = "")));
 }
 function DrawStatsMino() {
   const minoTable = document.querySelector(".stats-mino");
