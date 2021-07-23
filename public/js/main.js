@@ -659,6 +659,7 @@ function Main() {
   // Map tool event
   element.img.trashMap.addEventListener("click", () => {
     if (map.solve == 2) {
+      element.img.trashMap.src = "image/icon/trash.svg";
       RedrawBoard();
       map.solve = 0;
     } else map.selectedPos.slice().forEach(map.unSelect);
@@ -1031,6 +1032,8 @@ function onTableTouchMove(event) {
   map.hoverPos = hoverPos;
 }
 function onPlay(event) {
+  if (!map.selectedPos.length) return;
+
   if (
     element.img.play.className == "map-tool-stop" ||
     (event.message && event.message.length > 0)
@@ -1060,6 +1063,7 @@ function onPlay(event) {
     element.img.play.src = "image/icon/play-stop-o.svg";
     element.img.play.setAttribute("alt", "중지");
     element.img.play.setAttribute("title", "중지");
+    element.img.trashMap.src = "image/icon/erase.svg";
     element.div.map.style.borderColor = "rgb(231, 76, 60)";
 
     // 계산 시작 시 타일 요약 메세지 내용
@@ -1119,6 +1123,7 @@ function onPlay(event) {
 
       if (result.success == 0) {
         map.solve = 0;
+        element.img.trashMap.src = "image/icon/trash.svg";
         inform.show(
           inform.DANGER,
           "점령대 배치 계산 실패",
@@ -1128,7 +1133,8 @@ function onPlay(event) {
         inform.show(
           inform.INFO,
           "점령대 배치 계산 성공",
-          `소요 시간: ${result.time}ms\n반복 횟수: ${result.iteration}`
+          `소요 시간: ${result.time}ms\n반복 횟수: ${result.iteration}`,
+          10000
         );
     });
   }
