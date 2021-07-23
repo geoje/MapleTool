@@ -529,7 +529,7 @@ let stats = {
   setRaid: (rankIdx, jobClass) => {
     if (jobClass != "maplem") {
       if (stats.raidMember[0] >= stats.raidMember[1]) {
-        inform.Show(inform.DANGER, "공격대원 가득참", "");
+        inform.show(inform.DANGER, "공격대원 가득참", "");
         return false;
       }
       element.txt.raidMember.innerText = `${++stats.raidMember[0]}/${stats.raidMember[1]}`;
@@ -1130,10 +1130,10 @@ function onBtnLoginClick() {
     password: element.txt.password.value.trim(),
   };
   if (!account.id) {
-    inform.Show(inform.DANGER, "계정 정보 없음", "아이디 또는 이메일을 입력해주세요.");
+    inform.show(inform.DANGER, "계정 정보 없음", "아이디 또는 이메일을 입력해주세요.");
     return;
   } else if (!account.password) {
-    inform.Show(inform.DANGER, "계정 정보 없음", "비밀번호를 입력해주세요.");
+    inform.show(inform.DANGER, "계정 정보 없음", "비밀번호를 입력해주세요.");
     return;
   }
 
@@ -1142,12 +1142,12 @@ function onBtnLoginClick() {
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.send(JSON.stringify(account));
   xhr.addEventListener("load", () => {
-    if (xhr.status != 200) inform.Show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
+    if (xhr.status != 200) inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
-      if (data.error) inform.Show(inform.DANGER, data.error[0], data.error[1], 5000);
+      if (data.error) inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
       else {
-        inform.Show(
+        inform.show(
           inform.INFO,
           `${account.id} 가져오기 완료 (${data.charArr.length})`,
           data.charArr.join(", ")
@@ -1173,7 +1173,7 @@ function onBtnApplyClick() {
 
   // Empty character names
   if (charNames.length == 0 || charNames[0].length == 0) {
-    inform.Show(inform.DANGER, "캐릭터 이름 없음", "캐릭터 이름 리스트를 입력해주세요.");
+    inform.show(inform.DANGER, "캐릭터 이름 없음", "캐릭터 이름 리스트를 입력해주세요.");
     return;
   }
   // Already added
@@ -1181,7 +1181,7 @@ function onBtnApplyClick() {
     (name) => character.infoList.findIndex((obj2) => obj2.name == name) != -1
   );
   if (existsChars.length) {
-    inform.Show(inform.DANGER, `이미 등록 됨 (${existsChars.length})`, existsChars.join(", "));
+    inform.show(inform.DANGER, `이미 등록 됨 (${existsChars.length})`, existsChars.join(", "));
     return;
   }
 
@@ -1190,11 +1190,11 @@ function onBtnApplyClick() {
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.send(JSON.stringify({ charNames: charNames.join(",") }));
   xhr.addEventListener("load", () => {
-    if (xhr.status != 200) inform.Show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
+    if (xhr.status != 200) inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
       console.log(data);
-      if (data.error) inform.Show(inform.DANGER, data.error[0], data.error[1], 5000);
+      if (data.error) inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
       else {
         // Success POST
         let content = "";
@@ -1219,7 +1219,7 @@ function onBtnApplyClick() {
         }
 
         element.txt.applyName.value = "";
-        inform.Show(inform.INFO, "등록 완료", content);
+        inform.show(inform.INFO, "등록 완료", content);
       }
     }
 
@@ -1243,12 +1243,12 @@ function onImgSyncClick(event) {
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.send(JSON.stringify({ name: info.name }));
   xhr.addEventListener("load", () => {
-    if (xhr.status != 200) inform.Show(inform.DANGER, "동기화 실패", `응답 코드: ${xhr.status}`);
+    if (xhr.status != 200) inform.show(inform.DANGER, "동기화 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
       if (data.error) {
         character.removeGhost(info.name);
-        inform.Show(inform.DANGER, data.error[0], data.error[1], 5000);
+        inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
       } else {
         character.remove(info);
         character.add(data);
@@ -1258,7 +1258,7 @@ function onImgSyncClick(event) {
         stats.updateLevel();
 
         element.txt.applyName.value = "";
-        inform.Show(inform.INFO, "동기화 완료", info.name);
+        inform.show(inform.INFO, "동기화 완료", info.name);
       }
     }
 
