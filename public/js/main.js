@@ -1125,7 +1125,11 @@ function onPlay(event) {
           `${result.message}\n\n소요 시간: ${result.time}ms`
         );
       } else if (result.success == 1)
-        inform.show(inform.INFO, "점령대 배치 계산 성공", `소요 시간: ${result.time}ms`, 0);
+        inform.show(
+          inform.INFO,
+          "점령대 배치 계산 성공",
+          `소요 시간: ${result.time}ms\n반복 횟수: ${result.iteration}`
+        );
     });
   }
 }

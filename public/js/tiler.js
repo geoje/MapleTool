@@ -2289,7 +2289,7 @@ class Tiler {
           // 제한 및 일반 영역 모두 좌표가 없을 경우 배치 성공
           if (spotName == "normal") {
             DrawSolution();
-            return { success: 1, time: +new Date() - startTime };
+            return { success: 1, time: +new Date() - startTime, iteration: this.iteration };
           }
         }
       } else {
