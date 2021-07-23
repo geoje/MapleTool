@@ -8,6 +8,8 @@ const element = {
     trashMap: document.querySelector(".map-tool > img:nth-child(1)"),
     help: document.querySelector(".map-tool > img:nth-child(2)"),
     play: document.querySelector(".map-tool-play"),
+
+    sync: document.querySelector(".card-stats > img:nth-last-child(4)"),
     maplem: document.querySelector(".card-stats > img:nth-last-child(3)"),
     autoSelect: document.querySelector(".card-stats > img:nth-last-child(2)"),
     trashCard: document.querySelector(".card-stats > img:nth-last-child(1)"),
@@ -337,7 +339,7 @@ let character = {
       imgTool[0].style.display = "none";
       e.style.order = 98;
     } else {
-      imgTool[0].addEventListener("click", onImgSyncClick, { once: true });
+      imgTool[0].addEventListener("click", onImgSyncClick);
       imgTool[0].alt = info.name;
     }
 
@@ -701,6 +703,11 @@ function Main() {
         info.raid = true;
       }
     }
+  });
+  element.img.sync.addEventListener("click", () => {
+    character.infoList.forEach((info) => {
+      if (info.jobClass != "maplem") onImgSyncClick({ target: { alt: info.name } });
+    });
   });
   element.img.autoSelect.addEventListener("click", () => {
     const maplemInfo = character.infoList.find((o) => o.job == "메이플M");
