@@ -11,22 +11,33 @@
     <link rel="icon" href="image/maple-leaf.png" />
     <title>유니온 배치기</title>
   </head>
+
   <body>
     <div class="map box-yellow">
-      <table></table>
+      <table
+        oncontextmenu="return false"
+        ondragstart="return false"
+        onselectstart="return false"
+      ></table>
       <div class="map-tool">
         <img src="image/icon/trash.svg" alt="초기화" title="점령대 초기화" />
         <img src="image/icon/help.svg" alt="키 가이드" title="키 가이드" />
         <h6>0</h6>
-        <img class="map-tool-play" src="image/icon/play-button-o.svg" alt="시작" title="시작" />
+        <img
+          class="map-tool-play"
+          src="image/icon/play-button-o.svg"
+          alt="시작"
+          title="시작"
+        />
       </div>
     </div>
     <div class="card box-gray">
       <div class="card-stats">
         <h4>유니온 캐릭터</h4>
         <h6>0</h6>
+        <img src="image/icon/z.svg" alt="제로" title="제로" />
+        <img src="image/icon/m.svg" alt="메이플M" title="메이플M" />
         <img src="image/icon/sync.svg" alt="동기화" title="동기화" />
-        <img src="image/icon/maplem.svg" alt="메이플M" title="메이플M" />
         <img src="image/icon/check-r.svg" alt="자동선택" title="자동선택" />
         <img src="image/icon/trash.svg" alt="초기화" title="캐릭터 초기화" />
       </div>
@@ -78,12 +89,26 @@
         <h6>비밀번호</h6>
         <input type="password" id="password" placeholder="" />
         <div class="input-login-type">
-          <input type="radio" name="login" id="login-nexon" value="nexon" disabled />
+          <input
+            type="radio"
+            name="login"
+            id="login-nexon"
+            value="nexon"
+            disabled
+          />
           <label for="login-nexon"><span>넥슨</span></label>
-          <input type="radio" name="login" id="login-maple" value="maple" checked />
+          <input
+            type="radio"
+            name="login"
+            id="login-maple"
+            value="maple"
+            checked
+          />
           <label for="login-maple"><span>메이플</span></label>
         </div>
-        <button id="login" onclick="onBtnLoginClick()">계정에서 가져오기</button>
+        <button id="login" onclick="onBtnLoginClick()">
+          계정에서 가져오기
+        </button>
       </div>
       <div class="input-deco" style="display: none">
         <hr />

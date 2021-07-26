@@ -558,6 +558,9 @@ button:active:not([disabled]),
   .input {
     order: 1;
   }
+  .input-apply {
+    height: 200px;
+  }
 
   .card {
     order: 2;
