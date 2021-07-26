@@ -104,10 +104,11 @@ button:active:not([disabled]),
 }
 .map > table td > img {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 13px;
-  height: 13px;
+  width: 66%;
+  height: 66%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .map .tile-hover {
   position: absolute;

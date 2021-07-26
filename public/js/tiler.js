@@ -618,7 +618,8 @@ class Mino {
     matrix = Array.from(Array(col), () => new Array(row));
     if ([1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 13, 14].indexOf(minoIdx) != -1) {
       for (let i = 0; i < col; i++)
-        for (let j = 0; j < row; j++) matrix[i][j] = this.shapes[0].matrix[j][col - i - 1];
+        for (let j = 0; j < row; j++)
+          matrix[i][j] = this.shapes[0].matrix[j][col - i - 1];
       this.shapes.push({ matrix: matrix });
 
       // 좌우 대칭
@@ -645,7 +646,8 @@ class Mino {
     matrix = Array.from(Array(col), () => new Array(row));
     if ([2, 5, 7, 9, 12, 13].indexOf(minoIdx) != -1) {
       for (let i = 0; i < col; i++)
-        for (let j = 0; j < row; j++) matrix[i][j] = this.shapes[0].matrix[row - j - 1][i];
+        for (let j = 0; j < row; j++)
+          matrix[i][j] = this.shapes[0].matrix[row - j - 1][i];
       this.shapes.push({ matrix: matrix });
 
       // 좌우 대칭
@@ -679,8 +681,10 @@ class Mino {
         if (num) {
           if (x > 0 && board[y][x - 1] == 1) points.push(new Point(x - 1, y));
           if (y > 0 && board[y - 1][x] == 1) points.push(new Point(x, y - 1));
-          if (x < TILE.COL - 1 && board[y][x + 1] == 1) points.push(new Point(x + 1, y));
-          if (y < TILE.ROW - 1 && board[y + 1][x] == 1) points.push(new Point(x, y + 1));
+          if (x < TILE.COL - 1 && board[y][x + 1] == 1)
+            points.push(new Point(x + 1, y));
+          if (y < TILE.ROW - 1 && board[y + 1][x] == 1)
+            points.push(new Point(x, y + 1));
         }
         x++;
       });
@@ -690,7 +694,8 @@ class Mino {
 
     // 중복 제거
     points = points.filter(
-      (p1, index, arr) => index == arr.findIndex((p2) => p1.x == p2.x && p1.y == p2.y)
+      (p1, index, arr) =>
+        index == arr.findIndex((p2) => p1.x == p2.x && p1.y == p2.y)
     );
     return points;
   }
@@ -707,14 +712,21 @@ class Mino {
     const dir = point.getDirection();
 
     // 방향에 따른 offset 추가
-    if (dir | 1) for (let i = 0, x = 0, y = 0; i < row; i++, y--) offsets.push({ x, y });
-    if (dir | 2) for (let i = 0, x = 0, y = -row + 1; i < col; i++, x--) offsets.push({ x, y });
-    if (dir | 4) for (let i = 0, x = -col + 1, y = 0; i < row; i++, y--) offsets.push({ x, y });
-    if (dir | 8) for (let i = 0, x = 0, y = 0; i < col; i++, x--) offsets.push({ x, y });
+    if (dir | 1)
+      for (let i = 0, x = 0, y = 0; i < row; i++, y--) offsets.push({ x, y });
+    if (dir | 2)
+      for (let i = 0, x = 0, y = -row + 1; i < col; i++, x--)
+        offsets.push({ x, y });
+    if (dir | 4)
+      for (let i = 0, x = -col + 1, y = 0; i < row; i++, y--)
+        offsets.push({ x, y });
+    if (dir | 8)
+      for (let i = 0, x = 0, y = 0; i < col; i++, x--) offsets.push({ x, y });
 
     // 중복 제거
     offsets = offsets.filter(
-      (p1, index, arr) => index == arr.findIndex((p2) => p1.x == p2.x && p1.y == p2.y)
+      (p1, index, arr) =>
+        index == arr.findIndex((p2) => p1.x == p2.x && p1.y == p2.y)
     );
 
     let able, x, y;
@@ -823,415 +835,305 @@ class Node {
 class Tiler {
   constructor() {
     setTimeout(() => {
-      // this.Test();
-      // this.chch2316();
+      this.chch2316();
       // onPlay({ message: "" });
     }, 100);
   }
-  Test() {
-    const infoList = (() => {
-      return [
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/LFKALKBPLBKNPPPFBKNLMHEEGKDKPOOJCLHMJBOFNGIFGEGJFOOEBNGBENPBKPGJCEMKCGDHADCFOJMEKAJDHPPFMPMJGJNEKNCFEEAOACKEFBADNLMMAPFEFJBCPAGFDNOOGPEEGNOGHIOLKAHIAEGNMBFFNCIABGOOLHAIHDELAKAOOCAHBEPHFHBBMBHCODHPAAMPCMKKKAMEBDFDPEKPLIFDMAPGPLMOJMPFBEHECNBMHEMNOLAKEPGIAFMK.png",
-          name: "새벽너울",
-          level: 250,
-          job: "팬텀",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MJBCLOHHJLAEGBJBOFJCPJJINIDIPEKLMICBMDFIMPLCFDAICGJOPLJIGGPJEBIBEOHJFBCEJFEBJADILAPJMKMKNNMMEAMGKOCOEBJKNKBEOPKMODNCMOJAFCOLJAFDOPEEELMHALOMFPMOMDFKAJCJCPHJCPJCPENFGJKMBPCLNNFEICHNNBNNOKECNCDPFLEBFIIOLCLPKHFDIDPPEAIAIKEOFMEHANEMHJFDGLOIHABJEIPKOJKFBALKJAKA.png",
-          name: "ygh메르",
-          level: 200,
-          job: "메르세데스",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/KEPNLPKLEGEGHAFIKJIEMMDKKFKBHFBLNJDFDENCHAFBGCFIMDIPICOOKGIDDGFBPJHPGGCJNILACKNFNBGLMDAEPKAEJAACLDJJNCGNJDEGJBKMOKCAIBDKJFDFDBBIJCMFFHAJIEPIDNLJIPBBLPDCLLMCKEJGBCMELGGPJEHPICHBHMBEAEOFPDILIGCBLCPJGKGMJOBABILCGCMIMJEGAANDNHDKPOCEPCCPJONCJPCCOHHDIFPNJKENEILK.png",
-          name: "ygh미하일",
-          level: 200,
-          job: "미하일",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/EHPPMKKAJLADMNDEKOPJABENBDPANDKGGGPBDPMEMILFDHGENHKFIEAPNMLFOMJHOBPBLFBNNBBKNGCEFLJIMCOKLLMGOBEHAJCNHPLECOKJDFIENPLBHCCJEHPHNOFDHNJDANKGNGBKCGDALPONGHNMHEEKLMIFOMIIJNCPNDIPILIEOJAECIMIEBNHJLLONECPDLPKHPIKCAFHHHODCALKPEGJLNHDCEMHOMCHPKAGLOJMMEGAEOBFFOCIGIBO.png",
-          name: "ygh버스터",
-          level: 204,
-          job: "엔젤릭버스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/OIFMDFEGFOPILBBMEOJPJAIIICKENHGLAKIALEOIJHBBHIIPGCINGMMMMPMBMJLENPLODKPAAHOJFBOKJBKIDBLLFFINACIGKDELLDLBMOHAKNIGDFHMABFHLMAHPLDCGIHBDJEDFGGACCFOONKHMOIBGDLPOBHJOIMNLMCNDOMEDDIONFKCBMFIEJACCLEMBFPNLAJGMLOLNONNGHBBJGDDHOAMGPEBEAOFCLAFDLBMLPFOKFDJLIKPNPNBMAKN.png",
-          name: "ygh스븐",
-          level: 200,
-          job: "스트라이커",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/IKGOBKDMDBEPGMDDAMGFOOFKAGOLJCJOCHDLMHAMOAAMABBNKKBHBJAJOOKPMGBMGAGGCNHJGIBFJECEEBGBCCFIIIBJIHCIOIJNGNMPMGGAPNBIICGKGCAMIDHFOGMPICLLMPGFCKGPOBDKNKFIDBFDELGPLJIBAPHCADHNPJPHAJLKLLNIFOGCPOKLJJIDIGCHAAMBLJNGFIKGFINKNCLCDADOCKFOEACIGEPKGKEGGNLFFPOMDBMLOKJALPAP.png",
-          name: "ygh은월",
-          level: 200,
-          job: "은월",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/DNENAIABPLDNGNPLELEEKHJIHHMOOKADPPBHHHCCJLNHGHJNCMFIACEJEPMFFPIDPCGOIEGLMAGKDHJPNCDKHPEBFJOCEKAIABGIPOBIDFNLFNAJAOOGIGHAAOIPCBIGPJFAKNNJBMAAGMJCCIGDFBIIKNGNLCJABNEBPELKFMKHJJMEBLLNPGMFLIKDCBKHEJAFPNBPAIAOGMNNBGKPABICOLNOHKBNFIKBKNKIAPEBMKHGLLFJOIAPMGLAIEBL.png",
-          name: "ygh펜타곤",
-          level: 200,
-          job: "카이저",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/PKFEPEMEFENKDEPIBHJCBIMABLKCDJMHFEGOGGNJKIAPPBPPCDNEEKKAMIEKJPJNPNJEHPINLFDOCIJAOCMIEJOINOFNKMKONMBGLLABAEHOBLNNOFDJAFECMHHIJAENNJOIEAENKNBCAOJBDADKFJJKAMOMKPNDGCGJOHPEBAFINCPMAKBMFKONACJPMHPGFKODMKOBHFBABFKHJKEPMFDECDELJFADJCELFPGKOKODPEFGJGOBEICDFIENNLBN.png",
-          name: "새벽가시",
-          level: 200,
-          job: "데몬슬레이어",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/NPAIHOGFBBBIACLJKMLCLLFNKDNHIKNKAJCNIMECNGLEJBPACBEGKMJCDAGHGECEHJMFCMGBEPCILNAKICKOHONHCGJCMMOHLOGKHOLGOIMABIJFKNKJDOFEPFBNKKMDOLFGALJGNNJLJMECONGHFIFPEPMDIIANNEFFNFBOHKCKBHLHAOIKFFIOFBPANFIBFBHAKGJPOHEMKGACPFCBEIMDMDPPGDEAHCBMODBPDBDKJLJKGEADCGABEMJEHBFJ.png",
-          name: "새벽가지",
-          level: 201,
-          job: "제로",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/KHLPDBHPNOAOLGNAMFCKCFFMPJJENCEBPKNIOHFOGAKNDGNEDHFPEBINBIDIILLOEGMCIOOPAFCBCOLPCLJMKBFMGFGEEMEGKJNAPBBFNKKFOOHBNGAOOMCOONBPDHDHGIPBNHFFDMEBNLJHHBPLDMBAAHJPLJMHPAFOIFKHLIEKHNLAJMADHHIPCAIHGJMLJNPPMEHFLGNFJNOJIKNDANNIHPACNBLNFEFEPGGBNJCAGBODOKKCPGICNJLOHFBP.png",
-          name: "새벽권",
-          level: 200,
-          job: "캡틴",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MNBLNKHNMNFFAONHPOOLECNAPAOMLKCFKOBPEOKKFOAKCFGPKHOOJLJCEHIDKELGCLFGMCKPBNJDPMLEIEIHLPODKIDDBHLPMKGOAFKAPAGOOKBDCMNOLDHAHMFEFEMDNEPOLJIBGELMKINDDMKMLMMCICPHADIAEMNDHGPDFILNEFANDNBKCILGKMLHFCHPDLEAICDHJEDMIFGDAHEGLFCCGLCBOGMJKDAKHBLFLKJOKBCNNLMFENBGKFMJFOAC.png",
-          name: "새벽댈",
-          level: 217,
-          job: "아델",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/CMDFKMGKIMCCFNEEHNBHIOAIDJPAJBCDAIJDLIPENJLMMNHMLBLKDNMMPINFJEBFELBMAKBNGJCDNLHKGIFDBKKOOEFJKPBPHGDKMLPJICDCPPKAGOOAIJDJAIANLMPBAIDKOAHFPAMFOKJLDKDJGNBBHCFBFADKPMIEFDMJHOBPBEIJCNGGDENIABNEGJJJPHBHGNEMHAIJLLMOPOAPAIGBODEBJDEIMMKMGKBILNHBLFBNJLIGEFAODCGCAJFP.png",
-          name: "새벽덱",
-          level: 200,
-          job: "카데나",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MMIBBNHNPLMAICNHPCOKHLAFBGJBOJABHJBMGKFLNPCOBMEDKIHFDAHGACFMKONBOANGOLLMJCJNHNNPAGODGBKOOCDDJDJKJMHHAKLCBCJIDODFEIENCDGGCBMNOIIAKNBJNDEBDKLLIICKPIMAJGBFBCIGDMHIEAENGHKLKIHDAEGJEFBHDGFLBPJKNJAPAIMENFGBMENHJOPELFEMAKFAOIPNODFFIJGDNMGNCKHLBCINCMEPAHOKLGOPAIEH.png",
-          name: "새벽뚝",
-          level: 200,
-          job: "팔라딘",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/JJJIPCNPNLGDKGHBABLIJIOMGNDBHIMGCBEOMBOKCAIBKDPFPFEAMEPPNPFOKNNACMNLNJJJBEOIMBOEHBHLFIFOGIPHAAIFIMPMBJMDHJJJOEHCAMIJBLCEMJBNINOOGFELFHACCDNGIMODOMHFDMBLGMJJOOJLBPKCGPCGNBEBABHLMLIDJNNGHGKKONCDDBHIAFLDKIHMMKGBJNJFMEPJLMBIMPDNKIPAGCBGDCIAGDMDIMMMOLKMKGJCNIPD.png",
-          name: "새벽랫",
-          level: 200,
-          job: "블래스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/DIENIFANJFDNPPHKMKNCDGDIGBDHDGFIOIIMCLGALAMLHCMEHAONLHCLHPLHFLFACNEAAIEHCGEIEMCHICEJPBJPAJCBONJFKMANNKIMAHLCGAJDNPPGGLCEFNNIHLHCAMHMPOMPLAFNLNCKFCOMHPIDFPNMMKCBIMLBDLLGABFBIOPKPFOLNNMPPLCBGHAAHHFEMAKHCEBPCNEOGGMGKMIKFACHMCJOOOCJGKOFFDGFEAKNENKJNMHHOGGJCPMH.png",
-          name: "새벽랸",
-          level: 200,
-          job: "아란",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/KCPJFCHKJDPFKBLGKMIFIGLBEPLLOIAFGFOMAANOPLLHAIHBIGMCHKBAENBNJDAHKOILPIBGJCHOMAMOLBJCJJHLBKAFNGLMDJJKLKDJACLNCGIGAGAEOMIIIEFGCOEGLGGOHBAJFAFMHDMOHOHHMLBDJMNDKOALMFABOCFNMFJPKOKKMHDGIFOOHGLCPJOGLJBPLKAOKJKFAJCIINLAFOJBBICFEDNAHLPOEMKHPFCKECBEELJJMCGPEMPPBDDA.png",
-          name: "새벽레",
-          level: 220,
-          job: "윈드브레이커",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/BJPIDHBKLOBNMDOPLALNHJHKBIEFGIGGHNNOKFGCAEOGMINLLNAKFEINAFDINPHGOMFJAGOJENPGNPCJMMPIEMGEDMOMLJADOCCKGMNGOFLHHELOCIJJCAANHNINCKCDFFGHOHJIHOLHBJNPOBLAPAPIODENLAHHMONHPILJFMCNAJOLODCCDPDJHPGODBKPFONEBPNMEPFAEONAHBIFEKCAHLAJMCNJPMLANDGBCJHKIACLIIPOKGHGNNODJHHO.png",
-          name: "새벽루믿",
-          level: 200,
-          job: "루미너스",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/GBEGDHHJHPJNILECGBFPPEANHLPCHECEOHJNJHBFJGKEAHLINHJAFNDKIIIMAKJMGNKKBJLPOGDLCGJLAJMJHJNPJOPPCGPKKKCHAJLGECBMNPKFPNDBOICLBAENJEPDGEECILOKFIHHANECJJDMJJBHLEJCKNIMCOCIODEIILADBOMMEHFMNKPAEODMBDGGLJOCGLIKGPCFPCMFIIGLBJLICCLJGHDGFBLFGDPLAJFLDCLBBLILCNIEANNECBPF.png",
-          name: "새벽륨",
-          level: 200,
-          job: "일리움",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/DPEJOECKFEGKFIHKGNDKMOGBKCABEPNGHJPJFGEDCJBCGIDLLIHACKALOGNLOLHDFNMHIKMOACPPGINJPAFMFDHHPNIOOKNGLBCGPMHGGLKHGJLCLBDJFHLJJFBPPJBEDLGBKBBHFNELPGANCBNCFBFOJCKOKFIPHIOFAGLGFJNCCBLHLLKMOMFEJHJHGGBOJGGIAHOHKHLHNOPHFNCJKMIOAALIDOCNBPDDNCMIEPHCJHEOPOCLAOICLONJADII.png",
-          name: "새벽륵",
-          level: 200,
-          job: "에반",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/HGIFIBIIOMFLBDCHJNDIONHPPMFPEIIDCDHFILHIEAKBPHPEOCAIFOELIIMJELLBKJGOABBKMGABCJIMBDLCPGCPBGJAGEGNBIHJOCGMOCLJPHDECBPIGCAOHLALFFEAENKJMDCOOJFKOPMIAHGIJIMLOMNGCMKBOJEKJFJPGDAKCOABNJMJKGDEEIDDKMGLNPADDHHPPJALPMIPDGOGOMBKBKOCBLIOOHLGPIKPGGEKCEINDKFDPPKFGBODLNFO.png",
-          name: "새벽리아",
-          level: 200,
-          job: "팬텀",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/PAHHHBHFEOCPGNFAPKLEONACDBGKDHNPAAFHLGALAAGLCELGDJKCHFHBDEPBKFKPFMGJJNLDFMPDNNIPALBOFMALOENBOGCPEEDEDKOFEECKEOGAKHKEKHHHAPGFKICGHCIBNCOCCIDEBAOOEBCONHJPCNBHKAGHPJOLDDELFPBBJGAHDFJIHLEHPMEFKBBODGBJLKCGKNGDEBBMPABONGGAJFGJJGEFIGJNFHFHKDPLINLPDBHNEGGFLAMBKCCJ.png",
-          name: "새벽머신",
-          level: 200,
-          job: "메카닉",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/IDCLLKLOOIJDHICDLLAOMHNGKFFKEDAJMPMFCILODBCAGMBLGANMFAOLMJPHOHEGBBCGNHAJPGHGOENPBAJNFODGIMGNPMDKAJJMEKEAKMOIMHOBBNNEGFKEOIDPPDKKLIBOBOGGCJJJNFGJLIINBEHIPBPAJGFJGPLAJMGBMHIGFBPIKCAHKPIAAJNENOAPDOCAEFCPJIKLBCIAFHHGFIACONNBAIGOBOBBLBLLKHMDPEBJHLBCKDPDABFIANEB.png",
-          name: "새벽몽킥",
-          level: 203,
-          job: "캐논마스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/KKCMHNFPLOPHIKDOPEFLFMENCMNNELMPNAAKLEAHDMDLCDAGIKDGGEHFAGLDEPOMFFDEFBEIAMKMOHANBIPHLIOEGPGODMGAFABHBDNJLJMICIHFNLANNBCPOENAINFNDNLFIHFIAFLDJFKOLHMHOBPIJBKEIIJJDEGNHIEFLOMMGIDADIGNIIAAMBEHMGIIHLCOKJLLDFNJKMCFCKKGHENPOIJIHBGJFGLIFLCJEBKOOBBLOLCKGCBEGJOBDHEF.png",
-          name: "새벽밤향기",
-          level: 200,
-          job: "데몬어벤져",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MNDAMANONBFFEIKLOAHCDFPFLHMOPHGHHCBGCAEEKLIGNBECLBDGAEDMEJOGEAJNEGDFKCAGDBLOPEEEMGPJGBFKPMDGJIMPMHPAKOHOGELMKDOHNNPPHBMEGOLLMNFLAFCIKOHLNEIBKJPEIIMAMMFEOLIEDMADHJLJHMOEPAGLKIMGHILOACJJGAFGENDJAGKNONMJHFHNELJDDPCDOLFEHNLJHAPDKGHAPOMFPMCFKGBLLIBJNDFILDGNJADF.png",
-          name: "새벽뱉",
-          level: 200,
-          job: "배틀메이지",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/LOFMPOJIFFNFNMJDOBLEGDIJFOFKGDFFPLEJKEAFAEFPEOIILGKKJFNOAOFPJLEJEFCGMFGGHCANEIFKKABIBPEEGJJJNLPOKAMENJFJCOJGODMFDBBNOMCOGOOICHOOPOPOIACGOECOAPJPGGMKPKGJNBDOBJFIJBPOPPNOLDFCFOOEKJPDFGAMJPEGDAMCCOJEMFIGLOMAINOPIHMKLJPIDBMEGDJAENMHOAOKABEHIEACHFIPDFNNDBGNDFNE.png",
-          name: "새벽비화",
-          level: 200,
-          job: "플레임위자드",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/IPPGJHPELGLIBCKLKDIEGEJHKJMBJBHIHBLGOIBGCLDJABNKFIMNGJBAIDMIOHJJCHFKEDODDBAGMDDOIAALOAELJAOOPPFGFICDKHIKDGCHHABJKGIBAPIFPJNFDGBJOPLMFBGGKPKJKMHPJIHHKAHNLPKAKNBFGHDHMJIMNNACNPKGIMDPFLFNDGNHFIFDBCFGOJDMJOMIMDKPBGPPPIJIGDKMCNBGHAOMNPPLCGFJPHMMNPEGAKJDLBEAEIOJ.png",
-          name: "새벽빽",
-          level: 60,
-          job: "에인션트아처",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/JJODPAHFKGLCKHNJCFOAOCCEIEFFEMGAFBHFLCCOEGLHIOCNKGPHLGALGFAFJJGIMPFEKDMLJLPFDOHHPOJECMPNJLOKAHPPDMCHBHCMHANBABNEPFFCIDIMMIFIBKCCENHBGMJCDKNENKIICJLCCMJAMKLKAPDKJAAJPCHHAOFLMBFDPMPBGOMCCLCKDHNBCHOEGFPHNLDKCEMBNDCLMOEFJDAFFGCPKDAFAGLIGCKNDKFIOHGKKFEHIKPPEDON.png",
-          name: "새벽숀",
-          level: 207,
-          job: "나이트로드",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/BDELDENGKBKKPHIEPCOKJGCEGDPBNBGBMDHCHLODKFEKDNCIMEFPOAHEDFPDLPGKEGGCOHEHNBBFGEHFMOHGCDINDOGGFHMHLEFOIKIBHHCGEKONOOAHHDIAKAABMMBODCEDEOCHOEGKOGPDIHEDBDBGHFNAEGKIIABFCFLHPDEHKDNLKJOPMEADPKFPMGPBMDMALGPACHHJGDENIFNBGABJGBLFMJGDDMEMILAFKFAEGDFDPJNFELLOMNBGFOBM.png",
-          name: "새벽숑",
-          level: 200,
-          job: "소울마스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/HKNCEEADCNLGMAEBELLLJIJLMEMKAMHCBKLADKFGKEAFBJBKJPIJMNANLGGJKAJFFJALAJAPCCKLKDJHLAGPOHOGOLFIJACEFIMKCDDBOGNFKPBHGADMAJDEJJILLBACGCBFHFADCBALDBEJAAPPGLCBNMAFOGMJGNBJPLINFIAFNOLFHKIJDIKKMAAEBKLKMGDJFGGIEFGPKFKCJKACAMEOOACPNCCHGMKCLMIONNLHMINFFMGCOLJGKHIPEMEM.png",
-          name: "새벽쌍",
-          level: 225,
-          job: "듀얼블레이더",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/OJFHGJNFGILEPBNPCJMGALNALOLGJNAHAANNAPAPPKCMINLEGEAHBBBMHGLABCGBLAKMFLCMCCNIJCFHOIJFMOLFBKLNJCANJFDLPJKMCDIOKFEBCHIAGJJGCEPOPLOBNMMJBOJKNLIMCAGBPBAJAIIEDKKKCPOJEFEKIJFNKMNCIKKHFBIGMNPIPADCGANNCNPCMEHHOCKIIOEBEMIOMKEKMAGCHODHGIBNHHHBJMFFFGKGLCKOLJEAFEOEJDGB.png",
-          name: "새벽아름",
-          level: 200,
-          job: "와일드헌터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/NJOKBHCFAKEACNNPEAJDLEGCJHFDFEEMAKABAMKBEHNAFBFOBOPCFODLMKAJDAHOIFNKNDIOACJCNDABDBHEBIHMMEHLAKKMANAJBCIJCAEDKPLKPLEKNNNEAKEICAHCDODNJEOIIKCLFJPJHONELMLGBGHGOHBDODDHCKMNMCLMENJLEKKILAPODGOLKPNGOPKAANELBHCOPLOPFIKMPFALGEBABNKFGEMHDBCJEEDFJDKLLOEMBMJBCNMLCOEG.png",
-          name: "새벽욘",
-          level: 241,
-          job: "섀도어",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/GGGCOAGACPFPEHGMCMDDPNABDKHIJLGEEKNMKJIEIGFFCGOOMFEFLJLMLCPBKMLDHIFPLPCKPJNEAKHLGGADDCGNLCNODEJIKKLJAEBDFFMJNNCCHHCCJOEPLAOAJLHDJCHJNAPLKNEFMAPCMMEGNCAKGJCDFDAGIPMLCBHANBJIHMMEJNHKMPHPKNJIPGAPHJMBGJGIPAKFPBABGFCMCMDOKFIIKFFNHIDEBGKHGGBGGGDKDMLJMPBIHEHPMEBJ.png",
-          name: "새벽욤",
-          level: 200,
-          job: "신궁",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/PBBCLJFKPKFAKNIACHFADAKPINKMJCBOAJMOHKMELAPKBLGODEFFOIDPJJKIGDOGEHADBONIKJJDCKHAPIKELOLIOFCOBDOMMBPADHNKPAIBPHBPDDMFAHCIJAPMJHPNHFBMBJNNBJCEALKDJBHDPDBLHGKCAGMLJKLIBKJPPMBMKBDELMJGGIMPMNNGBBPMFNHCFOIKAFEDMEMAMNOLPIHFOAHMNLLLDPILGENEMCCJHNBOIMAFFAFILMPIOFKF.png",
-          name: "새벽워",
-          level: 200,
-          job: "나이트워커",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/DNAEGPGGMLBDBHHBFAKAGEFBFHFBKHFDMFNDNLNEMFGHGCCMECKOMNCNOGBPNDBJBJHBFOAEDMPIPOCLCPCCIJNMAALLGNGFIGLMGOHECBIEOGCNPBDMKHCDIMOCCFDFPPDJBEFCIAPCLDEFJJGBGKCPJDMAAOPBBENAJGCFOHCCILEHBANKGLBAGCBCPBPKCMGGBPHHCEFGNIJLNAFFLOMOAFLOCOEEJKCKMLCJGJJCHFNGMGFDEAMFOPPMEINO.png",
-          name: "새벽읔",
-          level: 200,
-          job: "아크",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/JDBOJJIFJGBKEMDDLECFNKKEAHFLBJPMEBAOEHMBCAMMDPEILIGEHDKOFJLHPDPHODCLMOCGNJDMOBCOCKCMLNGOAKAOAJHHLNDLACIDJKNFMHJOIHIHEIKAAAEHGMFBLAHIMKBBEMNADNMNFCIJMOJJMEEHCLIEFIJJDCOHPEJEMOPBCNGLDLDFINHAPBGMHAJDGCODOILLKNLIKADGMEBCEKAHBGBELBECBHGNFIOJMOOMGFLHDKJGFDBAIEOF.png",
-          name: "새벽체스",
-          level: 200,
-          job: "키네시스",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/JAHKPJILLNFLGBGPMCPFACFAKGGIBABNOLNIBHPEJJHGLMFGFLGNFGHNGBAKINAEHHEKAKOGBCHDOPJNPNKENOPDKBMPDGIBMJBDPDBGMHLMNKMLBEJOELMAPNKKNAOMHDBNBMLPDFBAFBKKEDGINACOOIAODMFBDDBOFJJLOHGHLIFMJNIAKLNLFEHHHEOBLGNEKPOECONCJJHAMGAODCPNGHAFNCPCNHEKGMCCGFAKKBHLADPOHBJCLIAIPFBH.png",
-          name: "새벽칸",
-          level: 200,
-          job: "카인",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/NKGPDOLFJMAOOPMDMDCKGPEJOKCKNGANFIJGPANDCNGPICMKEIOBFHKMNGKEGPOIKNBCCPDPBINIMEKOHNPANCMJACCPPEGEFFKPKFHJNMIIMPLDPKIHNIDGLNBFOLIKOJFFCABHIBNKGNKAFFMAADAJLNMNFCDNAFFKNFBNOFOEGIHEDBGHDBAIPCKLGJGJDLFDCILCKAHGHBJCDGMCCEPFCLINHLECJKMMBKIBCKFPIDFNIDFMAALIHKJCAKBE.png",
-          name: "새벽페",
-          level: 206,
-          job: "패스파인더",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/CKMPIPGKCJLLHODEKIADJBJFDFHBBFCNALGEPCCHPABMJOEGHIEOHFMMFNEDMGJKGNFPPEBMLHEIDMDEMHNPJKEGILNLPBFIDODGAPJIMKEHCJFIPKAMIGMODMCKOIIONOGJDBPEAEADMGGGJLDCPALPPKOINOEAIFBBLAPBGFBHKBAHIKMOHBBOFOECLMAKMJCFODKODFGIOEBKHKGFKGPBMEKOJEIKNBGDCFIDPNDEPKCOAIIJMBGCODKDKHHA.png",
-          name: "새벽풍경",
-          level: 209,
-          job: "제논",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MGKKNPFHLCKGKNFBAKALMMKHOMEJIONKIPEPNOOLCHLCFAFJHIMONBBMGEMEAHPPKJHBGCNPGEDCIFGCHLAPDKBMLOCKKIACEBPAEEKAANCOHIKPKJLJFGNFKBJPHMJJFNKCBMCJEBMEGGKPEDPCLLMHJFEMNICIMIIFKLMHFLIINPJKHEPNLJIOIGLJLDAPGCFGEEMLIMCLILCEFHNOIDDJAMGKDEGBOOKJMFPPCALBKFLENBJJIDAFODOOJGDN.png",
-          name: "새벽헐",
-          level: 200,
-          job: "보우마스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/AEDFABDFCMNLICEJFBKIBADDCMIGINPLCLNDEOCLEAEBEDAKKMLAGNDLNBNIBEJIAGIGBICFHIPMFDGABJEEHAIMFBLGEIKFEGLMOAAIPDHFCNIEEPAALDNPACLIKLLDLBPODOKBFLOENHPCCAHEJODOEALJGDOMILPMLEICCPEJMOAGPKIEDJILIEKPPHCHBLAMLNPNJFPJJBLMLBAJFDLICFOKIBFDFAKMKANAKAJGHAELIOELILLGDAPBCJJC.png",
-          name: "새벽혀",
-          level: 212,
-          job: "히어로",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/NJIICEHKHFLBBJBDHKLEKJKLDGNCOCDCBPBKADGKIJLAPIAGPBNGEJDMINNFIIJDEPMKHIBJEHNLBNAEOPKLBLMPGHNCAECBCJBOAKNLLBMDHMCODNIDIBGGHEHLLPMHOODCAMEPCOIHMCOBMFFBKAAOOEBCJCOMCHKDLEEAEDFHCBKMBFPDCHICMMGPFDGGBKKFLEJPHFFFNGHLMNCCGIKPPFLOOOCJAHCKEONANNENMIJIOMKNIIFJLCDKOFCF.png",
-          name: "새벽훙",
-          level: 200,
-          job: "호영",
-        },
-      ];
-    })();
-    infoList
-      .filter((e) => ["새벽너울", "새벽욘", "새벽쌍", "새벽댈"].indexOf(e.name) != -1)
-      .forEach(character.add);
-    character.sort();
-    stats.updateLevel();
+  // 선택된 타일들을 통해 Mino() 배열을 만들고 선택된 영역을 통해 2차원배열 map을 만듦
+  init() {
+    board = [];
 
-    const event = document.createEvent("MouseEvent");
-    event.initEvent("click", false, true);
-    element.img.autoSelect.dispatchEvent(event);
-    for (let i = 0; i < 4; i++) element.img.maplem.dispatchEvent(event);
-    const posList = (() => {
-      return [
-        {
-          x: 0,
-          y: 8,
-        },
-        {
-          x: 0,
-          y: 9,
-        },
-        {
-          x: 1,
-          y: 9,
-        },
-        {
-          x: 1,
-          y: 8,
-        },
-        {
-          x: 1,
-          y: 7,
-        },
-        {
-          x: 2,
-          y: 7,
-        },
-        {
-          x: 2,
-          y: 8,
-        },
-        {
-          x: 2,
-          y: 9,
-        },
-        {
-          x: 0,
-          y: 5,
-        },
-        {
-          x: 0,
-          y: 6,
-        },
-        {
-          x: 0,
-          y: 7,
-        },
-        {
-          x: 1,
-          y: 6,
-        },
-        {
-          x: 2,
-          y: 6,
-        },
-        {
-          x: 1,
-          y: 5,
-        },
-        {
-          x: 2,
-          y: 5,
-        },
-        {
-          x: 3,
-          y: 5,
-        },
-        {
-          x: 3,
-          y: 6,
-        },
-        {
-          x: 3,
-          y: 7,
-        },
-        {
-          x: 3,
-          y: 8,
-        },
-        {
-          x: 3,
-          y: 9,
-        },
-        {
-          x: 3,
-          y: 10,
-        },
-      ];
-    })();
-    posList.forEach(map.select);
+    this.iteration = 0;
+    this.abort = false;
+
+    this.minos = [];
+    this.stack = [];
+    this.spots = { restricted: new Spot(), normal: new Spot() };
+
+    // board 초기화
+    board = Array.from(Array(TILE.ROW), () => Array(TILE.COL).fill(0));
+    map.selectedPos.forEach((p) => (board[p.y][p.x] = 1));
+
+    // this.minos 초기화
+    for (let jobClass in stats.minoCount)
+      stats.minoCount[jobClass].forEach((count, rankIdx) => {
+        if (count) this.minos.push(new Mino(jobClass, rankIdx, count));
+      });
+    this.minos.sort((a, b) => b.rankIdx - a.rankIdx);
+
+    // this.spots 초기화
+    for (let y = 0; y < TILE.ROW; y++)
+      for (let x = 0; x < TILE.COL; x++) {
+        if (board[y][x] == 1) {
+          let point = new Point(x, y);
+          this.spots.normal.points.push(point);
+          if (point.updateAdjacent() <= 1)
+            this.spots.restricted.points.push(point);
+        }
+      }
   }
+  // 중심 영역 4곳 중 헤드가 한 곳이라도 있는지
+  isCenterValid() {
+    const cx = TILE.COL / 2;
+    const cy = TILE.ROW / 2;
+
+    for (p of [
+      [-1, -1],
+      [-1, 0],
+      [0, -1],
+      [0, 0],
+    ])
+      if (this.map[cy + p[0]][cx + p[1]] >= 200) return true;
+    return false;
+  }
+  getDurationStr(startTime) {
+    let str = "";
+    let ms = +new Date() - startTime;
+
+    if (ms < 1000) return `0.${ms}초`;
+
+    if (ms >= 60000) {
+      str += `${Math.floor(ms / 60000)}분 `;
+      ms = ms % 60000;
+    }
+    str += `${Math.floor(ms / 1000)}초`;
+
+    return str;
+  }
+
+  async solve(batchSize = 40000) {
+    // 초기 세팅
+    this.init();
+    const startTime = +new Date();
+    let valid = true;
+
+    const log = (...args) => {
+      return;
+      console.log(...args);
+    };
+
+    // 연산
+    while (!this.abort) {
+      if (valid) {
+        // 테스트 코드
+        // await new Promise((resolve) => setTimeout(resolve, 0));
+        // const _sleep = (delay) =>
+        //   new Promise((resolve) => setTimeout(resolve, delay));
+        // DrawSolution();
+        // await _sleep(40);
+
+        for (let spotName in this.spots) {
+          log(`>>> Start ${spotName} >>>`);
+          let spot = this.spots[(spotName = "normal")];
+          if (spot.points.length) {
+            if (
+              spot.minoIdx < this.minos.length &&
+              spot.shapeIdx < this.minos[spot.minoIdx].shapes.length
+            ) {
+              log(
+                `[Searching-${spotName}] (${spot.points[0].x}, ${spot.points[0].y}) ${spot.minoIdx}-${spot.shapeIdx}`,
+                this.minos[spot.minoIdx].jobClass,
+                this.minos[spot.minoIdx].shapes[spot.shapeIdx].matrix
+              );
+
+              // 제한 영역에서 adj가 0일 때 최소 미노가 1개짜리가 없으면 invalid
+              if (
+                spot.points[0].adj == 0 &&
+                !this.minos.find((mino) => mino.rankIdx == 0 && mino.count)
+              ) {
+                valid = false;
+                break;
+              }
+
+              // 배치 가능 여부
+              let placeable = { able: this.minos[spot.minoIdx].count > 0 };
+              if (placeable.able)
+                placeable = this.minos[spot.minoIdx].isPlaceable(
+                  spot.points[0],
+                  spot.shapeIdx
+                );
+              if (placeable.able) {
+                log(
+                  `[Place-${spotName}] ${placeable.point.x}, ${
+                    placeable.point.y
+                  } / ${this.minos[spot.minoIdx].jobClass}`,
+                  this.minos[spot.minoIdx].shapes[spot.shapeIdx]
+                );
+
+                // 배치 후 영역에서 배치된 좌표들 제거
+                const placedPoints = this.minos[spot.minoIdx].place(
+                  placeable.point,
+                  spot.shapeIdx
+                );
+                let findIdx;
+                placedPoints.forEach((pp) => {
+                  for (let innerSpotName in this.spots)
+                    if (
+                      (findIdx = this.spots[innerSpotName].points.findIndex(
+                        (p) => p.x == pp.x && p.y == pp.y
+                      )) != -1
+                    ) {
+                      // log(`[removePoint-${innerSpotName}] ${pp.x}, ${pp.y}`);
+                      this.spots[innerSpotName].points.splice(findIdx, 1);
+                    }
+                });
+
+                // 배치된 미노 주변 영역 adj 값 업데이트
+                this.minos[spot.minoIdx]
+                  .getArroundSpot(placeable.point, spot.shapeIdx)
+                  .forEach((pp) => {
+                    // 일반 영역 업데이트
+                    let point = this.spots.normal.points.find(
+                      (p) => p.x == pp.x && p.y == pp.y
+                    );
+                    if (point) point.updateAdjacent();
+
+                    // 제한 영역 업데이트
+                    point = this.spots.restricted.points.find(
+                      (p) => p.x == pp.x && p.y == pp.y
+                    );
+                    if (point) point.updateAdjacent();
+                    // 제한 영역에 없는 좌표일 경우 adj값 측정하고 비교해서 추가
+                    else if (pp.updateAdjacent() <= 1) {
+                      this.spots.restricted.points.push(pp);
+                    }
+                  });
+
+                // 제한된 영역에 새로운 것이 추가될 경우를 위해 재정렬
+                this.spots.restricted.points.sort((a, b) => a.adj - b.adj);
+                log("[RestrictedPoints]", this.spots.restricted.points);
+                log("[NormalPoints]", this.spots.normal.points);
+
+                // 스택에 노드 추가, 미노 개수 감소, 다음 탐색을 위해 서칭 변수 초기화
+                this.stack.push(
+                  new Node(
+                    spotName,
+                    placeable.point,
+                    spot.minoIdx,
+                    spot.shapeIdx
+                  )
+                );
+                this.minos[spot.minoIdx].count--;
+                this.spots.restricted.shapeIdx = 0;
+                this.spots.restricted.minoIdx = 0;
+                this.spots.normal.shapeIdx = 0;
+                this.spots.normal.minoIdx = 0;
+              }
+              // 배치가 불가능 할 경우
+              else {
+                // 인덱스 증가
+                if (++spot.shapeIdx == this.minos[spot.minoIdx].shapes.length) {
+                  spot.shapeIdx = 0;
+                  spot.minoIdx++;
+                }
+                if (spot.minoIdx == this.minos.length) valid = false;
+              }
+            }
+            // 계속 배치 해야하는데 더 볼 미노가 없을 경우
+            else valid = false;
+            log("[EndSummary]", valid, this.minos, spot);
+            break;
+          }
+
+          // 제한 및 일반 영역 모두 좌표가 없을 경우 배치 성공
+          if (spotName == "normal") {
+            DrawSolution();
+            return {
+              success: 1,
+              message: `소요 시간: ${this.getDurationStr(
+                startTime
+              )}\n반복 횟수: ${this.iteration}`,
+            };
+          }
+        }
+      } else {
+        // 백트래킹
+        if (this.stack.length) {
+          // 스택에서 pop하고 index들 복구
+          valid = true;
+          const node = this.stack.pop();
+          const spot = this.spots[node.spotName];
+          spot.minoIdx = node.minoIdx;
+          spot.shapeIdx = node.shapeIdx;
+          this.minos[spot.minoIdx].count++;
+          log(`[Backtracking-${node.spotName}]`, node);
+
+          // adj 업데이트하고 복구할 포인트들 세팅
+          let needUpdateAdjPoints = this.minos[spot.minoIdx].getArroundSpot(
+            node.point,
+            spot.shapeIdx
+          );
+          needUpdateAdjPoints = needUpdateAdjPoints.concat(
+            this.minos[spot.minoIdx].unPlace(node.point, spot.shapeIdx)
+          );
+
+          // 일반 영역에 포인트들 복구
+          needUpdateAdjPoints.forEach((up) => {
+            let sp = this.spots.normal.points.find(
+              (p) => p.x == up.x && p.y == up.y
+            );
+            if (sp) sp.updateAdjacent();
+            else {
+              up.updateAdjacent();
+              this.spots.normal.points.push(up);
+            }
+          });
+
+          // 왼쪽 위 좌표가 먼저오도록 정렬
+          let v;
+          this.spots.normal.points.sort((a, b) =>
+            (v = a.y - b.y) ? v : (v = a.x - b.x)
+          );
+
+          // 제한된 영역 좌표 갱신
+          this.spots.restricted.points = this.spots.normal.points.filter(
+            (p) => p.adj <= 1
+          );
+          log("[RestrictedPoints]", this.spots.restricted.points);
+          log("[NormalPoints]", this.spots.normal.points.slice());
+
+          // 안되는거 다음부터 봐야하니깐 인덱스 증가
+          if (++spot.shapeIdx == this.minos[spot.minoIdx].shapes.length) {
+            spot.shapeIdx = 0;
+            spot.minoIdx++;
+          }
+          if (spot.minoIdx == this.minos.length) valid = false;
+        }
+        // 배치 불가능
+        else {
+          DrawSolution();
+          return {
+            success: 0,
+            message: `가능한 배치가 존재하지 않습니다.\n\n소요 시간: ${this.getDurationStr(
+              startTime
+            )}\n반복 횟수: ${this.iteration}`,
+          };
+        }
+      }
+
+      if (this.iteration++ % batchSize == 0) {
+        DrawSolution();
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+    }
+    // 사용자 중지
+    DrawSolution();
+    inform.show(
+      inform.INFO,
+      "점령대 배치 계산 중지",
+      `소요 시간: ${this.getDurationStr(startTime)}\n반복 횟수: ${
+        this.iteration
+      }`
+    );
+    return { success: -1 };
+  }
+
+  // 테스트 코드
   chch2316() {
     const infoList = (() => {
       return [
         {
           imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/LFKALKBPLBKNPPPFBKNLMHEEGKDKPOOJCLHMJBOFNGIFGEGJFOOEBNGBENPBKPGJCEMKCGDHADCFOJMEKAJDHPPFMPMJGJNEKNCFEEAOACKEFBADNLMMAPFEFJBCPAGFDNOOGPEEGNOGHIOLKAHIAEGNMBFFNCIABGOOLHAIHDELAKAOOCAHBEPHFHBBMBHCODHPAAMPCMKKKAMEBDFDPEKPLIFDMAPGPLMOJMPFBEHECNBMHEMNOLAKEPGIAFMK.png",
-          name: "새벽너울",
-          level: 250,
-          job: "팬텀",
-        },
-        {
-          imgUrl:
             "https://avatar.maplestory.nexon.com/Character/MJBCLOHHJLAEGBJBOFJCPJJINIDIPEKLMICBMDFIMPLCFDAICGJOPLJIGGPJEBIBEOHJFBCEJFEBJADILAPJMKMKNNMMEAMGKOCOEBJKNKBEOPKMODNCMOJAFCOLJAFDOPEEELMHALOMFPMOMDFKAJCJCPHJCPJCPENFGJKMBPCLNNFEICHNNBNNOKECNCDPFLEBFIIOLCLPKHFDIDPPEAIAIKEOFMEHANEMHJFDGLOIHABJEIPKOJKFBALKJAKA.png",
           name: "ygh메르",
           level: 200,
@@ -1463,6 +1365,13 @@ class Tiler {
         },
         {
           imgUrl:
+            "https://avatar.maplestory.nexon.com/Character/BKEBNJDHPPKHOALLFBGJDPKFKEHKOMNLOLBENACCIHBMNHMKPKNACNOOIGGNDACFLHMHPDHEONGDAMCHNEBHMNIPDANMFJBAOHLOBEAJOMHGJKNFBFOAFALPJMJOAHMEMIHCAIOOFELOCEMNPAOAADLOFGOFDAMNGPOFDJNNKJIEAEEKJFJHIBMOHEJCCOMDDKNNMINDJJPIOFLGKFAOBABBDJKFJDMJHJGLIHBFANGLOOFOLNBPOMKMAFCJFBGH.png",
+          name: "새벽창섭",
+          level: 11,
+          job: "라라",
+        },
+        {
+          imgUrl:
             "https://avatar.maplestory.nexon.com/Character/JDBOJJIFJGBKEMDDLECFNKKEAHFLBJPMEBAOEHMBCAMMDPEILIGEHDKOFJLHPDPHODCLMOCGNJDMOBCOCKCMLNGOAKAOAJHHLNDLACIDJKNFMHJOIHIHEIKAAAEHGMFBLAHIMKBBEMNADNMNFCIJMOJJMEEHCLIEFIJJDCOHPEJEMOPBCNGLDLDFINHAPBGMHAJDGCODOILLKNLIKADGMEBCEKAHBGBELBECBHGNFIOJMOOMGFLHDKJGFDBAIEOF.png",
           name: "새벽체스",
           level: 200,
@@ -1512,17 +1421,12 @@ class Tiler {
         },
       ];
     })();
-    infoList.forEach(character.add);
-    character.sort();
-    stats.updateLevel();
-
-    const event = document.createEvent("MouseEvent");
-    event.initEvent("click", false, true);
-    element.img.autoSelect.dispatchEvent(event);
-    for (let i = 0; i < 4; i++) element.img.maplem.dispatchEvent(event);
-
     const posList = (() => {
       return [
+        {
+          x: 1,
+          y: 8,
+        },
         {
           x: 0,
           y: 0,
@@ -1593,10 +1497,6 @@ class Tiler {
         },
         {
           x: 1,
-          y: 8,
-        },
-        {
-          x: 1,
           y: 9,
         },
         {
@@ -1682,6 +1582,10 @@ class Tiler {
         {
           x: 4,
           y: 9,
+        },
+        {
+          x: 3,
+          y: 12,
         },
         {
           x: 0,
@@ -1798,10 +1702,6 @@ class Tiler {
         {
           x: 3,
           y: 11,
-        },
-        {
-          x: 3,
-          y: 12,
         },
         {
           x: 3,
@@ -1896,6 +1796,10 @@ class Tiler {
           y: 9,
         },
         {
+          x: 18,
+          y: 11,
+        },
+        {
           x: 17,
           y: 10,
         },
@@ -1922,10 +1826,6 @@ class Tiler {
         {
           x: 18,
           y: 10,
-        },
-        {
-          x: 18,
-          y: 11,
         },
         {
           x: 18,
@@ -2115,248 +2015,17 @@ class Tiler {
           x: 21,
           y: 6,
         },
-        {
-          x: 20,
-          y: 6,
-        },
       ];
     })();
+
+    infoList.forEach(character.add);
     posList.forEach(map.select);
-  }
-  // 선택된 타일들을 통해 Mino() 배열을 만들고 선택된 영역을 통해 2차원배열 map을 만듦
-  init() {
-    board = [];
+    character.sort();
+    stats.updateLevel();
 
-    this.iteration = 0;
-    this.abort = false;
-
-    this.minos = [];
-    this.stack = [];
-    this.spots = { restricted: new Spot(), normal: new Spot() };
-
-    // board 초기화
-    board = Array.from(Array(TILE.ROW), () => Array(TILE.COL).fill(0));
-    map.selectedPos.forEach((p) => (board[p.y][p.x] = 1));
-
-    // this.minos 초기화
-    for (let jobClass in stats.minoCount)
-      stats.minoCount[jobClass].forEach((count, rankIdx) => {
-        if (count) this.minos.push(new Mino(jobClass, rankIdx, count));
-      });
-    this.minos.sort((a, b) => b.rankIdx - a.rankIdx);
-
-    // this.spots 초기화
-    for (let y = 0; y < TILE.ROW; y++)
-      for (let x = 0; x < TILE.COL; x++) {
-        if (board[y][x] == 1) {
-          let point = new Point(x, y);
-          this.spots.normal.points.push(point);
-          if (point.updateAdjacent() <= 1) this.spots.restricted.points.push(point);
-        }
-      }
-  }
-  // 중심 영역 4곳 중 헤드가 한 곳이라도 있는지
-  isCenterValid() {
-    const cx = TILE.COL / 2;
-    const cy = TILE.ROW / 2;
-
-    for (p of [
-      [-1, -1],
-      [-1, 0],
-      [0, -1],
-      [0, 0],
-    ])
-      if (this.map[cy + p[0]][cx + p[1]] >= 200) return true;
-    return false;
-  }
-
-  async solve(batchSize = 40000) {
-    // 초기 세팅
-    this.init();
-    const startTime = +new Date();
-    let valid = true;
-
-    const log = (...args) => {
-      return;
-      console.log(...args);
-    };
-
-    // 연산
-    while (!this.abort) {
-      if (valid) {
-        // 테스트 코드
-        // await new Promise((resolve) => setTimeout(resolve, 0));
-        // const _sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-        // DrawSolution();
-        // await _sleep(40);
-
-        for (let spotName in this.spots) {
-          log(`>>> Start ${spotName} >>>`);
-          let spot = this.spots[spotName];
-          if (spot.points.length) {
-            if (
-              spot.minoIdx < this.minos.length &&
-              spot.shapeIdx < this.minos[spot.minoIdx].shapes.length
-            ) {
-              log(
-                `[Searching-${spotName}] (${spot.points[0].x}, ${spot.points[0].y}) ${spot.minoIdx}-${spot.shapeIdx}`,
-                this.minos[spot.minoIdx].jobClass,
-                this.minos[spot.minoIdx].shapes[spot.shapeIdx].matrix
-              );
-
-              // 제한 영역에서 adj가 0일 때 최소 미노가 1개짜리가 없으면 invalid
-              if (
-                spot.points[0].adj == 0 &&
-                !this.minos.find((mino) => mino.rankIdx == 0 && mino.count)
-              ) {
-                valid = false;
-                break;
-              }
-
-              // 배치 가능 여부
-              let placeable = { able: this.minos[spot.minoIdx].count > 0 };
-              if (placeable.able)
-                placeable = this.minos[spot.minoIdx].isPlaceable(spot.points[0], spot.shapeIdx);
-              if (placeable.able) {
-                log(
-                  `[Place-${spotName}] ${placeable.point.x}, ${placeable.point.y} / ${
-                    this.minos[spot.minoIdx].jobClass
-                  }`,
-                  this.minos[spot.minoIdx].shapes[spot.shapeIdx]
-                );
-
-                // 배치 후 영역에서 배치된 좌표들 제거
-                const placedPoints = this.minos[spot.minoIdx].place(placeable.point, spot.shapeIdx);
-                let findIdx;
-                placedPoints.forEach((pp) => {
-                  for (let spotName in this.spots)
-                    if (
-                      (findIdx = this.spots[spotName].points.findIndex(
-                        (p) => p.x == pp.x && p.y == pp.y
-                      )) != -1
-                    ) {
-                      // log(`[removePoint-${spotName}] ${pp.x}, ${pp.y}`);
-                      this.spots[spotName].points.splice(findIdx, 1);
-                    }
-                });
-
-                // 배치된 미노 주변 영역 adj 값 업데이트
-                this.minos[spot.minoIdx]
-                  .getArroundSpot(placeable.point, spot.shapeIdx)
-                  .forEach((pp) => {
-                    // 일반 영역 업데이트
-                    let point = this.spots.normal.points.find((p) => p.x == pp.x && p.y == pp.y);
-                    if (point) point.updateAdjacent();
-
-                    // 제한 영역 업데이트
-                    point = this.spots.restricted.points.find((p) => p.x == pp.x && p.y == pp.y);
-                    if (point) point.updateAdjacent();
-                    // 제한 영역에 없는 좌표일 경우 adj값 측정하고 비교해서 추가
-                    else if (pp.updateAdjacent() <= 1) {
-                      this.spots.restricted.points.push(pp);
-                    }
-                  });
-
-                // 제한된 영역에 새로운 것이 추가될 경우를 위해 재정렬
-                this.spots.restricted.points.sort((a, b) => a.adj - b.adj);
-                log("[RestrictedPoints]", this.spots.restricted.points);
-                log("[NormalPoints]", this.spots.normal.points);
-
-                // 스택에 노드 추가, 미노 개수 감소, 다음 탐색을 위해 서칭 변수 초기화
-                this.stack.push(new Node(spotName, placeable.point, spot.minoIdx, spot.shapeIdx));
-                this.minos[spot.minoIdx].count--;
-                this.spots.restricted.shapeIdx = 0;
-                this.spots.restricted.minoIdx = 0;
-                this.spots.normal.shapeIdx = 0;
-                this.spots.normal.minoIdx = 0;
-              }
-              // 배치가 불가능 할 경우
-              else {
-                // 인덱스 증가
-                if (++spot.shapeIdx == this.minos[spot.minoIdx].shapes.length) {
-                  spot.shapeIdx = 0;
-                  spot.minoIdx++;
-                }
-                if (spot.minoIdx == this.minos.length) valid = false;
-              }
-            }
-            // 계속 배치 해야하는데 더 볼 미노가 없을 경우
-            else valid = false;
-            log("[EndSummary]", valid, this.minos, spot);
-            break;
-          }
-
-          // 제한 및 일반 영역 모두 좌표가 없을 경우 배치 성공
-          if (spotName == "normal") {
-            DrawSolution();
-            return { success: 1, time: +new Date() - startTime, iteration: this.iteration };
-          }
-        }
-      } else {
-        // 백트래킹
-        if (this.stack.length) {
-          // 스택에서 pop하고 index들 복구
-          valid = true;
-          const node = this.stack.pop();
-          const spot = this.spots[node.spotName];
-          spot.minoIdx = node.minoIdx;
-          spot.shapeIdx = node.shapeIdx;
-          this.minos[spot.minoIdx].count++;
-          log(`[Backtracking-${node.spotName}]`, node);
-
-          // adj 업데이트하고 복구할 포인트들 세팅
-          let needUpdateAdjPoints = this.minos[spot.minoIdx].getArroundSpot(
-            node.point,
-            spot.shapeIdx
-          );
-          needUpdateAdjPoints = needUpdateAdjPoints.concat(
-            this.minos[spot.minoIdx].unPlace(node.point, spot.shapeIdx)
-          );
-
-          // 일반 영역에 포인트들 복구
-          needUpdateAdjPoints.forEach((up) => {
-            let sp = this.spots.normal.points.find((p) => p.x == up.x && p.y == up.y);
-            if (sp) sp.updateAdjacent();
-            else {
-              up.updateAdjacent();
-              this.spots.normal.points.push(up);
-            }
-          });
-
-          // 왼쪽 위 좌표가 먼저오도록 정렬
-          let v;
-          this.spots.normal.points.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x)));
-
-          // 제한된 영역 좌표 갱신
-          this.spots.restricted.points = this.spots.normal.points.filter((p) => p.adj <= 1);
-          log("[RestrictedPoints]", this.spots.restricted.points);
-          log("[NormalPoints]", this.spots.normal.points.slice());
-
-          // 안되는거 다음부터 봐야하니깐 인덱스 증가
-          if (++spot.shapeIdx == this.minos[spot.minoIdx].shapes.length) {
-            spot.shapeIdx = 0;
-            spot.minoIdx++;
-          }
-          if (spot.minoIdx == this.minos.length) valid = false;
-        }
-        // 배치 불가능
-        else {
-          DrawSolution();
-          return {
-            success: 0,
-            time: +new Date() - startTime,
-            message: "가능한 배치가 존재하지 않습니다.",
-          };
-        }
-      }
-
-      if (this.iteration++ % batchSize == 0) {
-        DrawSolution();
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      }
-    }
-    // 사용자 중지
-    DrawSolution();
-    return { success: -1 };
+    const event = document.createEvent("MouseEvent");
+    event.initEvent("click", false, true);
+    element.img.autoSelect.dispatchEvent(event);
+    for (let i = 0; i < 4; i++) element.img.maplem.dispatchEvent(event);
   }
 }

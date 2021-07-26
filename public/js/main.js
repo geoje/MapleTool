@@ -1153,12 +1153,6 @@ function onPlay(event) {
     element.img.play.setAttribute("title", "시작");
     element.div.map.removeAttribute("style");
     map.tiler.abort = true;
-
-    inform.show(
-      inform.INFO,
-      "점령대 배치 계산 중지",
-      event.message ? event.message : ""
-    );
   } else if (element.img.play.className == "map-tool-play") {
     // 잔여 타일이 0이 아니면 오류 메세지 출력
     if (map.tileCount != 0) {
@@ -1192,6 +1186,7 @@ function onPlay(event) {
         maplem: "메이플M",
       },
       rankStrArr = ["B", "A", "S", "SS", "SSS"];
+
     // SSS
     for (let jobClass in stats.minoCount) {
       if (jobClass == "maplem") continue;
@@ -1233,21 +1228,16 @@ function onPlay(event) {
       element.img.play.setAttribute("alt", "시작");
       element.img.play.setAttribute("title", "시작");
       element.div.map.removeAttribute("style");
-      map.tiler.abort = true;
 
       if (result.success == 0) {
         map.solve = 0;
         element.img.trashMap.src = "image/icon/trash.svg";
-        inform.show(
-          inform.DANGER,
-          "점령대 배치 계산 실패",
-          `${result.message}\n\n소요 시간: ${result.time}ms`
-        );
+        inform.show(inform.DANGER, "점령대 배치 계산 실패", result.message);
       } else if (result.success == 1)
         inform.show(
           inform.INFO,
           "점령대 배치 계산 성공",
-          `소요 시간: ${result.time}ms\n반복 횟수: ${result.iteration}`,
+          result.message,
           10000
         );
     });
