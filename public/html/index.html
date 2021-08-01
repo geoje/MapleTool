@@ -23,12 +23,7 @@
         <img src="image/icon/trash.svg" alt="초기화" title="점령대 초기화" />
         <img src="image/icon/help.svg" alt="키 가이드" title="키 가이드" />
         <h6>0</h6>
-        <img
-          class="map-tool-play"
-          src="image/icon/play-button-o.svg"
-          alt="시작"
-          title="시작"
-        />
+        <img class="map-tool-play" src="image/icon/play-button-o.svg" alt="시작" title="시작" />
       </div>
     </div>
     <div class="card box-gray">
@@ -89,26 +84,12 @@
         <h6>비밀번호</h6>
         <input type="password" id="password" placeholder="" />
         <div class="input-login-type">
-          <input
-            type="radio"
-            name="login"
-            id="login-nexon"
-            value="nexon"
-            disabled
-          />
+          <input type="radio" name="login" id="login-nexon" value="nexon" disabled />
           <label for="login-nexon"><span>넥슨</span></label>
-          <input
-            type="radio"
-            name="login"
-            id="login-maple"
-            value="maple"
-            checked
-          />
+          <input type="radio" name="login" id="login-maple" value="maple" checked />
           <label for="login-maple"><span>메이플</span></label>
         </div>
-        <button id="login" onclick="onBtnLoginClick()">
-          계정에서 가져오기
-        </button>
+        <button id="login" onclick="onBtnLoginClick()">계정에서 가져오기</button>
       </div>
       <div class="input-deco" style="display: none">
         <hr />
@@ -116,6 +97,9 @@
         <hr />
       </div>
       <div class="input-apply">
+        <a target="_blank" href="https://maplestory.nexon.com/Home/Main"
+          >메이플 홈페이지 바로가기</a
+        >
         <textarea
           id="apply-name"
           placeholder="1. 메이플스토리 홈페이지에 로그인&#13;&#10;&#10;2. 마이메이플 > 대표캐릭터 변경 > 아이디 및 월드 선택&#13;&#10;&#10;3. 전체선택(Ctrl + A) 후 복사(Ctrl + C)&#13;&#10;&#10;4. 이 곳에 붙여넣기(Ctrl + V)"

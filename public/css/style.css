@@ -502,6 +502,20 @@ button:active:not([disabled]),
   background-color: rgb(34, 34, 34);
   border-radius: 8px;
 }
+.input-apply > a {
+  all: unset;
+  width: 90%;
+  padding-top: 6px;
+  text-align: center;
+  margin: 0 auto;
+
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.input-apply > a:hover {
+  color: lightgray;
+}
 .input-apply > textarea {
   flex: 1;
   margin: 8px auto;

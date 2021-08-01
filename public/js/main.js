@@ -629,6 +629,10 @@ let inform = {
   DANGER: 2,
   DEFAULT_DURATION: 3000,
 
+  list: [
+    // { type, title, text, removing, element}
+  ],
+
   show: (type, title, text, duration = inform.DEFAULT_DURATION) => {
     const div = document.createElement("div");
     const hDiv = document.createElement("div");
@@ -661,11 +665,21 @@ let inform = {
     );
 
     if (duration) setTimeout(inform.remove, duration, div);
+
+    // 기존 inform 제거
+    inform.list
+      .filter((o) => o.type == type && o.title == title && o.text == text && !o.removing)
+      .forEach((o) => inform.remove(o.element));
+    inform.list.push({ type, title, text, removing: false, element: div });
     return div;
   },
   remove: (element) => {
     element.style.opacity = "0";
-    setTimeout(() => element.remove(), 300);
+    setTimeout(() => {
+      const idx = inform.list.findIndex((o) => o.element == element);
+      if (idx != -1) inform.list.splice(idx, 1);
+      element.remove();
+    }, 300);
   },
 };
 
