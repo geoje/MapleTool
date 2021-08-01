@@ -372,8 +372,6 @@ button:active:not([disabled]),
 }
 .stats-mino > tr > td {
   padding: 4px 10px;
-
-  transition: background-color 0.1s;
 }
 .stats-mino > tr:first-child > td:first-child {
   border-top-left-radius: 8px;
