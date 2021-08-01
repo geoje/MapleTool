@@ -900,14 +900,14 @@ class Tiler {
       if (valid) {
         // 테스트 코드
         // await new Promise((resolve) => setTimeout(resolve, 0));
-        // const _sleep = (delay) =>
-        //   new Promise((resolve) => setTimeout(resolve, delay));
+        // const _sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
         // DrawSolution();
         // await _sleep(40);
 
         for (let spotName in this.spots) {
           log(`>>> Start ${spotName} >>>`);
           let spot = this.spots[(spotName = "normal")];
+
           if (spot.points.length) {
             if (
               spot.minoIdx < this.minos.length &&
@@ -984,6 +984,9 @@ class Tiler {
                 this.spots.restricted.minoIdx = 0;
                 this.spots.normal.shapeIdx = 0;
                 this.spots.normal.minoIdx = 0;
+
+                // 더 이상 사용할 미노 없으면 성공
+                if (this.minos.findIndex((mino) => mino.count) == -1) break;
               }
               // 배치가 불가능 할 경우
               else {
@@ -993,6 +996,17 @@ class Tiler {
                   spot.minoIdx++;
                 }
                 if (spot.minoIdx == this.minos.length) valid = false;
+
+                // 미노가 더이상 없는지 체크
+                if (this.minos.findIndex((mino) => mino.count) == -1) {
+                  DrawSolution();
+                  return {
+                    success: 1,
+                    message: `소요 시간: ${this.getDurationStr(startTime)}\n반복 횟수: ${
+                      this.iteration
+                    }`,
+                  };
+                }
               }
             }
             // 계속 배치 해야하는데 더 볼 미노가 없을 경우
@@ -1001,8 +1015,8 @@ class Tiler {
             break;
           }
 
-          // 제한 및 일반 영역 모두 좌표가 없을 경우 배치 성공
-          if (spotName == "normal") {
+          // 제한 및 일반 영역 모두 좌표가 없거나 더이상 사용할 조각이 없으면 배치 성공
+          if (spotName == "normal" || this.minos.findIndex((mino) => mino.count) == -1) {
             DrawSolution();
             return {
               success: 1,
