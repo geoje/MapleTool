@@ -15,6 +15,7 @@ const element = {
     autoSelect: document.querySelector(".card-stats > img:nth-last-child(2)"),
     trashCard: document.querySelector(".card-stats > img:nth-last-child(1)"),
     rank: document.querySelector(".stats-level > img"),
+    resetStats: undefined,
   },
   txt: {
     tileCount: document.querySelector(".map-tool > h6"),
@@ -66,12 +67,9 @@ let map = {
   tiler: undefined,
   tileCount: 0,
 
-  findSelectedIndex: (pos) =>
-    map.selectedPos.findIndex((p) => p.x == pos.x && p.y == pos.y),
+  findSelectedIndex: (pos) => map.selectedPos.findIndex((p) => p.x == pos.x && p.y == pos.y),
   findGroupIndex: (pos) =>
-    TILE.GROUP.findIndex(
-      (area) => area.findIndex((p) => p.x == pos.x && p.y == pos.y) != -1
-    ),
+    TILE.GROUP.findIndex((area) => area.findIndex((p) => p.x == pos.x && p.y == pos.y) != -1),
 
   hover: (pos) => {
     if (map.solve) return;
@@ -111,8 +109,7 @@ let map = {
     map.tileCount = stats.tileableCount - map.selectedPos.length;
     element.txt.tileCount.innerText = map.tileCount;
 
-    if (map.tileCount < 0)
-      element.txt.tileCount.style.color = "rgb(231, 76, 60)";
+    if (map.tileCount < 0) element.txt.tileCount.style.color = "rgb(231, 76, 60)";
     else element.txt.tileCount.style.color = "";
   },
 
@@ -135,21 +132,14 @@ let map = {
           td.style.backgroundColor = color;
           if (i > 0 && shape.matrix[i - 1][j] > 0) {
             td.style.borderTopColor = color;
-          } else if (y > 1)
-            element.tile[y - 1][x].style.borderBottomColor =
-              TILE.COLOR.BOUNDARY;
+          } else if (y > 1) element.tile[y - 1][x].style.borderBottomColor = TILE.COLOR.BOUNDARY;
           if (j > 0 && shape.matrix[i][j - 1] > 0) {
             td.style.borderLeftColor = color;
-          } else if (x > 1)
-            element.tile[y][x - 1].style.borderRightColor = TILE.COLOR.BOUNDARY;
+          } else if (x > 1) element.tile[y][x - 1].style.borderRightColor = TILE.COLOR.BOUNDARY;
           td.style.borderBottomColor =
-            i < row - 1 && shape.matrix[i + 1][j] > 0
-              ? color
-              : TILE.COLOR.BOUNDARY;
+            i < row - 1 && shape.matrix[i + 1][j] > 0 ? color : TILE.COLOR.BOUNDARY;
           td.style.borderRightColor =
-            j < col - 1 && shape.matrix[i][j + 1] > 0
-              ? color
-              : TILE.COLOR.BOUNDARY;
+            j < col - 1 && shape.matrix[i][j + 1] > 0 ? color : TILE.COLOR.BOUNDARY;
 
           // 중심 아이콘
           if (noIcon && shape.matrix[i][j] == 2) {
@@ -262,7 +252,7 @@ let character = {
     NOUNION: ["초보자", "노블레스", "시티즌"],
   },
 
-  getMinoIconSrc: (jobStr) => `image/job/${jobStr.toLowerCase()}.svg`,
+  getMinoIconSrc: (jobClass) => `image/job/${jobClass.toLowerCase()}.svg`,
   add: (info) => {
     // info: { name, level, job, imgUrl }
     const e = element.div.cardSpecimen.cloneNode(true);
@@ -397,9 +387,7 @@ let character = {
       raid: false,
       element: e,
     });
-    element.txt.cardCount.innerText = character.infoList.filter(
-      (o) => o.level
-    ).length;
+    element.txt.cardCount.innerText = character.infoList.filter((o) => o.level).length;
     stats.updateLevel();
   },
   addGhost: (name) => {
@@ -442,9 +430,7 @@ let character = {
       character.infoList.findIndex((o) => o.name == info.name),
       1
     );
-    element.txt.cardCount.innerText = character.infoList.filter(
-      (o) => o.level
-    ).length;
+    element.txt.cardCount.innerText = character.infoList.filter((o) => o.level).length;
     if (info.raid) stats.unsetRaid(info.rankIdx, info.jobClass);
     stats.updateLevel();
   },
@@ -473,9 +459,7 @@ let character = {
       if (diff) return diff;
       else return a.name < b.name ? -1 : 1;
     });
-    character.infoList.forEach(
-      (o, i) => (o.element.style.order = o.job == "메이플M" ? 98 : i)
-    );
+    character.infoList.forEach((o, i) => (o.element.style.order = o.job == "메이플M" ? 98 : i));
   },
 };
 let stats = {
@@ -497,8 +481,7 @@ let stats = {
     let tl = 0;
     let maxNum = Math.min(character.infoList.length, 40);
     for (let i = 0; i < maxNum; i++) {
-      if (character.infoList[i].job == "메이플M")
-        maxNum = Math.min(character.infoList.length, 41);
+      if (character.infoList[i].job == "메이플M") maxNum = Math.min(character.infoList.length, 41);
       else tl += character.infoList[i].level;
     }
     stats.totalLevel = tl;
@@ -532,9 +515,9 @@ let stats = {
 
       stats.raidMember[1] = 8 + union.detailLevel;
     }
-    union.imgSrc = `image/rank/${union.titleEn
-      .toLowerCase()
-      .replace(/\s/g, "-")}-${union.detailLevel}.png`;
+    union.imgSrc = `image/rank/${union.titleEn.toLowerCase().replace(/\s/g, "-")}-${
+      union.detailLevel
+    }.png`;
 
     let romeNum = " I";
     if (union.detailLevel == 5) romeNum = " V";
@@ -550,41 +533,36 @@ let stats = {
     element.img.rank.src = union.imgSrc;
     element.txt.raidMember.innerText = `${stats.raidMember[0]}/${stats.raidMember[1]}`;
   },
-  setRaid: (rankIdx, jobClass) => {
+
+  setRaid: (rankIdx, jobClass, force = false) => {
     if (jobClass != "maplem") {
-      if (stats.raidMember[0] >= stats.raidMember[1]) {
+      if (!force && stats.raidMember[0] >= stats.raidMember[1]) {
         inform.show(inform.DANGER, "공격대원 가득참", "");
         return false;
       }
-      element.txt.raidMember.innerText = `${++stats.raidMember[0]}/${
-        stats.raidMember[1]
-      }`;
+      element.txt.raidMember.innerText = `${++stats.raidMember[0]}/${stats.raidMember[1]}`;
     }
     stats.increaseMino(rankIdx, jobClass);
     return true;
   },
   unsetRaid: (rankIdx, jobClass) => {
     if (jobClass != "maplem")
-      element.txt.raidMember.innerText = `${--stats.raidMember[0]}/${
-        stats.raidMember[1]
-      }`;
+      element.txt.raidMember.innerText = `${--stats.raidMember[0]}/${stats.raidMember[1]}`;
     stats.decreaseMino(rankIdx, jobClass);
   },
   increaseMino: (rankIdx, jobClass) => {
     if (rankIdx != -1) {
       if (jobClass == "xenon" || jobClass == "maplem") {
         const mino = element.mino[jobClass][0];
-        mino
-          .querySelectorAll("table:not(.invisible)")
-          .forEach((e) => (e.className = "invisible"));
+        mino.querySelectorAll("table:not(.invisible)").forEach((e) => (e.className = "invisible"));
         mino.querySelectorAll("table")[rankIdx].className = "";
-        element.mino[jobClass][0].className = "";
-        element.mino[jobClass][0].querySelector("h6").innerText = ++stats
-          .minoCount[jobClass][rankIdx];
+        mino.querySelector("h6").innerText = ++stats.minoCount[jobClass][rankIdx];
+        mino.className = "";
       } else {
         element.mino[jobClass][rankIdx].className = "";
-        element.mino[jobClass][rankIdx].querySelector("h6").innerText = ++stats
-          .minoCount[jobClass][rankIdx];
+        element.mino[jobClass][rankIdx].querySelector("h6").innerText = ++stats.minoCount[jobClass][
+          rankIdx
+        ];
       }
       stats.tileableCount += rankIdx + 1;
       map.updateTileCount();
@@ -594,13 +572,12 @@ let stats = {
     if (rankIdx != -1) {
       if (jobClass == "xenon" || jobClass == "maplem") {
         const mino = element.mino[jobClass][0];
-        mino
-          .querySelectorAll("table:not(.invisible)")
-          .forEach((e) => (e.className = "invisible"));
+        mino.querySelectorAll("table:not(.invisible)").forEach((e) => (e.className = "invisible"));
         mino.querySelectorAll("table")[0].className = "";
         element.mino[jobClass][0].className = "disable";
-        element.mino[jobClass][0].querySelector("h6").innerText = --stats
-          .minoCount[jobClass][rankIdx];
+        element.mino[jobClass][0].querySelector("h6").innerText = --stats.minoCount[jobClass][
+          rankIdx
+        ];
       } else {
         const count = --stats.minoCount[jobClass][rankIdx];
         if (count == 0) element.mino[jobClass][rankIdx].className = "disable";
@@ -609,6 +586,37 @@ let stats = {
     }
     stats.tileableCount -= rankIdx + 1;
     map.updateTileCount();
+  },
+  resetMinoByInfoList: () => {
+    // 모두 0으로 초기화
+    for (jobClass in element.mino)
+      element.mino[jobClass].forEach((mino, rankIdx) => {
+        if (jobClass == "xenon" || jobClass == "maplem") {
+          mino
+            .querySelectorAll("table:not(.invisible)")
+            .forEach((e) => (e.className = "invisible"));
+          mino.querySelectorAll("table")[rankIdx].className = "";
+          mino.querySelector("h6").innerText = stats.minoCount[jobClass][rankIdx] = 0;
+          mino.className = "disable";
+        } else {
+          mino.querySelector("h6").innerText = stats.minoCount[jobClass][rankIdx] = 0;
+          mino.className = "disable";
+        }
+      });
+
+    stats.totalLevel = 0;
+    stats.raidMember = [0, 9];
+    stats.tileableCount = 0;
+    map.updateTileCount();
+    element.txt.raidMember.innerText = `${stats.raidMember[0]}/${stats.raidMember[1]}`;
+
+    // 모든 공격대원 레이드 추가
+    character.infoList
+      .filter((info) => info.raid)
+      .forEach((info) => {
+        info.raid = false;
+        character.raid(info);
+      });
   },
 };
 let inform = {
@@ -658,8 +666,7 @@ let inform = {
 
 function Main() {
   // Draw board & stats
-  for (let i = 0; i < element.tile.length; i++)
-    element.tile[i] = new Array(TILE.COL);
+  for (let i = 0; i < element.tile.length; i++) element.tile[i] = new Array(TILE.COL);
   DrawBoard();
   DrawStatsMino();
 
@@ -719,15 +726,7 @@ function Main() {
       character.add({
         name: "제로 ",
         level:
-          prevLv < 130
-            ? 130
-            : prevLv < 160
-            ? 160
-            : prevLv < 180
-            ? 180
-            : prevLv < 200
-            ? 200
-            : 250,
+          prevLv < 130 ? 130 : prevLv < 160 ? 160 : prevLv < 180 ? 180 : prevLv < 200 ? 200 : 250,
         job: "제로",
         imgUrl: "image/deco/zero-avatar.png",
       });
@@ -768,8 +767,7 @@ function Main() {
   });
   element.img.sync.addEventListener("click", () => {
     character.infoList.forEach((info) => {
-      if (info.jobClass != "maplem")
-        onImgSyncClick({ target: { alt: info.name } });
+      if (info.jobClass != "maplem") onImgSyncClick({ target: { alt: info.name } });
     });
   });
   element.img.autoSelect.addEventListener("click", () => {
@@ -781,8 +779,7 @@ function Main() {
       element.img.autoSelect.alt = "자동선택";
     } else {
       character.infoList.forEach((info, i) => {
-        if (stats.raidMember[0] < stats.raidMember[1] && info.job.length > 0)
-          character.raid(info);
+        if (stats.raidMember[0] < stats.raidMember[1] && info.job.length > 0) character.raid(info);
         else return;
       });
       if (maplemInfo && !maplemInfo.raid) character.raid(maplemInfo);
@@ -857,39 +854,27 @@ function RedrawBoard() {
 
   // inner boundary
   for (x = 5, y = [4, 14]; x <= 16; x++)
-    y.forEach(
-      (yy) =>
-        (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY)
-    );
+    y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
   for (y = 5, x = [4, 16]; y <= 14; y++)
-    x.forEach(
-      (xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY)
-    );
+    x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
 
   // stair
   for (x = 1, y = [0, 18]; x < 10; x++, y[0]++, y[1]--)
-    y.forEach(
-      (yy) =>
-        (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY)
-    );
+    y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
   for (x = 20, y = [0, 18]; x > 11; x--, y[0]++, y[1]--)
-    y.forEach(
-      (yy) =>
-        (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY)
-    );
+    y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
 
   for (y = 0, x = [0, 20]; y < 10; y++, x[0]++, x[1]--)
-    x.forEach(
-      (xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY)
-    );
+    x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
   for (y = 19, x = [0, 20]; y > 9; y--, x[0]++, x[1]--)
-    x.forEach(
-      (xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY)
-    );
+    x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
 }
 function DrawStatsMino() {
+  const basicJobs = ["warrior", "wizard", "archer", "thief", "pirate"];
+  const specialJobs = ["xenon", "maplem"];
   const minoTable = document.querySelector(".stats-mino");
-  const CreateMino = (posSet, jobStr) => {
+
+  const CreateMino = (posSet, jobClass) => {
     const table = document.createElement("table");
     let noIcon = true;
     for (let y = 0; y < posSet.length; y++) {
@@ -897,10 +882,10 @@ function DrawStatsMino() {
       for (let x = 0; x < posSet[0].length; x++) {
         const td = document.createElement("td");
         if (posSet[y][x]) {
-          td.style.backgroundColor = TILE.COLOR.MINO[jobStr.toUpperCase()];
+          td.style.backgroundColor = TILE.COLOR.MINO[jobClass.toUpperCase()];
           if (noIcon && posSet[y][x] == 2) {
             const img = document.createElement("img");
-            img.src = character.getMinoIconSrc(jobStr);
+            img.src = character.getMinoIconSrc(jobClass);
             td.appendChild(img);
             noIcon = false;
           }
@@ -911,7 +896,7 @@ function DrawStatsMino() {
     }
     return table;
   };
-  const CreateTd = (mino) => {
+  const CreateTd = (mino, rankIdx, jobClass) => {
     const td = document.createElement("td");
     const h = document.createElement("h6");
     h.innerText = "0";
@@ -919,24 +904,52 @@ function DrawStatsMino() {
     if (Array.isArray(mino)) mino.forEach((e) => td.appendChild(e));
     else td.appendChild(mino);
     td.appendChild(h);
+    if (specialJobs.indexOf(jobClass) == -1)
+      td.addEventListener("click", () => {
+        stats.setRaid(rankIdx, jobClass, true);
+        if (element.img.resetStats.className.length) element.img.resetStats.className = "";
+      });
     return td;
   };
-  const basicJobs = ["warrior", "wizard", "archer", "thief", "pirate"];
-  const specialJobs = ["xenon", "maplem"];
-  const row = TILE.MINO_INDEX[basicJobs[0].toUpperCase()].length;
+  const CreateReset = () => {
+    const td = document.createElement("td");
+    const img = document.createElement("img");
+    const h = document.createElement("h6");
+    img.src = "image/icon/sync.svg";
+    h.innerText = "리셋";
+    h.style.cursor = "pointer";
+    td.className = "invisible";
+    element.img.resetStats = td;
 
-  for (let i = 0; i < row; i++) {
+    td.appendChild(img);
+    td.appendChild(h);
+    td.addEventListener("click", () => {
+      stats.resetMinoByInfoList();
+      td.className = "invisible";
+    });
+    return td;
+  };
+
+  // 일반 직업
+  const row = TILE.MINO_INDEX[basicJobs[0].toUpperCase()].length;
+  for (let rankIdx = 0; rankIdx < row; rankIdx++) {
     const tr = document.createElement("tr");
-    basicJobs.forEach((job) => {
+    basicJobs.forEach((jobClass) => {
       const td = CreateTd(
-        CreateMino(TILE.MINO_POS[TILE.MINO_INDEX[job.toUpperCase()][i]], job)
+        CreateMino(TILE.MINO_POS[TILE.MINO_INDEX[jobClass.toUpperCase()][rankIdx]], jobClass),
+        rankIdx,
+        jobClass
       );
-      element.mino[job].push(td);
+      element.mino[jobClass].push(td);
       tr.appendChild(td);
     });
+
+    // 리셋 버튼
+    if (rankIdx == 0) tr.appendChild(CreateReset());
     minoTable.appendChild(tr);
   }
 
+  // 특수 직업
   for (let i = 0; i < specialJobs.length; i++) {
     const minoIndexArr = TILE.MINO_INDEX[specialJobs[i].toUpperCase()];
 
@@ -947,7 +960,7 @@ function DrawStatsMino() {
       minos.push(mino);
     }
 
-    const td = CreateTd(minos);
+    const td = CreateTd(minos, -1, specialJobs[i]);
     element.mino[specialJobs[i]].push(td);
     minoTable.childNodes[row - 1 - i].appendChild(td);
   }
@@ -976,8 +989,7 @@ function onTileMouseEnter(event) {
     hoverPos.g = map.findGroupIndex(hoverPos);
     if (hoverPos.g != map.hoverPos.g) {
       // 더블 클릭 때 타일 변화
-      if (map.drawing)
-        TILE.GROUP[hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+      if (map.drawing) TILE.GROUP[hoverPos.g].filter(map.isNotSelected).forEach(map.select);
       else TILE.GROUP[hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
 
       TILE.GROUP[map.hoverPos.g].forEach(map.unHover);
@@ -1003,14 +1015,8 @@ function onTileMouseDown(event) {
   map.click = 1;
   if (map.doubleClickTid == 0) {
     map.doubleClickPos = { x: map.hoverPos.x, y: map.hoverPos.y };
-    map.doubleClickTid = setTimeout(
-      () => (map.doubleClickTid = 0),
-      map.doubleClickDuration
-    );
-  } else if (
-    map.doubleClickPos.x == map.hoverPos.x &&
-    map.doubleClickPos.y == map.hoverPos.y
-  ) {
+    map.doubleClickTid = setTimeout(() => (map.doubleClickTid = 0), map.doubleClickDuration);
+  } else if (map.doubleClickPos.x == map.hoverPos.x && map.doubleClickPos.y == map.hoverPos.y) {
     map.hoverPos.g = map.findGroupIndex(map.hoverPos);
     map.click = 2;
 
@@ -1020,10 +1026,8 @@ function onTileMouseDown(event) {
 
   if (map.click == 2) {
     // 더블 클릭에 타일 변화
-    if (map.drawing)
-      TILE.GROUP[map.hoverPos.g].filter(map.isNotSelected).forEach(map.select);
-    else
-      TILE.GROUP[map.hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
+    if (map.drawing) TILE.GROUP[map.hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+    else TILE.GROUP[map.hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
 
     TILE.GROUP[map.hoverPos.g].filter(map.isNotHover).forEach(map.hover);
   } else {
@@ -1040,8 +1044,7 @@ function onTileMouseDown(event) {
 function onTileMouseUp(event) {
   if (event.button != 0) return;
 
-  if (map.click == 2)
-    TILE.GROUP[map.hoverPos.g].filter(map.isNotHover).forEach(map.unHover);
+  if (map.click == 2) TILE.GROUP[map.hoverPos.g].filter(map.isNotHover).forEach(map.unHover);
   map.click = 0;
 }
 function onTableTouchStart(event) {
@@ -1068,14 +1071,8 @@ function onTableTouchStart(event) {
     // 연속 터치 체크
     if (map.doubleClickTid == 0) {
       map.doubleClickPos = { x: map.hoverPos.x, y: map.hoverPos.y };
-      map.doubleClickTid = setTimeout(
-        () => (map.doubleClickTid = 0),
-        map.doubleClickDuration
-      );
-    } else if (
-      map.doubleClickPos.x == map.hoverPos.x &&
-      map.doubleClickPos.y == map.hoverPos.y
-    ) {
+      map.doubleClickTid = setTimeout(() => (map.doubleClickTid = 0), map.doubleClickDuration);
+    } else if (map.doubleClickPos.x == map.hoverPos.x && map.doubleClickPos.y == map.hoverPos.y) {
       map.hoverPos.g = map.findGroupIndex(map.hoverPos);
       map.click = 2;
 
@@ -1085,12 +1082,8 @@ function onTableTouchStart(event) {
 
     if (map.click == 2) {
       // 연속 터치에 타일 변화
-      if (map.drawing)
-        TILE.GROUP[map.hoverPos.g]
-          .filter(map.isNotSelected)
-          .forEach(map.select);
-      else
-        TILE.GROUP[map.hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
+      if (map.drawing) TILE.GROUP[map.hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+      else TILE.GROUP[map.hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
     } else {
       // 싱글 클릭에 드로잉 설정과 타일 변화
       if (map.isNotSelected(map.hoverPos)) {
@@ -1125,8 +1118,7 @@ function onTableTouchMove(event) {
     hoverPos.g = map.findGroupIndex(hoverPos);
     if (hoverPos.g != map.hoverPos.g) {
       // 더블 클릭 때 타일 변화
-      if (map.drawing)
-        TILE.GROUP[hoverPos.g].filter(map.isNotSelected).forEach(map.select);
+      if (map.drawing) TILE.GROUP[hoverPos.g].filter(map.isNotSelected).forEach(map.select);
       else TILE.GROUP[hoverPos.g].filter(map.isSelected).forEach(map.unSelect);
     }
   } else {
@@ -1206,8 +1198,7 @@ function onPlay(event) {
       for (let jobClass in stats.minoCount)
         if (stats.minoCount[jobClass][rankIdx] > 0) {
           // 아직 "[SS~B]" 타이틀이 들어가지 않았을 경우 추가
-          if (contentPart.length == 0)
-            contentPart = `[${rankStrArr[rankIdx]}]\n`;
+          if (contentPart.length == 0) contentPart = `[${rankStrArr[rankIdx]}]\n`;
           else contentPart += ", ";
 
           contentPart += `${jobClassKor[jobClass]}(${stats.minoCount[jobClass][rankIdx]})`;
@@ -1234,12 +1225,7 @@ function onPlay(event) {
         element.img.trashMap.src = "image/icon/trash.svg";
         inform.show(inform.DANGER, "점령대 배치 계산 실패", result.message);
       } else if (result.success == 1)
-        inform.show(
-          inform.INFO,
-          "점령대 배치 계산 성공",
-          result.message,
-          10000
-        );
+        inform.show(inform.INFO, "점령대 배치 계산 성공", result.message, 10000);
     });
   }
 }
@@ -1250,11 +1236,7 @@ function onBtnLoginClick() {
     password: element.txt.password.value.trim(),
   };
   if (!account.id) {
-    inform.show(
-      inform.DANGER,
-      "계정 정보 없음",
-      "아이디 또는 이메일을 입력해주세요."
-    );
+    inform.show(inform.DANGER, "계정 정보 없음", "아이디 또는 이메일을 입력해주세요.");
     return;
   } else if (!account.password) {
     inform.show(inform.DANGER, "계정 정보 없음", "비밀번호를 입력해주세요.");
@@ -1266,12 +1248,10 @@ function onBtnLoginClick() {
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.send(JSON.stringify(account));
   xhr.addEventListener("load", () => {
-    if (xhr.status != 200)
-      inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
+    if (xhr.status != 200) inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
-      if (data.error)
-        inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
+      if (data.error) inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
       else {
         inform.show(
           inform.INFO,
@@ -1299,11 +1279,7 @@ function onBtnApplyClick() {
 
   // Empty character names
   if (charNames.length == 0 || charNames[0].length == 0) {
-    inform.show(
-      inform.DANGER,
-      "캐릭터 이름 없음",
-      "캐릭터 이름 리스트를 입력해주세요."
-    );
+    inform.show(inform.DANGER, "캐릭터 이름 없음", "캐릭터 이름 리스트를 입력해주세요.");
     return;
   }
   // Already added
@@ -1311,11 +1287,7 @@ function onBtnApplyClick() {
     (name) => character.infoList.findIndex((obj2) => obj2.name == name) != -1
   );
   if (existsChars.length) {
-    inform.show(
-      inform.DANGER,
-      `이미 등록 됨 (${existsChars.length})`,
-      existsChars.join(", ")
-    );
+    inform.show(inform.DANGER, `이미 등록 됨 (${existsChars.length})`, existsChars.join(", "));
     return;
   }
 
@@ -1324,13 +1296,11 @@ function onBtnApplyClick() {
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.send(JSON.stringify({ charNames: charNames.join(",") }));
   xhr.addEventListener("load", () => {
-    if (xhr.status != 200)
-      inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
+    if (xhr.status != 200) inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
       console.log(data);
-      if (data.error)
-        inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
+      if (data.error) inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
       else {
         // Success POST
         let content = "";
@@ -1348,9 +1318,9 @@ function onBtnApplyClick() {
         if (data.sync && data.sync.length) {
           data.sync.forEach(character.addGhost);
 
-          content += `${content ? "\n\n" : ""}[동기화 중 (${
-            data.sync.length
-          })]\n${data.sync.join(", ")}`;
+          content += `${content ? "\n\n" : ""}[동기화 중 (${data.sync.length})]\n${data.sync.join(
+            ", "
+          )}`;
         }
 
         element.txt.applyName.value = "";
@@ -1383,8 +1353,7 @@ function onImgSyncClick(event) {
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.send(JSON.stringify({ name: info.name }));
   xhr.addEventListener("load", () => {
-    if (xhr.status != 200)
-      inform.show(inform.DANGER, "동기화 실패", `응답 코드: ${xhr.status}`);
+    if (xhr.status != 200) inform.show(inform.DANGER, "동기화 실패", `응답 코드: ${xhr.status}`);
     else {
       const data = JSON.parse(xhr.responseText);
       if (data.error) {
@@ -1393,8 +1362,7 @@ function onImgSyncClick(event) {
       } else {
         character.remove(info);
         character.add(data);
-        if (info.raid)
-          character.raid(character.infoList[character.infoList.length - 1]);
+        if (info.raid) character.raid(character.infoList[character.infoList.length - 1]);
 
         character.sort();
         stats.updateLevel();
@@ -1432,17 +1400,11 @@ function onTxtClipboardPaste(event) {
     data = data.split(/\r\n|\n|\r/);
     let recentName = "";
 
-    for (
-      let i = data.findIndex((str) => str.indexOf("터 선") != -1) + 1;
-      i < data.length;
-      i++
-    ) {
-      if (data[i].indexOf("표 캐") != -1 || data[i].indexOf("플 핸") != -1)
-        break;
+    for (let i = data.findIndex((str) => str.indexOf("터 선") != -1) + 1; i < data.length; i++) {
+      if (data[i].indexOf("표 캐") != -1 || data[i].indexOf("플 핸") != -1) break;
 
       const name = data[i].trim();
-      if (name.length > 0 && name != recentName)
-        names.push((recentName = name));
+      if (name.length > 0 && name != recentName) names.push((recentName = name));
     }
   } else return;
 

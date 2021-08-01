@@ -835,7 +835,7 @@ class Node {
 class Tiler {
   constructor() {
     setTimeout(() => {
-      this.chch2316();
+      // this.chch2316();
       // onPlay({ message: "" });
     }, 100);
   }

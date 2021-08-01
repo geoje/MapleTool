@@ -84,6 +84,7 @@ button:active:not([disabled]),
   width: 570px;
   box-sizing: border-box;
   padding-right: 0;
+  user-select: none;
 }
 .map > table {
   border-collapse: collapse;
@@ -367,9 +368,37 @@ button:active:not([disabled]),
   background-color: rgb(42, 42, 42);
   border-radius: 8px;
   border-spacing: 0;
+  user-select: none;
 }
 .stats-mino > tr > td {
   padding: 4px 10px;
+
+  transition: background-color 0.1s;
+}
+.stats-mino > tr:first-child > td:first-child {
+  border-top-left-radius: 8px;
+}
+.stats-mino > tr:last-child > td:first-child {
+  border-bottom-left-radius: 8px;
+}
+.stats-mino > tr > td:nth-child(-n + 5):hover {
+  background-color: rgba(0, 0, 0, 0.14);
+}
+.stats-mino > tr:first-child > td:nth-child(6) {
+  background-color: rgba(34, 34, 34);
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  cursor: pointer;
+}
+.stats-mino > tr > td:nth-child(-n + 5):active,
+.stats-mino > tr:first-child > td:nth-child(6):active {
+  padding: 5px 10px 3px;
+}
+.stats-mino > tr:first-child > td:nth-child(6) > img {
+  display: block;
+  margin: 0 auto;
+  width: 14px;
+  height: 14px;
 }
 .stats-mino > tr > td > table {
   margin: 0 auto;
@@ -388,6 +417,7 @@ button:active:not([disabled]),
 }
 .stats-mino > tr > td > h6 {
   line-height: 12px;
+  cursor: default;
 }
 .stats-mino .invisible {
   display: none;
