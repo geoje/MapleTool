@@ -618,8 +618,7 @@ class Mino {
     matrix = Array.from(Array(col), () => new Array(row));
     if ([1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 13, 14].indexOf(minoIdx) != -1) {
       for (let i = 0; i < col; i++)
-        for (let j = 0; j < row; j++)
-          matrix[i][j] = this.shapes[0].matrix[j][col - i - 1];
+        for (let j = 0; j < row; j++) matrix[i][j] = this.shapes[0].matrix[j][col - i - 1];
       this.shapes.push({ matrix: matrix });
 
       // 좌우 대칭
@@ -646,8 +645,7 @@ class Mino {
     matrix = Array.from(Array(col), () => new Array(row));
     if ([2, 5, 7, 9, 12, 13].indexOf(minoIdx) != -1) {
       for (let i = 0; i < col; i++)
-        for (let j = 0; j < row; j++)
-          matrix[i][j] = this.shapes[0].matrix[row - j - 1][i];
+        for (let j = 0; j < row; j++) matrix[i][j] = this.shapes[0].matrix[row - j - 1][i];
       this.shapes.push({ matrix: matrix });
 
       // 좌우 대칭
@@ -681,10 +679,8 @@ class Mino {
         if (num) {
           if (x > 0 && board[y][x - 1] == 1) points.push(new Point(x - 1, y));
           if (y > 0 && board[y - 1][x] == 1) points.push(new Point(x, y - 1));
-          if (x < TILE.COL - 1 && board[y][x + 1] == 1)
-            points.push(new Point(x + 1, y));
-          if (y < TILE.ROW - 1 && board[y + 1][x] == 1)
-            points.push(new Point(x, y + 1));
+          if (x < TILE.COL - 1 && board[y][x + 1] == 1) points.push(new Point(x + 1, y));
+          if (y < TILE.ROW - 1 && board[y + 1][x] == 1) points.push(new Point(x, y + 1));
         }
         x++;
       });
@@ -694,8 +690,7 @@ class Mino {
 
     // 중복 제거
     points = points.filter(
-      (p1, index, arr) =>
-        index == arr.findIndex((p2) => p1.x == p2.x && p1.y == p2.y)
+      (p1, index, arr) => index == arr.findIndex((p2) => p1.x == p2.x && p1.y == p2.y)
     );
     return points;
   }
@@ -712,21 +707,14 @@ class Mino {
     const dir = point.getDirection();
 
     // 방향에 따른 offset 추가
-    if (dir | 1)
-      for (let i = 0, x = 0, y = 0; i < row; i++, y--) offsets.push({ x, y });
-    if (dir | 2)
-      for (let i = 0, x = 0, y = -row + 1; i < col; i++, x--)
-        offsets.push({ x, y });
-    if (dir | 4)
-      for (let i = 0, x = -col + 1, y = 0; i < row; i++, y--)
-        offsets.push({ x, y });
-    if (dir | 8)
-      for (let i = 0, x = 0, y = 0; i < col; i++, x--) offsets.push({ x, y });
+    if (dir | 1) for (let i = 0, x = 0, y = 0; i < row; i++, y--) offsets.push({ x, y });
+    if (dir | 2) for (let i = 0, x = 0, y = -row + 1; i < col; i++, x--) offsets.push({ x, y });
+    if (dir | 4) for (let i = 0, x = -col + 1, y = 0; i < row; i++, y--) offsets.push({ x, y });
+    if (dir | 8) for (let i = 0, x = 0, y = 0; i < col; i++, x--) offsets.push({ x, y });
 
     // 중복 제거
     offsets = offsets.filter(
-      (p1, index, arr) =>
-        index == arr.findIndex((p2) => p1.x == p2.x && p1.y == p2.y)
+      (p1, index, arr) => index == arr.findIndex((p2) => p1.x == p2.x && p1.y == p2.y)
     );
 
     let able, x, y;
@@ -833,12 +821,8 @@ class Node {
 }
 
 class Tiler {
-  constructor() {
-    setTimeout(() => {
-      // this.chch2316();
-      // onPlay({ message: "" });
-    }, 100);
-  }
+  constructor() {}
+
   // 선택된 타일들을 통해 Mino() 배열을 만들고 선택된 영역을 통해 2차원배열 map을 만듦
   init() {
     board = [];
@@ -867,8 +851,7 @@ class Tiler {
         if (board[y][x] == 1) {
           let point = new Point(x, y);
           this.spots.normal.points.push(point);
-          if (point.updateAdjacent() <= 1)
-            this.spots.restricted.points.push(point);
+          if (point.updateAdjacent() <= 1) this.spots.restricted.points.push(point);
         }
       }
   }
@@ -948,23 +931,17 @@ class Tiler {
               // 배치 가능 여부
               let placeable = { able: this.minos[spot.minoIdx].count > 0 };
               if (placeable.able)
-                placeable = this.minos[spot.minoIdx].isPlaceable(
-                  spot.points[0],
-                  spot.shapeIdx
-                );
+                placeable = this.minos[spot.minoIdx].isPlaceable(spot.points[0], spot.shapeIdx);
               if (placeable.able) {
                 log(
-                  `[Place-${spotName}] ${placeable.point.x}, ${
-                    placeable.point.y
-                  } / ${this.minos[spot.minoIdx].jobClass}`,
+                  `[Place-${spotName}] ${placeable.point.x}, ${placeable.point.y} / ${
+                    this.minos[spot.minoIdx].jobClass
+                  }`,
                   this.minos[spot.minoIdx].shapes[spot.shapeIdx]
                 );
 
                 // 배치 후 영역에서 배치된 좌표들 제거
-                const placedPoints = this.minos[spot.minoIdx].place(
-                  placeable.point,
-                  spot.shapeIdx
-                );
+                const placedPoints = this.minos[spot.minoIdx].place(placeable.point, spot.shapeIdx);
                 let findIdx;
                 placedPoints.forEach((pp) => {
                   for (let innerSpotName in this.spots)
@@ -983,15 +960,11 @@ class Tiler {
                   .getArroundSpot(placeable.point, spot.shapeIdx)
                   .forEach((pp) => {
                     // 일반 영역 업데이트
-                    let point = this.spots.normal.points.find(
-                      (p) => p.x == pp.x && p.y == pp.y
-                    );
+                    let point = this.spots.normal.points.find((p) => p.x == pp.x && p.y == pp.y);
                     if (point) point.updateAdjacent();
 
                     // 제한 영역 업데이트
-                    point = this.spots.restricted.points.find(
-                      (p) => p.x == pp.x && p.y == pp.y
-                    );
+                    point = this.spots.restricted.points.find((p) => p.x == pp.x && p.y == pp.y);
                     if (point) point.updateAdjacent();
                     // 제한 영역에 없는 좌표일 경우 adj값 측정하고 비교해서 추가
                     else if (pp.updateAdjacent() <= 1) {
@@ -1005,14 +978,7 @@ class Tiler {
                 log("[NormalPoints]", this.spots.normal.points);
 
                 // 스택에 노드 추가, 미노 개수 감소, 다음 탐색을 위해 서칭 변수 초기화
-                this.stack.push(
-                  new Node(
-                    spotName,
-                    placeable.point,
-                    spot.minoIdx,
-                    spot.shapeIdx
-                  )
-                );
+                this.stack.push(new Node(spotName, placeable.point, spot.minoIdx, spot.shapeIdx));
                 this.minos[spot.minoIdx].count--;
                 this.spots.restricted.shapeIdx = 0;
                 this.spots.restricted.minoIdx = 0;
@@ -1040,9 +1006,7 @@ class Tiler {
             DrawSolution();
             return {
               success: 1,
-              message: `소요 시간: ${this.getDurationStr(
-                startTime
-              )}\n반복 횟수: ${this.iteration}`,
+              message: `소요 시간: ${this.getDurationStr(startTime)}\n반복 횟수: ${this.iteration}`,
             };
           }
         }
@@ -1069,9 +1033,7 @@ class Tiler {
 
           // 일반 영역에 포인트들 복구
           needUpdateAdjPoints.forEach((up) => {
-            let sp = this.spots.normal.points.find(
-              (p) => p.x == up.x && p.y == up.y
-            );
+            let sp = this.spots.normal.points.find((p) => p.x == up.x && p.y == up.y);
             if (sp) sp.updateAdjacent();
             else {
               up.updateAdjacent();
@@ -1081,14 +1043,10 @@ class Tiler {
 
           // 왼쪽 위 좌표가 먼저오도록 정렬
           let v;
-          this.spots.normal.points.sort((a, b) =>
-            (v = a.y - b.y) ? v : (v = a.x - b.x)
-          );
+          this.spots.normal.points.sort((a, b) => ((v = a.y - b.y) ? v : (v = a.x - b.x)));
 
           // 제한된 영역 좌표 갱신
-          this.spots.restricted.points = this.spots.normal.points.filter(
-            (p) => p.adj <= 1
-          );
+          this.spots.restricted.points = this.spots.normal.points.filter((p) => p.adj <= 1);
           log("[RestrictedPoints]", this.spots.restricted.points);
           log("[NormalPoints]", this.spots.normal.points.slice());
 
@@ -1121,911 +1079,8 @@ class Tiler {
     inform.show(
       inform.INFO,
       "점령대 배치 계산 중지",
-      `소요 시간: ${this.getDurationStr(startTime)}\n반복 횟수: ${
-        this.iteration
-      }`
+      `소요 시간: ${this.getDurationStr(startTime)}\n반복 횟수: ${this.iteration}`
     );
     return { success: -1 };
-  }
-
-  // 테스트 코드
-  chch2316() {
-    const infoList = (() => {
-      return [
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MJBCLOHHJLAEGBJBOFJCPJJINIDIPEKLMICBMDFIMPLCFDAICGJOPLJIGGPJEBIBEOHJFBCEJFEBJADILAPJMKMKNNMMEAMGKOCOEBJKNKBEOPKMODNCMOJAFCOLJAFDOPEEELMHALOMFPMOMDFKAJCJCPHJCPJCPENFGJKMBPCLNNFEICHNNBNNOKECNCDPFLEBFIIOLCLPKHFDIDPPEAIAIKEOFMEHANEMHJFDGLOIHABJEIPKOJKFBALKJAKA.png",
-          name: "ygh메르",
-          level: 200,
-          job: "메르세데스",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/KEPNLPKLEGEGHAFIKJIEMMDKKFKBHFBLNJDFDENCHAFBGCFIMDIPICOOKGIDDGFBPJHPGGCJNILACKNFNBGLMDAEPKAEJAACLDJJNCGNJDEGJBKMOKCAIBDKJFDFDBBIJCMFFHAJIEPIDNLJIPBBLPDCLLMCKEJGBCMELGGPJEHPICHBHMBEAEOFPDILIGCBLCPJGKGMJOBABILCGCMIMJEGAANDNHDKPOCEPCCPJONCJPCCOHHDIFPNJKENEILK.png",
-          name: "ygh미하일",
-          level: 200,
-          job: "미하일",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/EHPPMKKAJLADMNDEKOPJABENBDPANDKGGGPBDPMEMILFDHGENHKFIEAPNMLFOMJHOBPBLFBNNBBKNGCEFLJIMCOKLLMGOBEHAJCNHPLECOKJDFIENPLBHCCJEHPHNOFDHNJDANKGNGBKCGDALPONGHNMHEEKLMIFOMIIJNCPNDIPILIEOJAECIMIEBNHJLLONECPDLPKHPIKCAFHHHODCALKPEGJLNHDCEMHOMCHPKAGLOJMMEGAEOBFFOCIGIBO.png",
-          name: "ygh버스터",
-          level: 204,
-          job: "엔젤릭버스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/OIFMDFEGFOPILBBMEOJPJAIIICKENHGLAKIALEOIJHBBHIIPGCINGMMMMPMBMJLENPLODKPAAHOJFBOKJBKIDBLLFFINACIGKDELLDLBMOHAKNIGDFHMABFHLMAHPLDCGIHBDJEDFGGACCFOONKHMOIBGDLPOBHJOIMNLMCNDOMEDDIONFKCBMFIEJACCLEMBFPNLAJGMLOLNONNGHBBJGDDHOAMGPEBEAOFCLAFDLBMLPFOKFDJLIKPNPNBMAKN.png",
-          name: "ygh스븐",
-          level: 200,
-          job: "스트라이커",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/IKGOBKDMDBEPGMDDAMGFOOFKAGOLJCJOCHDLMHAMOAAMABBNKKBHBJAJOOKPMGBMGAGGCNHJGIBFJECEEBGBCCFIIIBJIHCIOIJNGNMPMGGAPNBIICGKGCAMIDHFOGMPICLLMPGFCKGPOBDKNKFIDBFDELGPLJIBAPHCADHNPJPHAJLKLLNIFOGCPOKLJJIDIGCHAAMBLJNGFIKGFINKNCLCDADOCKFOEACIGEPKGKEGGNLFFPOMDBMLOKJALPAP.png",
-          name: "ygh은월",
-          level: 200,
-          job: "은월",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/DNENAIABPLDNGNPLELEEKHJIHHMOOKADPPBHHHCCJLNHGHJNCMFIACEJEPMFFPIDPCGOIEGLMAGKDHJPNCDKHPEBFJOCEKAIABGIPOBIDFNLFNAJAOOGIGHAAOIPCBIGPJFAKNNJBMAAGMJCCIGDFBIIKNGNLCJABNEBPELKFMKHJJMEBLLNPGMFLIKDCBKHEJAFPNBPAIAOGMNNBGKPABICOLNOHKBNFIKBKNKIAPEBMKHGLLFJOIAPMGLAIEBL.png",
-          name: "ygh펜타곤",
-          level: 200,
-          job: "카이저",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/PKFEPEMEFENKDEPIBHJCBIMABLKCDJMHFEGOGGNJKIAPPBPPCDNEEKKAMIEKJPJNPNJEHPINLFDOCIJAOCMIEJOINOFNKMKONMBGLLABAEHOBLNNOFDJAFECMHHIJAENNJOIEAENKNBCAOJBDADKFJJKAMOMKPNDGCGJOHPEBAFINCPMAKBMFKONACJPMHPGFKODMKOBHFBABFKHJKEPMFDECDELJFADJCELFPGKOKODPEFGJGOBEICDFIENNLBN.png",
-          name: "새벽가시",
-          level: 200,
-          job: "데몬슬레이어",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/NPAIHOGFBBBIACLJKMLCLLFNKDNHIKNKAJCNIMECNGLEJBPACBEGKMJCDAGHGECEHJMFCMGBEPCILNAKICKOHONHCGJCMMOHLOGKHOLGOIMABIJFKNKJDOFEPFBNKKMDOLFGALJGNNJLJMECONGHFIFPEPMDIIANNEFFNFBOHKCKBHLHAOIKFFIOFBPANFIBFBHAKGJPOHEMKGACPFCBEIMDMDPPGDEAHCBMODBPDBDKJLJKGEADCGABEMJEHBFJ.png",
-          name: "새벽가지",
-          level: 201,
-          job: "제로",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/KHLPDBHPNOAOLGNAMFCKCFFMPJJENCEBPKNIOHFOGAKNDGNEDHFPEBINBIDIILLOEGMCIOOPAFCBCOLPCLJMKBFMGFGEEMEGKJNAPBBFNKKFOOHBNGAOOMCOONBPDHDHGIPBNHFFDMEBNLJHHBPLDMBAAHJPLJMHPAFOIFKHLIEKHNLAJMADHHIPCAIHGJMLJNPPMEHFLGNFJNOJIKNDANNIHPACNBLNFEFEPGGBNJCAGBODOKKCPGICNJLOHFBP.png",
-          name: "새벽권",
-          level: 200,
-          job: "캡틴",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MNBLNKHNMNFFAONHPOOLECNAPAOMLKCFKOBPEOKKFOAKCFGPKHOOJLJCEHIDKELGCLFGMCKPBNJDPMLEIEIHLPODKIDDBHLPMKGOAFKAPAGOOKBDCMNOLDHAHMFEFEMDNEPOLJIBGELMKINDDMKMLMMCICPHADIAEMNDHGPDFILNEFANDNBKCILGKMLHFCHPDLEAICDHJEDMIFGDAHEGLFCCGLCBOGMJKDAKHBLFLKJOKBCNNLMFENBGKFMJFOAC.png",
-          name: "새벽댈",
-          level: 217,
-          job: "아델",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/CMDFKMGKIMCCFNEEHNBHIOAIDJPAJBCDAIJDLIPENJLMMNHMLBLKDNMMPINFJEBFELBMAKBNGJCDNLHKGIFDBKKOOEFJKPBPHGDKMLPJICDCPPKAGOOAIJDJAIANLMPBAIDKOAHFPAMFOKJLDKDJGNBBHCFBFADKPMIEFDMJHOBPBEIJCNGGDENIABNEGJJJPHBHGNEMHAIJLLMOPOAPAIGBODEBJDEIMMKMGKBILNHBLFBNJLIGEFAODCGCAJFP.png",
-          name: "새벽덱",
-          level: 200,
-          job: "카데나",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MMIBBNHNPLMAICNHPCOKHLAFBGJBOJABHJBMGKFLNPCOBMEDKIHFDAHGACFMKONBOANGOLLMJCJNHNNPAGODGBKOOCDDJDJKJMHHAKLCBCJIDODFEIENCDGGCBMNOIIAKNBJNDEBDKLLIICKPIMAJGBFBCIGDMHIEAENGHKLKIHDAEGJEFBHDGFLBPJKNJAPAIMENFGBMENHJOPELFEMAKFAOIPNODFFIJGDNMGNCKHLBCINCMEPAHOKLGOPAIEH.png",
-          name: "새벽뚝",
-          level: 200,
-          job: "팔라딘",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/JJJIPCNPNLGDKGHBABLIJIOMGNDBHIMGCBEOMBOKCAIBKDPFPFEAMEPPNPFOKNNACMNLNJJJBEOIMBOEHBHLFIFOGIPHAAIFIMPMBJMDHJJJOEHCAMIJBLCEMJBNINOOGFELFHACCDNGIMODOMHFDMBLGMJJOOJLBPKCGPCGNBEBABHLMLIDJNNGHGKKONCDDBHIAFLDKIHMMKGBJNJFMEPJLMBIMPDNKIPAGCBGDCIAGDMDIMMMOLKMKGJCNIPD.png",
-          name: "새벽랫",
-          level: 200,
-          job: "블래스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/DIENIFANJFDNPPHKMKNCDGDIGBDHDGFIOIIMCLGALAMLHCMEHAONLHCLHPLHFLFACNEAAIEHCGEIEMCHICEJPBJPAJCBONJFKMANNKIMAHLCGAJDNPPGGLCEFNNIHLHCAMHMPOMPLAFNLNCKFCOMHPIDFPNMMKCBIMLBDLLGABFBIOPKPFOLNNMPPLCBGHAAHHFEMAKHCEBPCNEOGGMGKMIKFACHMCJOOOCJGKOFFDGFEAKNENKJNMHHOGGJCPMH.png",
-          name: "새벽랸",
-          level: 200,
-          job: "아란",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/KCPJFCHKJDPFKBLGKMIFIGLBEPLLOIAFGFOMAANOPLLHAIHBIGMCHKBAENBNJDAHKOILPIBGJCHOMAMOLBJCJJHLBKAFNGLMDJJKLKDJACLNCGIGAGAEOMIIIEFGCOEGLGGOHBAJFAFMHDMOHOHHMLBDJMNDKOALMFABOCFNMFJPKOKKMHDGIFOOHGLCPJOGLJBPLKAOKJKFAJCIINLAFOJBBICFEDNAHLPOEMKHPFCKECBEELJJMCGPEMPPBDDA.png",
-          name: "새벽레",
-          level: 220,
-          job: "윈드브레이커",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/BJPIDHBKLOBNMDOPLALNHJHKBIEFGIGGHNNOKFGCAEOGMINLLNAKFEINAFDINPHGOMFJAGOJENPGNPCJMMPIEMGEDMOMLJADOCCKGMNGOFLHHELOCIJJCAANHNINCKCDFFGHOHJIHOLHBJNPOBLAPAPIODENLAHHMONHPILJFMCNAJOLODCCDPDJHPGODBKPFONEBPNMEPFAEONAHBIFEKCAHLAJMCNJPMLANDGBCJHKIACLIIPOKGHGNNODJHHO.png",
-          name: "새벽루믿",
-          level: 200,
-          job: "루미너스",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/GBEGDHHJHPJNILECGBFPPEANHLPCHECEOHJNJHBFJGKEAHLINHJAFNDKIIIMAKJMGNKKBJLPOGDLCGJLAJMJHJNPJOPPCGPKKKCHAJLGECBMNPKFPNDBOICLBAENJEPDGEECILOKFIHHANECJJDMJJBHLEJCKNIMCOCIODEIILADBOMMEHFMNKPAEODMBDGGLJOCGLIKGPCFPCMFIIGLBJLICCLJGHDGFBLFGDPLAJFLDCLBBLILCNIEANNECBPF.png",
-          name: "새벽륨",
-          level: 200,
-          job: "일리움",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/DPEJOECKFEGKFIHKGNDKMOGBKCABEPNGHJPJFGEDCJBCGIDLLIHACKALOGNLOLHDFNMHIKMOACPPGINJPAFMFDHHPNIOOKNGLBCGPMHGGLKHGJLCLBDJFHLJJFBPPJBEDLGBKBBHFNELPGANCBNCFBFOJCKOKFIPHIOFAGLGFJNCCBLHLLKMOMFEJHJHGGBOJGGIAHOHKHLHNOPHFNCJKMIOAALIDOCNBPDDNCMIEPHCJHEOPOCLAOICLONJADII.png",
-          name: "새벽륵",
-          level: 200,
-          job: "에반",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/HGIFIBIIOMFLBDCHJNDIONHPPMFPEIIDCDHFILHIEAKBPHPEOCAIFOELIIMJELLBKJGOABBKMGABCJIMBDLCPGCPBGJAGEGNBIHJOCGMOCLJPHDECBPIGCAOHLALFFEAENKJMDCOOJFKOPMIAHGIJIMLOMNGCMKBOJEKJFJPGDAKCOABNJMJKGDEEIDDKMGLNPADDHHPPJALPMIPDGOGOMBKBKOCBLIOOHLGPIKPGGEKCEINDKFDPPKFGBODLNFO.png",
-          name: "새벽리아",
-          level: 200,
-          job: "팬텀",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/PAHHHBHFEOCPGNFAPKLEONACDBGKDHNPAAFHLGALAAGLCELGDJKCHFHBDEPBKFKPFMGJJNLDFMPDNNIPALBOFMALOENBOGCPEEDEDKOFEECKEOGAKHKEKHHHAPGFKICGHCIBNCOCCIDEBAOOEBCONHJPCNBHKAGHPJOLDDELFPBBJGAHDFJIHLEHPMEFKBBODGBJLKCGKNGDEBBMPABONGGAJFGJJGEFIGJNFHFHKDPLINLPDBHNEGGFLAMBKCCJ.png",
-          name: "새벽머신",
-          level: 200,
-          job: "메카닉",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/IDCLLKLOOIJDHICDLLAOMHNGKFFKEDAJMPMFCILODBCAGMBLGANMFAOLMJPHOHEGBBCGNHAJPGHGOENPBAJNFODGIMGNPMDKAJJMEKEAKMOIMHOBBNNEGFKEOIDPPDKKLIBOBOGGCJJJNFGJLIINBEHIPBPAJGFJGPLAJMGBMHIGFBPIKCAHKPIAAJNENOAPDOCAEFCPJIKLBCIAFHHGFIACONNBAIGOBOBBLBLLKHMDPEBJHLBCKDPDABFIANEB.png",
-          name: "새벽몽킥",
-          level: 203,
-          job: "캐논마스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/KKCMHNFPLOPHIKDOPEFLFMENCMNNELMPNAAKLEAHDMDLCDAGIKDGGEHFAGLDEPOMFFDEFBEIAMKMOHANBIPHLIOEGPGODMGAFABHBDNJLJMICIHFNLANNBCPOENAINFNDNLFIHFIAFLDJFKOLHMHOBPIJBKEIIJJDEGNHIEFLOMMGIDADIGNIIAAMBEHMGIIHLCOKJLLDFNJKMCFCKKGHENPOIJIHBGJFGLIFLCJEBKOOBBLOLCKGCBEGJOBDHEF.png",
-          name: "새벽밤향기",
-          level: 200,
-          job: "데몬어벤져",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MNDAMANONBFFEIKLOAHCDFPFLHMOPHGHHCBGCAEEKLIGNBECLBDGAEDMEJOGEAJNEGDFKCAGDBLOPEEEMGPJGBFKPMDGJIMPMHPAKOHOGELMKDOHNNPPHBMEGOLLMNFLAFCIKOHLNEIBKJPEIIMAMMFEOLIEDMADHJLJHMOEPAGLKIMGHILOACJJGAFGENDJAGKNONMJHFHNELJDDPCDOLFEHNLJHAPDKGHAPOMFPMCFKGBLLIBJNDFILDGNJADF.png",
-          name: "새벽뱉",
-          level: 200,
-          job: "배틀메이지",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/LOFMPOJIFFNFNMJDOBLEGDIJFOFKGDFFPLEJKEAFAEFPEOIILGKKJFNOAOFPJLEJEFCGMFGGHCANEIFKKABIBPEEGJJJNLPOKAMENJFJCOJGODMFDBBNOMCOGOOICHOOPOPOIACGOECOAPJPGGMKPKGJNBDOBJFIJBPOPPNOLDFCFOOEKJPDFGAMJPEGDAMCCOJEMFIGLOMAINOPIHMKLJPIDBMEGDJAENMHOAOKABEHIEACHFIPDFNNDBGNDFNE.png",
-          name: "새벽비화",
-          level: 200,
-          job: "플레임위자드",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/IPPGJHPELGLIBCKLKDIEGEJHKJMBJBHIHBLGOIBGCLDJABNKFIMNGJBAIDMIOHJJCHFKEDODDBAGMDDOIAALOAELJAOOPPFGFICDKHIKDGCHHABJKGIBAPIFPJNFDGBJOPLMFBGGKPKJKMHPJIHHKAHNLPKAKNBFGHDHMJIMNNACNPKGIMDPFLFNDGNHFIFDBCFGOJDMJOMIMDKPBGPPPIJIGDKMCNBGHAOMNPPLCGFJPHMMNPEGAKJDLBEAEIOJ.png",
-          name: "새벽빽",
-          level: 60,
-          job: "에인션트아처",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/JJODPAHFKGLCKHNJCFOAOCCEIEFFEMGAFBHFLCCOEGLHIOCNKGPHLGALGFAFJJGIMPFEKDMLJLPFDOHHPOJECMPNJLOKAHPPDMCHBHCMHANBABNEPFFCIDIMMIFIBKCCENHBGMJCDKNENKIICJLCCMJAMKLKAPDKJAAJPCHHAOFLMBFDPMPBGOMCCLCKDHNBCHOEGFPHNLDKCEMBNDCLMOEFJDAFFGCPKDAFAGLIGCKNDKFIOHGKKFEHIKPPEDON.png",
-          name: "새벽숀",
-          level: 207,
-          job: "나이트로드",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/BDELDENGKBKKPHIEPCOKJGCEGDPBNBGBMDHCHLODKFEKDNCIMEFPOAHEDFPDLPGKEGGCOHEHNBBFGEHFMOHGCDINDOGGFHMHLEFOIKIBHHCGEKONOOAHHDIAKAABMMBODCEDEOCHOEGKOGPDIHEDBDBGHFNAEGKIIABFCFLHPDEHKDNLKJOPMEADPKFPMGPBMDMALGPACHHJGDENIFNBGABJGBLFMJGDDMEMILAFKFAEGDFDPJNFELLOMNBGFOBM.png",
-          name: "새벽숑",
-          level: 200,
-          job: "소울마스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/HKNCEEADCNLGMAEBELLLJIJLMEMKAMHCBKLADKFGKEAFBJBKJPIJMNANLGGJKAJFFJALAJAPCCKLKDJHLAGPOHOGOLFIJACEFIMKCDDBOGNFKPBHGADMAJDEJJILLBACGCBFHFADCBALDBEJAAPPGLCBNMAFOGMJGNBJPLINFIAFNOLFHKIJDIKKMAAEBKLKMGDJFGGIEFGPKFKCJKACAMEOOACPNCCHGMKCLMIONNLHMINFFMGCOLJGKHIPEMEM.png",
-          name: "새벽쌍",
-          level: 225,
-          job: "듀얼블레이더",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/OJFHGJNFGILEPBNPCJMGALNALOLGJNAHAANNAPAPPKCMINLEGEAHBBBMHGLABCGBLAKMFLCMCCNIJCFHOIJFMOLFBKLNJCANJFDLPJKMCDIOKFEBCHIAGJJGCEPOPLOBNMMJBOJKNLIMCAGBPBAJAIIEDKKKCPOJEFEKIJFNKMNCIKKHFBIGMNPIPADCGANNCNPCMEHHOCKIIOEBEMIOMKEKMAGCHODHGIBNHHHBJMFFFGKGLCKOLJEAFEOEJDGB.png",
-          name: "새벽아름",
-          level: 200,
-          job: "와일드헌터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/NJOKBHCFAKEACNNPEAJDLEGCJHFDFEEMAKABAMKBEHNAFBFOBOPCFODLMKAJDAHOIFNKNDIOACJCNDABDBHEBIHMMEHLAKKMANAJBCIJCAEDKPLKPLEKNNNEAKEICAHCDODNJEOIIKCLFJPJHONELMLGBGHGOHBDODDHCKMNMCLMENJLEKKILAPODGOLKPNGOPKAANELBHCOPLOPFIKMPFALGEBABNKFGEMHDBCJEEDFJDKLLOEMBMJBCNMLCOEG.png",
-          name: "새벽욘",
-          level: 241,
-          job: "섀도어",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/GGGCOAGACPFPEHGMCMDDPNABDKHIJLGEEKNMKJIEIGFFCGOOMFEFLJLMLCPBKMLDHIFPLPCKPJNEAKHLGGADDCGNLCNODEJIKKLJAEBDFFMJNNCCHHCCJOEPLAOAJLHDJCHJNAPLKNEFMAPCMMEGNCAKGJCDFDAGIPMLCBHANBJIHMMEJNHKMPHPKNJIPGAPHJMBGJGIPAKFPBABGFCMCMDOKFIIKFFNHIDEBGKHGGBGGGDKDMLJMPBIHEHPMEBJ.png",
-          name: "새벽욤",
-          level: 200,
-          job: "신궁",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/PBBCLJFKPKFAKNIACHFADAKPINKMJCBOAJMOHKMELAPKBLGODEFFOIDPJJKIGDOGEHADBONIKJJDCKHAPIKELOLIOFCOBDOMMBPADHNKPAIBPHBPDDMFAHCIJAPMJHPNHFBMBJNNBJCEALKDJBHDPDBLHGKCAGMLJKLIBKJPPMBMKBDELMJGGIMPMNNGBBPMFNHCFOIKAFEDMEMAMNOLPIHFOAHMNLLLDPILGENEMCCJHNBOIMAFFAFILMPIOFKF.png",
-          name: "새벽워",
-          level: 200,
-          job: "나이트워커",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/DNAEGPGGMLBDBHHBFAKAGEFBFHFBKHFDMFNDNLNEMFGHGCCMECKOMNCNOGBPNDBJBJHBFOAEDMPIPOCLCPCCIJNMAALLGNGFIGLMGOHECBIEOGCNPBDMKHCDIMOCCFDFPPDJBEFCIAPCLDEFJJGBGKCPJDMAAOPBBENAJGCFOHCCILEHBANKGLBAGCBCPBPKCMGGBPHHCEFGNIJLNAFFLOMOAFLOCOEEJKCKMLCJGJJCHFNGMGFDEAMFOPPMEINO.png",
-          name: "새벽읔",
-          level: 200,
-          job: "아크",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/BKEBNJDHPPKHOALLFBGJDPKFKEHKOMNLOLBENACCIHBMNHMKPKNACNOOIGGNDACFLHMHPDHEONGDAMCHNEBHMNIPDANMFJBAOHLOBEAJOMHGJKNFBFOAFALPJMJOAHMEMIHCAIOOFELOCEMNPAOAADLOFGOFDAMNGPOFDJNNKJIEAEEKJFJHIBMOHEJCCOMDDKNNMINDJJPIOFLGKFAOBABBDJKFJDMJHJGLIHBFANGLOOFOLNBPOMKMAFCJFBGH.png",
-          name: "새벽창섭",
-          level: 11,
-          job: "라라",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/JDBOJJIFJGBKEMDDLECFNKKEAHFLBJPMEBAOEHMBCAMMDPEILIGEHDKOFJLHPDPHODCLMOCGNJDMOBCOCKCMLNGOAKAOAJHHLNDLACIDJKNFMHJOIHIHEIKAAAEHGMFBLAHIMKBBEMNADNMNFCIJMOJJMEEHCLIEFIJJDCOHPEJEMOPBCNGLDLDFINHAPBGMHAJDGCODOILLKNLIKADGMEBCEKAHBGBELBECBHGNFIOJMOOMGFLHDKJGFDBAIEOF.png",
-          name: "새벽체스",
-          level: 200,
-          job: "키네시스",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/JAHKPJILLNFLGBGPMCPFACFAKGGIBABNOLNIBHPEJJHGLMFGFLGNFGHNGBAKINAEHHEKAKOGBCHDOPJNPNKENOPDKBMPDGIBMJBDPDBGMHLMNKMLBEJOELMAPNKKNAOMHDBNBMLPDFBAFBKKEDGINACOOIAODMFBDDBOFJJLOHGHLIFMJNIAKLNLFEHHHEOBLGNEKPOECONCJJHAMGAODCPNGHAFNCPCNHEKGMCCGFAKKBHLADPOHBJCLIAIPFBH.png",
-          name: "새벽칸",
-          level: 200,
-          job: "카인",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/NKGPDOLFJMAOOPMDMDCKGPEJOKCKNGANFIJGPANDCNGPICMKEIOBFHKMNGKEGPOIKNBCCPDPBINIMEKOHNPANCMJACCPPEGEFFKPKFHJNMIIMPLDPKIHNIDGLNBFOLIKOJFFCABHIBNKGNKAFFMAADAJLNMNFCDNAFFKNFBNOFOEGIHEDBGHDBAIPCKLGJGJDLFDCILCKAHGHBJCDGMCCEPFCLINHLECJKMMBKIBCKFPIDFNIDFMAALIHKJCAKBE.png",
-          name: "새벽페",
-          level: 206,
-          job: "패스파인더",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/CKMPIPGKCJLLHODEKIADJBJFDFHBBFCNALGEPCCHPABMJOEGHIEOHFMMFNEDMGJKGNFPPEBMLHEIDMDEMHNPJKEGILNLPBFIDODGAPJIMKEHCJFIPKAMIGMODMCKOIIONOGJDBPEAEADMGGGJLDCPALPPKOINOEAIFBBLAPBGFBHKBAHIKMOHBBOFOECLMAKMJCFODKODFGIOEBKHKGFKGPBMEKOJEIKNBGDCFIDPNDEPKCOAIIJMBGCODKDKHHA.png",
-          name: "새벽풍경",
-          level: 209,
-          job: "제논",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/MGKKNPFHLCKGKNFBAKALMMKHOMEJIONKIPEPNOOLCHLCFAFJHIMONBBMGEMEAHPPKJHBGCNPGEDCIFGCHLAPDKBMLOCKKIACEBPAEEKAANCOHIKPKJLJFGNFKBJPHMJJFNKCBMCJEBMEGGKPEDPCLLMHJFEMNICIMIIFKLMHFLIINPJKHEPNLJIOIGLJLDAPGCFGEEMLIMCLILCEFHNOIDDJAMGKDEGBOOKJMFPPCALBKFLENBJJIDAFODOOJGDN.png",
-          name: "새벽헐",
-          level: 200,
-          job: "보우마스터",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/AEDFABDFCMNLICEJFBKIBADDCMIGINPLCLNDEOCLEAEBEDAKKMLAGNDLNBNIBEJIAGIGBICFHIPMFDGABJEEHAIMFBLGEIKFEGLMOAAIPDHFCNIEEPAALDNPACLIKLLDLBPODOKBFLOENHPCCAHEJODOEALJGDOMILPMLEICCPEJMOAGPKIEDJILIEKPPHCHBLAMLNPNJFPJJBLMLBAJFDLICFOKIBFDFAKMKANAKAJGHAELIOELILLGDAPBCJJC.png",
-          name: "새벽혀",
-          level: 212,
-          job: "히어로",
-        },
-        {
-          imgUrl:
-            "https://avatar.maplestory.nexon.com/Character/NJIICEHKHFLBBJBDHKLEKJKLDGNCOCDCBPBKADGKIJLAPIAGPBNGEJDMINNFIIJDEPMKHIBJEHNLBNAEOPKLBLMPGHNCAECBCJBOAKNLLBMDHMCODNIDIBGGHEHLLPMHOODCAMEPCOIHMCOBMFFBKAAOOEBCJCOMCHKDLEEAEDFHCBKMBFPDCHICMMGPFDGGBKKFLEJPHFFFNGHLMNCCGIKPPFLOOOCJAHCKEONANNENMIJIOMKNIIFJLCDKOFCF.png",
-          name: "새벽훙",
-          level: 200,
-          job: "호영",
-        },
-      ];
-    })();
-    const posList = (() => {
-      return [
-        {
-          x: 1,
-          y: 8,
-        },
-        {
-          x: 0,
-          y: 0,
-        },
-        {
-          x: 0,
-          y: 1,
-        },
-        {
-          x: 0,
-          y: 2,
-        },
-        {
-          x: 0,
-          y: 3,
-        },
-        {
-          x: 0,
-          y: 4,
-        },
-        {
-          x: 0,
-          y: 5,
-        },
-        {
-          x: 0,
-          y: 6,
-        },
-        {
-          x: 0,
-          y: 7,
-        },
-        {
-          x: 0,
-          y: 8,
-        },
-        {
-          x: 0,
-          y: 9,
-        },
-        {
-          x: 1,
-          y: 1,
-        },
-        {
-          x: 1,
-          y: 2,
-        },
-        {
-          x: 1,
-          y: 3,
-        },
-        {
-          x: 1,
-          y: 4,
-        },
-        {
-          x: 1,
-          y: 5,
-        },
-        {
-          x: 1,
-          y: 6,
-        },
-        {
-          x: 1,
-          y: 7,
-        },
-        {
-          x: 1,
-          y: 9,
-        },
-        {
-          x: 2,
-          y: 2,
-        },
-        {
-          x: 2,
-          y: 3,
-        },
-        {
-          x: 2,
-          y: 4,
-        },
-        {
-          x: 2,
-          y: 5,
-        },
-        {
-          x: 2,
-          y: 6,
-        },
-        {
-          x: 2,
-          y: 7,
-        },
-        {
-          x: 2,
-          y: 8,
-        },
-        {
-          x: 2,
-          y: 9,
-        },
-        {
-          x: 3,
-          y: 3,
-        },
-        {
-          x: 3,
-          y: 4,
-        },
-        {
-          x: 3,
-          y: 5,
-        },
-        {
-          x: 3,
-          y: 6,
-        },
-        {
-          x: 3,
-          y: 7,
-        },
-        {
-          x: 3,
-          y: 8,
-        },
-        {
-          x: 3,
-          y: 9,
-        },
-        {
-          x: 4,
-          y: 4,
-        },
-        {
-          x: 4,
-          y: 5,
-        },
-        {
-          x: 4,
-          y: 6,
-        },
-        {
-          x: 4,
-          y: 7,
-        },
-        {
-          x: 4,
-          y: 8,
-        },
-        {
-          x: 4,
-          y: 9,
-        },
-        {
-          x: 3,
-          y: 12,
-        },
-        {
-          x: 0,
-          y: 10,
-        },
-        {
-          x: 0,
-          y: 11,
-        },
-        {
-          x: 0,
-          y: 12,
-        },
-        {
-          x: 0,
-          y: 13,
-        },
-        {
-          x: 0,
-          y: 14,
-        },
-        {
-          x: 0,
-          y: 15,
-        },
-        {
-          x: 0,
-          y: 16,
-        },
-        {
-          x: 0,
-          y: 17,
-        },
-        {
-          x: 0,
-          y: 18,
-        },
-        {
-          x: 0,
-          y: 19,
-        },
-        {
-          x: 1,
-          y: 10,
-        },
-        {
-          x: 1,
-          y: 11,
-        },
-        {
-          x: 1,
-          y: 12,
-        },
-        {
-          x: 1,
-          y: 13,
-        },
-        {
-          x: 1,
-          y: 14,
-        },
-        {
-          x: 1,
-          y: 15,
-        },
-        {
-          x: 1,
-          y: 16,
-        },
-        {
-          x: 1,
-          y: 17,
-        },
-        {
-          x: 1,
-          y: 18,
-        },
-        {
-          x: 2,
-          y: 10,
-        },
-        {
-          x: 2,
-          y: 11,
-        },
-        {
-          x: 2,
-          y: 12,
-        },
-        {
-          x: 2,
-          y: 13,
-        },
-        {
-          x: 2,
-          y: 14,
-        },
-        {
-          x: 2,
-          y: 15,
-        },
-        {
-          x: 2,
-          y: 16,
-        },
-        {
-          x: 2,
-          y: 17,
-        },
-        {
-          x: 3,
-          y: 10,
-        },
-        {
-          x: 3,
-          y: 11,
-        },
-        {
-          x: 3,
-          y: 13,
-        },
-        {
-          x: 3,
-          y: 14,
-        },
-        {
-          x: 3,
-          y: 15,
-        },
-        {
-          x: 3,
-          y: 16,
-        },
-        {
-          x: 4,
-          y: 10,
-        },
-        {
-          x: 4,
-          y: 11,
-        },
-        {
-          x: 4,
-          y: 12,
-        },
-        {
-          x: 4,
-          y: 13,
-        },
-        {
-          x: 4,
-          y: 14,
-        },
-        {
-          x: 4,
-          y: 15,
-        },
-        {
-          x: 5,
-          y: 9,
-        },
-        {
-          x: 6,
-          y: 9,
-        },
-        {
-          x: 7,
-          y: 9,
-        },
-        {
-          x: 8,
-          y: 9,
-        },
-        {
-          x: 9,
-          y: 9,
-        },
-        {
-          x: 10,
-          y: 9,
-        },
-        {
-          x: 11,
-          y: 9,
-        },
-        {
-          x: 12,
-          y: 9,
-        },
-        {
-          x: 13,
-          y: 9,
-        },
-        {
-          x: 14,
-          y: 9,
-        },
-        {
-          x: 15,
-          y: 9,
-        },
-        {
-          x: 16,
-          y: 9,
-        },
-        {
-          x: 17,
-          y: 9,
-        },
-        {
-          x: 18,
-          y: 11,
-        },
-        {
-          x: 17,
-          y: 10,
-        },
-        {
-          x: 17,
-          y: 11,
-        },
-        {
-          x: 17,
-          y: 12,
-        },
-        {
-          x: 17,
-          y: 13,
-        },
-        {
-          x: 17,
-          y: 14,
-        },
-        {
-          x: 17,
-          y: 15,
-        },
-        {
-          x: 18,
-          y: 10,
-        },
-        {
-          x: 18,
-          y: 12,
-        },
-        {
-          x: 18,
-          y: 13,
-        },
-        {
-          x: 18,
-          y: 14,
-        },
-        {
-          x: 18,
-          y: 15,
-        },
-        {
-          x: 18,
-          y: 16,
-        },
-        {
-          x: 19,
-          y: 10,
-        },
-        {
-          x: 19,
-          y: 11,
-        },
-        {
-          x: 19,
-          y: 12,
-        },
-        {
-          x: 19,
-          y: 13,
-        },
-        {
-          x: 19,
-          y: 14,
-        },
-        {
-          x: 19,
-          y: 15,
-        },
-        {
-          x: 19,
-          y: 16,
-        },
-        {
-          x: 19,
-          y: 17,
-        },
-        {
-          x: 20,
-          y: 10,
-        },
-        {
-          x: 20,
-          y: 11,
-        },
-        {
-          x: 20,
-          y: 12,
-        },
-        {
-          x: 20,
-          y: 13,
-        },
-        {
-          x: 20,
-          y: 14,
-        },
-        {
-          x: 20,
-          y: 15,
-        },
-        {
-          x: 20,
-          y: 16,
-        },
-        {
-          x: 20,
-          y: 17,
-        },
-        {
-          x: 20,
-          y: 18,
-        },
-        {
-          x: 21,
-          y: 10,
-        },
-        {
-          x: 21,
-          y: 11,
-        },
-        {
-          x: 21,
-          y: 12,
-        },
-        {
-          x: 21,
-          y: 13,
-        },
-        {
-          x: 21,
-          y: 14,
-        },
-        {
-          x: 21,
-          y: 15,
-        },
-        {
-          x: 21,
-          y: 16,
-        },
-        {
-          x: 21,
-          y: 17,
-        },
-        {
-          x: 21,
-          y: 18,
-        },
-        {
-          x: 21,
-          y: 19,
-        },
-        {
-          x: 18,
-          y: 9,
-        },
-        {
-          x: 19,
-          y: 9,
-        },
-        {
-          x: 20,
-          y: 9,
-        },
-        {
-          x: 21,
-          y: 9,
-        },
-        {
-          x: 21,
-          y: 8,
-        },
-        {
-          x: 20,
-          y: 8,
-        },
-        {
-          x: 19,
-          y: 8,
-        },
-        {
-          x: 18,
-          y: 8,
-        },
-        {
-          x: 17,
-          y: 8,
-        },
-        {
-          x: 17,
-          y: 7,
-        },
-        {
-          x: 18,
-          y: 7,
-        },
-        {
-          x: 19,
-          y: 7,
-        },
-        {
-          x: 20,
-          y: 7,
-        },
-        {
-          x: 21,
-          y: 7,
-        },
-        {
-          x: 21,
-          y: 6,
-        },
-      ];
-    })();
-
-    infoList.forEach(character.add);
-    posList.forEach(map.select);
-    character.sort();
-    stats.updateLevel();
-
-    const event = document.createEvent("MouseEvent");
-    event.initEvent("click", false, true);
-    element.img.autoSelect.dispatchEvent(event);
-    for (let i = 0; i < 4; i++) element.img.maplem.dispatchEvent(event);
   }
 }
