@@ -906,7 +906,7 @@ class Tiler {
 
         for (let spotName in this.spots) {
           log(`>>> Start ${spotName} >>>`);
-          let spot = this.spots[(spotName = "normal")];
+          let spot = this.spots[spotName];
 
           if (spot.points.length) {
             if (
