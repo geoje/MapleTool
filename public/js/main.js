@@ -620,7 +620,7 @@ let stats = {
       });
 
     stats.totalLevel = 0;
-    stats.raidMember = [0, 9];
+    stats.raidMember[0] = 0;
     stats.tileableCount = 0;
     map.updateTileCount();
     element.txt.raidMember.innerText = `${stats.raidMember[0]}/${stats.raidMember[1]}`;
@@ -796,14 +796,15 @@ function Main() {
       element.img.autoSelect.title = "자동선택";
       element.img.autoSelect.alt = "자동선택";
     } else {
-      character.infoList.forEach((info, i) => {
+      character.infoList.filter((info) => info.raid).forEach(character.raid);
+      character.infoList.forEach((info) => {
         if (stats.raidMember[0] < stats.raidMember[1] && info.job.length > 0) character.raid(info);
         else return;
       });
       if (maplemInfo && !maplemInfo.raid) character.raid(maplemInfo);
 
       if (
-        (stats.raidMember[1] && stats.raidMember[0] == stats.raidMember[1]) ||
+        stats.raidMember[0] == stats.raidMember[1] ||
         character.infoList.filter((o) => o.job).findIndex((o) => !o.raid) == -1
       ) {
         element.img.autoSelect.title = "전체 선택해제";
@@ -830,6 +831,7 @@ function Main() {
           return true;
         })
         .forEach(character.raid);
+      character.sort();
     }
   }
 
