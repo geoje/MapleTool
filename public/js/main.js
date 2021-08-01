@@ -152,6 +152,7 @@ let map = {
   },
 };
 let character = {
+  infoData: [],
   infoList: [],
   syncList: [],
   JOB: {
@@ -389,6 +390,13 @@ let character = {
     });
     element.txt.cardCount.innerText = character.infoList.filter((o) => o.level).length;
     stats.updateLevel();
+
+    // save info
+    let idx;
+    if ((idx = character.infoData.findIndex((d) => d.name == info.name)) == -1)
+      character.infoData.push({ ...info, raid: false });
+    else character.infoData[idx] = info;
+    localStorage.infoData = JSON.stringify(character.infoData);
   },
   addGhost: (name) => {
     const e = element.div.cardSpecimen.cloneNode(true);
@@ -433,6 +441,11 @@ let character = {
     element.txt.cardCount.innerText = character.infoList.filter((o) => o.level).length;
     if (info.raid) stats.unsetRaid(info.rankIdx, info.jobClass);
     stats.updateLevel();
+
+    // save info
+    let idx = character.infoData.findIndex((o) => o.name == info.name);
+    if (idx != -1) character.infoData.splice(idx, 1);
+    localStorage.infoData = JSON.stringify(character.infoData);
   },
   removeGhost: (name) => {
     const idx = character.infoList.findIndex((o) => o.name == name);
@@ -452,6 +465,8 @@ let character = {
         info.raid = true;
       }
     }
+    character.infoData.find((o) => o.name == info.name).raid = info.raid;
+    localStorage.infoData = JSON.stringify(character.infoData);
   },
   sort: () => {
     character.infoList.sort((a, b) => {
@@ -679,6 +694,9 @@ function Main() {
     else map.unHover(map.hoverPos);
     map.click = 0;
     map.hoverPos = { x: -1, y: -1, g: -1 };
+
+    // Save map.selectedPos
+    localStorage.selectedPos = JSON.stringify(map.selectedPos);
   });
   element.table.addEventListener("touchstart", onTableTouchStart);
   element.table.addEventListener("touchmove", onTableTouchMove);
@@ -797,6 +815,23 @@ function Main() {
     character.infoList.slice().forEach(character.remove);
     stats.updateLevel();
   });
+
+  // Load user data - character
+  const infoData = JSON.parse(localStorage.infoData);
+  if (Array.isArray(infoData) && infoData.length) infoData.forEach(character.add);
+  const raidNames = infoData.filter((o) => o.raid).map((o) => o.name);
+  character.infoList
+    .filter((info) => {
+      let idx = raidNames.indexOf(info.name);
+      if (idx == -1) return false;
+      raidNames.splice(idx, 1);
+      return true;
+    })
+    .forEach(character.raid);
+
+  // Load user data - map
+  const selectedPos = JSON.parse(localStorage.selectedPos);
+  selectedPos.forEach(map.select);
 
   // Preload images
   [
@@ -1046,6 +1081,9 @@ function onTileMouseUp(event) {
 
   if (map.click == 2) TILE.GROUP[map.hoverPos.g].filter(map.isNotHover).forEach(map.unHover);
   map.click = 0;
+
+  // Save map.selectedPos
+  localStorage.selectedPos = JSON.stringify(map.selectedPos);
 }
 function onTableTouchStart(event) {
   if (event.cancelable) {
