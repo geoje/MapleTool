@@ -1396,15 +1396,8 @@ function onImgSyncClick(event) {
     else {
       const data = JSON.parse(xhr.responseText);
       if (data.error) {
-        if (data.error[2] == 1) {
-          character.remove(info);
-          character.add(info);
-          if (info.raid) character.raid(character.infoList[character.infoList.length - 1]);
-          character.sort();
-          stats.updateLevel();
-        } else {
-          character.removeGhost(info.name);
-        }
+        if (data.error[2] == 1) info.element.classList.remove("sync");
+        else character.removeGhost(info.name);
         inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
       } else {
         character.remove(info);
