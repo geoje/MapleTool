@@ -506,7 +506,7 @@ let stats = {
     let union = { titleKo: "", titleEn: "", detailLevel: 0, imgSrc: "" };
 
     if (tl >= 8000) {
-      union.detailLevel = Math.floor((tl - 7500) / 500);
+      union.detailLevel = Math.min(5, Math.floor((tl - 7500) / 500));
       union.titleKo = "그랜드 마스터 유니온";
       union.titleEn = "GRAND MASTER UNION";
 
