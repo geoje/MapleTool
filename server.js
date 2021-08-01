@@ -3,6 +3,7 @@ const https = require("https");
 const express = require("express");
 const livereload = require("livereload");
 const querystring = require("querystring");
+const { SSL_OP_EPHEMERAL_RSA } = require("constants");
 const app = express();
 
 const PORT = 4852;
@@ -12,6 +13,7 @@ const REQ_DELAY = 10000;
 let ipForDealy = {
   login: [],
 };
+let syncLock = false;
 
 String.format = (...args) => {
   return args[0].replace(/{(\d+)}/g, (match, num) => {
@@ -269,7 +271,7 @@ function GetCharacterInfo(request, response) {
   );
   req.end();
 }
-function GetSyncCharacterInfo(request, response) {
+async function GetSyncCharacterInfo(request, response) {
   const processError = (resTitle, resCotent, err) => {
     response.json({
       error: [resTitle, resCotent],
@@ -330,7 +332,12 @@ function GetSyncCharacterInfo(request, response) {
       );
   };
 
+  while (syncLock) {
+    await sleep(100);
+  }
+  syncLock = true;
   sync(request, response);
+  syncLock = false;
 }
 
 Main();

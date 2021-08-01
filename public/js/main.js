@@ -785,7 +785,8 @@ function Main() {
   });
   element.img.sync.addEventListener("click", () => {
     character.infoList.forEach((info) => {
-      if (info.jobClass != "maplem") onImgSyncClick({ target: { alt: info.name } });
+      if (info.jobClass != "maplem" && info.name != "제로 ")
+        onImgSyncClick({ target: { alt: info.name } });
     });
   });
   element.img.autoSelect.addEventListener("click", () => {
@@ -1192,18 +1193,6 @@ function onPlay(event) {
     element.div.map.removeAttribute("style");
     map.tiler.abort = true;
   } else if (element.img.play.className == "map-tool-play") {
-    // 잔여 타일이 0이 아니면 오류 메세지 출력
-    // if (map.tileCount != 0) {
-    //   inform.show(
-    //     inform.DANGER,
-    //     `타일 개수 ${map.tileCount > 0 ? "부족" : "초과"}`,
-    //     `타일 ${Math.abs(map.tileCount)}개를 ${
-    //       map.tileCount > 0 ? "더 선택" : "선택 해제"
-    //     } 해주세요.`
-    //   );
-    //   return;
-    // }
-
     element.img.play.className = "map-tool-stop";
     element.img.play.src = "image/icon/play-stop-o.svg";
     element.img.play.setAttribute("alt", "중지");
