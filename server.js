@@ -1,17 +1,16 @@
-const fs = require('fs');
-const https = require('https');
-const express = require('express');
-const livereload = require('livereload');
-const querystring = require('querystring');
+const fs = require("fs");
+const https = require("https");
+const express = require("express");
+const livereload = require("livereload");
+const querystring = require("querystring");
 const app = express();
 
 const PORT = 4852;
-const DEFAULT_DIR = '/maple';
+const DEFAULT_DIR = "/maple";
 const REQ_DELAY = 10000;
 
 let ipForDealy = {
   login: [],
-  apply: [],
 };
 
 String.format = (...args) => {
@@ -24,26 +23,26 @@ String.format = (...args) => {
 function Main() {
   livereload
     .createServer({
-      exts: ['html', 'css', 'js'],
+      exts: ["html", "css", "js"],
     })
     .watch(__dirname);
 
   app.use(express.json());
-  app.use(DEFAULT_DIR, express.static('public'));
-  app.use((err, req, res, next) => ResponseStatusPage(res, 500, 'Internal Server Error', err));
+  app.use(DEFAULT_DIR, express.static("public"));
+  app.use((err, req, res, next) => ResponseStatusPage(res, 500, "Internal Server Error", err));
 
-  if (DEFAULT_DIR != '/')
-    app.get('/', (req, res) => {
+  if (DEFAULT_DIR != "/")
+    app.get("/", (req, res) => {
       res.redirect(301, `http://${req.headers.host}${DEFAULT_DIR}`);
     });
   app.get(DEFAULT_DIR, (req, res) => {
-    fs.readFile('public/html/index.html', 'utf8', (err, data) => {
-      if (err) ResponseStatusPage(res, 500, 'Internal Server Error', err);
+    fs.readFile("public/html/index.html", "utf8", (err, data) => {
+      if (err) ResponseStatusPage(res, 500, "Internal Server Error", err);
       else res.send(data);
     });
   });
-  app.post(DEFAULT_DIR + '/login', (req, res) => {
-    const clientIP = req.header('x-forwarded-for');
+  app.post(DEFAULT_DIR + "/login", (req, res) => {
+    const clientIP = req.header("x-forwarded-for");
     if (ipForDealy.login.indexOf(clientIP) == -1) {
       ipForDealy.login.push(clientIP);
       setTimeout(() => {
@@ -52,66 +51,53 @@ function Main() {
       }, REQ_DELAY);
 
       if (req.body.id && req.body.password) {
-        console.log(`[${new Date().toISOString().substr(0, 19)}] ${clientIP} | login | ${req.body.id}`);
+        console.log(
+          `[${new Date().toISOString().substr(0, 19)}] ${clientIP} | login | ${req.body.id}`
+        );
         GetCharacterByAccount(req, res);
       } else if (req.body.id && req.body.password) {
-      } else responese.json({ error: ['쿼리 오류', '계정 정보가 비어있습니다.'] });
+      } else responese.json({ error: ["쿼리 오류", "계정 정보가 비어있습니다."] });
     } else
       res.json({
         error: [
-          '잠시만요!',
+          "잠시만요!",
           `원활한 서비스를 위해 [계정에서 가져오기]와 [캐릭터 등록]은 ${
             REQ_DELAY / 1000
           }초 마다 사용이 가능 합니다.`,
         ],
       });
   });
-  app.post(DEFAULT_DIR + '/apply', (req, res) => {
-    const clientIP = req.header('x-forwarded-for');
-    if (ipForDealy.apply.indexOf(clientIP) == -1) {
-      ipForDealy.apply.push(clientIP);
-      setTimeout(() => {
-        const idx = ipForDealy.apply.indexOf(clientIP);
-        if (idx != -1) ipForDealy.apply.splice(idx, 1);
-      }, REQ_DELAY);
+  app.post(DEFAULT_DIR + "/apply", (req, res) => {
+    const clientIP = req.header("x-forwarded-for");
 
-      if (req.body.charNames) {
-        console.log(
-          `[${new Date().toISOString().substr(0, 19)}] ${clientIP} | apply | ${
-            req.body.charNames.split(',').length
-          }`
-        );
-        GetCharacterInfo(req, res);
-      } else res.json({ error: ['쿼리 오류', '캐릭터 이름이 비어있습니다.'] });
-    } else
-      res.json({
-        error: [
-          '잠시만요!',
-          `원활한 서비스를 위해 [계정에서 가져오기]와 [캐릭터 등록]은 ${
-            REQ_DELAY / 1000
-          }초 마다 사용이 가능 합니다.`,
-        ],
-      });
+    if (req.body.charNames) {
+      console.log(
+        `[${new Date().toISOString().substr(0, 19)}] ${clientIP} | apply | ${
+          req.body.charNames.split(",").length
+        }`
+      );
+      GetCharacterInfo(req, res);
+    } else res.json({ error: ["쿼리 오류", "캐릭터 이름이 비어있습니다."] });
   });
-  app.post(DEFAULT_DIR + '/sync', (req, res) => {
+  app.post(DEFAULT_DIR + "/sync", (req, res) => {
     if (req.body.name) {
       console.log(
-        `[${new Date().toISOString().substr(0, 19)}] ${req.header('x-forwarded-for')} | sync | ${
+        `[${new Date().toISOString().substr(0, 19)}] ${req.header("x-forwarded-for")} | sync | ${
           req.body.name
         }`
       );
       GetSyncCharacterInfo(req, res);
-    } else res.json({ error: ['쿼리 오류', '캐릭터 이름이 비어있습니다.'] });
+    } else res.json({ error: ["쿼리 오류", "캐릭터 이름이 비어있습니다."] });
   });
 
-  app.use((req, res, next) => ResponseStatusPage(res, 404, 'Not Found'));
+  app.use((req, res, next) => ResponseStatusPage(res, 404, "Not Found"));
   app.listen(PORT);
 }
 
 function ResponseStatusPage(res, statusCode, content, err) {
   if (statusCode == 400 || statusCode == 500) console.error(err);
 
-  fs.readFile('public/html/status.html', 'utf8', (err, data) => {
+  fs.readFile("public/html/status.html", "utf8", (err, data) => {
     if (err) console.error(err);
     else res.status(statusCode).send(String.format(data, statusCode, content));
   });
@@ -127,7 +113,7 @@ function ParseCharacterInfo(rawData) {
     });
 
     let levelAndJobArr = rawData.match(/(">Lv.).+(?=<\/span>)/g).map((str) => {
-      return { level: Number(str.match(/\d+/)[0]), job: str.substr(str.lastIndexOf(' ') + 1) };
+      return { level: Number(str.match(/\d+/)[0]), job: str.substr(str.lastIndexOf(" ") + 1) };
     });
 
     imgAndNameArr.forEach((imgAndName, i) => infoArr.push({ ...imgAndName, ...levelAndJobArr[i] }));
@@ -144,27 +130,29 @@ function GetCharacterByAccount(request, responese) {
   };
 
   https
-    .get('https://maplestory.nexon.com/Authentication/Login', (res) => {
+    .get("https://maplestory.nexon.com/Authentication/Login", (res) => {
       if (res.statusCode != 200) {
         processError(
-          '서버 오류',
-          '메이플 로그인 페이지 접속에 실패했습니다.\n' + `상태코드: ${res.headers.statusCode}`
+          "서버 오류",
+          "메이플 로그인 페이지 접속에 실패했습니다.\n" + `상태코드: ${res.headers.statusCode}`
         );
         return;
       }
 
-      let rawData = '';
-      res.on('data', (chunk) => (rawData += chunk));
-      res.on('end', () => {
+      let rawData = "";
+      res.on("data", (chunk) => (rawData += chunk));
+      res.on("end", () => {
         let token = rawData.match(/(<input name="__RequestVerificationToken").+(?=" \/>)/);
         token = token[0].substring(token[0].lastIndexOf('"') + 1);
 
-        let cookie = res.headers['set-cookie'].find((str) => str.startsWith('__RequestVerificationToken='));
+        let cookie = res.headers["set-cookie"].find((str) =>
+          str.startsWith("__RequestVerificationToken=")
+        );
         if (!cookie) {
-          processError('서버 오류', '메이플 로그인 페이지에서 토큰 값을 가져올 수 없습니다.');
+          processError("서버 오류", "메이플 로그인 페이지에서 토큰 값을 가져올 수 없습니다.");
           return;
         }
-        cookie = cookie.substring(0, cookie.indexOf(' '));
+        cookie = cookie.substring(0, cookie.indexOf(" "));
 
         let postData = querystring.stringify({
           __RequestVerificationToken: token,
@@ -172,29 +160,32 @@ function GetCharacterByAccount(request, responese) {
           Password: request.body.password,
         });
         let options = {
-          hostname: 'maplestory.nexon.com',
-          path: '/Authentication/Login',
-          method: 'POST',
+          hostname: "maplestory.nexon.com",
+          path: "/Authentication/Login",
+          method: "POST",
           headers: {
             Cookie: [cookie],
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(postData),
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Length": Buffer.byteLength(postData),
           },
         };
 
         req = https.request(options, (res) => {
-          res.on('data', () => {});
-          res.on('end', () => {
-            cookie = res.headers['set-cookie'].find((str) => str.startsWith('EGC2='));
-            if (!cookie || cookie.startsWith('EGC2=;')) {
-              processError('로그인 오류', '로그인에 실패 하였습니다.\n계정 정보가 틀렸거나 보호모드 입니다.');
+          res.on("data", () => {});
+          res.on("end", () => {
+            cookie = res.headers["set-cookie"].find((str) => str.startsWith("EGC2="));
+            if (!cookie || cookie.startsWith("EGC2=;")) {
+              processError(
+                "로그인 오류",
+                "로그인에 실패 하였습니다.\n계정 정보가 틀렸거나 보호모드 입니다."
+              );
               return;
             }
-            cookie = cookie.substring(0, cookie.indexOf(' '));
+            cookie = cookie.substring(0, cookie.indexOf(" "));
 
             options = {
-              hostname: 'maplestory.nexon.com',
-              path: '/MyMaple/Account/MasterCharacter',
+              hostname: "maplestory.nexon.com",
+              path: "/MyMaple/Account/MasterCharacter",
               headers: {
                 Cookie: [cookie],
               },
@@ -204,30 +195,34 @@ function GetCharacterByAccount(request, responese) {
               .get(options, (res) => {
                 if (res.statusCode != 200) return;
 
-                rawData = '';
-                res.on('data', (chunk) => (rawData += chunk));
-                res.on('end', () => {
+                rawData = "";
+                res.on("data", (chunk) => (rawData += chunk));
+                res.on("end", () => {
                   let charArr = rawData
                     .match(/(<dd><img).+(?=<\/dd>)/g)
-                    .map((str) => str.substr(str.lastIndexOf('>') + 1));
+                    .map((str) => str.substr(str.lastIndexOf(">") + 1));
 
                   responese.json({ charArr });
                 });
               })
-              .on('error', (err) =>
-                processError('서버 오류', '메이플 내 캐릭터 페이지 접속 중 오류가 발생하였습니다.', err)
+              .on("error", (err) =>
+                processError(
+                  "서버 오류",
+                  "메이플 내 캐릭터 페이지 접속 중 오류가 발생하였습니다.",
+                  err
+                )
               );
           });
         });
         req.write(postData);
-        req.on('error', (err) =>
-          processError('서버 오류', '메이플 홈페이지 로그인 도중 오류가 발생하였습니다.', err)
+        req.on("error", (err) =>
+          processError("서버 오류", "메이플 홈페이지 로그인 도중 오류가 발생하였습니다.", err)
         );
         req.end();
       });
     })
-    .on('error', (err) =>
-      processError('서버 오류', '메이플 로그인 페이지 접속 중 오류가 발생하였습니다.', err)
+    .on("error", (err) =>
+      processError("서버 오류", "메이플 로그인 페이지 접속 중 오류가 발생하였습니다.", err)
     );
 }
 function GetCharacterInfo(request, response) {
@@ -240,25 +235,28 @@ function GetCharacterInfo(request, response) {
 
   let postData = JSON.stringify({ input: request.body.charNames });
   let options = {
-    hostname: 'maple.gg',
-    path: '/mycharacters/search',
-    method: 'POST',
+    hostname: "maple.gg",
+    path: "/mycharacters/search",
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(postData),
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(postData),
     },
   };
 
   let req = https.request(options, (res) => {
     if (res.statusCode != 200) {
-      processError('서버 오류', '메이플 지지에 접속을 실패했습니다.\n' + `상태코드: ${res.statusCode}`);
+      processError(
+        "서버 오류",
+        "메이플 지지에 접속을 실패했습니다.\n" + `상태코드: ${res.statusCode}`
+      );
       return;
     }
 
-    let rawData = '';
+    let rawData = "";
     let syncArr = [];
-    res.on('data', (chunk) => (rawData += chunk));
-    res.on('end', () => {
+    res.on("data", (chunk) => (rawData += chunk));
+    res.on("end", () => {
       syncArr = rawData.match(/(.pushSyncCharacter\(\').+(?=\'\);)/g);
       if (syncArr) syncArr = syncArr.map((str) => str.substr(str.indexOf("'") + 1));
 
@@ -266,8 +264,8 @@ function GetCharacterInfo(request, response) {
     });
   });
   req.write(postData);
-  req.on('error', (err) =>
-    processError('서버 오류', '메이플 지지 페이지 접속 중 오류가 발생하였습니다.', err)
+  req.on("error", (err) =>
+    processError("서버 오류", "메이플 지지 페이지 접속 중 오류가 발생하였습니다.", err)
   );
   req.end();
 }
@@ -283,17 +281,20 @@ function GetSyncCharacterInfo(request, response) {
     https
       .get(`https://maple.gg/u/${encodeURI(request.body.name)}/sync`, (res) => {
         if (res.statusCode != 200) {
-          processError('서버 오류', '메이플 지지에 접속을 실패했습니다.\n' + `상태코드: ${res.statusCode}`);
+          processError(
+            "서버 오류",
+            "메이플 지지에 접속을 실패했습니다.\n" + `상태코드: ${res.statusCode}`
+          );
           return;
         }
 
-        let rawData = '';
-        res.on('data', (chunk) => (rawData += chunk));
-        res.on('end', () => {
+        let rawData = "";
+        res.on("data", (chunk) => (rawData += chunk));
+        res.on("end", () => {
           const data = JSON.parse(rawData);
           if (data.error) {
             // Sync error
-            processError('동기화 실패', '캐릭터를 찾을 수 없습니다.\n\n' + request.body.name);
+            processError("동기화 실패", "캐릭터를 찾을 수 없습니다.\n\n" + request.body.name);
           } else if (data.done) {
             // Sync done
             search(request, response);
@@ -303,26 +304,29 @@ function GetSyncCharacterInfo(request, response) {
           }
         });
       })
-      .on('error', (err) =>
-        processError('서버 오류', '메이플 지지 페이지 접속 중 오류가 발생하였습니다.', err)
+      .on("error", (err) =>
+        processError("서버 오류", "메이플 지지 페이지 접속 중 오류가 발생하였습니다.", err)
       );
   };
   const search = (request, response) => {
     https
-      .get('https://maple.gg/mycharacters/search/' + request.body.name, (res) => {
+      .get("https://maple.gg/mycharacters/search/" + request.body.name, (res) => {
         if (res.statusCode != 200) {
-          processError('서버 오류', '메이플 지지에 접속을 실패했습니다.\n' + `상태코드: ${res.statusCode}`);
+          processError(
+            "서버 오류",
+            "메이플 지지에 접속을 실패했습니다.\n" + `상태코드: ${res.statusCode}`
+          );
           return;
         }
 
-        let rawData = '';
-        res.on('data', (chunk) => (rawData += chunk));
-        res.on('end', () => {
+        let rawData = "";
+        res.on("data", (chunk) => (rawData += chunk));
+        res.on("end", () => {
           response.json(ParseCharacterInfo(rawData)[0]);
         });
       })
-      .on('error', (err) =>
-        processError('서버 오류', '메이플 지지 페이지 접속 중 오류가 발생하였습니다.', err)
+      .on("error", (err) =>
+        processError("서버 오류", "메이플 지지 페이지 접속 중 오류가 발생하였습니다.", err)
       );
   };
 
