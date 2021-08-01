@@ -601,13 +601,11 @@ let stats = {
           mino
             .querySelectorAll("table:not(.invisible)")
             .forEach((e) => (e.className = "invisible"));
-          mino.querySelectorAll("table")[rankIdx].className = "";
-          mino.querySelector("h6").innerText = stats.minoCount[jobClass][rankIdx] = 0;
-          mino.className = "disable";
-        } else {
-          mino.querySelector("h6").innerText = stats.minoCount[jobClass][rankIdx] = 0;
-          mino.className = "disable";
-        }
+          mino.querySelectorAll("table")[0].className = "";
+          stats.minoCount[jobClass] = stats.minoCount[jobClass].map((c) => 0);
+        } else stats.minoCount[jobClass][rankIdx] = 0;
+        mino.className = "disable";
+        mino.querySelector("h6").innerText = 0;
       });
 
     stats.totalLevel = 0;
@@ -742,9 +740,8 @@ function Main() {
   // Card tool event
   element.img.scroll.addEventListener("click", () => {
     if (element.div.cardList.classList.toggle("vertical"))
-    element.img.scroll.src = "image/icon/arrows-shrink-h.svg";
-    else
-    element.img.scroll.src = "image/icon/arrows-shrink-v.svg";
+      element.img.scroll.src = "image/icon/arrows-shrink-h.svg";
+    else element.img.scroll.src = "image/icon/arrows-shrink-v.svg";
   });
   element.img.zero.addEventListener("click", () => {
     const removeZ = character.infoList.find((o) => o.job == "제로");
