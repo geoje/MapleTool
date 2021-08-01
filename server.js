@@ -97,13 +97,34 @@ function Main() {
       });
   });
   app.post(DEFAULT_DIR + "/sync", (req, res) => {
+    // [Error Code]
+    // 1: 동기화 대기로 인한 실패
+
     if (req.body.name) {
-      console.log(
-        `[${new Date().toISOString().substr(0, 19)}] ${req.header("x-forwarded-for")} | sync | ${
-          req.body.name
-        }`
-      );
-      GetSyncCharacterInfo(req, res);
+      if (delayList.sync.indexOf(req.body.name) == -1) {
+        delayList.sync.push(req.body.name);
+        setTimeout(() => {
+          const idx = delayList.sync.indexOf(req.body.name);
+          if (idx != -1) delayList.sync.splice(idx, 1);
+        }, REQ_DELAY);
+
+        console.log(
+          `[${new Date().toISOString().substr(0, 19)}] ${req.header("x-forwarded-for")} | sync | ${
+            req.body.name
+          }`
+        );
+        GetSyncCharacterInfo(req, res);
+      } else {
+        res.json({
+          error: [
+            "잠시만요!",
+            `동기화 실패 - ${req.body.name}\n\n원활한 서비스를 위해 [캐릭터 동기화]는 ${
+              REQ_DELAY / 1000
+            }초 마다 사용이 가능 합니다.`,
+            1,
+          ],
+        });
+      }
     } else res.json({ error: ["쿼리 오류", "캐릭터 이름이 비어있습니다."] });
   });
 
@@ -287,8 +308,6 @@ function GetCharacterInfo(request, response) {
   req.end();
 }
 function GetSyncCharacterInfo(request, response) {
-  // [Error Code]
-  // 1: 동기화 대기로 인한 실패
   const processError = (resTitle, resCotent, err) => {
     response.json({
       error: [resTitle, resCotent],
@@ -349,25 +368,7 @@ function GetSyncCharacterInfo(request, response) {
       );
   };
 
-  if (delayList.sync.indexOf(request.body.name) == -1) {
-    sync(request, response);
-
-    delayList.sync.push(request.body.name);
-    setTimeout(() => {
-      const idx = delayList.sync.indexOf(request.body.name);
-      if (idx != -1) delayList.sync.splice(idx, 1);
-    }, REQ_DELAY);
-  } else {
-    response.json({
-      error: [
-        "잠시만요!",
-        `동기화 실패 - ${request.body.name}\n\n원활한 서비스를 위해 [캐릭터 동기화]는 ${
-          REQ_DELAY / 1000
-        }초 마다 사용이 가능 합니다.`,
-        1,
-      ],
-    });
-  }
+  sync(request, response);
 }
 
 Main();
