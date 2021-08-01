@@ -9,6 +9,7 @@ const element = {
     help: document.querySelector(".map-tool > img:nth-child(2)"),
     play: document.querySelector(".map-tool-play"),
 
+    scroll: document.querySelector(".card-stats > img:nth-last-child(6)"),
     zero: document.querySelector(".card-stats > img:nth-last-child(5)"),
     maplem: document.querySelector(".card-stats > img:nth-last-child(4)"),
     sync: document.querySelector(".card-stats > img:nth-last-child(3)"),
@@ -734,8 +735,17 @@ function Main() {
     )
   );
   element.img.play.addEventListener("click", onPlay);
+  element.div.cardList.addEventListener("wheel", (event) => {
+    element.div.cardList.scrollLeft += event.deltaY / 2;
+  });
 
   // Card tool event
+  element.img.scroll.addEventListener("click", () => {
+    if (element.div.cardList.classList.toggle("vertical"))
+    element.img.scroll.src = "image/icon/arrows-shrink-h.svg";
+    else
+    element.img.scroll.src = "image/icon/arrows-shrink-v.svg";
+  });
   element.img.zero.addEventListener("click", () => {
     const removeZ = character.infoList.find((o) => o.job == "제로");
     let prevLv = 0;

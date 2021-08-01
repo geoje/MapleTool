@@ -201,6 +201,14 @@ button:active:not([disabled]),
 .card-list::-webkit-scrollbar-thumb:active {
   background-color: lightgray;
 }
+.card-list.vertical {
+  justify-content: space-around;
+  flex-wrap: wrap;
+  height: 194px;
+}
+.card-list.vertical > div {
+  margin: 10px 0;
+}
 .card-list > div {
   flex-shrink: 0;
   position: relative;
