@@ -744,7 +744,7 @@ function Main() {
     else element.img.scroll.src = "image/icon/arrows-shrink-v.svg";
   });
   element.img.zero.addEventListener("click", () => {
-    const removeZ = character.infoList.find((o) => o.job == "제로");
+    const removeZ = character.infoList.find((o) => o.name == "제로 ");
     let prevLv = 0;
     if (removeZ) {
       character.remove(removeZ);
@@ -760,13 +760,14 @@ function Main() {
         imgUrl: "image/deco/zero-avatar.png",
       });
 
-      const idx = character.infoList.findIndex((o) => o.job == "제로");
+      const idx = character.infoList.findIndex((o) => o.name == "제로 ");
       if (idx == -1) return;
       info = character.infoList[idx];
       if (stats.setRaid(info.rankIdx, info.jobClass)) {
         info.element.classList.add("raid");
         info.raid = true;
       }
+      character.sort();
     }
   });
   element.img.maplem.addEventListener("click", () => {
