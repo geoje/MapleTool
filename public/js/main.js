@@ -817,21 +817,27 @@ function Main() {
   });
 
   // Load user data - character
-  const infoData = JSON.parse(localStorage.infoData);
-  if (Array.isArray(infoData) && infoData.length) infoData.forEach(character.add);
-  const raidNames = infoData.filter((o) => o.raid).map((o) => o.name);
-  character.infoList
-    .filter((info) => {
-      let idx = raidNames.indexOf(info.name);
-      if (idx == -1) return false;
-      raidNames.splice(idx, 1);
-      return true;
-    })
-    .forEach(character.raid);
+  if (localStorage.infoData) {
+    const infoData = JSON.parse(localStorage.infoData);
+    if (Array.isArray(infoData) && infoData.length) {
+      infoData.forEach(character.add);
+      const raidNames = infoData.filter((o) => o.raid).map((o) => o.name);
+      character.infoList
+        .filter((info) => {
+          let idx = raidNames.indexOf(info.name);
+          if (idx == -1) return false;
+          raidNames.splice(idx, 1);
+          return true;
+        })
+        .forEach(character.raid);
+    }
+  }
 
   // Load user data - map
-  const selectedPos = JSON.parse(localStorage.selectedPos);
-  selectedPos.forEach(map.select);
+  if (localStorage.selectedPos) {
+    const selectedPos = JSON.parse(localStorage.selectedPos);
+    selectedPos.forEach(map.select);
+  }
 
   // Preload images
   [
