@@ -152,7 +152,6 @@ let map = {
   },
 };
 let character = {
-  infoData: [],
   infoList: [],
   syncList: [],
   JOB: {
@@ -362,7 +361,7 @@ let character = {
     // char img
     const imgChar = e.querySelector(".card-image > img");
     imgChar.src = info.imgUrl;
-    imgChar.title = "유니온 효과 넣기";
+    // imgChar.title = "유니온 효과 넣기";
 
     // job string
     e.querySelector("p").innerText = info.job;
@@ -380,9 +379,7 @@ let character = {
     // update info
     element.div.cardList.appendChild(e);
     character.infoList.push({
-      name: info.name,
-      level: info.level,
-      job: info.job,
+      ...info,
       jobClass,
       rankIdx,
       raid: false,
@@ -392,11 +389,7 @@ let character = {
     stats.updateLevel();
 
     // save info
-    let idx;
-    if ((idx = character.infoData.findIndex((d) => d.name == info.name)) == -1)
-      character.infoData.push({ ...info, raid: false });
-    else character.infoData[idx] = info;
-    localStorage.infoData = JSON.stringify(character.infoData);
+    localStorage.infoList = JSON.stringify(character.infoList);
   },
   addGhost: (name) => {
     const e = element.div.cardSpecimen.cloneNode(true);
@@ -443,9 +436,7 @@ let character = {
     stats.updateLevel();
 
     // save info
-    let idx = character.infoData.findIndex((o) => o.name == info.name);
-    if (idx != -1) character.infoData.splice(idx, 1);
-    localStorage.infoData = JSON.stringify(character.infoData);
+    localStorage.infoList = JSON.stringify(character.infoList);
   },
   removeGhost: (name) => {
     const idx = character.infoList.findIndex((o) => o.name == name);
@@ -465,8 +456,7 @@ let character = {
         info.raid = true;
       }
     }
-    character.infoData.find((o) => o.name == info.name).raid = info.raid;
-    localStorage.infoData = JSON.stringify(character.infoData);
+    localStorage.infoList = JSON.stringify(character.infoList);
   },
   sort: () => {
     character.infoList.sort((a, b) => {
@@ -819,11 +809,11 @@ function Main() {
   });
 
   // Load user data - character
-  if (localStorage.infoData) {
-    const infoData = JSON.parse(localStorage.infoData);
-    if (Array.isArray(infoData) && infoData.length) {
-      infoData.forEach(character.add);
-      const raidNames = infoData.filter((o) => o.raid).map((o) => o.name);
+  if (localStorage.infoList) {
+    const infoList = JSON.parse(localStorage.infoList);
+    if (Array.isArray(infoList) && infoList.length) {
+      infoList.forEach(character.add);
+      const raidNames = infoList.filter((o) => o.raid).map((o) => o.name);
       character.infoList
         .filter((info) => {
           let idx = raidNames.indexOf(info.name);
@@ -1392,7 +1382,15 @@ function onImgSyncClick(event) {
     else {
       const data = JSON.parse(xhr.responseText);
       if (data.error) {
-        character.removeGhost(info.name);
+        if (data.error[2] == 1) {
+          character.remove(info);
+          character.add(info);
+          if (info.raid) character.raid(character.infoList[character.infoList.length - 1]);
+          character.sort();
+          stats.updateLevel();
+        } else {
+          character.removeGhost(info.name);
+        }
         inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
       } else {
         character.remove(info);

@@ -3,17 +3,17 @@ const https = require("https");
 const express = require("express");
 const livereload = require("livereload");
 const querystring = require("querystring");
-const { SSL_OP_EPHEMERAL_RSA } = require("constants");
 const app = express();
 
 const PORT = 4852;
 const DEFAULT_DIR = "/maple";
 const REQ_DELAY = 10000;
 
-let ipForDealy = {
+let delayList = {
   login: [],
+  apply: [],
+  sync: [],
 };
-let syncLock = false;
 
 String.format = (...args) => {
   return args[0].replace(/{(\d+)}/g, (match, num) => {
@@ -45,11 +45,11 @@ function Main() {
   });
   app.post(DEFAULT_DIR + "/login", (req, res) => {
     const clientIP = req.header("x-forwarded-for");
-    if (ipForDealy.login.indexOf(clientIP) == -1) {
-      ipForDealy.login.push(clientIP);
+    if (delayList.login.indexOf(clientIP) == -1) {
+      delayList.login.push(clientIP);
       setTimeout(() => {
-        const idx = ipForDealy.login.indexOf(clientIP);
-        if (idx != -1) ipForDealy.login.splice(idx, 1);
+        const idx = delayList.login.indexOf(clientIP);
+        if (idx != -1) delayList.login.splice(idx, 1);
       }, REQ_DELAY);
 
       if (req.body.id && req.body.password) {
@@ -71,15 +71,30 @@ function Main() {
   });
   app.post(DEFAULT_DIR + "/apply", (req, res) => {
     const clientIP = req.header("x-forwarded-for");
+    if (delayList.apply.indexOf(clientIP) == -1) {
+      delayList.apply.push(clientIP);
+      setTimeout(() => {
+        const idx = delayList.apply.indexOf(clientIP);
+        if (idx != -1) delayList.apply.splice(idx, 1);
+      }, REQ_DELAY);
 
-    if (req.body.charNames) {
-      console.log(
-        `[${new Date().toISOString().substr(0, 19)}] ${clientIP} | apply | ${
-          req.body.charNames.split(",").length
-        }`
-      );
-      GetCharacterInfo(req, res);
-    } else res.json({ error: ["쿼리 오류", "캐릭터 이름이 비어있습니다."] });
+      if (req.body.charNames) {
+        console.log(
+          `[${new Date().toISOString().substr(0, 19)}] ${clientIP} | apply | ${
+            req.body.charNames.split(",").length
+          }`
+        );
+        GetCharacterInfo(req, res);
+      } else res.json({ error: ["쿼리 오류", "캐릭터 이름이 비어있습니다."] });
+    } else
+      res.json({
+        error: [
+          "잠시만요!",
+          `원활한 서비스를 위해 [계정에서 가져오기]와 [캐릭터 등록]은 ${
+            REQ_DELAY / 1000
+          }초 마다 사용이 가능 합니다.`,
+        ],
+      });
   });
   app.post(DEFAULT_DIR + "/sync", (req, res) => {
     if (req.body.name) {
@@ -271,7 +286,9 @@ function GetCharacterInfo(request, response) {
   );
   req.end();
 }
-async function GetSyncCharacterInfo(request, response) {
+function GetSyncCharacterInfo(request, response) {
+  // [Error Code]
+  // 1: 동기화 대기로 인한 실패
   const processError = (resTitle, resCotent, err) => {
     response.json({
       error: [resTitle, resCotent],
@@ -332,12 +349,25 @@ async function GetSyncCharacterInfo(request, response) {
       );
   };
 
-  while (syncLock) {
-    await sleep(100);
+  if (delayList.sync.indexOf(request.body.name) == -1) {
+    sync(request, response);
+
+    delayList.sync.push(request.body.name);
+    setTimeout(() => {
+      const idx = delayList.sync.indexOf(request.body.name);
+      if (idx != -1) delayList.sync.splice(idx, 1);
+    }, REQ_DELAY);
+  } else {
+    response.json({
+      error: [
+        "잠시만요!",
+        `동기화 실패 - ${request.body.name}\n\n원활한 서비스를 위해 [캐릭터 동기화]는 ${
+          REQ_DELAY / 1000
+        }초 마다 사용이 가능 합니다.`,
+        1,
+      ],
+    });
   }
-  syncLock = true;
-  sync(request, response);
-  syncLock = false;
 }
 
 Main();
