@@ -918,14 +918,7 @@ function Main() {
         job: "메이플M",
         imgUrl: "image/deco/maplem-avatar.png",
       });
-
-      const idx = character.infoList.findIndex((o) => o.job == "메이플M");
-      if (idx == -1) return;
-      info = character.infoList[idx];
-      if (stats.setRaid(info.rankIdx, info.jobClass)) {
-        info.element.classList.add("raid");
-        info.raid = true;
-      }
+      character.raid(character.infoList.find((o) => o.job == "메이플M"));
     }
   });
   element.img.sync.addEventListener("click", () => {
