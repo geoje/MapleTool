@@ -833,6 +833,7 @@ class Tiler {
     this.minos = [];
     this.stack = [];
     this.spots = { restricted: new Spot(), normal: new Spot() };
+    this.centerSpots = new Spot();
 
     // board 초기화
     board = Array.from(Array(TILE.ROW), () => Array(TILE.COL).fill(0));
@@ -854,20 +855,25 @@ class Tiler {
           if (point.updateAdjacent() <= 1) this.spots.restricted.points.push(point);
         }
       }
-  }
-  // 중심 영역 4곳 중 헤드가 한 곳이라도 있는지
-  isCenterValid() {
+
+    // this.centerSpots 초기화
     const cx = TILE.COL / 2;
     const cy = TILE.ROW / 2;
-
-    for (p of [
-      [-1, -1],
-      [-1, 0],
-      [0, -1],
-      [0, 0],
+    for (let p of [
+      [cx - 1, cy - 1],
+      [cx, cy - 1],
+      [cx - 1, cy],
+      [cx, cy],
     ])
-      if (this.map[cy + p[0]][cx + p[1]] >= 200) return true;
-    return false;
+      if (board[p[1]][p[0]]) this.centerSpots.points.push(new Point(p[0], p[1]));
+  }
+  // 중심 영역 4곳 중 헤드가 한 곳이라도 있는지
+  isCenterValid(final = false) {
+    return (
+      this.centerSpots.points.findIndex(
+        (p) => board[p.y][p.x] == 3 || (!final && board[p.y][p.x] == 1)
+      ) != -1
+    );
   }
   getDurationStr(startTime) {
     let str = "";
@@ -905,19 +911,18 @@ class Tiler {
         // await _sleep(40);
 
         for (let spotName in this.spots) {
-          log(`>>> Start ${spotName} >>>`);
+          // log(`>>> Start ${spotName} >>>`);
           let spot = this.spots[spotName];
-
           if (spot.points.length) {
             if (
               spot.minoIdx < this.minos.length &&
               spot.shapeIdx < this.minos[spot.minoIdx].shapes.length
             ) {
-              log(
-                `[Searching-${spotName}] (${spot.points[0].x}, ${spot.points[0].y}) ${spot.minoIdx}-${spot.shapeIdx}`,
-                this.minos[spot.minoIdx].jobClass,
-                this.minos[spot.minoIdx].shapes[spot.shapeIdx].matrix
-              );
+              // log(
+              //   `[Searching-${spotName}] (${spot.points[0].x}, ${spot.points[0].y}) ${spot.minoIdx}-${spot.shapeIdx}`,
+              //   this.minos[spot.minoIdx].jobClass,
+              //   this.minos[spot.minoIdx].shapes[spot.shapeIdx].matrix
+              // );
 
               // 제한 영역에서 adj가 0일 때 최소 미노가 1개짜리가 없으면 invalid
               if (
@@ -933,12 +938,12 @@ class Tiler {
               if (placeable.able)
                 placeable = this.minos[spot.minoIdx].isPlaceable(spot.points[0], spot.shapeIdx);
               if (placeable.able) {
-                log(
-                  `[Place-${spotName}] ${placeable.point.x}, ${placeable.point.y} / ${
-                    this.minos[spot.minoIdx].jobClass
-                  }`,
-                  this.minos[spot.minoIdx].shapes[spot.shapeIdx]
-                );
+                // log(
+                //   `[Place-${spotName}] ${placeable.point.x}, ${placeable.point.y} / ${
+                //     this.minos[spot.minoIdx].jobClass
+                //   }`,
+                //   this.minos[spot.minoIdx].shapes[spot.shapeIdx]
+                // );
 
                 // 배치 후 영역에서 배치된 좌표들 제거
                 const placedPoints = this.minos[spot.minoIdx].place(placeable.point, spot.shapeIdx);
@@ -974,8 +979,8 @@ class Tiler {
 
                 // 제한된 영역에 새로운 것이 추가될 경우를 위해 재정렬
                 this.spots.restricted.points.sort((a, b) => a.adj - b.adj);
-                log("[RestrictedPoints]", this.spots.restricted.points);
-                log("[NormalPoints]", this.spots.normal.points);
+                // log("[RestrictedPoints]", this.spots.restricted.points);
+                // log("[NormalPoints]", this.spots.normal.points);
 
                 // 스택에 노드 추가, 미노 개수 감소, 다음 탐색을 위해 서칭 변수 초기화
                 this.stack.push(new Node(spotName, placeable.point, spot.minoIdx, spot.shapeIdx));
@@ -985,8 +990,21 @@ class Tiler {
                 this.spots.normal.shapeIdx = 0;
                 this.spots.normal.minoIdx = 0;
 
-                // 더 이상 사용할 미노 없으면 성공
-                if (this.minos.findIndex((mino) => mino.count) == -1) break;
+                // 배치 후 중심 체크해서 백트래킹할지 결정
+                if (!this.isCenterValid()) valid = false;
+                // 중심 체크 이상 없고 더 이상 사용할 미노 없으면 최종 중심 체크 한번 더 한 후 성공 결정
+                else if (
+                  this.minos.findIndex((mino) => mino.count) == -1 &&
+                  this.isCenterValid(true)
+                ) {
+                  DrawSolution();
+                  return {
+                    success: 1,
+                    message: `소요 시간: ${this.getDurationStr(startTime)}\n반복 횟수: ${
+                      this.iteration
+                    }`,
+                  };
+                }
               }
               // 배치가 불가능 할 경우
               else {
@@ -1009,14 +1027,14 @@ class Tiler {
                 }
               }
             }
-            // 계속 배치 해야하는데 더 볼 미노가 없을 경우
+            // 계속 배치 해야하는데 주어진 미노를 전부 봤다면
             else valid = false;
-            log("[EndSummary]", valid, this.minos, spot);
+            // log("[EndSummary]", valid, this.minos, spot);
             break;
           }
 
-          // 제한 및 일반 영역 모두 좌표가 없거나 더이상 사용할 조각이 없으면 배치 성공
-          if (spotName == "normal" || this.minos.findIndex((mino) => mino.count) == -1) {
+          // 제한 및 일반 영역 모두 좌표를 다 썻다면 배치 성공
+          if (spotName == "normal") {
             DrawSolution();
             return {
               success: 1,
@@ -1034,7 +1052,7 @@ class Tiler {
           spot.minoIdx = node.minoIdx;
           spot.shapeIdx = node.shapeIdx;
           this.minos[spot.minoIdx].count++;
-          log(`[Backtracking-${node.spotName}]`, node);
+          // log(`[Backtracking-${node.spotName}]`, node);
 
           // adj 업데이트하고 복구할 포인트들 세팅
           let needUpdateAdjPoints = this.minos[spot.minoIdx].getArroundSpot(
@@ -1061,8 +1079,8 @@ class Tiler {
 
           // 제한된 영역 좌표 갱신
           this.spots.restricted.points = this.spots.normal.points.filter((p) => p.adj <= 1);
-          log("[RestrictedPoints]", this.spots.restricted.points);
-          log("[NormalPoints]", this.spots.normal.points.slice());
+          // log("[RestrictedPoints]", this.spots.restricted.points);
+          // log("[NormalPoints]", this.spots.normal.points.slice());
 
           // 안되는거 다음부터 봐야하니깐 인덱스 증가
           if (++spot.shapeIdx == this.minos[spot.minoIdx].shapes.length) {
