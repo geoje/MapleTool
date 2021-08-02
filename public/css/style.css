@@ -574,6 +574,16 @@ button:active:not([disabled]),
   margin-top: 10px;
 }
 
+.tooltip {
+  position: absolute;
+  display: none;
+  z-index: 1;
+
+  padding: 4px;
+  font-weight: lighter;
+  font-size: 12px;
+}
+
 /******************** Mobile ********************/
 @media (max-width: 800px) {
   html,
@@ -598,7 +608,8 @@ button:active:not([disabled]),
 
   .card,
   .stats,
-  .input {
+  .input,
+  .tooltip {
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
@@ -616,13 +627,14 @@ button:active:not([disabled]),
   .card {
     order: 2;
     padding: 0;
+    margin-bottom: 10px;
   }
   .card > .card-stats {
     padding: 10px;
   }
 
   .stats {
-    order: 3;
+    order: 4;
     padding-top: 30px;
   }
   .stats > img {
@@ -634,7 +646,7 @@ button:active:not([disabled]),
   }
 
   .map {
-    order: 4;
+    order: 5;
     display: block;
     width: 100%;
     box-sizing: border-box;
@@ -654,5 +666,10 @@ button:active:not([disabled]),
 
   .inform {
     border: 1px rgb(16, 16, 16) solid;
+  }
+  .tooltip {
+    order: 3;
+    position: unset;
+    display: block;
   }
 }

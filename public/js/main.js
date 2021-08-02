@@ -3,6 +3,7 @@ const element = {
     map: document.querySelector(".map"),
     cardList: document.querySelector(".card-list"),
     cardSpecimen: document.querySelector(".card-list > div:nth-child(2)"),
+    tooltip: document.querySelector(".tooltip"),
   },
   img: {
     trashMap: document.querySelector(".map-tool > img:nth-child(1)"),
@@ -200,7 +201,7 @@ let character = {
       "아처",
       "헌터",
       "사수",
-      "레이전",
+      "레인저",
       "저격수",
       "보우마스터",
       "신궁",
@@ -252,8 +253,109 @@ let character = {
     MAPLEM: ["메이플M"],
     NOUNION: ["초보자", "노블레스", "시티즌"],
   },
+  EFFECT: {
+    검사: "",
+    파이터: "STR 10/20/40/80/100 증가",
+    페이지: "STR 10/20/40/80/100 증가",
+    스피어맨: "최대 HP 2/3/4/5/6% 증가",
+    크루세이더: "STR 10/20/40/80/100 증가",
+    나이트: "STR 10/20/40/80/100 증가",
+    버서커: "최대 HP 2/3/4/5/6% 증가",
+    히어로: "STR 10/20/40/80/100 증가",
+    팔라딘: "STR 10/20/40/80/100 증가",
+    다크나이트: "최대 HP 2/3/4/5/6% 증가",
+    소울마스터: "최대 HP 250/500/1000/2000/2500 증가",
+    미하일: "최대 HP 250/500/1000/2000/2500 증가",
+    아란: "적 타격 시 70%의 확률로 순수 HP의 2/4/6/8/10% 회복 발동 시\n다음 발동 확률이 감소하지만 효과가 2배 (10초마다 1번)",
+    데몬슬레이어: "모든 상태 이상 저항 1/2/3/4/5 증가",
+    데몬어벤져: "보스 공격 시 데미지 1/2/3/5/6% 증가",
+    블래스터: "방어율 무시 1/2/3/5/6% 증가",
+    카이저: "STR 10/20/40/80/100 증가",
+    제로: "경험치 획득량 4/6/8/10/12% 증가",
+    아델: "STR 10/20/40/80/100 증가",
+
+    매지션: "",
+    "위자드(불,독)": "최대 MP 2/3/4/5/6% 증가",
+    "위자드(썬,콜)": "INT 10/20/40/80/100 증가",
+    클레릭: "INT 10/20/40/80/100 증가",
+    "메이지(불,독)": "최대 MP 2/3/4/5/6% 증가",
+    "메이지(썬,콜)": "INT 10/20/40/80/100 증가",
+    프리스트: "INT 10/20/40/80/100 증가",
+    "아크메이지(불,독)": "최대 MP 2/3/4/5/6% 증가",
+    "아크메이지(썬,콜)": "INT 10/20/40/80/100 증가",
+    비숍: "INT 10/20/40/80/100 증가",
+    플레임위자드: "INT 10/20/40/80/100 증가",
+    에반: "적 타격 시 70%의 확률로 순수 MP의 2/4/6/8/10% 회복 발동 시\n다음 발동 확률이 감소하지만 효과가 2배 (10초마다 1번)",
+    배틀메이지: "INT 10/20/40/80/100 증가",
+    루미너스: "INT 10/20/40/80/100 증가",
+    키네시스: "INT 10/20/40/80/100 증가",
+    일리움: "INT 10/20/40/80/100 증가",
+    라라: "INT 10/20/40/80/100 증가",
+
+    아처: "",
+    헌터: "DEX 10/20/40/80/100 증가",
+    사수: "크리티컬 확률 1/2/3/4/5% 증가",
+    레인저: "DEX 10/20/40/80/100 증가",
+    저격수: "크리티컬 확률 1/2/3/4/5% 증가",
+    보우마스터: "DEX 10/20/40/80/100 증가",
+    신궁: "크리티컬 확률 1/2/3/4/5% 증가",
+    "아처(패스파인더)": "DEX 10/20/40/80/100 증가",
+    에인션트아처: "DEX 10/20/40/80/100 증가",
+    체이서: "DEX 10/20/40/80/100 증가",
+    패스파인더: "DEX 10/20/40/80/100 증가",
+    윈드브레이커: "DEX 10/20/40/80/100 증가",
+    와일드헌터: "공격 시 20% 확률로 데미지 4/8/12/16/20% 증가",
+    메르세데스: "스킬 재사용 대기시간 2/3/4/5/6% 감소\n(1초 미만으로 줄어들지 않음)",
+    카인: "DEX 10/20/40/80/100 증가",
+
+    로그: "",
+    어쌔신: "크리티컬 확률 1/2/3/4/5% 증가",
+    시프: "LUK 10/20/40/80/100 증가",
+    허밋: "크리티컬 확률 1/2/3/4/5% 증가",
+    시프마스터: "LUK 10/20/40/80/100 증가",
+    나이트로드: "크리티컬 확률 1/2/3/4/5% 증가",
+    섀도어: "LUK 10/20/40/80/100 증가",
+    세미듀어러: "",
+    듀어러: "LUK 10/20/40/80/100 증가",
+    듀얼마스터: "LUK 10/20/40/80/100 증가",
+    슬래셔: "LUK 10/20/40/80/100 증가",
+    듀얼블레이더: "LUK 10/20/40/80/100 증가",
+    나이트워커: "LUK 10/20/40/80/100 증가",
+    팬텀: "메소 획득량 1/2/3/4/5% 증가",
+    카데나: "LUK 10/20/40/80/100 증가",
+    호영: "LUK 10/20/40/80/100 증가",
+
+    해적: "",
+    인파이터: "STR 10/20/40/80/100 증가",
+    건슬링거: "소환수 지속 시간 4/6/8/10/12% 증가",
+    캐논슈터: "STR 10/20/40/80/100 증가",
+    버커니어: "STR 10/20/40/80/100 증가",
+    발키리: "소환수 지속 시간 4/6/8/10/12% 증가",
+    캐논블래스터: "STR 10/20/40/80/100 증가",
+    바이퍼: "STR 10/20/40/80/100 증가",
+    캡틴: "소환수 지속 시간 4/6/8/10/12% 증가",
+    캐논마스터: "STR 10/20/40/80/100 증가",
+    스트라이커: "STR 10/20/40/80/100 증가",
+    메카닉: "버프 지속 시간 5/10/15/20/25% 증가",
+    엔젤릭버스터: "DEX 10/20/40/80/100 증가",
+    은월: "크리티컬 데미지 1/2/3/5/6% 증가",
+    아크: "STR 10/20/40/80/100 증가",
+
+    제논: "STR·DEX·LUK 각각 5/10/20/40/50 증가",
+    메이플M: "공격력/마력 5/10/15/20 증가",
+
+    초보자: "",
+    노블레스: "",
+    시티즌: "",
+  },
 
   getMinoIconSrc: (jobClass) => `image/job/${jobClass.toLowerCase()}.svg`,
+  getEffect: (job, rankIdx) => {
+    const reg = /(\d+\/)+\d+/g;
+    const effect = character.EFFECT[job];
+    const value = reg.exec(effect)[0].split("/")[rankIdx];
+    return effect.replace(reg, value);
+  },
   add: (info) => {
     // info: { name, level, job, imgUrl }
     const e = element.div.cardSpecimen.cloneNode(true);
@@ -362,7 +464,6 @@ let character = {
     // char img
     const imgChar = e.querySelector(".card-image > img");
     imgChar.src = info.imgUrl;
-    // imgChar.title = "유니온 효과 넣기";
 
     // job string
     e.querySelector("p").innerText = info.job;
@@ -377,17 +478,45 @@ let character = {
       character.raid(character.infoList[idx]);
     });
 
+    // tooltip event
+    e.addEventListener("mouseenter", (e) => {
+      e.stopPropagation();
+      element.div.tooltip.innerText = character.getEffect(info.job, info.rankIdx);
+      element.div.tooltip.style.display = "block";
+      element.div.tooltip.style.left = e.x + 16 + "px";
+      element.div.tooltip.style.top = e.y + "px";
+    });
+    e.addEventListener("mouseleave", (e) => {
+      e.stopPropagation();
+      element.div.tooltip.removeAttribute("style");
+      element.div.innerText = "";
+    });
+    e.addEventListener("mousemove", (e) => {
+      e.stopPropagation();
+      element.div.tooltip.style.left = e.x + 16 + "px";
+      element.div.tooltip.style.top = e.y + "px";
+    });
+
     // update info
-    element.div.cardList.appendChild(e);
-    character.infoList.push({
+    info = {
       ...info,
       jobClass,
       rankIdx,
       raid: false,
       element: e,
-    });
-    element.txt.cardCount.innerText = character.infoList.filter((o) => o.level).length;
+    };
+    let i = 0;
+    for (; i < character.infoList.length; i++)
+      if (info.level > character.infoList[i].level) {
+        character.infoList.splice(i, 0, info);
+        break;
+      }
+    if (i == character.infoList.length) character.infoList.push(info);
     stats.updateLevel();
+
+    // add element
+    element.div.cardList.appendChild(e);
+    element.txt.cardCount.innerText = character.infoList.filter((o) => o.level).length;
 
     // save info
     localStorage.infoList = JSON.stringify(character.infoList);
@@ -459,17 +588,13 @@ let character = {
     }
     localStorage.infoList = JSON.stringify(character.infoList);
   },
-  sort: () => {
-    character.infoList.sort((a, b) => {
-      const diff = b.level - a.level;
-      if (diff) return diff;
-      else return a.name < b.name ? -1 : 1;
-    });
+  sortElement: () => {
     character.infoList.forEach((o, i) => (o.element.style.order = o.job == "메이플M" ? 98 : i));
   },
 };
 let stats = {
   totalLevel: 0,
+  externalLevel: 0,
   raidMember: [0, 9],
   tileableCount: 0,
   minoCount: {
@@ -492,6 +617,13 @@ let stats = {
     }
     stats.totalLevel = tl;
     element.txt.totalLevel.innerText = tl.toString();
+
+    // External level and area
+    const newEL = Math.min(Math.max(0, Math.floor((tl - 1000) / 1000)), 5);
+    if (stats.externalLevel != newEL) {
+      stats.externalLevel = newEL;
+      RedrawBoard();
+    }
 
     // Classify by level
     let union = { titleKo: "", titleEn: "", detailLevel: 0, imgSrc: "" };
@@ -608,7 +740,6 @@ let stats = {
         mino.querySelector("h6").innerText = 0;
       });
 
-    stats.totalLevel = 0;
     stats.raidMember[0] = 0;
     stats.tileableCount = 0;
     map.updateTileCount();
@@ -767,7 +898,7 @@ function Main() {
         info.element.classList.add("raid");
         info.raid = true;
       }
-      character.sort();
+      character.sortElement();
     }
   });
   element.img.maplem.addEventListener("click", () => {
@@ -844,7 +975,7 @@ function Main() {
           return true;
         })
         .forEach(character.raid);
-      character.sort();
+      character.sortElement();
     }
   }
 
@@ -883,7 +1014,6 @@ function DrawBoard() {
 }
 function RedrawBoard() {
   // clear
-
   element.tile.forEach((row) =>
     row.forEach((e) => {
       e.style = "";
@@ -902,28 +1032,39 @@ function RedrawBoard() {
     g.forEach((p) => (element.tile[p.y][p.x].style.color = c));
   });
 
-  // axis
-  for (x = 0, y = TILE.ROW / 2 - 1; x < TILE.COL; x++)
-    element.tile[y][x].style.borderBottomColor = TILE.COLOR.BOUNDARY;
-  for (y = 0, x = TILE.COL / 2 - 1; y < TILE.ROW; y++)
-    element.tile[y][x].style.borderRightColor = TILE.COLOR.BOUNDARY;
-
   // inner boundary
   for (x = 5, y = [4, 14]; x <= 16; x++)
     y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
   for (y = 5, x = [4, 16]; y <= 14; y++)
     x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
 
+  // outer boundary
+  const offset = 5 - stats.externalLevel;
+  if (offset > 0 && offset < 5) {
+    for (x = offset, y = [offset - 1, 19 - offset]; x < TILE.COL - offset; x++)
+      y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
+    for (y = offset, x = [offset - 1, 21 - offset]; y < TILE.ROW - offset; y++)
+      x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
+  }
+
+  // axis
+  for (x = offset, y = TILE.ROW / 2 - 1; x < TILE.COL - offset; x++)
+    element.tile[y][x].style.borderBottomColor = TILE.COLOR.BOUNDARY;
+  for (y = offset, x = TILE.COL / 2 - 1; y < TILE.ROW - offset; y++)
+    element.tile[y][x].style.borderRightColor = TILE.COLOR.BOUNDARY;
+
   // stair
-  for (x = 1, y = [0, 18]; x < 10; x++, y[0]++, y[1]--)
+  for (x = 1 + offset, y = [offset, 18 - offset]; x < 10; x++, y[0]++, y[1]--)
     y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
-  for (x = 20, y = [0, 18]; x > 11; x--, y[0]++, y[1]--)
+  for (x = 20 - offset, y = [offset, 18 - offset]; x > 11; x--, y[0]++, y[1]--)
     y.forEach((yy) => (element.tile[yy][x].style.borderBottomColor = TILE.COLOR.BOUNDARY));
 
-  for (y = 0, x = [0, 20]; y < 10; y++, x[0]++, x[1]--)
+  for (y = offset, x = [offset, 20 - offset]; y < 10; y++, x[0]++, x[1]--)
     x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
-  for (y = 19, x = [0, 20]; y > 9; y--, x[0]++, x[1]--)
+  for (y = 19 - offset, x = [offset, 20 - offset]; y > 9; y--, x[0]++, x[1]--)
     x.forEach((xx) => (element.tile[y][xx].style.borderRightColor = TILE.COLOR.BOUNDARY));
+
+  //
 }
 function DrawStatsMino() {
   const basicJobs = ["warrior", "wizard", "archer", "thief", "pirate"];
@@ -1355,7 +1496,7 @@ function onBtnApplyClick() {
         // Info
         if (data.info && data.info.length) {
           data.info.forEach(character.add);
-          character.sort();
+          character.sortElement();
 
           const list = data.info.map((obj) => obj.name);
           content += `[등록됨 (${list.length})]\n${list.join(", ")}`;
@@ -1412,7 +1553,7 @@ function onImgSyncClick(event) {
         character.add(data);
         if (info.raid) character.raid(character.infoList[character.infoList.length - 1]);
 
-        character.sort();
+        character.sortElement();
         stats.updateLevel();
 
         element.txt.applyName.value = "";
