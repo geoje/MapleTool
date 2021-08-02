@@ -877,9 +877,11 @@ function Main() {
   element.img.zero.addEventListener("click", () => {
     const removeZ = character.infoList.find((o) => o.name == "제로 ");
     let prevLv = 0;
+    let prevRaid = false;
     if (removeZ) {
       character.remove(removeZ);
       prevLv = removeZ.level;
+      prevRaid = removeZ.raid;
     }
 
     if (prevLv < 250) {
@@ -894,7 +896,7 @@ function Main() {
       const idx = character.infoList.findIndex((o) => o.name == "제로 ");
       if (idx == -1) return;
       info = character.infoList[idx];
-      if (stats.setRaid(info.rankIdx, info.jobClass)) {
+      if (prevRaid && stats.setRaid(info.rankIdx, info.jobClass)) {
         info.element.classList.add("raid");
         info.raid = true;
       }
