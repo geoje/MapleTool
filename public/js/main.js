@@ -984,6 +984,14 @@ function Main() {
     const selectedPos = JSON.parse(localStorage.selectedPos);
     selectedPos.forEach(map.select);
   }
+
+  // Preload images
+  [
+    "image/deco/card-raid-0.svg",
+    "image/deco/card-raid-1.svg",
+    "image/deco/card-raid-2.svg",
+    "image/deco/card-raid-3.svg",
+  ].forEach((arg) => (new Image().src = arg)); // Preload images
 }
 
 function DrawBoard() {
