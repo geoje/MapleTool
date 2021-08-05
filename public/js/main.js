@@ -1243,7 +1243,7 @@ function onTileMouseUp(event) {
   localStorage.selectedPos = JSON.stringify(map.selectedPos);
 }
 function onTableTouchStart(event) {
-  if (event.cancelable) {
+  if (event.cancelable && map.solve == 0) {
     event.preventDefault();
     map.click = 1;
 
