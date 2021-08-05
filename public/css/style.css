@@ -517,6 +517,7 @@ button:active:not([disabled]),
   text-align: center;
   margin: 0 auto;
 
+  color: white;
   font-size: 12px;
   font-weight: bold;
   cursor: pointer;
