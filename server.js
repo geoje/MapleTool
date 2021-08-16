@@ -2,7 +2,8 @@ const fs = require("fs");
 const https = require("https");
 const express = require("express");
 const livereload = require("livereload");
-const querystring = require("querystring");
+const schedule = require("node-schedule");
+const mysql = require("mysql");
 const app = express();
 
 const PORT = 4852;
@@ -10,9 +11,79 @@ const DEFAULT_DIR = "/maple";
 const REQ_DELAY = 10000;
 
 let delayList = {
-  login: [],
   apply: [],
   sync: [],
+};
+let stats = {
+  req: {
+    type: "line",
+    data: {
+      labels: [
+        "7/18",
+        "7/19",
+        "7/20",
+        "7/21",
+        "7/22",
+        "7/23",
+        "7/24",
+        "7/25",
+        "7/26",
+        "7/27",
+        "7/28",
+        "7/29",
+        "7/30",
+        "7/31",
+        "8/1",
+        "8/2",
+        "8/3",
+        "8/4",
+        "8/5",
+        "8/6",
+        "8/7",
+        "8/8",
+        "8/9",
+        "8/10",
+        "8/11",
+        "8/12",
+        "8/13",
+        "8/14",
+        "8/15",
+        "8/16",
+      ],
+      datasets: [
+        {
+          label: "방문",
+          data: [
+            30, 84, 76, 40, 87, 72, 74, 73, 26, 18, 66, 36, 16, 81, 11, 43, 91, 44, 37, 94, 92, 29,
+            53, 75, 54, 88, 64, 46, 69, 90,
+          ],
+          backgroundColor: "#eee",
+          borderColor: "#eee",
+          borderWidth: 1,
+        },
+        {
+          label: "등록",
+          data: [
+            17, 62, 19, 35, 100, 34, 30, 64, 26, 78, 41, 80, 84, 95, 94, 87, 37, 97, 75, 32, 40, 13,
+            81, 45, 11, 72, 98, 77, 36, 54,
+          ],
+          backgroundColor: "rgb(221, 187, 136)",
+          borderColor: "rgb(221, 187, 136)",
+          borderWidth: 1,
+        },
+        {
+          label: "갱신",
+          data: [
+            69, 80, 76, 10, 83, 98, 53, 54, 57, 13, 44, 59, 100, 47, 97, 77, 87, 64, 48, 93, 65, 36,
+            60, 51, 52, 49, 61, 99, 78, 35,
+          ],
+          backgroundColor: "rgb(60, 172, 196)",
+          borderColor: "rgb(60, 172, 196)",
+          borderWidth: 1,
+        },
+      ],
+    },
+  },
 };
 
 String.format = (...args) => {
@@ -40,35 +111,22 @@ function Main() {
   app.get(DEFAULT_DIR, (req, res) => {
     fs.readFile("public/html/index.html", "utf8", (err, data) => {
       if (err) ResponseStatusPage(res, 500, "Internal Server Error", err);
+      else {
+        res.send(data);
+
+        // 통계
+        const counts = stats.req.data.datasets[0].data;
+        counts[counts.length - 1]++;
+      }
+    });
+  });
+  app.get(DEFAULT_DIR + "/chart", (req, res) => {
+    fs.readFile("public/html/chart.html", "utf8", (err, data) => {
+      if (err) ResponseStatusPage(res, 500, "Internal Server Error", err);
       else res.send(data);
     });
   });
-  app.post(DEFAULT_DIR + "/login", (req, res) => {
-    const clientIP = req.header("x-forwarded-for");
-    if (delayList.login.indexOf(clientIP) == -1) {
-      delayList.login.push(clientIP);
-      setTimeout(() => {
-        const idx = delayList.login.indexOf(clientIP);
-        if (idx != -1) delayList.login.splice(idx, 1);
-      }, REQ_DELAY);
 
-      if (req.body.id && req.body.password) {
-        console.log(
-          `[${new Date().toISOString().substr(0, 19)}] ${clientIP} | login | ${req.body.id}`
-        );
-        GetCharacterByAccount(req, res);
-      } else if (req.body.id && req.body.password) {
-      } else responese.json({ error: ["쿼리 오류", "계정 정보가 비어있습니다."] });
-    } else
-      res.json({
-        error: [
-          "잠시만요!",
-          `원활한 서비스를 위해 [계정에서 가져오기]와 [캐릭터 등록]은 ${
-            REQ_DELAY / 1000
-          }초 마다 사용이 가능 합니다.`,
-        ],
-      });
-  });
   app.post(DEFAULT_DIR + "/apply", (req, res) => {
     const clientIP = req.header("x-forwarded-for");
     if (delayList.apply.indexOf(clientIP) == -1) {
@@ -79,20 +137,20 @@ function Main() {
       }, REQ_DELAY);
 
       if (req.body.charNames) {
-        console.log(
-          `[${new Date().toISOString().substr(0, 19)}] ${clientIP} | apply | ${
-            req.body.charNames.split(",").length
-          }`
-        );
+        // 통계
+        const counts = stats.req.data.datasets[1].data;
+        const count = req.body.charNames.split(",").length;
+        counts[counts.length - 1] += count;
+
+        // 로그
+        console.log(`[${new Date().toISOString().substr(0, 19)}] ${clientIP} | apply | ${count}`);
         GetCharacterInfo(req, res);
       } else res.json({ error: ["쿼리 오류", "캐릭터 이름이 비어있습니다."] });
     } else
       res.json({
         error: [
           "잠시만요!",
-          `원활한 서비스를 위해 [계정에서 가져오기]와 [캐릭터 등록]은 ${
-            REQ_DELAY / 1000
-          }초 마다 사용이 가능 합니다.`,
+          `원활한 서비스를 위해 [캐릭터 등록]은 ${REQ_DELAY / 1000}초 마다 사용이 가능 합니다.`,
         ],
       });
   });
@@ -108,6 +166,11 @@ function Main() {
           if (idx != -1) delayList.sync.splice(idx, 1);
         }, REQ_DELAY);
 
+        // 통계
+        const counts = stats.req.data.datasets[2].data;
+        counts[counts.length - 1]++;
+
+        //로그
         console.log(
           `[${new Date().toISOString().substr(0, 19)}] ${req.header("x-forwarded-for")} | sync | ${
             req.body.name
@@ -127,9 +190,51 @@ function Main() {
       }
     } else res.json({ error: ["쿼리 오류", "캐릭터 이름이 비어있습니다."] });
   });
+  app.post(DEFAULT_DIR + "/chart", (req, res) => {
+    res.json(stats);
+  });
 
   app.use((req, res, next) => ResponseStatusPage(res, 404, "Not Found"));
   app.listen(PORT);
+
+  schedule.scheduleJob("0 0 0 * * *", () => {
+    // 날짜 지정
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    // DB 저장
+    const db = mysql.createConnection({
+      host: "127.0.0.1",
+      user: "maple",
+      password: "maplemaple",
+      database: "maple",
+    });
+    const datasets = stats.req.data.datasets;
+    const query = `INSERT INTO mut_log VALUES ("${yesterday.toISOString().substr(0, 10)}", ${
+      datasets[0].data[datasets[0].data.length - 1]
+    }, ${datasets[1].data[datasets[1].data.length - 1]}, ${
+      datasets[2].data[datasets[2].data.length - 1]
+    });`;
+
+    db.connect();
+    db.query(query, (error, results, fields) => {
+      if (error) console.error(error);
+      else console.log(`[${new Date().toISOString().substr(0, 19)}] mysql | `, query);
+    });
+
+    // 오늘자 통계 추가
+    for (let name in stats) {
+      let labels = stats[name].data.labels;
+      labels.shift();
+      labels.push(`${today.getMonth() + 1}/${today.getDate()}`);
+
+      stats[name].data.datasets.forEach((set) => {
+        set.data.shift();
+        set.data.push(0);
+      });
+    }
+  });
 }
 
 function ResponseStatusPage(res, statusCode, content, err) {
@@ -159,110 +264,6 @@ function ParseCharacterInfo(rawData) {
   return infoArr;
 }
 
-function GetCharacterByAccount(request, responese) {
-  const processError = (resTitle, resCotent, err) => {
-    responese.json({
-      error: [resTitle, resCotent],
-    });
-    if (err) console.error(err);
-  };
-
-  https
-    .get("https://maplestory.nexon.com/Authentication/Login", (res) => {
-      if (res.statusCode != 200) {
-        processError(
-          "서버 오류",
-          "메이플 로그인 페이지 접속에 실패했습니다.\n" + `상태코드: ${res.headers.statusCode}`
-        );
-        return;
-      }
-
-      let rawData = "";
-      res.on("data", (chunk) => (rawData += chunk));
-      res.on("end", () => {
-        let token = rawData.match(/(<input name="__RequestVerificationToken").+(?=" \/>)/);
-        token = token[0].substring(token[0].lastIndexOf('"') + 1);
-
-        let cookie = res.headers["set-cookie"].find((str) =>
-          str.startsWith("__RequestVerificationToken=")
-        );
-        if (!cookie) {
-          processError("서버 오류", "메이플 로그인 페이지에서 토큰 값을 가져올 수 없습니다.");
-          return;
-        }
-        cookie = cookie.substring(0, cookie.indexOf(" "));
-
-        let postData = querystring.stringify({
-          __RequestVerificationToken: token,
-          ID: request.body.id,
-          Password: request.body.password,
-        });
-        let options = {
-          hostname: "maplestory.nexon.com",
-          path: "/Authentication/Login",
-          method: "POST",
-          headers: {
-            Cookie: [cookie],
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Content-Length": Buffer.byteLength(postData),
-          },
-        };
-
-        req = https.request(options, (res) => {
-          res.on("data", () => {});
-          res.on("end", () => {
-            cookie = res.headers["set-cookie"].find((str) => str.startsWith("EGC2="));
-            if (!cookie || cookie.startsWith("EGC2=;")) {
-              processError(
-                "로그인 오류",
-                "로그인에 실패 하였습니다.\n계정 정보가 틀렸거나 보호모드 입니다."
-              );
-              return;
-            }
-            cookie = cookie.substring(0, cookie.indexOf(" "));
-
-            options = {
-              hostname: "maplestory.nexon.com",
-              path: "/MyMaple/Account/MasterCharacter",
-              headers: {
-                Cookie: [cookie],
-              },
-            };
-
-            https
-              .get(options, (res) => {
-                if (res.statusCode != 200) return;
-
-                rawData = "";
-                res.on("data", (chunk) => (rawData += chunk));
-                res.on("end", () => {
-                  let charArr = rawData
-                    .match(/(<dd><img).+(?=<\/dd>)/g)
-                    .map((str) => str.substr(str.lastIndexOf(">") + 1));
-
-                  responese.json({ charArr });
-                });
-              })
-              .on("error", (err) =>
-                processError(
-                  "서버 오류",
-                  "메이플 내 캐릭터 페이지 접속 중 오류가 발생하였습니다.",
-                  err
-                )
-              );
-          });
-        });
-        req.write(postData);
-        req.on("error", (err) =>
-          processError("서버 오류", "메이플 홈페이지 로그인 도중 오류가 발생하였습니다.", err)
-        );
-        req.end();
-      });
-    })
-    .on("error", (err) =>
-      processError("서버 오류", "메이플 로그인 페이지 접속 중 오류가 발생하였습니다.", err)
-    );
-}
 function GetCharacterInfo(request, response) {
   const processError = (resTitle, resCotent, err) => {
     response.json({

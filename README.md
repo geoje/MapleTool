@@ -47,3 +47,30 @@
 
 ![](public/image/readme/Mobile.gif)
 <br><br>
+
+# 데이터 베이스 생성 (통계용)
+
+##### sql
+
+```sql
+CREATE DATABASE maple DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+SET GLOBAL validate_password.policy=LOW;
+CREATE USER maple@localhost identified BY 'maplemaple';
+GRANT ALL PRIVILEGES ON maple.* TO maple@localhost;
+FLUSH PRIVILEGES;
+```
+
+<br><br>
+
+# 테이블 생성
+
+##### sql
+
+```sql
+CREATE TABLE `maple`.`mut_log` (
+  `date` DATE NOT NULL,
+  `visit` INT NULL,
+  `apply` INT NULL,
+  `sync` INT NULL,
+  PRIMARY KEY (`date`));
+```

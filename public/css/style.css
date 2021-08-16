@@ -436,46 +436,6 @@ button:active:not([disabled]),
   box-sizing: border-box;
   margin: 20px 0 0 20px;
 }
-.input-login,
-.input-apply {
-  flex: 1;
-}
-.input-login {
-  display: flex;
-  flex-direction: column;
-  height: fit-content;
-
-  background-color: rgb(34, 34, 34);
-  border-radius: 8px;
-}
-.input-login > h6 {
-  padding: 10px 10px 2px 16px;
-}
-.input-login > input,
-.input-apply > textarea {
-  width: 90%;
-  margin: 0 auto;
-  padding: 6px 10px;
-  background-color: rgb(68, 68, 68);
-  font-size: 12px;
-  box-sizing: border-box;
-  outline: none;
-  border: none;
-  border-radius: 8px;
-}
-.input-login-type {
-  display: flex;
-  align-items: center;
-  padding: 8px 0;
-}
-.input-login-type > input {
-  margin: 2px 4px 0 10px;
-  cursor: pointer;
-}
-.input-login-type > label {
-  font-size: 12px;
-  cursor: pointer;
-}
 .input button {
   width: 100%;
   padding: 6px;
@@ -498,11 +458,6 @@ button:active:not([disabled]),
   margin: 0 12px;
   color: rgb(153, 153, 153);
 }
-.input-deco > hr {
-  flex: 1;
-  border-left: none;
-  border-color: rgb(153, 153, 153);
-}
 .input-apply {
   display: flex;
   flex-direction: column;
@@ -510,20 +465,19 @@ button:active:not([disabled]),
   background-color: rgb(34, 34, 34);
   border-radius: 8px;
 }
-.input-apply > a {
-  all: unset;
-  width: 90%;
-  padding-top: 6px;
-  text-align: center;
-  margin: 0 auto;
-
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
+.input-apply {
+  flex: 1;
 }
-.input-apply > a:hover {
-  color: lightgray;
+.input-apply > textarea {
+  width: 90%;
+  margin: 0 auto;
+  padding: 6px 10px;
+  background-color: rgb(68, 68, 68);
+  font-size: 12px;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  border-radius: 8px;
 }
 .input-apply > textarea {
   flex: 1;
@@ -542,6 +496,20 @@ button:active:not([disabled]),
 }
 .input-apply > textarea::-webkit-scrollbar-thumb:active {
   background-color: lightgray;
+}
+.input-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0;
+
+  margin-left: 20px;
+}
+.input-tool img {
+  width: 24px;
+  padding: 6px 0;
+
+  cursor: pointer;
 }
 
 .inform {
@@ -623,6 +591,10 @@ button:active:not([disabled]),
   }
   .input-apply {
     height: 200px;
+  }
+  .input-tool {
+    margin-left: 10px;
+    padding: 0;
   }
 
   .card {

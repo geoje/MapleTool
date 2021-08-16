@@ -29,8 +29,6 @@ const element = {
     totalLevel: document.querySelector(".stats-level > div:nth-child(2) > h1"),
     raidMember: document.querySelector(".stats-level > div:nth-child(3) > h1"),
 
-    id: document.querySelector("#id"),
-    password: document.querySelector("#password"),
     applyName: document.querySelector("#apply-name"),
   },
   rad: {
@@ -837,12 +835,6 @@ function Main() {
   element.table.addEventListener("touchend", () => (map.click = 0));
 
   // Input text event
-  element.txt.id.addEventListener("keydown", (event) => {
-    if (event.key == "Enter") onBtnLoginClick();
-  });
-  element.txt.password.addEventListener("keydown", (event) => {
-    if (event.key == "Enter") onBtnLoginClick();
-  });
   element.txt.applyName.addEventListener("paste", onTxtClipboardPaste);
 
   // Map tool event
