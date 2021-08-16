@@ -55,7 +55,7 @@
 ```sql
 CREATE DATABASE maple DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 SET GLOBAL validate_password.policy=LOW;
-CREATE USER maple@localhost identified BY 'maplemaple';
+CREATE USER maple@localhost identified WITH mysql_native_password BY 'maplemaple';
 GRANT ALL PRIVILEGES ON maple.* TO maple@localhost;
 FLUSH PRIVILEGES;
 ```
