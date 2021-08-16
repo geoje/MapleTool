@@ -18,65 +18,25 @@ let stats = {
   req: {
     type: "line",
     data: {
-      labels: [
-        "7/18",
-        "7/19",
-        "7/20",
-        "7/21",
-        "7/22",
-        "7/23",
-        "7/24",
-        "7/25",
-        "7/26",
-        "7/27",
-        "7/28",
-        "7/29",
-        "7/30",
-        "7/31",
-        "8/1",
-        "8/2",
-        "8/3",
-        "8/4",
-        "8/5",
-        "8/6",
-        "8/7",
-        "8/8",
-        "8/9",
-        "8/10",
-        "8/11",
-        "8/12",
-        "8/13",
-        "8/14",
-        "8/15",
-        "8/16",
-      ],
+      labels: [],
       datasets: [
         {
           label: "방문",
-          data: [
-            30, 84, 76, 40, 87, 72, 74, 73, 26, 18, 66, 36, 16, 81, 11, 43, 91, 44, 37, 94, 92, 29,
-            53, 75, 54, 88, 64, 46, 69, 90,
-          ],
+          data: [],
           backgroundColor: "#eee",
           borderColor: "#eee",
           borderWidth: 1,
         },
         {
           label: "등록",
-          data: [
-            17, 62, 19, 35, 100, 34, 30, 64, 26, 78, 41, 80, 84, 95, 94, 87, 37, 97, 75, 32, 40, 13,
-            81, 45, 11, 72, 98, 77, 36, 54,
-          ],
+          data: [],
           backgroundColor: "rgb(221, 187, 136)",
           borderColor: "rgb(221, 187, 136)",
           borderWidth: 1,
         },
         {
           label: "갱신",
-          data: [
-            69, 80, 76, 10, 83, 98, 53, 54, 57, 13, 44, 59, 100, 47, 97, 77, 87, 64, 48, 93, 65, 36,
-            60, 51, 52, 49, 61, 99, 78, 35,
-          ],
+          data: [],
           backgroundColor: "rgb(60, 172, 196)",
           borderColor: "rgb(60, 172, 196)",
           borderWidth: 1,
@@ -197,6 +157,10 @@ function Main() {
   app.use((req, res, next) => ResponseStatusPage(res, 404, "Not Found"));
   app.listen(PORT);
 
+  // 최초 통계 DB 조회
+  LoadStatsFromDB();
+
+  // 통계 요청 처리
   schedule.scheduleJob("0 0 0 * * *", () => {
     // 날짜 지정
     const today = new Date();
@@ -222,6 +186,7 @@ function Main() {
       if (error) console.error(error);
       else console.log(`[${new Date().toISOString().substr(0, 19)}] mysql | `, query);
     });
+    db.end();
 
     // 오늘자 통계 추가
     for (let name in stats) {
@@ -235,6 +200,34 @@ function Main() {
       });
     }
   });
+}
+
+function LoadStatsFromDB() {
+  const db = mysql.createConnection({
+    host: "127.0.0.1",
+    user: "maple",
+    password: "maplemaple",
+    database: "maple",
+  });
+  db.connect();
+
+  const query = "SELECT * FROM maple.mut_log ORDER BY date DESC LIMIT 30;";
+  db.query(query, (error, results, fields) => {
+    if (error) console.error(error);
+    else {
+      if (results.length == 0)
+        results = [{ date: new Date().toISOString(), visit: 0, apply: 0, sync: 0 }];
+      results.reverse().forEach((row) => {
+        const date = new Date(row.date);
+        stats.req.data.labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
+        stats.req.data.datasets[0].data.push(row.visit);
+        stats.req.data.datasets[1].data.push(row.apply);
+        stats.req.data.datasets[2].data.push(row.sync);
+      });
+    }
+  });
+
+  db.end();
 }
 
 function ResponseStatusPage(res, statusCode, content, err) {

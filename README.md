@@ -72,5 +72,6 @@ CREATE TABLE `maple`.`mut_log` (
   `visit` INT NULL,
   `apply` INT NULL,
   `sync` INT NULL,
-  PRIMARY KEY (`date`));
+  PRIMARY KEY (`date`),
+  INDEX `mut_log_date_idx` (`date` DESC) VISIBLE);
 ```

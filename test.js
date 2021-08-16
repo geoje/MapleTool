@@ -1,52 +1,76 @@
-const https = require('https');
+const mysql = require("mysql");
 
-let postData = JSON.stringify({
-  input: '나이수다,아나바다,그린포트,포크포크,하나하나,하나바다,하니티비',
-});
-let options = {
-  hostname: 'maple.gg',
-  path: '/mycharacters/search',
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Content-Length': Buffer.byteLength(postData),
+let stats = {
+  req: {
+    type: "line",
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: "방문",
+          data: [],
+          backgroundColor: "#eee",
+          borderColor: "#eee",
+          borderWidth: 1,
+        },
+        {
+          label: "등록",
+          data: [],
+          backgroundColor: "rgb(221, 187, 136)",
+          borderColor: "rgb(221, 187, 136)",
+          borderWidth: 1,
+        },
+        {
+          label: "갱신",
+          data: [],
+          backgroundColor: "rgb(60, 172, 196)",
+          borderColor: "rgb(60, 172, 196)",
+          borderWidth: 1,
+        },
+      ],
+    },
   },
 };
 
-let req = https.request(options, (res) => {
-  console.log(res.headers);
-  if (res.statusCode != 200) {
-    return;
-  }
-
-  let rawData = '';
-  let syncArr = [];
-  let infoArr = [];
-  res.on('data', (chunk) => (rawData += chunk));
-  res.on('end', () => {
-    console.log('[raw]', rawData);
-
-    syncArr = rawData.match(/(.pushSyncCharacter\(\').+(?=\'\);)/g);
-    if (syncArr) syncArr = syncArr.map((str) => str.substr(str.indexOf("'") + 1));
-
-    let imgAndNameArr = rawData.match(/(<img src=).+(?=" class="profile-)/g);
-    if (imgAndNameArr) {
-      imgAndNameArr = imgAndNameArr.map((str) => {
-        let splited = str.split('" alt="');
-        return { imgUrl: splited[0].substr(splited[0].indexOf('"') + 1), name: splited[1] };
-      });
-
-      let levelAndJobArr = rawData.match(/(">Lv.).+(?=<\/span>)/g).map((str) => {
-        return { level: str.match(/\d+/)[0], job: str.substr(str.lastIndexOf(' ') + 1) };
-      });
-
-      imgAndNameArr.forEach((imgAndName, i) => infoArr.push({ ...imgAndName, ...levelAndJobArr[i] }));
-    }
-
-    console.log('[sync]', syncArr);
-    console.log('[info]', infoArr);
-  });
+const db = mysql.createConnection({
+  host: "127.0.0.1",
+  user: "maple",
+  password: "maplemaple",
+  database: "maple",
 });
-req.write(postData);
-req.on('error', console.error);
-req.end();
+const datasets = stats.req.data.datasets;
+db.connect();
+
+// Insert
+// const date = new Date();
+// date.setDate(date.getDate() - 29);
+
+// for (let i = 0; i < 30; i++) {
+//   const query = `INSERT INTO mut_log VALUES ("${date.toISOString().substr(0, 10)}", ${
+//     datasets[0].data[i]
+//   }, ${datasets[1].data[i]}, ${datasets[2].data[i]});`;
+
+//   db.query(query, (error, results, fields) => {
+//     if (error) console.error(error);
+//     else console.log(`[${new Date().toISOString().substr(0, 19)}] mysql | `, query);
+//   });
+//   date.setDate(date.getDate() + 1);
+// }
+
+// Select
+const query = "SELECT * FROM maple.mut_log ORDER BY date DESC LIMIT 30;";
+db.query(query, (error, results, fields) => {
+  if (error) console.error(error);
+  else {
+    results.reverse().forEach((row) => {
+      const date = new Date(row.date);
+      stats.req.data.labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
+      stats.req.data.datasets[0].data.push(row.visit);
+      stats.req.data.datasets[1].data.push(row.apply);
+      stats.req.data.datasets[2].data.push(row.sync);
+    });
+
+    console.log(JSON.stringify(stats));
+  }
+});
+db.end();
