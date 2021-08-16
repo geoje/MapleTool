@@ -52,6 +52,24 @@ String.format = (...args) => {
     return typeof args[num] != undefined ? args[num] : match;
   });
 };
+Date.toDateString = () => {
+  const date = new Date();
+  let m = date.getMonth() + 1;
+  if (m < 10) m = "0" + m;
+  let d = date.getDate();
+  if (d < 10) d = "0" + d;
+  return `${date.getFullYear()}-${m}-${d}`;
+};
+Date.toDateTimeString = () => {
+  const date = new Date();
+  let h = date.getHours();
+  if (h < 10) h = "0" + h;
+  let m = date.getMinutes();
+  if (m < 10) m = "0" + m;
+  let s = date.getSeconds();
+  if (s < 10) s = "0" + s;
+  return `${Date.toDateString()} ${h}:${m}:${s}`;
+};
 
 function Main() {
   livereload
@@ -103,7 +121,7 @@ function Main() {
         counts[counts.length - 1] += count;
 
         // 로그
-        console.log(`[${new Date().toISOString().substr(0, 19)}] ${clientIP} | apply | ${count}`);
+        console.log(`[${Date.toDateTimeString()}] ${clientIP} | apply | ${count}`);
         GetCharacterInfo(req, res);
       } else res.json({ error: ["쿼리 오류", "캐릭터 이름이 비어있습니다."] });
     } else
@@ -132,9 +150,7 @@ function Main() {
 
         //로그
         console.log(
-          `[${new Date().toISOString().substr(0, 19)}] ${req.header("x-forwarded-for")} | sync | ${
-            req.body.name
-          }`
+          `[${Date.toDateTimeString()}] ${req.header("x-forwarded-for")} | sync | ${req.body.name}`
         );
         GetSyncCharacterInfo(req, res);
       } else {
@@ -175,7 +191,7 @@ function Main() {
       database: "maple",
     });
     const datasets = stats.req.data.datasets;
-    const query = `INSERT INTO mut_log VALUES ("${yesterday.toISOString().substr(0, 10)}", ${
+    const query = `INSERT INTO mut_log VALUES ("${Date.toDateString()}", ${
       datasets[0].data[datasets[0].data.length - 1]
     }, ${datasets[1].data[datasets[1].data.length - 1]}, ${
       datasets[2].data[datasets[2].data.length - 1]
@@ -184,18 +200,21 @@ function Main() {
     db.connect();
     db.query(query, (error, results, fields) => {
       if (error) console.error(error);
-      else console.log(`[${new Date().toISOString().substr(0, 19)}] mysql | `, query);
+      else console.log(`[${Date.toDateTimeString()}] mysql | ${query}`);
     });
     db.end();
 
     // 오늘자 통계 추가
     for (let name in stats) {
       let labels = stats[name].data.labels;
-      labels.shift();
+      let removing = labels.length >= 30;
+      if (removing) {
+        labels.shift();
+      }
       labels.push(`${today.getMonth() + 1}/${today.getDate()}`);
 
       stats[name].data.datasets.forEach((set) => {
-        set.data.shift();
+        if (removing) set.data.shift();
         set.data.push(0);
       });
     }
@@ -216,7 +235,7 @@ function LoadStatsFromDB() {
     if (error) console.error(error);
     else {
       if (results.length == 0)
-        results = [{ date: new Date().toISOString(), visit: 0, apply: 0, sync: 0 }];
+        results = [{ date: Date.toDateString(), visit: 0, apply: 0, sync: 0 }];
       results.reverse().forEach((row) => {
         const date = new Date(row.date);
         stats.req.data.labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
