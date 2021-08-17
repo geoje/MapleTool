@@ -349,6 +349,8 @@ let character = {
 
   getMinoIconSrc: (jobClass) => `image/job/${jobClass.toLowerCase()}.svg`,
   getEffect: (job, rankIdx) => {
+    if (rankIdx == -1) return "";
+
     const reg = /(\d+\/)+\d+/g;
     const effect = character.EFFECT[job];
     const value = reg.exec(effect)[0].split("/")[rankIdx];
@@ -436,6 +438,7 @@ let character = {
     const hRank = e.querySelector(".card-rank > h2");
     hRank.innerText = rankStr;
     if (rankIdx <= 1) hRank.style.color = "rgb(222, 222, 222)";
+    if (rankIdx == -1) e.classList.add("young");
 
     // level
     e.querySelector(".card-rank > h6").innerText = info.level;
@@ -474,31 +477,33 @@ let character = {
     // name
     e.querySelector(".card-name > h6").innerText = info.name;
 
-    // raid event
-    e.addEventListener("click", () => {
-      const idx = character.infoList.findIndex((o) => o.name == info.name);
-      if (idx == -1) return;
-      character.raid(character.infoList[idx]);
-    });
+    if (rankIdx >= 0) {
+      // raid event
+      e.addEventListener("click", () => {
+        const idx = character.infoList.findIndex((o) => o.name == info.name);
+        if (idx == -1) return;
+        character.raid(character.infoList[idx]);
+      });
 
-    // tooltip event
-    e.addEventListener("mouseenter", (e) => {
-      e.stopPropagation();
-      element.div.tooltip.innerText = character.getEffect(info.job, info.rankIdx);
-      element.div.tooltip.style.display = "block";
-      element.div.tooltip.style.left = e.x + 16 + "px";
-      element.div.tooltip.style.top = e.y + "px";
-    });
-    e.addEventListener("mouseleave", (e) => {
-      e.stopPropagation();
-      element.div.tooltip.removeAttribute("style");
-      element.div.innerText = "";
-    });
-    e.addEventListener("mousemove", (e) => {
-      e.stopPropagation();
-      element.div.tooltip.style.left = e.x + 16 + "px";
-      element.div.tooltip.style.top = e.y + "px";
-    });
+      // tooltip event
+      e.addEventListener("mouseenter", (e) => {
+        e.stopPropagation();
+        element.div.tooltip.innerText = character.getEffect(info.job, info.rankIdx);
+        element.div.tooltip.style.display = "block";
+        element.div.tooltip.style.left = e.x + 16 + "px";
+        element.div.tooltip.style.top = e.y + "px";
+      });
+      e.addEventListener("mouseleave", (e) => {
+        e.stopPropagation();
+        element.div.tooltip.removeAttribute("style");
+        element.div.innerText = "";
+      });
+      e.addEventListener("mousemove", (e) => {
+        e.stopPropagation();
+        element.div.tooltip.style.left = e.x + 16 + "px";
+        element.div.tooltip.style.top = e.y + "px";
+      });
+    }
 
     // update info
     info = {

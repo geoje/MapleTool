@@ -305,6 +305,10 @@ button:active:not([disabled]),
     transform: rotate(1turn);
   }
 }
+
+.card-list > div.young {
+  border-color: rgb(136, 136, 136);
+}
 .card-list > div.sync {
   border-color: rgb(60, 172, 196);
 }
