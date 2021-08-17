@@ -597,7 +597,11 @@ let character = {
     localStorage.infoList = JSON.stringify(character.infoList);
   },
   sortElement: () => {
-    character.infoList.forEach((o, i) => (o.element.style.order = o.job == "메이플M" ? 98 : i));
+    character.infoList.forEach(
+      (o, i) =>
+        (o.element.style.order =
+          o.job == "메이플M" ? 97 : (o.element.style.order = o.rankIdx == -1 ? 98 : i))
+    );
   },
 };
 let stats = {
