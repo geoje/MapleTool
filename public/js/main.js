@@ -371,7 +371,12 @@ let character = {
     }
 
     // no union
-    if (jobClass != "maplem" && (info.level < 60 || jobClass == "nounion")) {
+    if (jobClass != "maplem" && jobClass == "nounion") {
+      inform.show(
+        inform.DANGER,
+        "제거됨",
+        `${info.job}은(는) 유니온에 포함될 수 없는 직업입니다.\n닉네임: ${info.name}`
+      );
       e.remove();
       return;
     }
@@ -611,7 +616,10 @@ let stats = {
     let maxNum = Math.min(character.infoList.length, 40);
     for (let i = 0; i < maxNum; i++) {
       if (character.infoList[i].job == "메이플M") maxNum = Math.min(character.infoList.length, 41);
-      else tl += character.infoList[i].level;
+      else {
+        if (character.infoList[i].level < 60) break;
+        tl += character.infoList[i].level;
+      }
     }
     stats.totalLevel = tl;
     element.txt.totalLevel.innerText = tl.toString();
@@ -1405,47 +1413,6 @@ function onPlay(event) {
   }
 }
 
-function onBtnLoginClick() {
-  const account = {
-    id: element.txt.id.value.trim(),
-    password: element.txt.password.value.trim(),
-  };
-  if (!account.id) {
-    inform.show(inform.DANGER, "계정 정보 없음", "아이디 또는 이메일을 입력해주세요.");
-    return;
-  } else if (!account.password) {
-    inform.show(inform.DANGER, "계정 정보 없음", "비밀번호를 입력해주세요.");
-    return;
-  }
-
-  const xhr = new XMLHttpRequest();
-  xhr.open("POST", location.href + "login");
-  xhr.setRequestHeader("Content-type", "application/json");
-  xhr.send(JSON.stringify(account));
-  xhr.addEventListener("load", () => {
-    if (xhr.status != 200) inform.show(inform.DANGER, "가져오기 실패", `응답 코드: ${xhr.status}`);
-    else {
-      const data = JSON.parse(xhr.responseText);
-      if (data.error) inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
-      else {
-        inform.show(
-          inform.INFO,
-          `${account.id} 가져오기 완료 (${data.charArr.length})`,
-          data.charArr.join(", ")
-        );
-        element.txt.applyName.value = data.charArr.join("\n");
-        element.txt.id.value = "";
-        element.txt.password.value = "";
-      }
-    }
-
-    element.btn.login.removeAttribute("disabled");
-    element.btn.login.textContent = "계정에서 가져오기";
-  });
-
-  element.btn.login.textContent = "가져오는 중...";
-  element.btn.login.setAttribute("disabled", "");
-}
 function onBtnApplyClick() {
   let charNames = element.txt.applyName.value.replace(/ /g, "").split("\n");
   for (let i = charNames.length - 1; i > 0; i--)
@@ -1478,28 +1445,28 @@ function onBtnApplyClick() {
       if (data.error) inform.show(inform.DANGER, data.error[0], data.error[1], 5000);
       else {
         // Success POST
-        let content = "";
 
         // Info
         if (data.info && data.info.length) {
+          inform.show(inform.INFO, "등록 완료", `${data.info.map((obj) => obj.name).join(", ")}`);
+
           data.info.forEach(character.add);
           character.sortElement();
-
-          const list = data.info.map((obj) => obj.name);
-          content += `[등록됨 (${list.length})]\n${list.join(", ")}`;
         }
 
         // Sync
         if (data.sync && data.sync.length) {
-          data.sync.forEach(character.addGhost);
+          inform.show(
+            inform.INFO,
+            "동기화 중",
+            `${data.sync.join(", ")}`,
+            inform.DEFAULT_DURATION * 2
+          );
 
-          content += `${content ? "\n\n" : ""}[동기화 중 (${data.sync.length})]\n${data.sync.join(
-            ", "
-          )}`;
+          data.sync.forEach(character.addGhost);
         }
 
         element.txt.applyName.value = "";
-        inform.show(inform.INFO, "등록 완료", content);
       }
     }
 
