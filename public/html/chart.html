@@ -52,6 +52,11 @@
             new Chart(document.getElementById(name), {
               ...stats[name],
               options: {
+                elements: {
+                  point: {
+                    radius: 0,
+                  },
+                },
                 scales: {
                   x: {
                     grid: {
