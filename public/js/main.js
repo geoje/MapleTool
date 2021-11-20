@@ -606,6 +606,7 @@ let character = {
 };
 let stats = {
   totalLevel: 0,
+  isZeroCounted: false,
   externalLevel: 0,
   raidMember: [0, 9],
   tileableCount: 0,
@@ -624,11 +625,30 @@ let stats = {
     let tl = 0;
     let maxNum = Math.min(character.infoList.length, 40);
     for (let i = 0; i < maxNum; i++) {
-      if (character.infoList[i].job == "메이플M") maxNum = Math.min(character.infoList.length, 41);
-      else {
-        if (character.infoList[i].level < 60) break;
-        tl += character.infoList[i].level;
+      // 메이플M 예외처리
+      if (character.infoList[i].job == "메이플M") {
+        // 순회 횟수 1회 추가 후 스킵
+        maxNum++;
+        continue;
       }
+      // 60레벨 미만 예외처리
+      if (character.infoList[i].level < 60) {
+        // 순회 종료
+        break;
+      }
+      // 제로 예외처리
+      if (character.infoList[i].job === "제로") {
+        // 2+α번째 제로인 경우
+        if (stats.isZeroCounted) {
+          // 순회 횟수 1회 추가 후 스킵
+          maxNum++;
+          continue;
+        } else { // 첫번째 제로인 경우
+          // 제로 카운트여부 체크
+          stats.isZeroCounted = true;
+        }
+      }
+      tl += character.infoList[i].level;
     }
     stats.totalLevel = tl;
     element.txt.totalLevel.innerText = tl.toString();
