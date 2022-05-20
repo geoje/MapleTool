@@ -622,9 +622,9 @@ let stats = {
   updateLevel: () => {
     // Set level
     let tl = 0;
-    let maxNum = Math.min(character.infoList.length, 40);
+    let maxNum = Math.min(character.infoList.length, 42);
     for (let i = 0; i < maxNum; i++) {
-      if (character.infoList[i].job == "메이플M") maxNum = Math.min(character.infoList.length, 41);
+      if (character.infoList[i].job == "메이플M") maxNum = Math.min(character.infoList.length, 43);
       else {
         if (character.infoList[i].level < 60) break;
         tl += character.infoList[i].level;
