@@ -45,10 +45,8 @@ task installReact(type: Exec) {
         commandLine "npm.cmd", "audit", "fix"
         commandLine "npm.cmd", "install"
     } else {
-        commandLine "id"
-        commandLine "pwd"
-        commandLine "npm", "audit", "fix"
-        commandLine "npm", "install"
+        commandLine "/opt/homebrew/bin/npm", "audit", "fix"
+        commandLine "/opt/homebrew/bin/npm", "install"
     }
 }
 
@@ -60,7 +58,7 @@ task buildReact(type: Exec) {
     if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")) {
         commandLine "npm.cmd", "run-script", "build"
     } else {
-        commandLine "npm", "run-script", "build"
+        commandLine "/opt/homebrew/bin/npm", "run-script", "build"
     }
 }
 
