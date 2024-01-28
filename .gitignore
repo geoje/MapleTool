@@ -36,4 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
+### Spring Boot ###
 src/main/resources/static/
+application-dev.properties
+application-prod.properties
