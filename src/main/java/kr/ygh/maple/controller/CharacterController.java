@@ -21,6 +21,9 @@ public class CharacterController {
 
     @GetMapping("test")
     public Map<String, Object> test() {
+        System.out.println("NEXON_API_URL = " + NEXON_API_URL);
+        System.out.println("NEXON_API_KEY = " + NEXON_API_KEY);
+
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("hello", "world");
         return map;
