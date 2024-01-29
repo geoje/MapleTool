@@ -2,7 +2,7 @@ package kr.ygh.maple.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.ErrorResponse;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,31 +24,35 @@ public class CharacterController {
     @Value("${nexon.api.key}")
     private String NEXON_API_KEY;
 
+    private static void validateBlankOrEmpty(String data, String reason) {
+        if (data.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+        }
+    }
+
     private static Mono<? extends Throwable> handleError(ClientResponse response) {
-        return response.bodyToMono(ErrorResponse.class)
-                .flatMap(error -> Mono.error(new ResponseStatusException(response.statusCode(), response.toString())));
+        return response.bodyToMono(String.class)
+                .flatMap(error -> Mono.error(new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        response.statusCode() + " from " + response.request().getMethod().name() + " " +
+                                response.request().getURI().getPath() + " " + error)));
     }
 
     @GetMapping("ocid")
     public Mono<String> ocid(@RequestParam("character_name") String name) {
-
-        if (name.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Query character_name is blank or empty");
-        }
+        validateBlankOrEmpty(name, "Query character_name is blank or empty");
 
         return WebClient.create(NEXON_API_URL).get()
                 .uri("/maplestory/v1/id?character_name={name}", name)
                 .header("x-nxopen-api-key", NEXON_API_KEY)
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, CharacterController::handleError)
                 .bodyToMono(String.class);
     }
 
     @GetMapping("basic")
     public Mono<String> basic(@RequestParam("ocid") String ocid) {
-
-        if (ocid.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Query ocid is blank or empty");
-        }
+        validateBlankOrEmpty(ocid, "Query ocid is blank or empty");
 
         return WebClient.create(NEXON_API_URL).get()
                 .uri("/maplestory/v1/character/basic?ocid={ocid}&date={date}",
@@ -57,10 +61,7 @@ public class CharacterController {
                 )
                 .header("x-nxopen-api-key", NEXON_API_KEY)
                 .retrieve()
-//                .onStatus(HttpStatus::isError, CharacterController::handleError)
-                .bodyToMono(String.class)
-                .doOnError(throwable -> {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, throwable.getMessage());
-                });
+                .onStatus(HttpStatusCode::isError, CharacterController::handleError)
+                .bodyToMono(String.class);
     }
 }
