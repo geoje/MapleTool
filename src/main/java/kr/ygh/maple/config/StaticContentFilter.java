@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class StaticContentFilter implements Filter {
 
     private final List<String> fileExtensions = Arrays.asList("html", "js", "json", "csv", "css", "png", "svg", "eot",
-                                                              "ttf", "woff", "appcache", "jpg", "jpeg", "gif", "ico");
+            "ttf", "woff", "appcache", "jpg", "jpeg", "gif", "ico");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -43,6 +43,11 @@ public class StaticContentFilter implements Filter {
                 .getContextClassLoader()
                 .getResourceAsStream(resourcePath);
 
+        if (inputStream == null) {
+            response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
+            return;
+        }
+
         //headers
         if (resourcePath.endsWith(".html")) {
             response.setContentType("text/html");
@@ -54,8 +59,6 @@ public class StaticContentFilter implements Filter {
             response.setContentType("text/javascript");
         }
 
-        if (inputStream == null) {
-            response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
-        }
+        inputStream.transferTo(response.getOutputStream());
     }
 }
