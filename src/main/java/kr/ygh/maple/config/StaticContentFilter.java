@@ -43,6 +43,17 @@ public class StaticContentFilter implements Filter {
                 .getContextClassLoader()
                 .getResourceAsStream(resourcePath);
 
+        //headers
+        if (resourcePath.endsWith(".html")) {
+            response.setContentType("text/html");
+        }
+        if (resourcePath.endsWith(".css")) {
+            response.setContentType("text/css");
+        }
+        if (resourcePath.endsWith(".js")) {
+            response.setContentType("text/javascript");
+        }
+
         if (inputStream == null) {
             response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
         }
