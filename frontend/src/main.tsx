@@ -1,6 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ChakraProvider, Grid, GridItem, extendTheme } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  Grid,
+  GridItem,
+  ThemeComponentProps,
+  extendTheme,
+} from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Sidebar from "./components/sidebar";
 import Header from "./components/header";
@@ -8,16 +14,43 @@ import Home from "./content/home";
 import Artifact from "./content/artifact";
 
 export const links = [
-  { name: "potential", label: "잠재능력", content: <></> },
-  { name: "starforce", label: "스타포스", content: <></> },
-  { name: "raid", label: "공격대", content: <></> },
-  { name: "artifact", label: "아티팩트", content: <Artifact /> },
+  {
+    name: "potential",
+    label: "잠재능력",
+    image: "/link/cube.svg",
+    content: <></>,
+  },
+  {
+    name: "starforce",
+    label: "스타포스",
+    image: "/link/star.svg",
+    content: <></>,
+  },
+  {
+    name: "union-raid",
+    label: "공격대",
+    image: "/link/union-raid.svg",
+    content: <></>,
+  },
+  {
+    name: "union-artifact",
+    label: "아티팩트",
+    image: "/link/union-artifact.svg",
+    content: <Artifact />,
+  },
 ];
 
 const theme = extendTheme({
   fonts: {
     heading: `"Noto Sans KR"`,
     body: `"Noto Sans KR"`,
+  },
+  styles: {
+    global: (props: ThemeComponentProps) => ({
+      "html, body": {
+        backgroundColor: props.colorMode ? "gray.50" : "gray.800",
+      },
+    }),
   },
 });
 
@@ -39,13 +72,13 @@ function App() {
       gridTemplateRows="64px 1fr"
       gridTemplateColumns="256px 1fr"
     >
-      <GridItem p={2} area="sidebar">
+      <GridItem area="sidebar">
         <Sidebar />
       </GridItem>
-      <GridItem p={2} area="header">
+      <GridItem area="header">
         <Header />
       </GridItem>
-      <GridItem p={2} area="content" bgColor="gray.50">
+      <GridItem area="content">
         <Routes>
           <Route path="/" element={<Home />} />
           {links.map((link) => (

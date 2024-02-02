@@ -35,7 +35,9 @@ function Desktop() {
 
   return (
     <Flex p={2} align="center">
-      <Heading>대쉬보드</Heading>
+      <Heading size="md" px={2}>
+        홈
+      </Heading>
       <Spacer />
       <Menu>
         <MenuButton

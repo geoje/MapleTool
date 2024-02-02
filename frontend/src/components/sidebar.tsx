@@ -7,14 +7,20 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { MdKeyboardArrowLeft } from "react-icons/md";
+import { links } from "../main";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Sidebar() {
+  const { pathname } = useLocation();
+
   return (
-    <VStack align="flex-start">
-      <Flex w="100%" align="center">
+    <VStack align="stretch" p={2} bgColor="white">
+      <Flex align="center">
         <Button
+          as={Link}
+          to="/"
           leftIcon={<Image boxSize="24px" src="/logo.svg" />}
-          variant="unstyled"
+          variant="ghost"
           size="lg"
           px={4}
         >
@@ -27,7 +33,18 @@ export default function Sidebar() {
           icon={<MdKeyboardArrowLeft />}
         />
       </Flex>
-      <Button>test</Button>
+      {links.map((link) => (
+        <Button
+          as={Link}
+          to={"/" + link.name}
+          key={link.name}
+          justifyContent="start"
+          variant={pathname.startsWith("/" + link.name) ? "solid" : "ghost"}
+          leftIcon={<Image boxSize="24px" src={link.image} objectFit="cover" />}
+        >
+          {link.label}
+        </Button>
+      ))}
     </VStack>
   );
 }
