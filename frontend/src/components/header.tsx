@@ -1,6 +1,7 @@
 import {
   Button,
   Flex,
+  Heading,
   Image,
   Menu,
   MenuButton,
@@ -33,20 +34,8 @@ function Desktop() {
   const dark = colorMode === "dark";
 
   return (
-    <Flex
-      p={2}
-      align="center"
-      borderBottom="1px"
-      borderBottomColor={dark ? "gray.700" : "gray.200"}
-    >
-      <Button
-        leftIcon={<Image boxSize="24px" src="/logo.svg" />}
-        variant="ghost"
-        size="lg"
-        px={4}
-      >
-        메이플 도구
-      </Button>
+    <Flex p={2} align="center">
+      <Heading>대쉬보드</Heading>
       <Spacer />
       <Menu>
         <MenuButton
