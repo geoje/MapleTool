@@ -14,19 +14,27 @@ export default function Sidebar() {
   const { pathname } = useLocation();
 
   return (
-    <VStack align="stretch" p={2} bgColor="white">
+    <VStack
+      minHeight="100vh"
+      p={2}
+      align="stretch"
+      bgColor="white"
+      position="sticky"
+      top={0}
+    >
       <Flex align="center">
         <Button
+          flex={1}
+          px={4}
           as={Link}
           to="/"
+          justifyContent="start"
           leftIcon={<Image boxSize="24px" src="/logo.svg" />}
           variant="ghost"
           size="lg"
-          px={4}
         >
           메이플 도구
         </Button>
-        <Spacer />
         <IconButton
           aria-label="expand"
           variant="ghost"
