@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "start http://localhost:5173 && vite",
+    "dev": "start http://localhost:5173 && vite --host",
     "build": "tsc && vite build",
     "deploy": "git checkout main && git pull && git merge develop && git push && git checkout develop",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

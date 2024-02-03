@@ -69,7 +69,6 @@ function App() {
     <Grid
       templateAreas={`"sidebar header"
             "sidebar content"`}
-      gridTemplateRows="64px 1fr"
       gridTemplateColumns="256px 1fr"
     >
       <GridItem area="sidebar">
