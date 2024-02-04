@@ -17,7 +17,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class StaticContentFilter implements Filter {
 
     private final List<String> fileExtensions = Arrays.asList("html", "js", "json", "csv", "css", "png", "svg", "eot",
-            "ttf", "woff", "appcache", "jpg", "jpeg", "gif", "ico");
+            "ttf", "woff", "appcache", "jpg", "jpeg", "gif", "ico", "webp");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
