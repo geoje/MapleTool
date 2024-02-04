@@ -49,7 +49,18 @@ public class StaticContentFilter implements Filter {
             return;
         }
 
-        response.setContentType(URLConnection.guessContentTypeFromName(resourcePath));
+        if (resourcePath.endsWith(".html")) {
+            response.setContentType("text/html");
+        }
+        if (resourcePath.endsWith(".css")) {
+            response.setContentType("text/css");
+        }
+        if (resourcePath.endsWith(".js")) {
+            response.setContentType("text/javascript");
+        } else {
+            response.setContentType(URLConnection.guessContentTypeFromName(resourcePath));
+        }
+
         inputStream.transferTo(response.getOutputStream());
     }
 }
