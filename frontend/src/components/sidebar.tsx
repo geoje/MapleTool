@@ -17,11 +17,11 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { links } from "../constant";
 
-const COLLAPSED_KEY = "sidebarCollapsed";
+const KEY_COLLAPSED = "sidebar-collapsed";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(
-    localStorage.getItem(COLLAPSED_KEY) != null
+    localStorage.getItem(KEY_COLLAPSED) != null
   );
 
   return (
@@ -30,7 +30,7 @@ export default function Sidebar() {
         <CollapsedSidebar
           onExpand={() => {
             setCollapsed(false);
-            localStorage.removeItem(COLLAPSED_KEY);
+            localStorage.removeItem(KEY_COLLAPSED);
           }}
         />
       ) : (
@@ -43,7 +43,7 @@ export default function Sidebar() {
               icon={<IoIosArrowBack />}
               onClick={() => {
                 setCollapsed(true);
-                localStorage.setItem(COLLAPSED_KEY, "true");
+                localStorage.setItem(KEY_COLLAPSED, "true");
               }}
             />
           }

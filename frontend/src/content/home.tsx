@@ -14,8 +14,12 @@ import {
   useEditableControls,
 } from "@chakra-ui/react";
 import { MdEdit, MdClose, MdCheck, MdInfo } from "react-icons/md";
+import Character from "../service/character";
 
 export default function Home() {
+  // const [name, setName] = useState("");
+  // useEffect(() => {}, []);
+
   function EditableControls() {
     const {
       isEditing,
@@ -42,7 +46,7 @@ export default function Home() {
         />
       </ButtonGroup>
     ) : (
-      <Flex justifyContent="center" pt={2}>
+      <Flex justifyContent="center" pt={1}>
         <IconButton
           aria-label="edit"
           icon={<MdEdit />}
@@ -59,7 +63,7 @@ export default function Home() {
         <MdInfo />
         캐릭터를 등록하고 다양한 서비스를 이용해보세요
       </Alert>
-      <Card mt={8}>
+      <Card mt={8} w={336}>
         <CardBody>
           <Flex justify="center">
             <Image
@@ -69,9 +73,15 @@ export default function Home() {
               style={{ imageRendering: "pixelated" }}
             />
           </Flex>
-          <Editable textAlign="center" fontSize="2xl" placeholder="캐릭터 이름">
+          <Editable
+            textAlign="center"
+            fontSize="2xl"
+            placeholder="캐릭터 이름"
+            onSubmit={(name) => Character.requestOcid(name).then(console.log)}
+          >
             <EditablePreview />
-            <Input as={EditableInput} fontSize="2xl" />
+            <Input as={EditableInput} fontSize="2xl" maxLength={12} />
+            <br />
             <EditableControls />
           </Editable>
         </CardBody>
