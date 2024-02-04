@@ -1,15 +1,19 @@
 import {
   Badge,
   Button,
+  Divider,
   Flex,
   IconButton,
   Image,
   Show,
   Spacer,
+  Switch,
   Tooltip,
   VStack,
+  useColorMode,
 } from "@chakra-ui/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { links } from "../main";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -44,6 +48,8 @@ export default function Sidebar() {
 
 function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
   const { pathname } = useLocation();
+  const { colorMode, toggleColorMode } = useColorMode();
+  const dark = colorMode === "dark";
 
   return (
     <div>
@@ -52,7 +58,7 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
         minHeight="100vh"
         p={2}
         align="stretch"
-        bgColor="white"
+        bgColor={dark ? "gray.800" : "white"}
         position="sticky"
         top={0}
       >
@@ -76,6 +82,7 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
             onClick={onCollapse}
           />
         </Flex>
+        <Divider my={2} />
         {links.map((link) => (
           <Button
             as={Link}
@@ -92,6 +99,20 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
             {link.building && <Badge colorScheme="yellow">제작중</Badge>}
           </Button>
         ))}
+        <Divider my={2} />
+        <Button
+          justifyContent="start"
+          variant="ghost"
+          leftIcon={<MdDarkMode size={24} color="#2B6CB0" />}
+          rightIcon={<Switch isChecked={dark} />}
+          onClick={(event: any) => {
+            if (event.target.localName == "input") return;
+            toggleColorMode();
+          }}
+        >
+          어두운 테마
+          <Spacer />
+        </Button>
       </VStack>
     </div>
   );
@@ -99,6 +120,8 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
 
 function Collapsed({ onExpand }: { onExpand: React.MouseEventHandler }) {
   const { pathname } = useLocation();
+  const { colorMode, toggleColorMode } = useColorMode();
+  const dark = colorMode === "dark";
 
   return (
     <div>
@@ -106,7 +129,7 @@ function Collapsed({ onExpand }: { onExpand: React.MouseEventHandler }) {
         minHeight="100vh"
         p={2}
         align="center"
-        bgColor="white"
+        bgColor={dark ? "gray.800" : "white"}
         position="sticky"
         top={0}
       >
@@ -122,6 +145,7 @@ function Collapsed({ onExpand }: { onExpand: React.MouseEventHandler }) {
             size="lg"
           />
         </Tooltip>
+        <Divider my={2} />
         {links.map((link) => (
           <Tooltip key={link.name} label={link.label} placement="right">
             <IconButton
@@ -133,6 +157,21 @@ function Collapsed({ onExpand }: { onExpand: React.MouseEventHandler }) {
             />
           </Tooltip>
         ))}
+        <Divider my={2} />
+        <Tooltip label={dark ? "밝은 테마" : "어두운 테마"} placement="right">
+          <IconButton
+            aria-label="expand"
+            variant="ghost"
+            icon={
+              dark ? (
+                <MdLightMode size={24} color="#ECC94B" />
+              ) : (
+                <MdDarkMode size={24} color="#2B6CB0" />
+              )
+            }
+            onClick={toggleColorMode}
+          />
+        </Tooltip>
         <IconButton
           aria-label="expand"
           variant="ghost"

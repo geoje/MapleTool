@@ -53,7 +53,7 @@ const theme = extendTheme({
   styles: {
     global: (props: ThemeComponentProps) => ({
       "html, body": {
-        backgroundColor: props.colorMode ? "gray.50" : "gray.800",
+        backgroundColor: props.colorMode == "dark" ? "gray.900" : "gray.50",
       },
     }),
   },
