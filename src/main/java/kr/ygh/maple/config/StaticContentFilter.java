@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,17 +49,7 @@ public class StaticContentFilter implements Filter {
             return;
         }
 
-        //headers
-        if (resourcePath.endsWith(".html")) {
-            response.setContentType("text/html");
-        }
-        if (resourcePath.endsWith(".css")) {
-            response.setContentType("text/css");
-        }
-        if (resourcePath.endsWith(".js")) {
-            response.setContentType("text/javascript");
-        }
-
+        response.setContentType(URLConnection.guessContentTypeFromName(resourcePath));
         inputStream.transferTo(response.getOutputStream());
     }
 }
