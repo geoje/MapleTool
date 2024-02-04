@@ -8,13 +8,11 @@ import {
   MenuItem,
   MenuList,
   Show,
-  Spacer,
   useColorMode,
 } from "@chakra-ui/react";
 import { TbLogout } from "react-icons/tb";
-
-const CHARACTER_IMAGE_URL =
-  "https://open.api.nexon.com/static/maplestory/Character/MMBBEPLPAFGGLIKBCNECJCJDNCAFKPACLKFLGODGIHEHEDNMKNDEKEKMOLPMKAJNKAIPKGEPFBHBBLAGKFDHELHCIOPKHBCEJHICNMFHFMBLBCDHKEHLMFDILHJILGPNHCIKOLPNJFMCGPIDHHDJENNIHPLAHNAGJPIALGOBPEMKGADPGMLPGANMNMBAIEBHFFNPEMCHEMMLAJJNADMCOLHOJJMMDOKNAHDPADHDCNDDNOKJMKEJHGDEMPHHNFKJ.png";
+import { useLocation } from "react-router-dom";
+import { links } from "../main";
 
 export default function Header() {
   return (
@@ -30,23 +28,29 @@ export default function Header() {
 }
 
 function Desktop() {
+  const { pathname } = useLocation();
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
 
   return (
-    <Flex p={2} align="center">
+    <Flex p={2} justify="space-between" align="center">
       <Heading size="md" px={2}>
-        홈
+        {pathname == "/"
+          ? "홈"
+          : links.find((link) => pathname.startsWith("/" + link.name))?.label}
       </Heading>
-      <Spacer />
       <Menu>
         <MenuButton
           as={Button}
           variant="ghost"
-          leftIcon={<Image boxSize="32px" src={CHARACTER_IMAGE_URL} />}
-        >
-          새벽욘
-        </MenuButton>
+          leftIcon={
+            <Image
+              boxSize="32px"
+              src="/union-raid/character-blank.png"
+              filter="opacity(0.2) drop-shadow(0 0 0 #000000);"
+            />
+          }
+        ></MenuButton>
         <MenuList>
           <MenuItem color="red" icon={<TbLogout />}>
             등록 해제

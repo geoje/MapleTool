@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import {
   ChakraProvider,
-  Grid,
-  GridItem,
+  Flex,
+  Stack,
   ThemeComponentProps,
   extendTheme,
 } from "@chakra-ui/react";
@@ -11,6 +11,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Sidebar from "./components/sidebar";
 import Header from "./components/header";
 import Home from "./content/home";
+import Construct from "./content/construct";
 import Artifact from "./content/artifact";
 
 export const links = [
@@ -18,25 +19,29 @@ export const links = [
     name: "potential",
     label: "잠재능력",
     image: "/link/cube.svg",
-    content: <></>,
+    content: <Construct />,
+    building: true,
   },
   {
     name: "starforce",
     label: "스타포스",
     image: "/link/star.svg",
-    content: <></>,
+    content: <Construct />,
+    building: true,
   },
   {
     name: "union-raid",
     label: "공격대",
     image: "/link/union-raid.svg",
-    content: <></>,
+    content: <Construct />,
+    building: true,
   },
   {
     name: "union-artifact",
     label: "아티팩트",
     image: "/link/union-artifact.svg",
     content: <Artifact />,
+    building: true,
   },
 ];
 
@@ -66,18 +71,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
 function App() {
   return (
-    <Grid
-      templateAreas={`"sidebar header"
-            "sidebar content"`}
-      gridTemplateColumns="256px 1fr"
-    >
-      <GridItem area="sidebar">
-        <Sidebar />
-      </GridItem>
-      <GridItem area="header">
+    <Flex>
+      <Sidebar />
+      <Stack flex={1} gap={0}>
         <Header />
-      </GridItem>
-      <GridItem area="content">
         <Routes>
           <Route path="/" element={<Home />} />
           {links.map((link) => (
@@ -88,7 +85,7 @@ function App() {
             />
           ))}
         </Routes>
-      </GridItem>
-    </Grid>
+      </Stack>
+    </Flex>
   );
 }
