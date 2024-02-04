@@ -15,7 +15,7 @@ import {
 import { TbLogout } from "react-icons/tb";
 import { useLocation } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import { links } from "../constant";
+import { LINKS } from "../constant";
 import MobileDrawer from "./mobileDrawer";
 
 export default function Header() {
@@ -39,7 +39,7 @@ function Desktop() {
       <Heading size="md" px={2}>
         {pathname == "/"
           ? "홈"
-          : links.find((link) => pathname.startsWith("/" + link.name))?.label}
+          : LINKS.find((link) => pathname.startsWith("/" + link.name))?.label}
       </Heading>
       <Profile />
     </Flex>

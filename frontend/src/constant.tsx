@@ -1,7 +1,10 @@
 import Construct from "./content/construct";
 import Artifact from "./content/artifact";
 
-export const links = [
+export const KEY_COLLAPSED = "sidebar-collapsed";
+export const KEY_CHARACTER = "character";
+
+export const LINKS = [
   {
     name: "potential",
     label: "잠재능력",

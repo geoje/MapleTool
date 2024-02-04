@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "start http://localhost:5173 && vite --host",
+    "dev": "start http://localhost:5173 && vite",
     "build": "tsc && vite build",
     "deploy": "git checkout main && git pull && git merge develop && git push && git checkout develop",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "analyze": "source-map-explorer 'dist/assets/*.js'"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
@@ -24,7 +25,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "framer-motion": "^11.0.3",
-    "http-proxy-middleware": "^2.0.6",
     "lottie-react": "^2.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -11,7 +11,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Sidebar from "./components/sidebar";
 import Header from "./components/header";
 import Home from "./content/home";
-import { links } from "./constant";
+import { LINKS } from "./constant";
 
 const theme = extendTheme({
   fonts: {
@@ -37,7 +37,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />
-              {links.map((link) => (
+              {LINKS.map((link) => (
                 <Route
                   key={link.name}
                   path={"/" + link.name}
