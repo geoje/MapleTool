@@ -63,29 +63,23 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <ChakraProvider theme={theme}>
-        <App />
+        <Flex>
+          <Sidebar />
+          <Stack flex={1} gap={0}>
+            <Header />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              {links.map((link) => (
+                <Route
+                  key={link.name}
+                  path={"/" + link.name}
+                  element={link.content}
+                />
+              ))}
+            </Routes>
+          </Stack>
+        </Flex>
       </ChakraProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
-
-function App() {
-  return (
-    <Flex>
-      <Sidebar />
-      <Stack flex={1} gap={0}>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {links.map((link) => (
-            <Route
-              key={link.name}
-              path={"/" + link.name}
-              element={link.content}
-            />
-          ))}
-        </Routes>
-      </Stack>
-    </Flex>
-  );
-}

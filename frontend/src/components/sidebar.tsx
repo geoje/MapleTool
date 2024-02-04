@@ -106,7 +106,7 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
           leftIcon={<MdDarkMode size={24} color="#2B6CB0" />}
           rightIcon={<Switch isChecked={dark} />}
           onClick={(event: any) => {
-            if (event.target.localName == "input") return;
+            if (event.target.localName === "input") return;
             toggleColorMode();
           }}
         >

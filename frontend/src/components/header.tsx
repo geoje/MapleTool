@@ -8,7 +8,6 @@ import {
   MenuItem,
   MenuList,
   Show,
-  useColorMode,
 } from "@chakra-ui/react";
 import { TbLogout } from "react-icons/tb";
 import { useLocation } from "react-router-dom";
@@ -29,8 +28,6 @@ export default function Header() {
 
 function Desktop() {
   const { pathname } = useLocation();
-  const { colorMode } = useColorMode();
-  const dark = colorMode === "dark";
 
   return (
     <Flex p={2} justify="space-between" align="center">
