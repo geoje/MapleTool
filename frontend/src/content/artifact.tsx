@@ -2,7 +2,7 @@ import { Flex, Image } from "@chakra-ui/react";
 
 export default function Artifact() {
   return (
-    <Flex p={4} wrap="wrap">
+    <Flex p={4} wrap="wrap" justify="center">
       {/* <Image src="/union-artifact/locked/stump.webp" /> */}
       <Image src="/union-artifact/locked/golem.webp" />
       <Image src="/union-artifact/locked/balrog.webp" />

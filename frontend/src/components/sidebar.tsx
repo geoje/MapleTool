@@ -7,16 +7,15 @@ import {
   Image,
   Show,
   Spacer,
-  Switch,
   Tooltip,
   VStack,
   useColorMode,
 } from "@chakra-ui/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
-import { links } from "../main";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { links } from "../constant";
 
 const COLLAPSED_KEY = "sidebarCollapsed";
 
@@ -28,25 +27,41 @@ export default function Sidebar() {
   return (
     <Show above="md">
       {collapsed ? (
-        <Collapsed
+        <CollapsedSidebar
           onExpand={() => {
             setCollapsed(false);
             localStorage.removeItem(COLLAPSED_KEY);
           }}
         />
       ) : (
-        <Expanded
-          onCollapse={() => {
-            setCollapsed(true);
-            localStorage.setItem(COLLAPSED_KEY, "true");
-          }}
+        <ExpandedSidebar
+          width="256px"
+          closeButton={
+            <IconButton
+              aria-label="expand"
+              variant="ghost"
+              icon={<IoIosArrowBack />}
+              onClick={() => {
+                setCollapsed(true);
+                localStorage.setItem(COLLAPSED_KEY, "true");
+              }}
+            />
+          }
         />
       )}
     </Show>
   );
 }
 
-function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
+export function ExpandedSidebar({
+  width,
+  closeButton,
+  onClose,
+}: {
+  width?: string;
+  closeButton: JSX.Element;
+  onClose?: () => void;
+}) {
   const { pathname } = useLocation();
   const { colorMode, toggleColorMode } = useColorMode();
   const dark = colorMode === "dark";
@@ -54,7 +69,7 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
   return (
     <div>
       <VStack
-        w="256px"
+        w={width}
         minHeight="100vh"
         p={2}
         align="stretch"
@@ -72,15 +87,11 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
             leftIcon={<Image boxSize="24px" src="/logo.svg" />}
             variant="ghost"
             size="lg"
+            onClick={onClose}
           >
             메이플 도구
           </Button>
-          <IconButton
-            aria-label="expand"
-            variant="ghost"
-            icon={<IoIosArrowBack />}
-            onClick={onCollapse}
-          />
+          {closeButton}
         </Flex>
         <Divider my={2} />
         {links.map((link) => (
@@ -93,6 +104,7 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
             leftIcon={
               <Image boxSize="24px" src={link.image} objectFit="cover" />
             }
+            onClick={onClose}
           >
             {link.label}
             <Spacer />
@@ -103,14 +115,16 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
         <Button
           justifyContent="start"
           variant="ghost"
-          leftIcon={<MdDarkMode size={24} color="#2B6CB0" />}
-          rightIcon={<Switch isChecked={dark} />}
-          onClick={(event: any) => {
-            if (event.target.localName === "input") return;
-            toggleColorMode();
-          }}
+          leftIcon={
+            dark ? (
+              <MdLightMode size={24} color="#ECC94B" />
+            ) : (
+              <MdDarkMode size={24} color="#718096" />
+            )
+          }
+          onClick={toggleColorMode}
         >
-          어두운 테마
+          {dark ? "밝은 테마" : "어두운 테마"}
           <Spacer />
         </Button>
       </VStack>
@@ -118,7 +132,7 @@ function Expanded({ onCollapse }: { onCollapse: React.MouseEventHandler }) {
   );
 }
 
-function Collapsed({ onExpand }: { onExpand: React.MouseEventHandler }) {
+function CollapsedSidebar({ onExpand }: { onExpand: React.MouseEventHandler }) {
   const { pathname } = useLocation();
   const { colorMode, toggleColorMode } = useColorMode();
   const dark = colorMode === "dark";
@@ -139,7 +153,6 @@ function Collapsed({ onExpand }: { onExpand: React.MouseEventHandler }) {
             px={4}
             as={Link}
             to="/"
-            justifyContent="start"
             icon={<Image boxSize="24px" src="/logo.svg" />}
             variant="ghost"
             size="lg"
@@ -166,7 +179,7 @@ function Collapsed({ onExpand }: { onExpand: React.MouseEventHandler }) {
               dark ? (
                 <MdLightMode size={24} color="#ECC94B" />
               ) : (
-                <MdDarkMode size={24} color="#2B6CB0" />
+                <MdDarkMode size={24} color="#718096" />
               )
             }
             onClick={toggleColorMode}
