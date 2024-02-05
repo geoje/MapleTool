@@ -13,7 +13,14 @@ import {
   Stack,
   useEditableControls,
 } from "@chakra-ui/react";
-import { MdEdit, MdClose, MdCheck, MdInfo } from "react-icons/md";
+import {
+  MdEdit,
+  MdDelete,
+  MdClose,
+  MdCheck,
+  MdInfo,
+  MdCheckCircle,
+} from "react-icons/md";
 import { useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
@@ -35,15 +42,32 @@ export default function Home() {
       return;
     }
 
-    // Use cache as character
-    if (CharacterService.isToday(characterBasic)) {
+    // Use cached character`
+    if (CharacterService.isYesterday(characterBasic)) {
       return;
     }
 
     // Request new character data
-    CharacterService.getByName(characterBasic.character_name).then((basic) =>
-      dispatch(setCharacterBasic(basic))
-    );
+    CharacterService.getByName(characterBasic.character_name)
+      .then((basic) => {
+        dispatch(setCharacterBasic(basic));
+        toast({
+          position: "top-right",
+          status: "success",
+          title: "캐릭터 갱신됨",
+          description: basic.character_name,
+          isClosable: true,
+        });
+      })
+      .catch((reason: AxiosError) => {
+        toast({
+          position: "top-right",
+          status: "error",
+          title: `캐릭터 갱신 실패 (${reason.message})`,
+          description: Object(reason.response?.data).message,
+          isClosable: true,
+        });
+      });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -74,14 +98,23 @@ export default function Home() {
         />
       </ButtonGroup>
     ) : (
-      <Flex justifyContent="center" pt={1}>
+      <ButtonGroup justifyContent="center" pt={1}>
         <IconButton
           aria-label="edit"
           icon={<MdEdit />}
           variant="ghost"
           {...getEditButtonProps()}
         />
-      </Flex>
+        {characterBasic.character_name && (
+          <IconButton
+            aria-label="delete"
+            icon={<MdDelete />}
+            variant="ghost"
+            colorScheme="red"
+            onClick={onCharacterDelete}
+          />
+        )}
+      </ButtonGroup>
     );
   }
   function onCharacterNameSubmit(name: string) {
@@ -114,25 +147,22 @@ export default function Home() {
           description: Object(reason.response?.data).message,
           isClosable: true,
         });
-        dispatch(setCharacterBasic({}));
       });
+  }
+  function onCharacterDelete() {
+    dispatch(setCharacterBasic({}));
   }
 
   return (
     <Stack justify="start" align="center" p={4}>
-      {characterBasic.character_name?.trim() == null && (
-        <Alert status="info" variant="left-accent" gap={2}>
-          <MdInfo />
-          캐릭터를 등록하고 다양한 서비스를 이용해보세요
-        </Alert>
-      )}
+      {characterBasic.character_name ? <AlertUsage /> : <AlertHello />}
       <Card mt={8} w={336}>
         <CardBody>
           <Flex justify="center">
             <Image
               width={2 * 96}
               src={
-                characterBasic.character_image ||
+                characterBasic.character_image ??
                 "/union-raid/character-blank.png"
               }
               filter={
@@ -147,6 +177,7 @@ export default function Home() {
             textAlign="center"
             fontSize="2xl"
             placeholder="캐릭터 이름"
+            defaultValue={characterBasic.character_name}
             onSubmit={onCharacterNameSubmit}
           >
             <EditablePreview />
@@ -157,5 +188,24 @@ export default function Home() {
         </CardBody>
       </Card>
     </Stack>
+  );
+}
+
+function AlertHello() {
+  return (
+    <Alert status="info" variant="left-accent" gap={2}>
+      <MdInfo />
+      캐릭터를 등록하고 다양한 서비스를 이용해보세요
+    </Alert>
+  );
+}
+
+function AlertUsage() {
+  return (
+    <Alert status="success" variant="left-accent" gap={2}>
+      <MdCheckCircle />
+      좌측 또는 모바일일 경우 상단 메뉴 버튼을 누른 후 서비스를 선택하여
+      이용하실 수 있습니다
+    </Alert>
   );
 }

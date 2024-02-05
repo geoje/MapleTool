@@ -32,11 +32,15 @@ export default class CharacterService {
     localStorage.setItem(KEY_BASIC, JSON.stringify(basic));
   }
 
-  static isToday(character: CharacterBasic): boolean {
+  static isYesterday(character: CharacterBasic): boolean {
     if (!character.date) return false;
 
-    const chaDate = new Date(Date.parse(character.date));
+    const characterDate = new Date(Date.parse(character.date));
+    const yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
 
-    return chaDate.setHours(0, 0, 0, 0) == new Date().setHours(0, 0, 0, 0);
+    return (
+      characterDate.setHours(0, 0, 0, 0) == yesterdayDate.setHours(0, 0, 0, 0)
+    );
   }
 }
