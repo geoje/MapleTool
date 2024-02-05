@@ -24,7 +24,7 @@ import { setCharacter } from "../reducer/characterSlice";
 
 export default function Home() {
   const toast = useToast();
-  const character = useAppSelector((state) => state.character);
+  const characterBasic = useAppSelector((state) => state.character.basic);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -32,7 +32,10 @@ export default function Home() {
     const tempCharacter: Character = Object.assign(new Character(), json);
 
     // Check if is empty
-    if (character.character_name == null || character.character_name == "") {
+    if (
+      characterBasic.character_name == null ||
+      characterBasic.character_name == ""
+    ) {
       return;
     }
 
@@ -46,7 +49,7 @@ export default function Home() {
     }
 
     // Request new character data
-    Character.getByName(character.character_name).then((cha) =>
+    Character.getByName(characterBasic.character_name).then((cha) =>
       dispatch(setCharacter(cha))
     );
   }, []);
@@ -90,7 +93,7 @@ export default function Home() {
 
   return (
     <Stack justify="start" align="center" p={4}>
-      {character.character_name?.trim() == null && (
+      {characterBasic.character_name?.trim() == null && (
         <Alert status="info" variant="left-accent" gap={2}>
           <MdInfo />
           캐릭터를 등록하고 다양한 서비스를 이용해보세요
@@ -102,10 +105,11 @@ export default function Home() {
             <Image
               width={2 * 96}
               src={
-                character.character_image || "/union-raid/character-blank.png"
+                characterBasic.character_image ||
+                "/union-raid/character-blank.png"
               }
               filter={
-                character.character_image
+                characterBasic.character_image
                   ? undefined
                   : "opacity(0.2) drop-shadow(0 0 0 #000000);"
               }

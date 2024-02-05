@@ -2,9 +2,17 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Character from "../model/character";
 import { RootState } from "./store";
 
+interface CharacterState {
+  basic: Character;
+}
+
+const initialState: CharacterState = {
+  basic: new Character(),
+};
+
 const characterSlice = createSlice({
   name: "character",
-  initialState: new Character(),
+  initialState,
   reducers: {
     setCharacter(state, action: PayloadAction<Character>) {
       Object.assign(state, action.payload);
@@ -13,5 +21,4 @@ const characterSlice = createSlice({
 });
 
 export const { setCharacter } = characterSlice.actions;
-export const selectCharacter = (state: RootState) => state.character;
 export default characterSlice.reducer;
