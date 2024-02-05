@@ -10,6 +10,7 @@ import {
   IconButton,
   Image,
   Input,
+  Spacer,
   Spinner,
   Stack,
   Tooltip,
@@ -79,9 +80,9 @@ export default function Home() {
     } = useEditableControls();
 
     return requesting ? (
-      <Spinner mt={3} size="lg" />
+      <Spinner mt={2} size="lg" />
     ) : isEditing ? (
-      <ButtonGroup justifyContent="center" pt={2}>
+      <ButtonGroup justifyContent="center">
         <IconButton
           aria-label="submit"
           icon={<CgCheckO />}
@@ -101,7 +102,7 @@ export default function Home() {
         />
       </ButtonGroup>
     ) : (
-      <ButtonGroup justifyContent="center" pt={1}>
+      <ButtonGroup justifyContent="center">
         <Tooltip label="변경">
           <IconButton
             aria-label="edit"
@@ -195,6 +196,8 @@ export default function Home() {
           >
             <EditablePreview
               opacity={characterBasic.character_name ? 1 : 0.4}
+              pt="3px"
+              pb="1px"
             />
             <Input
               as={EditableInput}
@@ -202,7 +205,7 @@ export default function Home() {
               fontSize="2xl"
               maxLength={12}
             />
-            <br />
+            <Spacer h={2} />
             <EditableControls />
           </Editable>
         </CardBody>
