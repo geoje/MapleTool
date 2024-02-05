@@ -14,12 +14,18 @@ import {
   useEditableControls,
 } from "@chakra-ui/react";
 import { MdEdit, MdClose, MdCheck, MdInfo } from "react-icons/md";
-import Character from "../service/character";
+import Character from "../model/character";
 import { KEY_CHARACTER } from "../constant";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useToast } from "@chakra-ui/react";
+import { AxiosError } from "axios";
+import { useAppDispatch, useAppSelector } from "../reducer/hooks";
+import { setCharacter } from "../reducer/characterSlice";
 
 export default function Home() {
-  const [character, setCharacter] = useState<Character>(new Character());
+  const toast = useToast();
+  const character = useAppSelector((state) => state.character);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const json = JSON.parse(localStorage.getItem(KEY_CHARACTER) ?? "{}");
@@ -35,12 +41,14 @@ export default function Home() {
 
     // Use cache as character
     if (characterDate.setHours(0, 0, 0, 0) == todayDate.setHours(0, 0, 0, 0)) {
-      setCharacter(tempCharacter);
+      dispatch(setCharacter(tempCharacter));
       return;
     }
 
     // Request new character data
-    Character.getByName(character.character_name).then(setCharacter);
+    Character.getByName(character.character_name).then((cha) =>
+      dispatch(setCharacter(cha))
+    );
   }, []);
 
   function EditableControls() {
@@ -82,10 +90,12 @@ export default function Home() {
 
   return (
     <Stack justify="start" align="center" p={4}>
-      <Alert status="info" variant="left-accent" gap={2}>
-        <MdInfo />
-        캐릭터를 등록하고 다양한 서비스를 이용해보세요
-      </Alert>
+      {character.character_name?.trim() == null && (
+        <Alert status="info" variant="left-accent" gap={2}>
+          <MdInfo />
+          캐릭터를 등록하고 다양한 서비스를 이용해보세요
+        </Alert>
+      )}
       <Card mt={8} w={336}>
         <CardBody>
           <Flex justify="center">
@@ -106,10 +116,42 @@ export default function Home() {
             textAlign="center"
             fontSize="2xl"
             placeholder="캐릭터 이름"
-            onSubmit={async (name) => {
-              const character = await Character.getByName(name);
-              localStorage.setItem(KEY_CHARACTER, JSON.stringify(character));
-              setCharacter(character);
+            onSubmit={(name) => {
+              if (name.trim() == "") {
+                toast({
+                  position: "top-right",
+                  status: "warning",
+                  description: "캐릭터 이름은 공백일 수 없습니다.",
+                  isClosable: true,
+                });
+                return;
+              }
+
+              Character.getByName(name)
+                .then((character) => {
+                  localStorage.setItem(
+                    KEY_CHARACTER,
+                    JSON.stringify(character)
+                  );
+                  dispatch(setCharacter(character));
+                  toast({
+                    position: "top-right",
+                    status: "success",
+                    title: "캐릭터 등록됨",
+                    description: character.character_name,
+                    isClosable: true,
+                  });
+                })
+                .catch((reason: AxiosError) => {
+                  toast({
+                    position: "top-right",
+                    status: "error",
+                    title: `캐릭터 등록 실패 (${reason.message})`,
+                    description: Object(reason.response?.data).message,
+                    isClosable: true,
+                  });
+                  dispatch(setCharacter(new Character()));
+                });
             }}
           >
             <EditablePreview />
