@@ -10,18 +10,14 @@ import {
   IconButton,
   Image,
   Input,
+  Spinner,
   Stack,
+  Tooltip,
   useEditableControls,
 } from "@chakra-ui/react";
-import {
-  MdEdit,
-  MdDelete,
-  MdClose,
-  MdCheck,
-  MdInfo,
-  MdCheckCircle,
-} from "react-icons/md";
-import { useEffect } from "react";
+import { MdInfo, MdCheckCircle } from "react-icons/md";
+import { CgRename, CgTrash, CgCheckO, CgCloseR } from "react-icons/cg";
+import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import { useAppDispatch, useAppSelector } from "../reducer/hooks";
@@ -30,6 +26,8 @@ import { setCharacterBasic } from "../reducer/characterSlice";
 
 export default function Home() {
   const toast = useToast();
+
+  const [requesting, setRequesting] = useState(false);
   const characterBasic = useAppSelector((state) => state.character.basic);
   const dispatch = useAppDispatch();
 
@@ -80,39 +78,51 @@ export default function Home() {
       getEditButtonProps,
     } = useEditableControls();
 
-    return isEditing ? (
+    return requesting ? (
+      <Spinner mt={3} size="lg" />
+    ) : isEditing ? (
       <ButtonGroup justifyContent="center" pt={2}>
         <IconButton
           aria-label="submit"
-          icon={<MdCheck />}
+          icon={<CgCheckO />}
           variant="ghost"
           colorScheme="green"
+          size="lg"
           {...getSubmitButtonProps()}
         />
+
         <IconButton
           aria-label="cancel"
-          icon={<MdClose />}
+          icon={<CgCloseR />}
           variant="ghost"
           colorScheme="red"
+          size="lg"
           {...getCancelButtonProps()}
         />
       </ButtonGroup>
     ) : (
       <ButtonGroup justifyContent="center" pt={1}>
-        <IconButton
-          aria-label="edit"
-          icon={<MdEdit />}
-          variant="ghost"
-          {...getEditButtonProps()}
-        />
-        {characterBasic.character_name && (
+        <Tooltip label="변경">
           <IconButton
-            aria-label="delete"
-            icon={<MdDelete />}
+            aria-label="edit"
+            icon={<CgRename />}
             variant="ghost"
-            colorScheme="red"
-            onClick={onCharacterDelete}
+            colorScheme="gray"
+            size="lg"
+            {...getEditButtonProps()}
           />
+        </Tooltip>
+        {characterBasic.character_name && (
+          <Tooltip label="삭제">
+            <IconButton
+              aria-label="delete"
+              icon={<CgTrash />}
+              variant="ghost"
+              colorScheme="red"
+              size="lg"
+              onClick={onCharacterDelete}
+            />
+          </Tooltip>
         )}
       </ButtonGroup>
     );
@@ -127,6 +137,7 @@ export default function Home() {
       });
       return;
     }
+    setRequesting(true);
 
     CharacterService.getByName(name)
       .then((basic) => {
@@ -147,7 +158,8 @@ export default function Home() {
           description: Object(reason.response?.data).message,
           isClosable: true,
         });
-      });
+      })
+      .finally(() => setRequesting(false));
   }
   function onCharacterDelete() {
     dispatch(setCharacterBasic({}));
@@ -176,12 +188,20 @@ export default function Home() {
           <Editable
             textAlign="center"
             fontSize="2xl"
+            pt={2}
             placeholder="캐릭터 이름"
             defaultValue={characterBasic.character_name}
             onSubmit={onCharacterNameSubmit}
           >
-            <EditablePreview />
-            <Input as={EditableInput} fontSize="2xl" maxLength={12} />
+            <EditablePreview
+              opacity={characterBasic.character_name ? 1 : 0.4}
+            />
+            <Input
+              as={EditableInput}
+              id="character-name"
+              fontSize="2xl"
+              maxLength={12}
+            />
             <br />
             <EditableControls />
           </Editable>
