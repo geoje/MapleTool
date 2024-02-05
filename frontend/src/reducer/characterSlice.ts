@@ -1,24 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Character from "../model/character";
-import { RootState } from "./store";
-
-interface CharacterState {
-  basic: Character;
-}
-
-const initialState: CharacterState = {
-  basic: new Character(),
-};
+import { Character, CharacterBasic, CharacterOcid } from "../model/character";
+import CharacterService from "../service/character";
 
 const characterSlice = createSlice({
   name: "character",
-  initialState,
+  initialState: <Character>{
+    ocid: {},
+    basic: CharacterService.loadBasic(),
+  },
   reducers: {
-    setCharacter(state, action: PayloadAction<Character>) {
-      Object.assign(state, action.payload);
+    // Can be removed ocid. it does not need to save on store
+    setCharacterOcid(state, action: PayloadAction<CharacterOcid>) {
+      state.ocid = action.payload;
+    },
+    setCharacterBasic(state, action: PayloadAction<CharacterBasic>) {
+      state.basic = action.payload;
+      CharacterService.saveBasic(action.payload);
     },
   },
 });
 
-export const { setCharacter } = characterSlice.actions;
+export const { setCharacterOcid, setCharacterBasic } = characterSlice.actions;
 export default characterSlice.reducer;

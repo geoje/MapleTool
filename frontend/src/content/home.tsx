@@ -14,13 +14,12 @@ import {
   useEditableControls,
 } from "@chakra-ui/react";
 import { MdEdit, MdClose, MdCheck, MdInfo } from "react-icons/md";
-import Character from "../model/character";
-import { KEY_CHARACTER } from "../constant";
 import { useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import { useAppDispatch, useAppSelector } from "../reducer/hooks";
-import { setCharacter } from "../reducer/characterSlice";
+import CharacterService from "../service/character";
+import { setCharacterBasic } from "../reducer/characterSlice";
 
 export default function Home() {
   const toast = useToast();
@@ -28,30 +27,25 @@ export default function Home() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const json = JSON.parse(localStorage.getItem(KEY_CHARACTER) ?? "{}");
-    const tempCharacter: Character = Object.assign(new Character(), json);
-
     // Check if is empty
     if (
       characterBasic.character_name == null ||
-      characterBasic.character_name == ""
+      characterBasic.character_name.trim() == ""
     ) {
       return;
     }
 
-    const characterDate = tempCharacter.parsedDate();
-    const todayDate = new Date();
-
     // Use cache as character
-    if (characterDate.setHours(0, 0, 0, 0) == todayDate.setHours(0, 0, 0, 0)) {
-      dispatch(setCharacter(tempCharacter));
+    if (CharacterService.isToday(characterBasic)) {
       return;
     }
 
     // Request new character data
-    Character.getByName(characterBasic.character_name).then((cha) =>
-      dispatch(setCharacter(cha))
+    CharacterService.getByName(characterBasic.character_name).then((basic) =>
+      dispatch(setCharacterBasic(basic))
     );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function EditableControls() {
@@ -90,6 +84,39 @@ export default function Home() {
       </Flex>
     );
   }
+  function onCharacterNameSubmit(name: string) {
+    if (name.trim() == "") {
+      toast({
+        position: "top-right",
+        status: "warning",
+        description: "캐릭터 이름은 공백일 수 없습니다.",
+        isClosable: true,
+      });
+      return;
+    }
+
+    CharacterService.getByName(name)
+      .then((basic) => {
+        dispatch(setCharacterBasic(basic));
+        toast({
+          position: "top-right",
+          status: "success",
+          title: "캐릭터 등록됨",
+          description: basic.character_name,
+          isClosable: true,
+        });
+      })
+      .catch((reason: AxiosError) => {
+        toast({
+          position: "top-right",
+          status: "error",
+          title: `캐릭터 등록 실패 (${reason.message})`,
+          description: Object(reason.response?.data).message,
+          isClosable: true,
+        });
+        dispatch(setCharacterBasic({}));
+      });
+  }
 
   return (
     <Stack justify="start" align="center" p={4}>
@@ -120,43 +147,7 @@ export default function Home() {
             textAlign="center"
             fontSize="2xl"
             placeholder="캐릭터 이름"
-            onSubmit={(name) => {
-              if (name.trim() == "") {
-                toast({
-                  position: "top-right",
-                  status: "warning",
-                  description: "캐릭터 이름은 공백일 수 없습니다.",
-                  isClosable: true,
-                });
-                return;
-              }
-
-              Character.getByName(name)
-                .then((character) => {
-                  localStorage.setItem(
-                    KEY_CHARACTER,
-                    JSON.stringify(character)
-                  );
-                  dispatch(setCharacter(character));
-                  toast({
-                    position: "top-right",
-                    status: "success",
-                    title: "캐릭터 등록됨",
-                    description: character.character_name,
-                    isClosable: true,
-                  });
-                })
-                .catch((reason: AxiosError) => {
-                  toast({
-                    position: "top-right",
-                    status: "error",
-                    title: `캐릭터 등록 실패 (${reason.message})`,
-                    description: Object(reason.response?.data).message,
-                    isClosable: true,
-                  });
-                  dispatch(setCharacter(new Character()));
-                });
-            }}
+            onSubmit={onCharacterNameSubmit}
           >
             <EditablePreview />
             <Input as={EditableInput} fontSize="2xl" maxLength={12} />
