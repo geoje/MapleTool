@@ -1,7 +1,3 @@
-export interface CharacterOcid {
-  ocid?: string;
-}
-
 export interface CharacterBasic {
   date?: string;
   character_name?: string;
@@ -17,6 +13,5 @@ export interface CharacterBasic {
 }
 
 export interface Character {
-  ocid: CharacterOcid;
   basic: CharacterBasic;
 }

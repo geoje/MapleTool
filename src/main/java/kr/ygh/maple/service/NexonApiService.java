@@ -1,6 +1,5 @@
 package kr.ygh.maple.service;
 
-import jakarta.validation.constraints.NotBlank;
 import kr.ygh.maple.model.character.CharacterBasic;
 import kr.ygh.maple.model.character.CharacterOcid;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,11 +48,11 @@ public class NexonApiService {
                 .bodyToMono(elementClass);
     }
 
-    public Mono<CharacterOcid> ocid(@NotBlank String name) {
+    public Mono<CharacterOcid> ocid(String name) {
         return requestApi(CharacterOcid.class, "/maplestory/v1/id?character_name={name}", name);
     }
 
-    public Mono<CharacterBasic> basic(@NotBlank String ocid) {
+    public Mono<CharacterBasic> basic(String ocid) {
         return requestApi(CharacterBasic.class, "/maplestory/v1/character/basic?ocid={ocid}&date={date}", ocid, yesterday());
     }
 }

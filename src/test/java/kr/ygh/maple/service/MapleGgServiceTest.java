@@ -3,6 +3,7 @@ package kr.ygh.maple.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.ygh.maple.model.MapleGgBypass;
 import kr.ygh.maple.model.character.CharacterBasic;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ public class MapleGgServiceTest {
 
     @Test
     void requestWork() {
-        mapleGgService.bypass("수빈양").block();
+        MapleGgBypass bypass = mapleGgService.bypass("수빈양").block();
+        System.out.println("bypass.characterBasic() = " + bypass.characterBasic());
     }
 
     @Test

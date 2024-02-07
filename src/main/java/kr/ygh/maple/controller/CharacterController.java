@@ -1,8 +1,7 @@
 package kr.ygh.maple.controller;
 
 import kr.ygh.maple.model.character.CharacterBasic;
-import kr.ygh.maple.model.character.CharacterOcid;
-import kr.ygh.maple.service.NexonApiService;
+import kr.ygh.maple.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,24 +17,17 @@ import reactor.core.publisher.Mono;
 public class CharacterController {
 
     @Autowired
-    private NexonApiService nexonApiService;
+    private RedisService redisService;
 
-    private static void validateBlankOrEmpty(String data, String reason) {
+    private static void validateBlankOrEmpty(String data) {
         if (data.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Query name is blank or empty");
         }
     }
 
-    @GetMapping("ocid")
-    public Mono<CharacterOcid> ocid(@RequestParam("name") String name) {
-        validateBlankOrEmpty(name, "Query character_name is blank or empty");
-
-        return nexonApiService.ocid(name);
-    }
-
     @GetMapping("basic")
-    public Mono<CharacterBasic> basic(@RequestParam("ocid") String ocid) {
-        validateBlankOrEmpty(ocid, "Query ocid is blank or empty");
-        return nexonApiService.basic(ocid);
+    public Mono<CharacterBasic> basic(@RequestParam("name") String name) {
+        validateBlankOrEmpty(name);
+        return redisService.basic(name);
     }
 }

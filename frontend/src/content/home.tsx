@@ -47,7 +47,7 @@ export default function Home() {
     }
 
     // Request new character data
-    CharacterService.getByName(characterBasic.character_name)
+    CharacterService.requestBasic(characterBasic.character_name)
       .then((basic) => {
         dispatch(setCharacterBasic(basic));
         toast({
@@ -140,7 +140,7 @@ export default function Home() {
     }
     setRequesting(true);
 
-    CharacterService.getByName(name)
+    CharacterService.requestBasic(name)
       .then((basic) => {
         dispatch(setCharacterBasic(basic));
         toast({

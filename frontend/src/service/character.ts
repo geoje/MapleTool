@@ -1,27 +1,13 @@
 import axios from "axios";
-import { CharacterBasic, CharacterOcid } from "../model/character";
+import { CharacterBasic } from "../model/character";
 
 const KEY_BASIC = "character-basic";
 
 export default class CharacterService {
-  static async requestOcid(name: string): Promise<CharacterOcid> {
+  static async requestBasic(name: string): Promise<CharacterBasic> {
     return await axios
-      .get(`/api/character/ocid?name=${name}`)
+      .get(`/api/character/basic?name=${name}`)
       .then((res) => res.data);
-  }
-
-  static async requestBasic(ocid: string): Promise<CharacterBasic> {
-    return await axios
-      .get(`/api/character/basic?ocid=${ocid}`)
-      .then((res) => res.data);
-  }
-
-  static async getByName(name: string) {
-    const ocid = await CharacterService.requestOcid(name).then(
-      (json) => json.ocid
-    );
-    if (!ocid || ocid.trim() == "") throw new Error("Response ocid is empty");
-    return await CharacterService.requestBasic(ocid);
   }
 
   static loadBasic(): CharacterBasic {
