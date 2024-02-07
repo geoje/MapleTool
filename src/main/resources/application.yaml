@@ -1,0 +1,18 @@
+server:
+  error:
+    include-message: always
+
+nexon:
+  api:
+    url: https://open.api.nexon.com
+    key: # Required
+
+maplegg:
+  api:
+    url: https://maple.dakgg.io
+    path: /api/v1/bypass/characters/{name}
+
+spring:
+  redis:
+    host: localhost # Required
+    port: 6379 # Required

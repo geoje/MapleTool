@@ -6,7 +6,7 @@ const KEY_BASIC = "character-basic";
 export default class CharacterService {
   static async requestOcid(name: string): Promise<CharacterOcid> {
     return await axios
-      .get(`/api/character/ocid?character_name=${name}`)
+      .get(`/api/character/ocid?name=${name}`)
       .then((res) => res.data);
   }
 
