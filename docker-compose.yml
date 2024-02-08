@@ -1,20 +1,26 @@
 volumes:
   redis:
 
+networks:
+  mynet:
+    driver: bridge
+
 services:
   redis:
     image: redis:alpine
     restart: always
     volumes:
       - redis:/data
+    networks:
+      - mynet
 
   app:
     image: openjdk:17.0.2
     restart: always
     ports:
       - 4853:8080
-    links:
-      - redis
+    networks:
+      - mynet
     volumes:
       - WORKSPACE/build/libs/:/var/www/
     command: "java -jar -Dspring.profiles.active=prod /var/www/maple.jar"
