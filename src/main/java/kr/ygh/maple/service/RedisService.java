@@ -1,5 +1,7 @@
 package kr.ygh.maple.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ygh.maple.model.MapleGgBypass;
 import kr.ygh.maple.model.character.CharacterBasic;
 import kr.ygh.maple.model.character.CharacterOcid;
@@ -25,9 +27,13 @@ public class RedisService {
     @Autowired
     private MapleGgService mapleGgService;
 
-    public void put(String key, String hashKey, String value) {
+    public void put(String key, String hashKey, Object value) {
         HashOperations<String, String, String> ops = redisTemplate.opsForHash();
-        ops.put(key, hashKey, value);
+        try {
+            ops.put(key, hashKey, new ObjectMapper().writeValueAsString(value));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         Instant tomorrow = LocalDateTime.now()
                 .plusDays(1).withHour(1).withMinute(0).withSecond(0)
@@ -35,46 +41,51 @@ public class RedisService {
         redisTemplate.expireAt(key, Date.from(tomorrow));
     }
 
-    public String get(String key, String hashKey) {
-        HashOperations<String, String, String> ops = redisTemplate.opsForHash();
-        return ops.get(key, hashKey);
+    public <T> T get(String key, String hashKey, Class<T> classType) {
+        String json = (String) redisTemplate.opsForHash().get(key, hashKey);
+        if (json == null) return null;
+
+        try {
+            return new ObjectMapper().readValue(json, classType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void getAndSaveMapleGgBypass(String name) {
         MapleGgBypass bypass = mapleGgService.bypass(name).block();
         assert bypass != null;
-        put("character:basic", name, bypass.characterBasic().toString());
+        put("character:basic", name, bypass.characterBasic());
     }
 
     public Mono<CharacterOcid> ocid(String name) {
         // Return redis data if exists
-        String json = get("character:ocid", name);
-        if (json != null) return Mono.just(CharacterOcid.from(json));
+        CharacterOcid obj = get("character:ocid", name, CharacterOcid.class);
+        if (obj != null) return Mono.just(obj);
 
         // Request to Nexon
-        CharacterOcid ocid = nexonApiService.ocid(name).block();
-        assert ocid != null;
-        put("character:ocid", name, ocid.toString());
-        return Mono.just(ocid);
+        obj = nexonApiService.ocid(name).block();
+        put("character:ocid", name, obj);
+        return Mono.just(obj);
     }
 
     public Mono<CharacterBasic> basic(String name) {
         // Return redis data if exists
-        String json = get("character:basic", name);
-        if (json != null) return Mono.just(CharacterBasic.from(json));
+        CharacterBasic obj = get("character:basic", name, CharacterBasic.class);
+        if (obj != null) return Mono.just(obj);
 
         // Request to maple.gg if time is between 0 and 1 am
         if (NexonApiService.isCollectingTime()) {
             getAndSaveMapleGgBypass(name);
-            String mapleGgJson = get("character:basic", name);
-            return Mono.just(CharacterBasic.from(mapleGgJson));
+            obj = get("character:basic", name, CharacterBasic.class);
+            return Mono.just(obj);
         }
 
         // Request to Nexon
         String ocid = Objects.requireNonNull(ocid(name).block()).ocid();
-        CharacterBasic basic = nexonApiService.basic(ocid).block();
-        assert basic != null;
-        put("character:basic", name, basic.toString());
-        return Mono.just(basic);
+        obj = nexonApiService.basic(ocid).block();
+        assert obj != null;
+        put("character:basic", name, obj);
+        return Mono.just(obj);
     }
 }

@@ -1,5 +1,6 @@
 package kr.ygh.maple.service;
 
+import kr.ygh.maple.model.character.CharacterOcid;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +26,7 @@ public class RedisServiceTest {
     private RedisService redisService;
 
     @Test
-    void testHashRedis() {
+    void hashRedisManually() {
         // given
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         String key = "hashKey";
@@ -33,8 +34,8 @@ public class RedisServiceTest {
         // when
         hashOperations.put(key, "hello", "world");
 
-        Instant tomorrow = LocalDateTime.now().plusMinutes(1).atZone(ZoneId.systemDefault()).toInstant();
-        redisTemplate.expireAt(key, Date.from(tomorrow));
+        Instant oneMinLater = LocalDateTime.now().plusMinutes(1).atZone(ZoneId.systemDefault()).toInstant();
+        redisTemplate.expireAt(key, Date.from(oneMinLater));
 
         // then
         String value = hashOperations.get(key, "hello");
@@ -47,11 +48,24 @@ public class RedisServiceTest {
         Long size = hashOperations.size(key);
         assertThat(size).isEqualTo(entries.size());
     }
-    
+
     @Test
     void getNonExists() {
         HashOperations<String, String, String> ops = redisTemplate.opsForHash();
         String ocid = ops.get("character:ocid", "새벽욘");
+        System.out.println("ocid = " + ocid);
+    }
+
+    @Test
+    void putAndGetWithService() {
+        String key = "keykey";
+        String hashKey = "hahashKeeeey";
+        redisService.put(key, hashKey, new CharacterOcid("test-ocid"));
+
+        Instant oneMinLater = LocalDateTime.now().plusMinutes(1).atZone(ZoneId.systemDefault()).toInstant();
+        redisTemplate.expireAt(key, Date.from(oneMinLater));
+
+        CharacterOcid ocid = redisService.get(key, hashKey, CharacterOcid.class);
         System.out.println("ocid = " + ocid);
     }
 }
