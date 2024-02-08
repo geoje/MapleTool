@@ -1,5 +1,4 @@
 volumes:
-  app:
   redis:
 
 services:
