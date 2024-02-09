@@ -1,7 +1,11 @@
 package kr.ygh.maple.service;
 
 import kr.ygh.maple.model.character.CharacterBasic;
+import kr.ygh.maple.model.character.CharacterItemEquipment;
 import kr.ygh.maple.model.character.CharacterOcid;
+import kr.ygh.maple.model.union.UnionArtifact;
+import kr.ygh.maple.model.union.UnionBasic;
+import kr.ygh.maple.model.union.UnionRaider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -48,11 +52,27 @@ public class NexonApiService {
                 .bodyToMono(elementClass);
     }
 
-    public Mono<CharacterOcid> ocid(String name) {
+    public Mono<CharacterOcid> characterOcid(String name) {
         return requestApi(CharacterOcid.class, "/maplestory/v1/id?character_name={name}", name);
     }
 
-    public Mono<CharacterBasic> basic(String ocid) {
+    public Mono<CharacterBasic> characterBasic(String ocid) {
         return requestApi(CharacterBasic.class, "/maplestory/v1/character/basic?ocid={ocid}&date={date}", ocid, yesterday());
+    }
+
+    public Mono<CharacterItemEquipment> characterItemEquipment(String ocid) {
+        return requestApi(CharacterItemEquipment.class, "/maplestory/v1/character/item-equipment?ocid={ocid}&date={date}", ocid, yesterday());
+    }
+
+    public Mono<UnionBasic> unionBasic(String ocid) {
+        return requestApi(UnionBasic.class, "/maplestory/v1/user/union?ocid={ocid}&date={date}", ocid, yesterday());
+    }
+
+    public Mono<UnionRaider> unionRaider(String ocid) {
+        return requestApi(UnionRaider.class, "/maplestory/v1/user/union-raider?ocid={ocid}&date={date}", ocid, yesterday());
+    }
+
+    public Mono<UnionArtifact> unionArtifact(String ocid) {
+        return requestApi(UnionArtifact.class, "/maplestory/v1/user/union-artifact?ocid={ocid}&date={date}", ocid, yesterday());
     }
 }

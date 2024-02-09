@@ -1,6 +1,8 @@
 package kr.ygh.maple.model.union;
 
-public record UnionBasic(String date, String character_name, String world_name, String character_gender,
-                         String character_class, String character_class_level, int character_level, int character_exp,
-                         String character_exp_rate, String character_guild_name, String character_image) {
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public record UnionBasic(String date, long union_level, String union_grade, long union_artifact_level,
+                         long union_artifact_exp, long union_artifact_point) {
 }

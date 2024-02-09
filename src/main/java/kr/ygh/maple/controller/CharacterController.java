@@ -28,6 +28,6 @@ public class CharacterController {
     @GetMapping("basic")
     public Mono<CharacterBasic> basic(@RequestParam("name") String name) {
         validateBlankOrEmpty(name);
-        return redisService.basic(name);
+        return redisService.characterBasic(name);
     }
 }
