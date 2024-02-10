@@ -56,6 +56,10 @@ public class RedisService {
         MapleGgBypass bypass = mapleGgService.bypass(name).block();
         assert bypass != null;
         put("character:basic", name, bypass.characterBasic());
+        put("character:item-equipment", name, bypass.characterItemEquipment());
+        put("union:basic", name, bypass.unionBasic());
+        put("union:raider", name, bypass.unionRaider());
+        put("union:artifact", name, bypass.unionArtifact());
     }
 
     public void put(String key, String hashKey, Object value) {

@@ -10,5 +10,5 @@ public record CharacterItemEquipmentOption(String str, String dex, @JsonProperty
                                            String boss_damage,
                                            String ignore_monster_armor, String all_stat, String damage,
                                            long equipment_level_decrease, String max_hp_rate,
-                                           String max_mp_rate) {
+                                           String max_mp_rate, long base_equipment_level) {
 }

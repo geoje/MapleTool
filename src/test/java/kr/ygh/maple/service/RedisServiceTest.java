@@ -1,5 +1,8 @@
 package kr.ygh.maple.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.ygh.maple.model.character.CharacterItemEquipment;
 import kr.ygh.maple.model.character.CharacterOcid;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,7 @@ public class RedisServiceTest {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
-    private RedisService redisService;
+    private RedisService service;
 
     @Test
     void hashRedisManually() {
@@ -60,12 +63,22 @@ public class RedisServiceTest {
     void putAndGetWithService() {
         String key = "keykey";
         String hashKey = "hahashKeeeey";
-        redisService.put(key, hashKey, new CharacterOcid("test-ocid"));
+        service.put(key, hashKey, new CharacterOcid("test-ocid"));
 
         Instant oneMinLater = LocalDateTime.now().plusMinutes(1).atZone(ZoneId.systemDefault()).toInstant();
         redisTemplate.expireAt(key, Date.from(oneMinLater));
 
-        CharacterOcid ocid = redisService.get(key, hashKey, CharacterOcid.class);
+        CharacterOcid ocid = service.get(key, hashKey, CharacterOcid.class);
         System.out.println("ocid = " + ocid);
+    }
+
+    @Test
+    void itemEquipmentWork() throws JsonProcessingException {
+        CharacterItemEquipment item = service.characterItemEquipment("수빈양").block();
+
+        String itemJson = new ObjectMapper().writeValueAsString(item);
+
+        System.out.println("item = " + item);
+        System.out.println("itemJson = " + itemJson);
     }
 }

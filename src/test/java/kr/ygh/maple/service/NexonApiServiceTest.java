@@ -6,6 +6,7 @@ import kr.ygh.maple.model.character.CharacterBasic;
 import kr.ygh.maple.model.character.CharacterItemEquipment;
 import kr.ygh.maple.model.character.CharacterOcid;
 import kr.ygh.maple.model.union.UnionArtifact;
+import kr.ygh.maple.model.union.UnionBasic;
 import kr.ygh.maple.model.union.UnionRaider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,17 @@ public class NexonApiServiceTest {
 
         System.out.println("item = " + item);
         System.out.println("itemJson = " + itemJson);
+    }
+
+    @Test
+    void unionBasictWork() throws JsonProcessingException {
+        CharacterOcid ocid = service.characterOcid("수빈양").block();
+        UnionBasic basic = service.unionBasic(ocid.ocid()).block();
+
+        String basicJson = new ObjectMapper().writeValueAsString(basic);
+
+        System.out.println("basic = " + basic);
+        System.out.println("basicJson = " + basicJson);
     }
 
     @Test

@@ -1,7 +1,8 @@
 package kr.ygh.maple.controller;
 
-import kr.ygh.maple.model.character.CharacterBasic;
-import kr.ygh.maple.model.character.CharacterItemEquipment;
+import kr.ygh.maple.model.union.UnionArtifact;
+import kr.ygh.maple.model.union.UnionBasic;
+import kr.ygh.maple.model.union.UnionRaider;
 import kr.ygh.maple.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,8 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(value = "/api/character", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CharacterController {
+@RequestMapping(value = "/api/union", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UnionController {
 
     @Autowired
     private RedisService redisService;
@@ -27,14 +28,20 @@ public class CharacterController {
     }
 
     @GetMapping("basic")
-    public Mono<CharacterBasic> basic(@RequestParam("name") String name) {
+    public Mono<UnionBasic> basic(@RequestParam("name") String name) {
         validateBlankOrEmpty(name);
-        return redisService.characterBasic(name);
+        return redisService.unionBasic(name);
     }
 
-    @GetMapping("item-equipment")
-    public Mono<CharacterItemEquipment> itemEquipment(@RequestParam("name") String name) {
+    @GetMapping("raider")
+    public Mono<UnionRaider> raider(@RequestParam("name") String name) {
         validateBlankOrEmpty(name);
-        return redisService.characterItemEquipment(name);
+        return redisService.unionRaider(name);
+    }
+
+    @GetMapping("artifact")
+    public Mono<UnionArtifact> artifact(@RequestParam("name") String name) {
+        validateBlankOrEmpty(name);
+        return redisService.unionArtifact(name);
     }
 }

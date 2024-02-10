@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ygh.maple.model.MapleGgBypass;
 import kr.ygh.maple.model.character.CharacterBasic;
+import kr.ygh.maple.model.character.CharacterItemEquipment;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,12 +14,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Objects;
+
 @SpringBootTest
 @ActiveProfiles("local")
 public class MapleGgServiceTest {
 
     @Autowired
-    MapleGgService mapleGgService;
+    MapleGgService service;
     @Value("${maplegg.api.url}")
     private String MAPLEGG_API_URL;
     @Value("${maplegg.api.path}")
@@ -26,7 +29,7 @@ public class MapleGgServiceTest {
 
     @Test
     void requestWork() {
-        MapleGgBypass bypass = mapleGgService.bypass("수빈양").block();
+        MapleGgBypass bypass = service.bypass("수빈양").block();
         System.out.println("bypass.characterBasic() = " + bypass.characterBasic());
     }
 
@@ -49,5 +52,15 @@ public class MapleGgServiceTest {
         CharacterBasic basic = mapper.treeToValue(data.get("characterBasic"), CharacterBasic.class);
 
         System.out.println("basic = " + basic);
+    }
+
+    @Test
+    void itemEquipmentWork() throws JsonProcessingException {
+        CharacterItemEquipment item = Objects.requireNonNull(service.bypass("수빈양").block()).characterItemEquipment();
+
+        String itemJson = new ObjectMapper().writeValueAsString(item);
+
+        System.out.println("item = " + item);
+        System.out.println("itemJson = " + itemJson);
     }
 }

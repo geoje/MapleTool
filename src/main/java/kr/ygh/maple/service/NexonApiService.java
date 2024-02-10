@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
@@ -44,7 +45,9 @@ public class NexonApiService {
     }
 
     private <T> Mono<T> requestApi(Class<T> elementClass, String uri, Object... variables) {
-        return WebClient.create(NEXON_API_URL).get()
+        return WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder().codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024)).build())
+                .baseUrl(NEXON_API_URL).build().get()
                 .uri(uri, variables)
                 .header("x-nxopen-api-key", NEXON_API_KEY)
                 .retrieve()
