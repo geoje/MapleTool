@@ -3,7 +3,7 @@ import { CharacterBasic } from "../domain/character";
 
 const KEY_BASIC = "character-basic";
 
-export default class CharacterService {
+export default abstract class CharacterService {
   static async requestBasic(name: string): Promise<CharacterBasic> {
     return await axios
       .get(`/api/character/basic?name=${name}`)
