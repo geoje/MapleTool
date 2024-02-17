@@ -11,6 +11,9 @@
     "preview": "vite preview",
     "test": "jest"
   },
+  "jest": {
+    "preset": "ts-jest"
+  },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
