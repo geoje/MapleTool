@@ -1,11 +1,11 @@
 package kr.ygh.maple.service;
 
-import kr.ygh.maple.model.character.CharacterBasic;
-import kr.ygh.maple.model.character.CharacterItemEquipment;
-import kr.ygh.maple.model.character.CharacterOcid;
-import kr.ygh.maple.model.union.UnionArtifact;
-import kr.ygh.maple.model.union.UnionBasic;
-import kr.ygh.maple.model.union.UnionRaider;
+import kr.ygh.maple.domain.character.CharacterBasic;
+import kr.ygh.maple.domain.character.CharacterItemEquipment;
+import kr.ygh.maple.domain.character.CharacterOcid;
+import kr.ygh.maple.domain.union.UnionArtifact;
+import kr.ygh.maple.domain.union.UnionBasic;
+import kr.ygh.maple.domain.union.UnionRaider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

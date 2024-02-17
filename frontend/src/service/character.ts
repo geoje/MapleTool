@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CharacterBasic } from "../model/character";
+import { CharacterBasic } from "../domain/character";
 
 const KEY_BASIC = "character-basic";
 

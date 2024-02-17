@@ -1,14 +1,14 @@
-package kr.ygh.maple.model;
+package kr.ygh.maple.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ygh.maple.model.character.CharacterBasic;
-import kr.ygh.maple.model.character.CharacterItemEquipment;
-import kr.ygh.maple.model.union.UnionArtifact;
-import kr.ygh.maple.model.union.UnionBasic;
-import kr.ygh.maple.model.union.UnionRaider;
+import kr.ygh.maple.domain.character.CharacterBasic;
+import kr.ygh.maple.domain.character.CharacterItemEquipment;
+import kr.ygh.maple.domain.union.UnionArtifact;
+import kr.ygh.maple.domain.union.UnionBasic;
+import kr.ygh.maple.domain.union.UnionRaider;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record MapleGgBypass(CharacterBasic characterBasic, CharacterItemEquipment characterItemEquipment,

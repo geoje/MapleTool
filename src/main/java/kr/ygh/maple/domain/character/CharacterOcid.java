@@ -1,4 +1,4 @@
-package kr.ygh.maple.model.character;
+package kr.ygh.maple.domain.character;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

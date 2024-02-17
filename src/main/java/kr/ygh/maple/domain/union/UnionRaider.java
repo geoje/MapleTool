@@ -1,8 +1,8 @@
-package kr.ygh.maple.model.union;
+package kr.ygh.maple.domain.union;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import kr.ygh.maple.model.union.subset.UnionRaiderBlock;
-import kr.ygh.maple.model.union.subset.UnionRaiderStat;
+import kr.ygh.maple.domain.union.subset.UnionRaiderBlock;
+import kr.ygh.maple.domain.union.subset.UnionRaiderStat;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record UnionRaider(String date, String[] union_raider_stat, String[] union_occupied_stat,

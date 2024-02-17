@@ -1,8 +1,8 @@
 package kr.ygh.maple.controller;
 
-import kr.ygh.maple.model.union.UnionArtifact;
-import kr.ygh.maple.model.union.UnionBasic;
-import kr.ygh.maple.model.union.UnionRaider;
+import kr.ygh.maple.domain.union.UnionArtifact;
+import kr.ygh.maple.domain.union.UnionBasic;
+import kr.ygh.maple.domain.union.UnionRaider;
 import kr.ygh.maple.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
