@@ -1,8 +1,13 @@
-import { Flex, Image } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
+import Card from "../components/card";
 
 export default function Artifact() {
   return (
-    <Flex p={4} wrap="wrap" justify="center">
+    <Flex p={4} gap={4} wrap="wrap">
+      <Card>
+        <Text>Hahaha</Text>
+        <Text>HoHo</Text>
+      </Card>
       {/* <Image src="/union-artifact/locked/stump.webp" /> */}
       <Image src="/union-artifact/locked/golem.webp" />
       <Image src="/union-artifact/locked/balrog.webp" />

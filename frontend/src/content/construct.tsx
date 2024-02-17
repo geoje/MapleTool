@@ -1,11 +1,10 @@
 import { Flex } from "@chakra-ui/react";
-import Lottie from "lottie-react";
-import lottiePainting from "../lottie/1707020581363.json";
+import { LuConstruction } from "react-icons/lu";
 
 export default function Construct() {
   return (
-    <Flex flex={1} p={4} justify="center" align="center">
-      <Lottie loop animationData={lottiePainting} />
+    <Flex p={4}>
+      <LuConstruction size={64} opacity={0.2} />
     </Flex>
   );
 }
