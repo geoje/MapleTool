@@ -1,32 +1,32 @@
 import axios from "axios";
-import { CharacterBasic } from "../domain/character";
+import { CharacterBasic, CharacterItemEquipment } from "../domain/character";
 
 const KEY_BASIC = "character-basic";
+const KEY_ITEM_EQUIPMENT = "character-item-equipment";
 
 export default abstract class CharacterService {
-  static async requestBasic(name: string): Promise<CharacterBasic> {
-    return await axios
+  static requestBasic(name: string): Promise<CharacterBasic> {
+    return axios
       .get(`/api/character/basic?name=${name}`)
+      .then((res) => res.data);
+  }
+  static requestItemEquipment(name: string): Promise<CharacterItemEquipment> {
+    return axios
+      .get(`/api/character/item-equipment?name=${name}`)
       .then((res) => res.data);
   }
 
   static loadBasic(): CharacterBasic {
     return JSON.parse(localStorage.getItem(KEY_BASIC) ?? "{}");
   }
+  static loadItemEquipment(): CharacterItemEquipment {
+    return JSON.parse(localStorage.getItem(KEY_ITEM_EQUIPMENT) ?? "{}");
+  }
 
   static saveBasic(basic: CharacterBasic) {
     localStorage.setItem(KEY_BASIC, JSON.stringify(basic));
   }
-
-  static isYesterday(character: CharacterBasic): boolean {
-    if (!character.date) return false;
-
-    const characterDate = new Date(Date.parse(character.date));
-    const yesterdayDate = new Date();
-    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-
-    return (
-      characterDate.setHours(0, 0, 0, 0) == yesterdayDate.setHours(0, 0, 0, 0)
-    );
+  static saveItemEquipment(itemEquipment: CharacterItemEquipment) {
+    localStorage.setItem(KEY_ITEM_EQUIPMENT, JSON.stringify(itemEquipment));
   }
 }
