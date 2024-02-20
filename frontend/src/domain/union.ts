@@ -1,7 +1,7 @@
 export interface Union {
-  basic: UnionBasic;
-  artifact: UnionArtifact;
-  raider: UnionRaider;
+  basic?: UnionBasic;
+  artifact?: UnionArtifact;
+  raider?: UnionRaider;
 }
 
 export interface UnionBasic {

@@ -24,6 +24,7 @@ import { AxiosError } from "axios";
 import { useAppDispatch, useAppSelector } from "../reducer/hooks";
 import CharacterService from "../service/character";
 import { setCharacterBasic } from "../reducer/characterSlice";
+import DateUtil from "../util/date";
 
 export default function Home() {
   const toast = useToast();
@@ -35,14 +36,14 @@ export default function Home() {
   useEffect(() => {
     // Check if is empty
     if (
-      characterBasic.character_name == null ||
+      characterBasic?.character_name == null ||
       characterBasic.character_name.trim() == ""
     ) {
       return;
     }
 
-    // Use cached character`
-    if (CharacterService.isYesterday(characterBasic)) {
+    // Use cached character
+    if (DateUtil.isYesterday(characterBasic)) {
       return;
     }
 

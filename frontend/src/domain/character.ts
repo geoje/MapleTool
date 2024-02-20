@@ -1,6 +1,6 @@
 export interface Character {
-  basic: CharacterBasic;
-  itemEquipment: CharacterItemEquipment;
+  basic?: CharacterBasic;
+  itemEquipment?: CharacterItemEquipment;
 }
 
 export interface CharacterBasic {
