@@ -4,7 +4,7 @@ import {
   CharacterBasic,
   CharacterItemEquipment,
 } from "../domain/character";
-import CharacterService from "../service/character";
+import CharacterService from "../service/character/character";
 
 const characterSlice = createSlice({
   name: "character",

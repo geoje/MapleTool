@@ -1,4 +1,4 @@
-export default class DateUtil {
+export default abstract class DateUtil {
   static isYesterday({ date }: { date: string }): boolean {
     if (!date) return false;
 

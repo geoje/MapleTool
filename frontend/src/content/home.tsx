@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import { useAppDispatch, useAppSelector } from "../reducer/hooks";
-import CharacterService from "../service/character";
+import CharacterService from "../service/character/character";
 import { setCharacterBasic } from "../reducer/characterSlice";
 import DateUtil from "../util/date";
 
