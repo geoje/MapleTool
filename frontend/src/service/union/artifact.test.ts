@@ -4,7 +4,7 @@ test("Level", () => {
   for (let artifactLevel = 1; artifactLevel <= 60; artifactLevel++) {
     const crystal = new ArtifactCrystalLevel(artifactLevel);
     const levels = crystal.getLevelsCases();
-    levels.unshift([artifactLevel, levels.length]);
+    levels.unshift([artifactLevel]);
     console.dir(levels);
   }
 });
