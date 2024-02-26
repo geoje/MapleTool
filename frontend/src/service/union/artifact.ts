@@ -23,21 +23,21 @@ const MAX_CRYSTAL_LEVEL = CRYSTAL_LEVEL_BY_AP.map((v) => v[0]).sort(
 
 export default abstract class Artifact {
   static generateEffectLevelCombination(artifactLevel: number) {
-    const crystal = new ArtifactCrystal(artifactLevel);
+    const crystal = new ArtifactCrystalLevel(artifactLevel);
     return crystal.getLevelsCases();
   }
 }
 
-export class ArtifactCrystal {
+export class ArtifactCrystalLevel {
   private levelsCases: number[][] = [];
 
   constructor(artifactLevel: number) {
     this.generateCrystalLevelCombination(
-      new Array(ArtifactCrystal.maxCrystalCount(artifactLevel)).fill(
+      new Array(ArtifactCrystalLevel.maxCrystalCount(artifactLevel)).fill(
         CRYSTAL_LEVEL_BY_AP[0][0]
       ),
       0,
-      ArtifactCrystal.calculateAp(artifactLevel)
+      ArtifactCrystalLevel.calculateAp(artifactLevel)
     );
     this.filterMaxLevelSum();
   }
@@ -62,7 +62,7 @@ export class ArtifactCrystal {
       return;
     }
 
-    const maxCrystalLevelEntry = ArtifactCrystal.maxCrystalLevelEntry(ap);
+    const maxCrystalLevelEntry = ArtifactCrystalLevel.maxCrystalLevelEntry(ap);
     for (
       let level =
         index == 0
@@ -75,16 +75,17 @@ export class ArtifactCrystal {
       this.generateCrystalLevelCombination(
         levels,
         index + 1,
-        ap - ArtifactCrystal.calculateCostAp(level)
+        ap - ArtifactCrystalLevel.calculateCostAp(level)
       );
     }
   }
-  private sumArray(arr: number[]) {
-    return arr.reduce((a, b) => a + b, 0);
-  }
   private filterMaxLevelSum() {
-    const maxLevelSum = Math.max(...this.levelsCases.map(this.sumArray));
-    return this.levelsCases.filter((arr) => this.sumArray(arr) == maxLevelSum);
+    const maxLevelSum = Math.max(
+      ...this.levelsCases.map(ArtifactCrystalLevel.sumArray)
+    );
+    this.levelsCases = this.levelsCases.filter(
+      (arr) => ArtifactCrystalLevel.sumArray(arr) == maxLevelSum
+    );
   }
 
   private static calculateAp(artifactLevel: number) {
@@ -106,4 +107,12 @@ export class ArtifactCrystal {
       CRYSTAL_LEVEL_BY_AP.sort((a, b) => a[0] - b[0])[0]
     );
   }
+  private static sumArray(arr: number[]) {
+    return arr.reduce((a, b) => a + b, 0);
+  }
+}
+export class ArtifactCrystalEffect {
+  private effectCases: number[][] = [];
+
+  constructor(levelCases: number[][]) {}
 }
