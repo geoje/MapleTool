@@ -193,8 +193,14 @@ export class ArtifactCrystalEffect {
           effects[effectIndex].crystal.push(index);
         });
 
-        // Call recursive to do next
-        this.generateEffectsCombination(levels, effects, index + 1);
+        // If applied total level is over max, do not execute next
+        if (
+          !effectIndexes.some(
+            (effectIndex) => effects[effectIndex].level > MAX_EFFECT_LEVEL
+          )
+        )
+          // Call recursive to do next
+          this.generateEffectsCombination(levels, effects, index + 1);
 
         // Reverse applied effects
         effectIndexes.forEach((effectIndex) => {
@@ -246,7 +252,7 @@ export class ArtifactCrystalEffect {
   }
   filterEfficiency() {
     let maxTotalEffectsLevel = 0;
-    let totalLevels: number[] = Array(this.effectsCases.length);
+    let totalLevels: number[] = [];
 
     for (let i = 0; i < this.effectsCases.length; i++) {
       const totalLevel = ArtifactCrystalEffect.getEffectsTotalLevelWithBound(
@@ -256,7 +262,7 @@ export class ArtifactCrystalEffect {
       if (totalLevel > maxTotalEffectsLevel) maxTotalEffectsLevel = totalLevel;
     }
 
-    for (let i = totalLevels.length - 1; i > 0; i--) {
+    for (let i = totalLevels.length - 1; i >= 0; i--) {
       if (totalLevels[i] < maxTotalEffectsLevel) this.effectsCases.splice(i, 1);
     }
   }

@@ -4,7 +4,7 @@ test("Level", () => {
   for (let artifactLevel = 1; artifactLevel <= 60; artifactLevel++) {
     const crystal = new ArtifactCrystalLevel(artifactLevel);
     const levels = crystal.getLevelsCases();
-    levels.unshift([artifactLevel]);
+    levels.unshift([artifactLevel, levels.length]);
     console.dir(levels);
   }
 });
@@ -24,8 +24,18 @@ test("Effect.generateOrderCombination", () => {
     [2, 3, 4],
   ]);
 });
+test("Effect.getEffectsTotalLevelWithBound", () => {
+  const effects = [
+    { crystal: [], level: 12 },
+    { crystal: [], level: 12 },
+    { crystal: [], level: 10 },
+    { crystal: [], level: 2 },
+  ];
+  const result = ArtifactCrystalEffect.getEffectsTotalLevelWithBound(effects);
+  expect(result).toBe(32);
+});
 test("Effect", () => {
-  const artifactLevel = 10;
+  const artifactLevel = 24;
   const crystal = new ArtifactCrystalLevel(artifactLevel);
   const effect = new ArtifactCrystalEffect(crystal.getLevelsCases());
   console.log(
