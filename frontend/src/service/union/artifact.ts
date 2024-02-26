@@ -20,6 +20,19 @@ const MIN_CRYSTAL_LEVEL = CRYSTAL_LEVEL_BY_AP.map((v) => v[0]).sort()[0];
 const MAX_CRYSTAL_LEVEL = CRYSTAL_LEVEL_BY_AP.map((v) => v[0]).sort(
   (a, b) => b - a
 )[0];
+const MAX_EFFECT_LEVEL = 10;
+const TOTAL_EFFECT_COUNT = 16;
+const EFFECT_COUNT_PER_CRYSTAL = 3;
+
+type levelsCase = number[];
+type effectBind = {
+  level: number;
+  crystal: number[];
+};
+type effectsCase = {
+  crystalLevels: levelsCase;
+  effects: effectBind[];
+};
 
 export default abstract class Artifact {
   static generateEffectLevelCombination(artifactLevel: number) {
@@ -29,7 +42,7 @@ export default abstract class Artifact {
 }
 
 export class ArtifactCrystalLevel {
-  private levelsCases: number[][] = [];
+  private levelsCases: levelsCase[] = [];
 
   constructor(artifactLevel: number) {
     this.generateCrystalLevelCombination(
@@ -43,11 +56,11 @@ export class ArtifactCrystalLevel {
   }
 
   public getLevelsCases() {
-    return JSON.parse(JSON.stringify(this.levelsCases));
+    return <levelsCase[]>JSON.parse(JSON.stringify(this.levelsCases));
   }
 
   private generateCrystalLevelCombination(
-    levels: number[],
+    levels: levelsCase,
     index: number,
     ap: number
   ) {
@@ -112,7 +125,202 @@ export class ArtifactCrystalLevel {
   }
 }
 export class ArtifactCrystalEffect {
-  private effectCases: number[][] = [];
+  private effectsCases: effectsCase[] = [];
 
-  constructor(levelCases: number[][]) {}
+  constructor(levelsCases: levelsCase[]) {
+    levelsCases.forEach((levels) =>
+      this.generateEffectsCombination(levels, [])
+    );
+    this.filterDistinct();
+    this.filterEfficiency();
+    this.sortByDescending();
+  }
+
+  getEffectsCases() {
+    return <effectsCase[]>JSON.parse(JSON.stringify(this.effectsCases));
+  }
+
+  generateEffectsCombination(
+    levels: levelsCase,
+    effects: effectBind[],
+    index: number = 0
+  ) {
+    // If last index, push and return
+    if (index >= levels.length) {
+      this.pushEffectsCases(levels, effects);
+      return;
+    }
+
+    // If first index, effects array is empty. so create effects and do next
+    if (index == 0) {
+      for (let i = 0; i < EFFECT_COUNT_PER_CRYSTAL; i++)
+        effects.push({ level: levels[index], crystal: [index] });
+      this.generateEffectsCombination(levels, effects, index + 1);
+      return;
+    }
+
+    // push all combination for current index crystal effects
+    for (
+      let createEffectCount = 0;
+      createEffectCount <=
+      Math.min(EFFECT_COUNT_PER_CRYSTAL, TOTAL_EFFECT_COUNT - effects.length);
+      createEffectCount++
+    ) {
+      let ordersComb: number[][] = [];
+      ArtifactCrystalEffect.generateOrderCombination(
+        ordersComb,
+        [],
+        effects.length,
+        EFFECT_COUNT_PER_CRYSTAL - createEffectCount
+      );
+
+      // Create effect
+      for (let i = 0; i < createEffectCount; i++)
+        effects.push({ level: levels[index], crystal: [index] });
+
+      ordersComb.forEach((effectIndexes) => {
+        // If level to apply is over max, return
+        if (
+          effectIndexes.find(
+            (effectIndex) => effects[effectIndex].level >= MAX_EFFECT_LEVEL
+          )
+        )
+          return;
+
+        // Apply crystal to all effects
+        effectIndexes.forEach((effectIndex) => {
+          effects[effectIndex].level += levels[index];
+          effects[effectIndex].crystal.push(index);
+        });
+
+        // Call recursive to do next
+        this.generateEffectsCombination(levels, effects, index + 1);
+
+        // Reverse applied effects
+        effectIndexes.forEach((effectIndex) => {
+          effects[effectIndex].level -= levels[index];
+          effects[effectIndex].crystal.pop();
+        });
+      });
+
+      // Reverse created effects
+      for (let i = 0; i < createEffectCount; i++) effects.pop();
+    }
+  }
+  pushEffectsCases(levels: levelsCase, effects: effectBind[]) {
+    this.effectsCases.push({
+      crystalLevels: [...levels],
+      effects: [
+        ...effects.map(
+          (bind) =>
+            <effectBind>{
+              level: bind.level,
+              crystal: [...bind.crystal],
+            }
+        ),
+      ].sort((a, b) => b.level - a.level),
+    });
+  }
+
+  filterDistinct() {
+    const effectsLevels = this.effectsCases.map((a) =>
+      a.effects.map((b) => b.level)
+    );
+
+    for (let i = 0, j; i < this.effectsCases.length; i++) {
+      for (
+        j = 0;
+        j < i &&
+        !ArtifactCrystalEffect.isEqualNumbers(
+          effectsLevels[i],
+          effectsLevels[j]
+        );
+        j++
+      );
+      if (i != j) {
+        effectsLevels.splice(i, 1);
+        this.effectsCases.splice(i, 1);
+        i--;
+      }
+    }
+  }
+  filterEfficiency() {
+    let maxTotalEffectsLevel = 0;
+    let totalLevels: number[] = Array(this.effectsCases.length);
+
+    for (let i = 0; i < this.effectsCases.length; i++) {
+      const totalLevel = ArtifactCrystalEffect.getEffectsTotalLevelWithBound(
+        this.effectsCases[i].effects
+      );
+      totalLevels.push(totalLevel);
+      if (totalLevel > maxTotalEffectsLevel) maxTotalEffectsLevel = totalLevel;
+    }
+
+    for (let i = totalLevels.length - 1; i > 0; i--) {
+      if (totalLevels[i] < maxTotalEffectsLevel) this.effectsCases.splice(i, 1);
+    }
+  }
+  sortByDescending() {
+    this.effectsCases.sort((a, b) =>
+      ArtifactCrystalEffect.compareNumbers(
+        b.effects.map((v) => v.level),
+        a.effects.map((v) => v.level)
+      )
+    );
+  }
+
+  static generateOrderCombination(
+    output: number[][],
+    orders: number[],
+    length: number,
+    count: number
+  ) {
+    if (orders.length == count) {
+      output.push([...orders]);
+      return;
+    }
+
+    if (orders.length == 0) {
+      for (let i = 0; i <= length - count; i++) {
+        orders.push(i);
+        this.generateOrderCombination(output, orders, length, count);
+        orders.pop();
+      }
+      return;
+    }
+
+    for (
+      let i = orders[orders.length - 1] + 1;
+      i <= length - (count - orders.length);
+      i++
+    ) {
+      orders.push(i);
+      this.generateOrderCombination(output, orders, length, count);
+      orders.pop();
+    }
+
+    return;
+  }
+  static isEqualNumbers(arr1: number[], arr2: number[]) {
+    if (arr1.length != arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) if (arr1[i] != arr2[i]) return false;
+
+    return true;
+  }
+  static compareNumbers(arr1: number[], arr2: number[]) {
+    for (
+      let i = 0, bound = Math.min(arr1.length, arr2.length);
+      i < bound;
+      i++
+    ) {
+      if (arr1[i] == arr2[i]) continue;
+      return arr1[i] - arr2[i];
+    }
+    return arr1.length - arr2.length;
+  }
+  static getEffectsTotalLevelWithBound(bind: effectBind[]) {
+    return bind
+      .map((v) => v.level)
+      .reduce((prev, cur) => prev + Math.min(cur, MAX_EFFECT_LEVEL), 0);
+  }
 }
