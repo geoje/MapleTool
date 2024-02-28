@@ -377,7 +377,7 @@ const CRYSTALS_BY_LEVEL: crystal[][] = [
   ],
 ];
 const EFFECT_LENGTH_PER_CRYSTAL = CRYSTALS_BY_LEVEL[1][0].effects[0].length;
-const MAX_APPLIED_EFFECT_LEVEL = 10;
+export const MAX_APPLIED_EFFECT_LEVEL = 10;
 
 export default abstract class ArtifactService {
   static generateEffectLevels(artifactLevel: number) {
