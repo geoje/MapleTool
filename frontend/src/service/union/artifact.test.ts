@@ -2,7 +2,7 @@ import ArtifactService from "./artifact";
 
 test("generateEffectLevels", () => {
   let result = [];
-  for (let artifactLevel = 1; artifactLevel <= 40; artifactLevel++) {
+  for (let artifactLevel = 1; artifactLevel <= 60; artifactLevel++) {
     result.push([
       artifactLevel,
       JSON.stringify(ArtifactService.generateEffectLevels(artifactLevel)),

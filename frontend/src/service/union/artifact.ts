@@ -286,6 +286,95 @@ const CRYSTALS_BY_LEVEL: crystal[][] = [
     { level: 5, effects: [[7, 8, 9]] },
     { level: 1, effects: [[10, 11, 12]] },
   ],
+  [
+    { level: 5, effects: [[1, 2, 3]] }, // 41, 42
+    { level: 5, effects: [[1, 2, 3]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 2, effects: [[10, 11, 12]] },
+  ],
+  [],
+  [
+    { level: 5, effects: [[1, 2, 3]] }, // 43, 44
+    { level: 5, effects: [[1, 2, 3]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 3, effects: [[10, 11, 12]] },
+  ],
+  [],
+  [
+    { level: 5, effects: [[1, 2, 3]] }, // 45, 46
+    { level: 5, effects: [[1, 2, 3]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 4, effects: [[10, 11, 12]] },
+  ],
+  [],
+  [
+    { level: 5, effects: [[1, 2, 3]] }, // 47, 48, 49
+    { level: 5, effects: [[1, 2, 3]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[7, 8, 10]] },
+    { level: 5, effects: [[9, 10, 11]] },
+  ],
+  [],
+  [],
+  [
+    { level: 5, effects: [[1, 2, 3]] }, // 50
+    { level: 5, effects: [[1, 2, 3]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[7, 8, 10]] },
+    { level: 5, effects: [[9, 10, 11]] },
+    { level: 3, effects: [[11, 12, 13]] },
+  ],
+  [
+    { level: 5, effects: [[1, 2, 3]] }, // 51, 52, 53
+    { level: 5, effects: [[1, 2, 3]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[7, 8, 10]] },
+    { level: 5, effects: [[9, 10, 11]] },
+    { level: 4, effects: [[11, 12, 13]] },
+  ],
+  [],
+  [],
+  [
+    { level: 5, effects: [[1, 2, 3]] }, // 54,55,56,57,58,59
+    { level: 5, effects: [[1, 2, 3]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[10, 11, 12]] },
+    { level: 5, effects: [[10, 11, 12]] },
+  ],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [
+    { level: 5, effects: [[1, 2, 3]] }, // 60
+    { level: 5, effects: [[1, 2, 3]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[7, 8, 9]] },
+    { level: 5, effects: [[10, 11, 12]] },
+    { level: 5, effects: [[10, 11, 13]] },
+    { level: 5, effects: [[12, 13, 14]] },
+  ],
 ];
 const EFFECT_LENGTH_PER_CRYSTAL = CRYSTALS_BY_LEVEL[1][0].effects[0].length;
 const MAX_APPLIED_EFFECT_LEVEL = 10;
@@ -314,10 +403,6 @@ export default abstract class ArtifactService {
               i
             ]
           ] += crystal.level;
-
-      for (let i = 0; i < effectLevels.length; i++)
-        if (effectLevels[i] > MAX_APPLIED_EFFECT_LEVEL)
-          effectLevels[i] = MAX_APPLIED_EFFECT_LEVEL;
 
       effectLevelsComb.push(effectLevels);
     }
