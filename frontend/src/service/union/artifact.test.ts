@@ -2,7 +2,7 @@ import ArtifactService from "./artifact";
 
 test("generateEffectLevels", () => {
   let result = [];
-  for (let artifactLevel = 1; artifactLevel <= 28; artifactLevel++) {
+  for (let artifactLevel = 1; artifactLevel <= 40; artifactLevel++) {
     result.push([
       artifactLevel,
       JSON.stringify(ArtifactService.generateEffectLevels(artifactLevel)),
@@ -13,7 +13,7 @@ test("generateEffectLevels", () => {
 
 test("getEffectCount", () => {
   let result = [];
-  for (let artifactLevel = 1; artifactLevel <= 28; artifactLevel++) {
+  for (let artifactLevel = 1; artifactLevel <= 60; artifactLevel++) {
     result.push([
       artifactLevel,
       ArtifactService.getAppliedEffectCount(artifactLevel, 0),
@@ -24,7 +24,7 @@ test("getEffectCount", () => {
 
 test("getCrystals", () => {
   let result = [];
-  for (let artifactLevel = 1; artifactLevel <= 28; artifactLevel++) {
+  for (let artifactLevel = 1; artifactLevel <= 60; artifactLevel++) {
     result.push([
       artifactLevel,
       JSON.stringify(ArtifactService.getCrystals(artifactLevel)),
