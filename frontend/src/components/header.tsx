@@ -45,9 +45,9 @@ function Desktop() {
           as={Link}
           to="/"
           variant="ghost"
-          leftIcon={<ProfileImage src={characterBasic.character_image} />}
+          leftIcon={<ProfileImage src={characterBasic?.character_image} />}
         >
-          {characterBasic.character_name}
+          {characterBasic?.character_name}
         </Button>
       )}
     </Flex>
@@ -84,7 +84,7 @@ function Mobile() {
           to="/"
           variant="ghost"
           size="lg"
-          icon={<ProfileImage src={characterBasic.character_image} />}
+          icon={<ProfileImage src={characterBasic?.character_image} />}
         />
       )}
       <MobileDrawer isOpen={isOpen} onClose={onClose} />

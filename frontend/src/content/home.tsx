@@ -114,7 +114,7 @@ export default function Home() {
             {...getEditButtonProps()}
           />
         </Tooltip>
-        {characterBasic.character_name && (
+        {characterBasic?.character_name && (
           <Tooltip label="삭제">
             <IconButton
               aria-label="delete"
@@ -164,23 +164,23 @@ export default function Home() {
       .finally(() => setRequesting(false));
   }
   function onCharacterDelete() {
-    dispatch(setCharacterBasic({}));
+    dispatch(setCharacterBasic());
   }
 
   return (
     <Stack justify="start" align="center" p={4}>
-      {characterBasic.character_name ? <AlertUsage /> : <AlertHello />}
+      {characterBasic?.character_name ? <AlertUsage /> : <AlertHello />}
       <Card mt={8} w={336}>
         <CardBody>
           <Flex justify="center">
             <Image
               width={2 * 96}
               src={
-                characterBasic.character_image ??
+                characterBasic?.character_image ??
                 "/union-raid/character-blank.png"
               }
               filter={
-                characterBasic.character_image
+                characterBasic?.character_image
                   ? undefined
                   : "opacity(0.2) drop-shadow(0 0 0 #000000);"
               }
@@ -192,11 +192,11 @@ export default function Home() {
             fontSize="2xl"
             pt={2}
             placeholder="캐릭터 이름"
-            defaultValue={characterBasic.character_name}
+            defaultValue={characterBasic?.character_name}
             onSubmit={onCharacterNameSubmit}
           >
             <EditablePreview
-              opacity={characterBasic.character_name ? 1 : 0.4}
+              opacity={characterBasic?.character_name ? 1 : 0.4}
               pt="3px"
               pb="1px"
             />

@@ -13,16 +13,19 @@ const characterSlice = createSlice({
     itemEquipment: CharacterService.loadItemEquipment(),
   },
   reducers: {
-    setCharacterBasic(state, action: PayloadAction<CharacterBasic>) {
+    setCharacterBasic(
+      state,
+      action: PayloadAction<CharacterBasic | undefined>
+    ) {
       state.basic = action.payload;
-      CharacterService.saveBasic(action.payload);
+      if (action.payload) CharacterService.saveBasic(action.payload);
     },
     setCharacterItemEquipment(
       state,
-      action: PayloadAction<CharacterItemEquipment>
+      action: PayloadAction<CharacterItemEquipment | undefined>
     ) {
       state.itemEquipment = action.payload;
-      CharacterService.saveItemEquipment(action.payload);
+      if (action.payload) CharacterService.saveItemEquipment(action.payload);
     },
   },
 });
