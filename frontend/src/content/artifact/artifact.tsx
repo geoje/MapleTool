@@ -14,7 +14,7 @@ export default function Artifact() {
 
   return (
     <Flex p={4} gap={4} wrap="wrap">
-      <Stack>
+      <Stack width={["100%", "100%", "auto"]}>
         <ArtifactLevel onChange={(_, value) => setArtifactLevel(value)} />
         <EffectLevel
           artifactLevel={artifactLevel}

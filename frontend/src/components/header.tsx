@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   Heading,
+  Hide,
   IconButton,
   Image,
   Show,
@@ -18,12 +19,12 @@ import { useAppSelector } from "../reducer/hooks";
 export default function Header() {
   return (
     <>
-      <Show above="sm">
+      <Show above="md">
         <Desktop />
       </Show>
-      <Show below="sm">
+      <Hide above="md">
         <Mobile />
-      </Show>
+      </Hide>
     </>
   );
 }
