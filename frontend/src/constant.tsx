@@ -1,5 +1,5 @@
 import Construct from "./content/construct";
-import Artifact from "./content/artifact";
+import Artifact from "./content/artifact/artifact";
 
 export const KEY_COLLAPSED = "sidebar-collapsed";
 
