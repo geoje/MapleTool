@@ -409,6 +409,7 @@ export default abstract class ArtifactService {
         if (effectLevels[i] > MAX_APPLIED_EFFECT_LEVEL)
           effectLevels[i] = MAX_APPLIED_EFFECT_LEVEL;
 
+      effectLevels = effectLevels.slice(1);
       effectLevelsComb.push(effectLevels);
     }
 
