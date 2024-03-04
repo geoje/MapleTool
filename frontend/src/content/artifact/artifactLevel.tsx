@@ -1,13 +1,6 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  HStack,
-  Heading,
-  Input,
-  useNumberInput,
-} from "@chakra-ui/react";
+import { Button, HStack, Input, useNumberInput } from "@chakra-ui/react";
 import { MAX_ARTIFACT_LEVEL } from "../../service/union/artifact";
+import BoardCard from "../../components/boardCard";
 
 export default function ArtifactLevel({
   onChange,
@@ -15,14 +8,9 @@ export default function ArtifactLevel({
   onChange: (valueAsString: string, valueAsNumber: number) => void;
 }) {
   return (
-    <Card>
-      <CardBody>
-        <Heading size="sm" pb={4}>
-          아티팩트 레벨
-        </Heading>
-        <InputArtifactLevel onChange={onChange} />
-      </CardBody>
-    </Card>
+    <BoardCard order={1} title="아티팩트 레벨">
+      <InputArtifactLevel onChange={onChange} />
+    </BoardCard>
   );
 }
 

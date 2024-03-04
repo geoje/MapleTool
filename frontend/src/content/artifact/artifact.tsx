@@ -3,6 +3,7 @@ import ArtifactService from "../../service/union/artifact";
 import { useEffect, useState } from "react";
 import ArtifactLevel from "./artifactLevel";
 import EffectLevel from "./effectLevel";
+import SelectEffect from "./selectEffect";
 
 export default function Artifact() {
   const [artifactLevel, setArtifactLevel] = useState(1);
@@ -18,10 +19,11 @@ export default function Artifact() {
         <ArtifactLevel onChange={(_, value) => setArtifactLevel(value)} />
         <EffectLevel
           artifactLevel={artifactLevel}
-          currentEffectLevels={currentEffectLevels}
+          effectLevels={currentEffectLevels}
           setEffectLevels={setEffectLevels}
         />
       </Stack>
+      <SelectEffect effectLevels={currentEffectLevels} />
     </Flex>
   );
 }

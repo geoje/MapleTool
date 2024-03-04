@@ -1,50 +1,38 @@
-import {
-  Badge,
-  Card,
-  CardBody,
-  Flex,
-  Heading,
-  Radio,
-  Stack,
-} from "@chakra-ui/react";
+import { Badge, Flex, Radio, Stack } from "@chakra-ui/react";
 import ArtifactService from "../../service/union/artifact";
+import BoardCard from "../../components/boardCard";
 
 export default function EffectLevel({
   artifactLevel,
-  currentEffectLevels,
+  effectLevels: currentEffectLevels,
   setEffectLevels,
 }: {
   artifactLevel: number;
-  currentEffectLevels: number[];
+  effectLevels: number[];
   setEffectLevels: React.Dispatch<React.SetStateAction<number[]>>;
 }) {
   return (
-    <Card>
-      <CardBody>
-        <Heading size="sm" pb={4}>
-          효과 레벨
-        </Heading>
-        <Stack>
-          {ArtifactService.generateEffectLevels(artifactLevel).map(
-            (effectLevels, i) => (
-              <Radio
-                key={"effect-button-" + i}
-                isChecked={arraysEqual(effectLevels, currentEffectLevels)}
-                onChange={() => setEffectLevels(effectLevels)}
-              >
-                <Flex gap={1}>
-                  {effectLevels.map((effectLevel, j) => (
-                    <Badge key={"effect-badge-" + j} colorScheme="blue">
-                      {effectLevel}
-                    </Badge>
-                  ))}
-                </Flex>
-              </Radio>
-            )
-          )}
-        </Stack>
-      </CardBody>
-    </Card>
+    <BoardCard order={2} title="효과 레벨">
+      <Stack>
+        {ArtifactService.generateEffectLevels(artifactLevel).map(
+          (effectLevels, i) => (
+            <Radio
+              key={"effect-button-" + i}
+              isChecked={arraysEqual(effectLevels, currentEffectLevels)}
+              onChange={() => setEffectLevels(effectLevels)}
+            >
+              <Flex gap={1}>
+                {effectLevels.map((effectLevel, j) => (
+                  <Badge key={"effect-badge-" + j} colorScheme="blue">
+                    {effectLevel}
+                  </Badge>
+                ))}
+              </Flex>
+            </Radio>
+          )
+        )}
+      </Stack>
+    </BoardCard>
   );
 }
 
