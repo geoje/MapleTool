@@ -1,8 +1,9 @@
-import { CRYSTALS_BY_LEVEL } from "./artifactCrystalByLevel";
+import {
+  CRYSTALS_BY_LEVEL,
+  MAX_APPLIED_EFFECT_LEVEL,
+} from "./artifactConstants";
 
 const EFFECT_LENGTH_PER_CRYSTAL = CRYSTALS_BY_LEVEL[1][0].effects[0].length;
-export const MAX_APPLIED_EFFECT_LEVEL = 10;
-export const MAX_ARTIFACT_LEVEL = CRYSTALS_BY_LEVEL.length - 1;
 
 export default abstract class ArtifactService {
   static generateEffectLevels(artifactLevel: number) {

@@ -1,5 +1,5 @@
 import { Badge, Flex, Radio, Stack } from "@chakra-ui/react";
-import ArtifactService from "../../service/union/artifact";
+import ArtifactService from "../../service/union/artifact/artifact";
 import BoardCard from "../../components/boardCard";
 
 export default function EffectLevel({

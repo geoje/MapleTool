@@ -376,3 +376,22 @@ export const CRYSTALS_BY_LEVEL: crystal[][] = [
     { level: 5, effects: [[12, 13, 14]] },
   ],
 ];
+export const EFFECT_NAMES = [
+  "공격력/마력 증가",
+  "데미지 증가",
+  "보스 몬스터 공격시 데미지 증가",
+  "몬스터 방어율 무시 증가",
+  "버프 지속시간 증가",
+  "재사용 대기시간 미적용 확률 증가",
+  "메소 획득량 증가",
+  "아이템 드롭률 증가",
+  "크리티컬 확률 증가",
+  "크리티컬 데미지 증가",
+  "추가 경험치 획득 증가",
+  "상태이상 내성 증가",
+  "소환수 지속시간 증가",
+  "파이널 어택류 스킬 데미지 증가",
+];
+export const MAX_APPLIED_EFFECT_LEVEL = 10;
+export const MIN_ARTIFACT_LEVEL = 1;
+export const MAX_ARTIFACT_LEVEL = CRYSTALS_BY_LEVEL.length - 1;
