@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  Character,
-  CharacterBasic,
-  CharacterItemEquipment,
-} from "../domain/character/character";
 import CharacterService from "../service/character/character";
+import Character from "../domain/character/character";
+import { CharacterBasic } from "../domain/character/characterBasic";
+import { CharacterItemEquipment } from "../domain/character/characterItemEquipment";
 
 const characterSlice = createSlice({
   name: "character",

@@ -143,7 +143,7 @@ export default function Home() {
             <Spacer h={2} />
             <EditableControls
               requesting={requesting}
-              onCharacterDelete={() => dispatch(setCharacterBasic({}))}
+              onCharacterDelete={() => dispatch(setCharacterBasic())}
             />
           </Editable>
         </CardBody>
