@@ -59,12 +59,7 @@ function Crystal({
   const dark = colorMode === "dark";
 
   return (
-    <Stack
-      px={4}
-      py={6}
-      borderRadius={8}
-      bgColor={dark ? "gray.800" : "gray.50"}
-    >
+    <Stack p={4} borderRadius={8} bgColor={dark ? "gray.800" : "gray.50"}>
       <Flex justify="center" gap={1}>
         {new Array(level).fill(0).map((_, i) => (
           <Text key={"diamond-" + i} color={dark ? "gray.600" : "gray.500"}>

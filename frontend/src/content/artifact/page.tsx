@@ -59,12 +59,10 @@ export default function Artifact() {
           )}
           effectNames={ArtifactService.getCrystals(artifactLevel).map(
             (crystal) =>
-              crystal.effects
-                .map((effect) => effect[effectIndex])
-                .map(
-                  (oneAddedEffectNameIndex) =>
-                    effectNames[oneAddedEffectNameIndex - 1]
-                )
+              crystal.effects[effectIndex].map(
+                (oneAddedEffectNameIndex) =>
+                  effectNames[oneAddedEffectNameIndex - 1]
+              )
           )}
         />
       </Stack>
