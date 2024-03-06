@@ -1,9 +1,8 @@
 import {
   CRYSTALS_BY_LEVEL,
+  EFFECT_COUNT_PER_CRYSTAL,
   MAX_APPLIED_EFFECT_LEVEL,
 } from "./artifactConstants";
-
-const EFFECT_LENGTH_PER_CRYSTAL = CRYSTALS_BY_LEVEL[1][0].effects[0].length;
 
 export default abstract class ArtifactService {
   static generateEffectLevels(artifactLevel: number) {
@@ -23,7 +22,7 @@ export default abstract class ArtifactService {
       let effectLevels = new Array(effectCount + 1).fill(0);
 
       for (const crystal of crystals)
-        for (let i = 0; i < EFFECT_LENGTH_PER_CRYSTAL; i++)
+        for (let i = 0; i < EFFECT_COUNT_PER_CRYSTAL; i++)
           effectLevels[
             crystal.effects[Math.min(crystal.effects.length - 1, effectIndex)][
               i

@@ -4,12 +4,12 @@ import BoardCard from "../../components/boardCard";
 
 export default function EffectLevel({
   artifactLevel,
-  effectLevels: currentEffectLevels,
-  setEffectLevels,
+  effectIndex,
+  onChange,
 }: {
   artifactLevel: number;
-  effectLevels: number[];
-  setEffectLevels: React.Dispatch<React.SetStateAction<number[]>>;
+  effectIndex: number;
+  onChange: (index: number, effectLevels: number[]) => void;
 }) {
   return (
     <BoardCard order={2} title="효과 레벨">
@@ -18,8 +18,8 @@ export default function EffectLevel({
           (effectLevels, i) => (
             <Radio
               key={"effect-button-" + i}
-              isChecked={arraysEqual(effectLevels, currentEffectLevels)}
-              onChange={() => setEffectLevels(effectLevels)}
+              isChecked={i == effectIndex}
+              onChange={() => onChange(i, effectLevels)}
             >
               <Flex gap={1}>
                 {effectLevels.map((effectLevel, j) => (
@@ -34,15 +34,4 @@ export default function EffectLevel({
       </Stack>
     </BoardCard>
   );
-}
-
-function arraysEqual<T>(a: T[], b: T[]): boolean {
-  if (a === b) return true;
-  if (a == null || b == null) return false;
-  if (a.length !== b.length) return false;
-
-  for (let i = 0; i < a.length; ++i) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
 }

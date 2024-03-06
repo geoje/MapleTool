@@ -1,8 +1,7 @@
-type crystal = {
+export const CRYSTALS_BY_LEVEL: {
   level: number;
   effects: number[][];
-};
-export const CRYSTALS_BY_LEVEL: crystal[][] = [
+}[][] = [
   [],
   [
     { level: 2, effects: [[1, 2, 3]] }, // 1
@@ -392,6 +391,8 @@ export const EFFECT_NAMES = [
   "소환수 지속시간 증가",
   "파이널 어택류 스킬 데미지 증가",
 ];
+export const EFFECT_COUNT_PER_CRYSTAL =
+  CRYSTALS_BY_LEVEL[1][0].effects[0].length;
 export const MAX_APPLIED_EFFECT_LEVEL = 10;
 export const MIN_ARTIFACT_LEVEL = 1;
 export const MAX_ARTIFACT_LEVEL = CRYSTALS_BY_LEVEL.length - 1;

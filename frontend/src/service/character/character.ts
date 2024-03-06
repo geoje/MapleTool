@@ -1,8 +1,6 @@
 import axios from "axios";
-import {
-  CharacterBasic,
-  CharacterItemEquipment,
-} from "../../domain/character/character";
+import { CharacterBasic } from "../../domain/character/characterBasic";
+import { CharacterItemEquipment } from "../../domain/character/characterItemEquipment";
 
 const KEY_BASIC = "character-basic";
 const KEY_ITEM_EQUIPMENT = "character-item-equipment";
