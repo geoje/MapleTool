@@ -1,5 +1,5 @@
-import Construct from "./content/construct";
-import Artifact from "./content/artifact/artifact";
+import Artifact from "./content/artifact/page";
+import { ThemeComponentProps, extendTheme } from "@chakra-ui/react";
 
 export const KEY_COLLAPSED = "sidebar-collapsed";
 
@@ -8,21 +8,21 @@ export const LINKS = [
     name: "potential",
     label: "잠재능력",
     image: "/link/cube.svg",
-    content: <Construct />,
+    content: <></>,
     building: true,
   },
   {
     name: "starforce",
     label: "스타포스",
     image: "/link/star.svg",
-    content: <Construct />,
+    content: <></>,
     building: true,
   },
   {
     name: "union-raid",
     label: "공격대",
     image: "/link/union-raid.svg",
-    content: <Construct />,
+    content: <></>,
     building: true,
   },
   {
@@ -33,3 +33,17 @@ export const LINKS = [
     building: true,
   },
 ];
+
+export const theme = extendTheme({
+  fonts: {
+    heading: `"Noto Sans KR"`,
+    body: `"Noto Sans KR"`,
+  },
+  styles: {
+    global: (props: ThemeComponentProps) => ({
+      "html, body": {
+        backgroundColor: props.colorMode == "dark" ? "gray.900" : "gray.50",
+      },
+    }),
+  },
+});

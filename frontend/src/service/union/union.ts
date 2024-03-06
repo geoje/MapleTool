@@ -1,5 +1,9 @@
 import axios from "axios";
-import { UnionArtifact, UnionBasic, UnionRaider } from "../../domain/union";
+import {
+  UnionArtifact,
+  UnionBasic,
+  UnionRaider,
+} from "../../domain/union/union";
 
 const KEY_BASIC = "union-basic";
 const KEY_ARTIFACT = "union-artifact";

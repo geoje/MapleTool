@@ -8,7 +8,7 @@ const EFFECT_LENGTH_PER_CRYSTAL = CRYSTALS_BY_LEVEL[1][0].effects[0].length;
 export default abstract class ArtifactService {
   static generateEffectLevels(artifactLevel: number) {
     const crystals = this.getCrystals(artifactLevel);
-    let effectLevelsComb: number[][] = [];
+    const effectLevelsComb: number[][] = [];
 
     for (
       let effectIndex = 0,

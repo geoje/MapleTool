@@ -1,22 +1,3 @@
-export interface Character {
-  basic?: CharacterBasic;
-  itemEquipment?: CharacterItemEquipment;
-}
-
-export interface CharacterBasic {
-  date: string;
-  character_name: string;
-  world_name: string;
-  character_gender: string;
-  character_class: string;
-  character_class_level: string;
-  character_level: number;
-  character_exp: number;
-  character_exp_rate: number;
-  character_guild_name: string;
-  character_image: string;
-}
-
 export interface CharacterItemEquipment {
   date: string;
   character_gender: string;
@@ -33,6 +14,7 @@ export interface CharacterItemEquipment {
   dragon_equipment: CharacterItemEquipmentDetail[];
   mechanic_equipment: CharacterItemEquipmentDetail[];
 }
+
 export interface CharacterItemEquipmentDetail {
   item_equipment_part: string;
   item_equipment_slot: string;
@@ -71,6 +53,7 @@ export interface CharacterItemEquipmentDetail {
   special_ring_level: number;
   date_expire: string;
 }
+
 export interface CharacterItemEquipmentOption {
   str: string;
   dex: string;
@@ -92,6 +75,7 @@ export interface CharacterItemEquipmentOption {
   max_mp_rate: string;
   base_equipment_level: number;
 }
+
 export interface CharacterItemEquipmentTitle {
   title_name: string;
   title_icon: string;

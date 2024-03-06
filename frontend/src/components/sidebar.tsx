@@ -15,7 +15,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { LINKS } from "../constant";
+import { LINKS } from "../config";
 
 const KEY_COLLAPSED = "sidebar-collapsed";
 

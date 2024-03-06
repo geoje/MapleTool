@@ -1,30 +1,24 @@
 import {
-  Alert,
-  ButtonGroup,
   Card,
   CardBody,
   Editable,
   EditableInput,
   EditablePreview,
   Flex,
-  IconButton,
   Image,
   Input,
   Spacer,
-  Spinner,
   Stack,
-  Tooltip,
-  useEditableControls,
 } from "@chakra-ui/react";
-import { MdInfo, MdCheckCircle } from "react-icons/md";
-import { CgRename, CgTrash, CgCheckO, CgCloseR } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
-import { useAppDispatch, useAppSelector } from "../reducer/hooks";
-import CharacterService from "../service/character/character";
-import { setCharacterBasic } from "../reducer/characterSlice";
-import DateUtil from "../util/date";
+import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
+import CharacterService from "../../service/character/character";
+import { setCharacterBasic } from "../../reducer/characterSlice";
+import DateUtil from "../../util/date";
+import { AlertHello, AlertUsage } from "./alert";
+import EditableControls from "./editableControls";
 
 export default function Home() {
   const toast = useToast();
@@ -72,63 +66,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function EditableControls() {
-    const {
-      isEditing,
-      getSubmitButtonProps,
-      getCancelButtonProps,
-      getEditButtonProps,
-    } = useEditableControls();
-
-    return requesting ? (
-      <Spinner mt={2} size="lg" />
-    ) : isEditing ? (
-      <ButtonGroup justifyContent="center">
-        <IconButton
-          aria-label="submit"
-          icon={<CgCheckO />}
-          variant="ghost"
-          colorScheme="green"
-          size="lg"
-          {...getSubmitButtonProps()}
-        />
-
-        <IconButton
-          aria-label="cancel"
-          icon={<CgCloseR />}
-          variant="ghost"
-          colorScheme="red"
-          size="lg"
-          {...getCancelButtonProps()}
-        />
-      </ButtonGroup>
-    ) : (
-      <ButtonGroup justifyContent="center">
-        <Tooltip label="변경">
-          <IconButton
-            aria-label="edit"
-            icon={<CgRename />}
-            variant="ghost"
-            colorScheme="gray"
-            size="lg"
-            {...getEditButtonProps()}
-          />
-        </Tooltip>
-        {characterBasic?.character_name && (
-          <Tooltip label="삭제">
-            <IconButton
-              aria-label="delete"
-              icon={<CgTrash />}
-              variant="ghost"
-              colorScheme="red"
-              size="lg"
-              onClick={onCharacterDelete}
-            />
-          </Tooltip>
-        )}
-      </ButtonGroup>
-    );
-  }
   function onCharacterNameSubmit(name: string) {
     if (name.trim() == "") {
       toast({
@@ -162,9 +99,6 @@ export default function Home() {
         });
       })
       .finally(() => setRequesting(false));
-  }
-  function onCharacterDelete() {
-    dispatch(setCharacterBasic());
   }
 
   return (
@@ -207,29 +141,13 @@ export default function Home() {
               maxLength={12}
             />
             <Spacer h={2} />
-            <EditableControls />
+            <EditableControls
+              requesting={requesting}
+              onCharacterDelete={() => dispatch(setCharacterBasic({}))}
+            />
           </Editable>
         </CardBody>
       </Card>
     </Stack>
-  );
-}
-
-function AlertHello() {
-  return (
-    <Alert status="info" variant="left-accent" gap={2}>
-      <MdInfo />
-      캐릭터를 등록하고 다양한 서비스를 이용해보세요
-    </Alert>
-  );
-}
-
-function AlertUsage() {
-  return (
-    <Alert status="success" variant="left-accent" gap={2}>
-      <MdCheckCircle />
-      좌측 또는 모바일일 경우 상단 메뉴 버튼을 누른 후 서비스를 선택하여
-      이용하실 수 있습니다
-    </Alert>
   );
 }

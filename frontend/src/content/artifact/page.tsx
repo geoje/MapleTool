@@ -24,6 +24,7 @@ export default function Artifact() {
       initEffectLevels.length
     );
     setCurrentEffectNames(newEffectNames);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artifactLevel]);
 
   return (

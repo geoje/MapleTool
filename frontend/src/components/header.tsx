@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import { LINKS } from "../constant";
+import { LINKS } from "../config";
 import MobileDrawer from "./mobileDrawer";
 import { useAppSelector } from "../reducer/hooks";
 
