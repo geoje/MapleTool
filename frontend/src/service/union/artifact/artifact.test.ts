@@ -47,11 +47,10 @@ test("getCrystals", () => {
 });
 
 test("getCrystalEffectIndexes", () => {
-  const artifactLevel = 1;
-  const effectIndex = 0;
-  const result = ArtifactService.getCrystals(artifactLevel).map(
-    (crystal) => crystal.effects[effectIndex]
-  );
+  const artifactLevel = 28;
+  const result1 = ArtifactService.getCrystalEffectIndexes(artifactLevel, 0);
+  const result2 = ArtifactService.getCrystalEffectIndexes(artifactLevel, 1);
 
-  console.log(result);
+  console.log(result1);
+  console.log(result2);
 });

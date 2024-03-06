@@ -30,6 +30,8 @@ export default function Artifact() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artifactLevel]);
 
+  console.log(effectNames);
+
   return (
     <Flex p={4} gap={4} wrap="wrap">
       <Stack width={["100%", "100%", "auto"]}>
@@ -40,6 +42,15 @@ export default function Artifact() {
           onChange={(index, newEffectLevels) => {
             setEffectIndex(index);
             setEffectLevels(newEffectLevels);
+
+            const unusedEffectNames = EFFECT_NAMES.filter(
+              (name) => !effectNames.some((existName) => existName == name)
+            );
+            const newEffectNames = [...effectNames, ...unusedEffectNames].slice(
+              0,
+              newEffectLevels.length
+            );
+            setEffectNames(newEffectNames);
           }}
         />
         <SelectEffect
@@ -57,12 +68,14 @@ export default function Artifact() {
           levels={ArtifactService.getCrystals(artifactLevel).map(
             (crystal) => crystal.level
           )}
-          effectNames={ArtifactService.getCrystals(artifactLevel).map(
-            (crystal) =>
-              crystal.effects[effectIndex].map(
-                (oneAddedEffectNameIndex) =>
-                  effectNames[oneAddedEffectNameIndex - 1]
-              )
+          effectNames={ArtifactService.getCrystalEffectIndexes(
+            artifactLevel,
+            effectIndex
+          ).map((indexes) =>
+            indexes.map(
+              (oneAddedEffectNameIndex) =>
+                effectNames[oneAddedEffectNameIndex - 1]
+            )
           )}
         />
       </Stack>

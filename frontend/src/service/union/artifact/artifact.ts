@@ -56,6 +56,11 @@ export default abstract class ArtifactService {
       if (CRYSTALS_BY_LEVEL[i].length) return CRYSTALS_BY_LEVEL[i];
     return CRYSTALS_BY_LEVEL[1];
   }
+  static getCrystalEffectIndexes(artifactLevel: number, index: number) {
+    return this.getCrystals(artifactLevel).map(
+      (crystal) => crystal.effects[Math.min(index, crystal.effects.length - 1)]
+    );
+  }
   static getMaxEffectsLength(artifactLevel: number) {
     return Math.max(
       ...this.getCrystals(artifactLevel).map((c) => c.effects.length)

@@ -30,7 +30,7 @@ export const LINKS = [
     label: "아티팩트",
     image: "/link/union-artifact.svg",
     content: <Artifact />,
-    building: true,
+    building: false,
   },
 ];
 
