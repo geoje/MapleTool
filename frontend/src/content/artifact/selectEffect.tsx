@@ -43,12 +43,12 @@ function EffectSelector({
       {EFFECT_NAMES.map((effectName, i) => (
         <option
           key={"effect-" + i}
-          value={effectName}
+          value={effectName.full}
           disabled={disableNames.some(
-            (disableName) => disableName == effectName
+            (disableName) => disableName == effectName.full
           )}
         >
-          {effectName}
+          {effectName.full}
         </option>
       ))}
     </Select>

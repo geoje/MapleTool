@@ -20,8 +20,8 @@ export default function Artifact() {
     setEffectLevels(initEffectLevels);
 
     const unusedEffectNames = EFFECT_NAMES.filter(
-      (name) => !effectNames.some((existName) => existName == name)
-    );
+      ({ full }) => !effectNames.some((existName) => existName == full)
+    ).map(({ full }) => full);
     const newEffectNames = [...effectNames, ...unusedEffectNames].slice(
       0,
       initEffectLevels.length
@@ -29,8 +29,6 @@ export default function Artifact() {
     setEffectNames(newEffectNames);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artifactLevel]);
-
-  console.log(effectNames);
 
   return (
     <Flex p={4} gap={4} wrap="wrap">
@@ -44,8 +42,8 @@ export default function Artifact() {
             setEffectLevels(newEffectLevels);
 
             const unusedEffectNames = EFFECT_NAMES.filter(
-              (name) => !effectNames.some((existName) => existName == name)
-            );
+              ({ full }) => !effectNames.some((existName) => existName == full)
+            ).map(({ full }) => full);
             const newEffectNames = [...effectNames, ...unusedEffectNames].slice(
               0,
               newEffectLevels.length
@@ -72,10 +70,14 @@ export default function Artifact() {
             artifactLevel,
             effectIndex
           ).map((indexes) =>
-            indexes.map(
-              (oneAddedEffectNameIndex) =>
-                effectNames[oneAddedEffectNameIndex - 1]
-            )
+            indexes.map((oneAddedEffectNameIndex) => {
+              const fullEffectName = effectNames[oneAddedEffectNameIndex - 1];
+              return (
+                EFFECT_NAMES.find(
+                  (effectName) => effectName.full == fullEffectName
+                )?.abbreviate ?? ""
+              );
+            })
           )}
         />
       </Stack>
