@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { FaDiamond } from "react-icons/fa6";
 import BoardCard from "../../components/boardCard";
+import { MAX_CRYSTAL_LEVEL } from "../../service/union/artifact/artifactConstants";
 
 const CRYSTAL_URL_FORMAT = "/union-artifact/opened/{name}.webp";
 const CRYSTAL_IMAGES_URL = [
@@ -67,13 +68,33 @@ function Crystal({
     >
       <Flex justify="center" pt={2} gap={1}>
         {new Array(level).fill(0).map((_, i) => (
-          <Text key={"diamond-" + i} color="gray.500">
+          <Text
+            key={"diamond-" + i}
+            color={
+              dark
+                ? level < MAX_CRYSTAL_LEVEL
+                  ? "blue.400"
+                  : "purple.400"
+                : level < MAX_CRYSTAL_LEVEL
+                ? "blue.600"
+                : "purple.600"
+            }
+          >
             <FaDiamond />
           </Text>
         ))}
       </Flex>
       <Flex justify="center">
-        <Image src={imgUrl} />
+        <Image
+          src={imgUrl}
+          filter={
+            level
+              ? level < MAX_CRYSTAL_LEVEL
+                ? undefined
+                : "hue-rotate(50deg)"
+              : "grayscale(1)"
+          }
+        />
       </Flex>
       {effects.map((effect, i) => (
         <Button key={"effect-" + i} size="xs">

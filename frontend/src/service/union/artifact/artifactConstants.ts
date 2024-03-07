@@ -396,3 +396,5 @@ export const EFFECT_COUNT_PER_CRYSTAL =
 export const MAX_APPLIED_EFFECT_LEVEL = 10;
 export const MIN_ARTIFACT_LEVEL = 1;
 export const MAX_ARTIFACT_LEVEL = CRYSTALS_BY_LEVEL.length - 1;
+export const MAX_CRYSTAL_LEVEL =
+  CRYSTALS_BY_LEVEL[CRYSTALS_BY_LEVEL.length - 1][0].level;
