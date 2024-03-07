@@ -29,4 +29,14 @@ export default abstract class UnionService {
   static loadRaider(): UnionRaider | null {
     return JSON.parse(localStorage.getItem(KEY_RAIDER) ?? "null");
   }
+
+  static saveBasic(basic: UnionBasic) {
+    localStorage.setItem(KEY_BASIC, JSON.stringify(basic));
+  }
+  static saveArtifact(artifact: UnionArtifact) {
+    localStorage.setItem(KEY_ARTIFACT, JSON.stringify(artifact));
+  }
+  static saveRaider(radier: UnionRaider) {
+    localStorage.setItem(KEY_RAIDER, JSON.stringify(radier));
+  }
 }
