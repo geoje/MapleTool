@@ -60,12 +60,12 @@ function Crystal({
 
   return (
     <Stack
-      p={4}
+      p={[2, 2, 4]}
       borderRadius={8}
       bgColor={dark ? "gray.800" : "gray.50"}
       justify="end"
     >
-      <Flex justify="center" gap={1}>
+      <Flex justify="center" pt={2} gap={1}>
         {new Array(level).fill(0).map((_, i) => (
           <Text key={"diamond-" + i} color="gray.500">
             <FaDiamond />
