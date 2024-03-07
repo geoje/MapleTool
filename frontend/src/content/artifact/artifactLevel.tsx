@@ -1,4 +1,10 @@
-import { Button, HStack, Input, useNumberInput } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Input,
+  Tooltip,
+  useNumberInput,
+} from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
 import {
   MAX_ARTIFACT_LEVEL,
@@ -39,7 +45,9 @@ function InputArtifactLevel({
     <HStack maxW={48}>
       <Button {...dec}>-</Button>
       <Input size="lg" {...input} />
-      <Button {...inc}>+</Button>
+      <Tooltip label="꾹 누를 수도 있어요">
+        <Button {...inc}>+</Button>
+      </Tooltip>
     </HStack>
   );
 }
