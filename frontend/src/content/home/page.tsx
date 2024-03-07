@@ -22,13 +22,13 @@ import EditableControls from "./editableControls";
 
 export default function Home() {
   const toast = useToast();
+  const dispatch = useAppDispatch();
+  const characterBasic = useAppSelector((state) => state.character.basic);
 
   const [requesting, setRequesting] = useState(false);
-  const characterBasic = useAppSelector((state) => state.character.basic);
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // Check if is empty
+    // Check if empty
     if (
       characterBasic?.character_name == null ||
       characterBasic.character_name.trim() == ""
@@ -36,19 +36,20 @@ export default function Home() {
       return;
     }
 
-    // Use cached character
+    // Use cached
     if (DateUtil.isYesterday(characterBasic)) {
       return;
     }
 
-    // Request new character data
+    // Request new data
     CharacterService.requestBasic(characterBasic.character_name)
       .then((basic) => {
+        if (DateUtil.compare(characterBasic.date, basic.date) >= 0) return;
         dispatch(setCharacterBasic(basic));
         toast({
           position: "top-right",
           status: "success",
-          title: "캐릭터 갱신됨",
+          title: "캐릭터 기본 정보 갱신됨",
           description: basic.character_name,
           isClosable: true,
         });
@@ -57,7 +58,7 @@ export default function Home() {
         toast({
           position: "top-right",
           status: "error",
-          title: `캐릭터 갱신 실패 (${reason.message})`,
+          title: `캐릭터 기본 정보 갱신 실패 (${reason.message})`,
           description: Object(reason.response?.data).message,
           isClosable: true,
         });
@@ -84,7 +85,7 @@ export default function Home() {
         toast({
           position: "top-right",
           status: "success",
-          title: "캐릭터 등록됨",
+          title: "캐릭터 기본 정보 등록됨",
           description: basic.character_name,
           isClosable: true,
         });
@@ -93,7 +94,7 @@ export default function Home() {
         toast({
           position: "top-right",
           status: "error",
-          title: `캐릭터 등록 실패 (${reason.message})`,
+          title: `캐릭터 기본 정보 등록 실패 (${reason.message})`,
           description: Object(reason.response?.data).message,
           isClosable: true,
         });

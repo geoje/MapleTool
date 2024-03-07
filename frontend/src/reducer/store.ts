@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import characterSlice from "./characterSlice";
+import unionSlice from "./unionSlice";
 
 export const store = configureStore({
   reducer: {
     character: characterSlice,
+    union: unionSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

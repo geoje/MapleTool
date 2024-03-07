@@ -12,28 +12,32 @@ import {
 } from "../../service/union/artifact/artifactConstants";
 
 export default function ArtifactLevel({
+  value,
   onChange,
 }: {
+  value: number;
   onChange: (value: number) => void;
 }) {
   return (
     <BoardCard order={1} title="아티팩트 레벨">
-      <InputArtifactLevel onChange={onChange} />
+      <InputArtifactLevel value={value} onChange={onChange} />
     </BoardCard>
   );
 }
 
 function InputArtifactLevel({
+  value,
   onChange,
 }: {
+  value: number;
   onChange: (value: number) => void;
 }) {
   const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
     useNumberInput({
       step: 1,
-      defaultValue: MIN_ARTIFACT_LEVEL,
       min: MIN_ARTIFACT_LEVEL,
       max: MAX_ARTIFACT_LEVEL,
+      value,
       onChange: (_, value) => onChange(value),
     });
 

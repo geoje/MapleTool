@@ -10,4 +10,9 @@ export default abstract class DateUtil {
       characterDate.setHours(0, 0, 0, 0) == yesterdayDate.setHours(0, 0, 0, 0)
     );
   }
+  static compare(dateA: string, dateB: string): number {
+    const parsedDateA = new Date(Date.parse(dateA));
+    const parsedDateB = new Date(Date.parse(dateB));
+    return parsedDateA.getTime() - parsedDateB.getTime();
+  }
 }
