@@ -33,7 +33,7 @@ export default function BoardCard({
 }: {
   order: number;
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <Card>

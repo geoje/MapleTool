@@ -18,16 +18,18 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Sidebar />
             <Stack flex={1} gap={0}>
               <Header />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                {LINKS.map((link) => (
-                  <Route
-                    key={link.name}
-                    path={"/" + link.name}
-                    element={link.content}
-                  />
-                ))}
-              </Routes>
+              <Flex p={4} gap={4} wrap="wrap">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  {LINKS.map((link) => (
+                    <Route
+                      key={link.name}
+                      path={"/" + link.name}
+                      element={link.content}
+                    />
+                  ))}
+                </Routes>
+              </Flex>
             </Stack>
           </Flex>
         </ChakraProvider>

@@ -1,4 +1,4 @@
-import { Flex, Stack, useToast } from "@chakra-ui/react";
+import { Stack, useToast } from "@chakra-ui/react";
 import ArtifactService from "../../service/union/artifact/artifact";
 import { useEffect, useState } from "react";
 import ArtifactLevel from "./artifactLevel";
@@ -113,7 +113,7 @@ export default function Artifact() {
   }, [artifactLevel]);
 
   return (
-    <Flex p={4} gap={4} wrap="wrap">
+    <>
       <Stack width={["100%", "100%", "auto"]}>
         <ArtifactLevel
           value={artifactLevel}
@@ -166,6 +166,6 @@ export default function Artifact() {
           )}
         />
       </Stack>
-    </Flex>
+    </>
   );
 }

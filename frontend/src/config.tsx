@@ -1,5 +1,8 @@
-import Artifact from "./content/artifact/page";
 import { ThemeComponentProps, extendTheme } from "@chakra-ui/react";
+import Potential from "./content/potential/page";
+import Starforce from "./content/starforce/page";
+import Raider from "./content/raider/page";
+import Artifact from "./content/artifact/page";
 
 export const KEY_COLLAPSED = "sidebar-collapsed";
 
@@ -8,21 +11,21 @@ export const LINKS = [
     name: "potential",
     label: "잠재능력",
     image: "/link/cube.svg",
-    content: <></>,
+    content: <Potential />,
     building: true,
   },
   {
     name: "starforce",
     label: "스타포스",
     image: "/link/star.svg",
-    content: <></>,
+    content: <Starforce />,
     building: true,
   },
   {
     name: "union-raid",
     label: "공격대",
     image: "/link/union-raid.svg",
-    content: <></>,
+    content: <Raider />,
     building: true,
   },
   {
