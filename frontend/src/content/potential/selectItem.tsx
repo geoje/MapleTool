@@ -4,11 +4,16 @@ import ItemEquipmentService from "../../service/character/itemEquipment/itemEqui
 
 export default function SelectItem({
   characterItemEquipment,
+  preset,
 }: {
   characterItemEquipment?: CharacterItemEquipment;
+  preset: number;
 }) {
+  if (!characterItemEquipment) return <></>;
+
   const itemGrid = ItemEquipmentService.itemGrid(
-    characterItemEquipment?.item_equipment ?? []
+    characterItemEquipment,
+    preset
   );
 
   return (

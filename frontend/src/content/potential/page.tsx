@@ -95,7 +95,10 @@ export default function Potential() {
           title="장비 선택"
           right={<SelectPreset preset={preset} onChange={setPreset} />}
         >
-          <SelectItem characterItemEquipment={characterItemEquipment} />
+          <SelectItem
+            characterItemEquipment={characterItemEquipment}
+            preset={preset}
+          />
         </BoardCard>
       </Stack>
     </>
