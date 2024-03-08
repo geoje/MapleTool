@@ -11,20 +11,31 @@ export default function SelectItem({
 }) {
   if (!characterItemEquipment) return <></>;
 
-  const itemGrid = ItemEquipmentService.itemGrid(
+  const defaultItemGrid = ItemEquipmentService.itemGrid(
+    characterItemEquipment,
+    0
+  );
+
+  const presetItemGrid = ItemEquipmentService.itemGrid(
     characterItemEquipment,
     preset
   );
 
   return (
     <Grid templateColumns="repeat(5, 1fr)" gap={1}>
-      {itemGrid.flatMap((items, i) =>
+      {presetItemGrid.flatMap((items, i) =>
         items.flatMap((item, j) => (
           <GridItem key={"item-" + i + j}>
             {item && (
               <IconButton
                 aria-label={"item-" + i + j}
-                icon={<Image src={item?.item_icon} />}
+                icon={
+                  preset == 1 ||
+                  JSON.stringify(item) !=
+                    JSON.stringify(defaultItemGrid[i][j]) ? (
+                    <Image src={item?.item_icon} />
+                  ) : undefined
+                }
               />
             )}
           </GridItem>
