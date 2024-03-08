@@ -5,6 +5,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  useBreakpointValue,
   useColorMode,
 } from "@chakra-ui/react";
 import { FaDiamond } from "react-icons/fa6";
@@ -56,6 +57,7 @@ function Crystal({
   effects: string[];
   imgUrl: string;
 }) {
+  const levelIconSize = useBreakpointValue({ base: 12, md: 16 });
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
 
@@ -80,7 +82,7 @@ function Crystal({
                 : "purple.600"
             }
           >
-            <FaDiamond />
+            <FaDiamond size={levelIconSize} />
           </Text>
         ))}
       </Flex>

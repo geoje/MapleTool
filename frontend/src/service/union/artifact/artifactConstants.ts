@@ -226,7 +226,7 @@ export const CRYSTALS_BY_LEVEL: {
       ],
     },
     {
-      level: 2,
+      level: 3,
       effects: [
         [6, 7, 8],
         [7, 8, 9],
