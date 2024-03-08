@@ -11,7 +11,7 @@ test("importSampleJson", () => {
 });
 
 test("itemGrid", () => {
-  const itemGrid = ItemEquipmentService.itemGrid(itemEquipment.item_equipment);
+  const itemGrid = ItemEquipmentService.itemGrid(itemEquipment, 1);
   const itemNameGrid = itemGrid.map((items) =>
     items.map((item) => item?.item_name)
   );
