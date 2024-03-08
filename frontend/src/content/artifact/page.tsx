@@ -95,8 +95,7 @@ export default function Artifact() {
   }, []);
 
   useEffect(() => {
-    const initEffectLevels =
-      ArtifactService.generateEffectLevels(artifactLevel)[0];
+    const initEffectLevels = ArtifactService.effectLevels(artifactLevel)[0];
     setEffectIndex(0);
     setEffectLevels(initEffectLevels);
 
@@ -148,10 +147,10 @@ export default function Artifact() {
       </Stack>
       <Stack>
         <ResultGrid
-          levels={ArtifactService.getCrystals(artifactLevel).map(
+          levels={ArtifactService.crystals(artifactLevel).map(
             (crystal) => crystal.level
           )}
-          effectNames={ArtifactService.getCrystalEffectIndexes(
+          effectNames={ArtifactService.crystalEffectIndexes(
             artifactLevel,
             effectIndex
           ).map((indexes) =>

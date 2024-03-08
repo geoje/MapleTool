@@ -5,20 +5,17 @@ import {
 } from "./artifactConstants";
 
 export default abstract class ArtifactService {
-  static generateEffectLevels(artifactLevel: number) {
-    const crystals = this.getCrystals(artifactLevel);
+  static effectLevels(artifactLevel: number) {
+    const crystals = this.crystals(artifactLevel);
     const effectLevelsComb: number[][] = [];
 
     for (
       let effectIndex = 0,
-        effectIndexBound = this.getMaxEffectsLength(artifactLevel);
+        effectIndexBound = this.maxEffectsLength(artifactLevel);
       effectIndex < effectIndexBound;
       effectIndex++
     ) {
-      const effectCount = this.getAppliedEffectCount(
-        artifactLevel,
-        effectIndex
-      );
+      const effectCount = this.appliedEffectCount(artifactLevel, effectIndex);
       let effectLevels = new Array(effectCount + 1).fill(0);
 
       for (const crystal of crystals)
@@ -40,14 +37,14 @@ export default abstract class ArtifactService {
     return effectLevelsComb;
   }
 
-  static getAppliedEffectCount(artifactLevel: number, effectIndex: number) {
+  static appliedEffectCount(artifactLevel: number, effectIndex: number) {
     return Math.max(
-      ...this.getCrystals(artifactLevel).map((c) =>
+      ...this.crystals(artifactLevel).map((c) =>
         Math.max(...c.effects[Math.min(c.effects.length - 1, effectIndex)])
       )
     );
   }
-  static getCrystals(artifactLevel: number) {
+  static crystals(artifactLevel: number) {
     for (
       let i = Math.min(artifactLevel, CRYSTALS_BY_LEVEL.length - 1);
       i > 1;
@@ -56,14 +53,14 @@ export default abstract class ArtifactService {
       if (CRYSTALS_BY_LEVEL[i].length) return CRYSTALS_BY_LEVEL[i];
     return CRYSTALS_BY_LEVEL[1];
   }
-  static getCrystalEffectIndexes(artifactLevel: number, index: number) {
-    return this.getCrystals(artifactLevel).map(
+  static crystalEffectIndexes(artifactLevel: number, index: number) {
+    return this.crystals(artifactLevel).map(
       (crystal) => crystal.effects[Math.min(index, crystal.effects.length - 1)]
     );
   }
-  static getMaxEffectsLength(artifactLevel: number) {
+  static maxEffectsLength(artifactLevel: number) {
     return Math.max(
-      ...this.getCrystals(artifactLevel).map((c) => c.effects.length)
+      ...this.crystals(artifactLevel).map((c) => c.effects.length)
     );
   }
 }

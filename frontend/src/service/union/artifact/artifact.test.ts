@@ -10,7 +10,7 @@ test("generateEffectLevels", () => {
   ) {
     result.push([
       artifactLevel,
-      JSON.stringify(ArtifactService.generateEffectLevels(artifactLevel)),
+      JSON.stringify(ArtifactService.effectLevels(artifactLevel)),
     ]);
   }
   console.dir(result);
@@ -25,7 +25,7 @@ test("getEffectCount", () => {
   ) {
     result.push([
       artifactLevel,
-      ArtifactService.getAppliedEffectCount(artifactLevel, 0),
+      ArtifactService.appliedEffectCount(artifactLevel, 0),
     ]);
   }
   console.dir(result);
@@ -40,7 +40,7 @@ test("getCrystals", () => {
   ) {
     result.push([
       artifactLevel,
-      JSON.stringify(ArtifactService.getCrystals(artifactLevel)),
+      JSON.stringify(ArtifactService.crystals(artifactLevel)),
     ]);
   }
   console.dir(result);
@@ -48,8 +48,8 @@ test("getCrystals", () => {
 
 test("getCrystalEffectIndexes", () => {
   const artifactLevel = 28;
-  const result1 = ArtifactService.getCrystalEffectIndexes(artifactLevel, 0);
-  const result2 = ArtifactService.getCrystalEffectIndexes(artifactLevel, 1);
+  const result1 = ArtifactService.crystalEffectIndexes(artifactLevel, 0);
+  const result2 = ArtifactService.crystalEffectIndexes(artifactLevel, 1);
 
   console.log(result1);
   console.log(result2);
