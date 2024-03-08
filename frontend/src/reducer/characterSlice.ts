@@ -28,5 +28,6 @@ const characterSlice = createSlice({
   },
 });
 
-export const { setCharacterBasic } = characterSlice.actions;
+export const { setCharacterBasic, setCharacterItemEquipment } =
+  characterSlice.actions;
 export default characterSlice.reducer;

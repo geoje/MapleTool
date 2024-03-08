@@ -1,4 +1,4 @@
-import { Card, CardBody, Flex, Heading } from "@chakra-ui/react";
+import { Card, CardBody, Flex, Heading, Spacer } from "@chakra-ui/react";
 import {
   TbSquareRoundedNumber0Filled,
   TbSquareRoundedNumber1Filled,
@@ -29,10 +29,12 @@ const NumberIcons = [
 export default function BoardCard({
   order,
   title,
+  right,
   children,
 }: {
   order: number;
   title: string;
+  right?: React.ReactNode;
   children?: React.ReactNode;
 }) {
   return (
@@ -41,6 +43,8 @@ export default function BoardCard({
         <Flex pb={6} gap={2}>
           {NumberIcons[order]}
           <Heading size="sm">{title}</Heading>
+          <Spacer />
+          {right}
         </Flex>
         {children}
       </CardBody>

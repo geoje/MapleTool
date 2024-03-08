@@ -103,7 +103,7 @@ export default function Home() {
   }
 
   return (
-    <Stack justify="start" align="center" p={4}>
+    <Stack width="100%" justify="start" align="center">
       {characterBasic?.character_name ? <AlertUsage /> : <AlertHello />}
       <Card mt={8} w={336}>
         <CardBody>
