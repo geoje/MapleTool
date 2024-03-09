@@ -24,22 +24,35 @@ export default function SelectItem({
   return (
     <Grid templateColumns="repeat(5, 1fr)" gap={1}>
       {presetItemGrid.flatMap((items, i) =>
-        items.flatMap((item, j) => (
-          <GridItem key={"item-" + i + j}>
-            {item && (
-              <IconButton
-                aria-label={"item-" + i + j}
-                icon={
-                  preset == 1 ||
-                  JSON.stringify(item) !=
-                    JSON.stringify(defaultItemGrid[i][j]) ? (
-                    <Image src={item?.item_icon} />
-                  ) : undefined
-                }
-              />
-            )}
-          </GridItem>
-        ))
+        items.flatMap((item, j) => {
+          const appear =
+            preset == 1 ||
+            JSON.stringify(item) != JSON.stringify(defaultItemGrid[i][j]);
+          return (
+            <GridItem key={"item-" + i + j}>
+              {item && (
+                <IconButton
+                  aria-label={"item-" + i + j}
+                  borderWidth={1}
+                  borderColor={
+                    appear
+                      ? ItemEquipmentService.maxPotentialGradeColor(item) +
+                        ".400"
+                      : undefined
+                  }
+                  icon={
+                    appear ? (
+                      <Image
+                        src={item?.item_icon}
+                        style={{ imageRendering: "pixelated" }}
+                      />
+                    ) : undefined
+                  }
+                />
+              )}
+            </GridItem>
+          );
+        })
       )}
     </Grid>
   );

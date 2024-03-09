@@ -19,6 +19,7 @@ public record MapleGgBypass(CharacterBasic characterBasic, CharacterItemEquipmen
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(json);
             JsonNode data = root.get("data");
+            if (data == null) throw new NullPointerException("캐릭터를 찾지 못하였습니다.");
             return new MapleGgBypass(
                     mapper.treeToValue(data.get("characterBasic"), CharacterBasic.class),
                     mapper.treeToValue(data.get("characterItemEquipment"), CharacterItemEquipment.class),
