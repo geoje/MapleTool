@@ -2,6 +2,7 @@ import { Grid, GridItem, IconButton, Image, Tooltip } from "@chakra-ui/react";
 import { CharacterItemEquipment } from "../../domain/character/characterItemEquipment";
 import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
 import ItemToolTip from "./itemToolTip";
+import { POTENTIAL_GRADE_BORDER_COLOR } from "../../service/character/itemEquipment/itemEquipmentConstant";
 
 export default function SelectItem({
   characterItemEquipment,
@@ -44,8 +45,9 @@ export default function SelectItem({
                     borderWidth={1}
                     borderColor={
                       appear
-                        ? ItemEquipmentService.maxPotentialGradeColor(item) +
-                          ".400"
+                        ? POTENTIAL_GRADE_BORDER_COLOR[
+                            ItemEquipmentService.maxPotentialGradeIndex(item)
+                          ]
                         : undefined
                     }
                     icon={

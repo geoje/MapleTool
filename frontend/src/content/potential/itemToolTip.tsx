@@ -9,7 +9,12 @@ import {
 } from "@chakra-ui/react";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
-import { MAX_STARFORCE_COUNT } from "../../service/character/itemEquipment/itemEquipmentConstant";
+import {
+  MAX_STARFORCE_COUNT,
+  POTENTIAL_GRADE,
+  POTENTIAL_GRADE_IMAGE_COLOR,
+  TOOLTIP_COLORS,
+} from "../../service/character/itemEquipment/itemEquipmentConstant";
 import { CharacterItemEquipmentDetail } from "../../domain/character/characterItemEquipment";
 import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
 
@@ -24,14 +29,20 @@ export default function ItemToolTip({
         <Starforce count={parseInt(item.starforce)} />
         <ItemName name={item.item_name} upgrade={item.scroll_upgrade} />
         <PotentialGrade
-          potential={ItemEquipmentService.maxPotentialGrade(item)}
+          potential={
+            POTENTIAL_GRADE[ItemEquipmentService.maxPotentialGradeIndex(item)]
+          }
         />
       </Stack>
       <Divider variant="dashed" />
       <Box p={2}>
         <ImageAndReqLevel
           imgUrl={item.item_icon}
-          potentialColor={ItemEquipmentService.maxPotentialGradeColor(item)}
+          potentialColor={
+            POTENTIAL_GRADE_IMAGE_COLOR[
+              ItemEquipmentService.maxPotentialGradeIndex(item)
+            ]
+          }
           reqLevel={item.item_base_option.base_equipment_level}
         />
       </Box>
@@ -108,14 +119,15 @@ function ImageAndReqLevel({
         align="center"
         borderRadius={2}
         borderWidth={2}
-        borderColor={potentialColor + ".400"}
+        borderColor={potentialColor}
+        backgroundColor="gray.300"
       >
         <Image src={imgUrl} style={{ imageRendering: "pixelated" }} />
       </Flex>
       {potentialColor && (
         <Flex align="start">
           <Text
-            textColor={potentialColor + ".400"}
+            textColor={potentialColor}
             transform="rotate(270deg) translateY(-1px);"
           >
             <IoBookmarkSharp size={8} />
@@ -137,6 +149,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
       <Text fontSize="xs">장비분류 : {item.item_equipment_part}</Text>
       <Option
         name="STR"
+        total={item.item_total_option.str}
         base={item.item_base_option.str}
         add={item.item_add_option.str}
         etc={item.item_etc_option.str}
@@ -144,6 +157,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
       />
       <Option
         name="DEX"
+        total={item.item_total_option.dex}
         base={item.item_base_option.dex}
         add={item.item_add_option.dex}
         etc={item.item_etc_option.dex}
@@ -151,6 +165,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
       />
       <Option
         name="INT"
+        total={item.item_total_option.int}
         base={item.item_base_option.int}
         add={item.item_add_option.int}
         etc={item.item_etc_option.int}
@@ -158,10 +173,77 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
       />
       <Option
         name="LUK"
+        total={item.item_total_option.luk}
         base={item.item_base_option.luk}
         add={item.item_add_option.luk}
         etc={item.item_etc_option.luk}
         star={item.item_starforce_option.luk}
+      />
+      <Option
+        name="최대 HP"
+        total={item.item_total_option.max_hp}
+        base={item.item_base_option.max_hp}
+        add={item.item_add_option.max_hp}
+        etc={item.item_etc_option.max_hp}
+        star={item.item_starforce_option.max_hp}
+      />
+      <Option
+        name="최대 MP"
+        total={item.item_total_option.max_mp}
+        base={item.item_base_option.max_mp}
+        add={item.item_add_option.max_mp}
+        etc={item.item_etc_option.max_mp}
+        star={item.item_starforce_option.max_mp}
+      />
+      <Option
+        name="최대 HP"
+        total={item.item_total_option.max_hp_rate}
+        base={item.item_base_option.max_hp_rate}
+        add={item.item_add_option.max_hp_rate}
+        etc={item.item_etc_option.max_hp_rate}
+        star={item.item_starforce_option.max_hp_rate}
+        percent
+      />
+      <Option
+        name="최대 MP"
+        total={item.item_total_option.max_mp_rate}
+        base={item.item_base_option.max_mp_rate}
+        add={item.item_add_option.max_mp_rate}
+        etc={item.item_etc_option.max_mp_rate}
+        star={item.item_starforce_option.max_mp_rate}
+        percent
+      />
+      <Option
+        name="공격력"
+        total={item.item_total_option.attack_power}
+        base={item.item_base_option.attack_power}
+        add={item.item_add_option.attack_power}
+        etc={item.item_etc_option.attack_power}
+        star={item.item_starforce_option.attack_power}
+      />
+      <Option
+        name="마력"
+        total={item.item_total_option.magic_power}
+        base={item.item_base_option.magic_power}
+        add={item.item_add_option.magic_power}
+        etc={item.item_etc_option.magic_power}
+        star={item.item_starforce_option.magic_power}
+      />
+      <Option
+        name="방어력"
+        total={item.item_total_option.armor}
+        base={item.item_base_option.armor}
+        add={item.item_add_option.armor}
+        etc={item.item_etc_option.armor}
+        star={item.item_starforce_option.armor}
+      />
+      <Option
+        name="이동속도"
+        total={item.item_total_option.speed}
+        base={item.item_base_option.speed}
+        add={item.item_add_option.speed}
+        etc={item.item_etc_option.speed}
+        star={item.item_starforce_option.speed}
       />
     </>
   );
@@ -169,43 +251,62 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
 
 function Option({
   name,
+  total,
   base,
   add,
   etc,
   star,
+  percent,
 }: {
   name: string;
+  total: string;
   base: string;
   add: string;
   etc: string;
   star: string;
+  percent?: boolean;
 }) {
+  const valTotal = total ? parseInt(total) : 0;
   const valBase = base ? parseInt(base) : 0;
   const valAdd = add ? parseInt(add) : 0;
   const valEtc = etc ? parseInt(etc) : 0;
   const valStar = star ? parseInt(star) : 0;
-  const valTotal = valBase + valAdd + valEtc + valStar;
 
   const valueElement = (value: number, color: string) =>
     value ? (
       <Text fontSize="xs" color={color}>
-        {(value > 0 ? "+" : "-") + value}
+        {(value > 0 ? "+" : "") + value}
+        {percent ? "%" : ""}
       </Text>
     ) : undefined;
 
   if (valTotal == 0) return <></>;
   return (
     <Flex>
-      <Text fontSize="xs" color={valBase == valTotal ? undefined : "#63f3f3"}>
+      <Text
+        fontSize="xs"
+        color={
+          valBase > 0 || valAdd > 0 || valEtc > 0 || valStar > 0
+            ? TOOLTIP_COLORS.TOTAL
+            : undefined
+        }
+      >
         {name} : +{valTotal}
+        {percent ? "%" : ""}
       </Text>
-      {valBase == valTotal ? undefined : (
-        <Text fontSize="xs">{"(" + valBase}</Text>
+      {valBase == valTotal || valBase == 0 ? undefined : (
+        <Text fontSize="xs">
+          {"(" + valBase}
+          {percent ? "%" : ""}
+        </Text>
       )}
-      {valueElement(valAdd, "#d4ff00")}
-      {valueElement(valEtc, "#a8a8fb")}
-      {valueElement(valStar, "#fbc901")}
-      {valBase == valTotal ? undefined : <Text>{")"}</Text>}
+      {valueElement(
+        valAdd,
+        valAdd > 0 ? TOOLTIP_COLORS.ADD_POSITIVE : TOOLTIP_COLORS.ADD_NEAGTIVE
+      )}
+      {valueElement(valEtc, TOOLTIP_COLORS.ETC)}
+      {valueElement(valStar, TOOLTIP_COLORS.STAR)}
+      {valBase == valTotal || valBase == 0 ? undefined : <Text>{")"}</Text>}
     </Flex>
   );
 }

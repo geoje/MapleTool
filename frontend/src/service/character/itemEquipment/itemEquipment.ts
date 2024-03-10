@@ -4,7 +4,7 @@ import {
 } from "../../../domain/character/characterItemEquipment";
 import {
   POTENTIAL_GRADE,
-  POTENTIAL_GRADE_COLOR,
+  POTENTIAL_GRADE_BORDER_COLOR,
   SLOT_GRID,
 } from "./itemEquipmentConstant";
 
@@ -30,20 +30,12 @@ export default abstract class ItemEquipmentService {
       )
     );
   }
-  static maxPotentialGrade(item: CharacterItemEquipmentDetail) {
+  static maxPotentialGradeIndex(item: CharacterItemEquipmentDetail) {
     const gradeIndexes = [
       item.potential_option_grade,
       item.additional_potential_option_grade,
     ].map((grade) => POTENTIAL_GRADE.findIndex((g) => g == grade));
 
-    return POTENTIAL_GRADE[Math.max(gradeIndexes[0], gradeIndexes[1])];
-  }
-  static maxPotentialGradeColor(item: CharacterItemEquipmentDetail) {
-    const gradeIndexes = [
-      item.potential_option_grade,
-      item.additional_potential_option_grade,
-    ].map((grade) => POTENTIAL_GRADE.findIndex((g) => g == grade));
-
-    return POTENTIAL_GRADE_COLOR[Math.max(gradeIndexes[0], gradeIndexes[1])];
+    return Math.max(gradeIndexes[0], gradeIndexes[1]);
   }
 }

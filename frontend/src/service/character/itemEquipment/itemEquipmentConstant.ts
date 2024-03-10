@@ -7,5 +7,23 @@ export const SLOT_GRID = [
   ["", "", "신발", "", "기계 심장"],
 ];
 export const POTENTIAL_GRADE = ["레어", "에픽", "유니크", "레전드리"];
-export const POTENTIAL_GRADE_COLOR = ["blue", "purple", "yellow", "green"];
+export const POTENTIAL_GRADE_BORDER_COLOR = [
+  "#66ffff",
+  "#cc66ff",
+  "#ffcc00",
+  "#01ff00",
+];
+export const POTENTIAL_GRADE_IMAGE_COLOR = [
+  "#0099cc",
+  "#7700cc",
+  "#eeab00",
+  "#00cc99",
+];
 export const MAX_STARFORCE_COUNT = 25;
+export const TOOLTIP_COLORS = {
+  TOTAL: "#66ffff",
+  ADD_POSITIVE: "#d4ff00",
+  ADD_NEAGTIVE: "#fe0066",
+  ETC: "#aaaaff",
+  STAR: "#ffcc00",
+};
