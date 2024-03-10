@@ -8,6 +8,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaRegStar, FaStar } from "react-icons/fa6";
+import { IoBookmarkSharp } from "react-icons/io5";
 import { MAX_STARFORCE_COUNT } from "../../service/character/itemEquipment/itemEquipmentConstant";
 import { CharacterItemEquipmentDetail } from "../../domain/character/characterItemEquipment";
 import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
@@ -25,11 +26,15 @@ export default function ItemToolTip({
         <PotentialGrade
           potential={ItemEquipmentService.maxPotentialGrade(item)}
         />
+      </Stack>
+      <Divider variant="dashed" />
+      <Box p={2}>
         <ImageAndReqLevel
           imgUrl={item.item_icon}
+          potentialColor={ItemEquipmentService.maxPotentialGradeColor(item)}
           reqLevel={item.item_base_option.base_equipment_level}
         />
-      </Stack>
+      </Box>
       <Divider variant="dashed" />
       <Stack align="stretch" p={2} gap={1}>
         <Options item={item} />
@@ -44,8 +49,8 @@ function Starforce({ count }: { count: number }) {
 
   const starElement = (star: boolean) =>
     star ? (
-      <Text color="yellow.400">
-        <FaStar size={8} key={Math.random()} />
+      <Text color="yellow.400" key={Math.random()}>
+        <FaStar size={8} />
       </Text>
     ) : (
       <FaRegStar size={8} key={Math.random()} />
@@ -53,7 +58,7 @@ function Starforce({ count }: { count: number }) {
 
   return (
     <>
-      <Flex justify="center" gap={1}>
+      <Flex justify="center" px={2} gap={1}>
         <Flex gap="1px">{stars.slice(0, 5).map(starElement)}</Flex>
         <Flex gap="1px">{stars.slice(5, 10).map(starElement)}</Flex>
         <Flex gap="1px">{stars.slice(10, 15).map(starElement)}</Flex>
@@ -87,17 +92,41 @@ function PotentialGrade({ potential }: { potential: string }) {
 
 function ImageAndReqLevel({
   imgUrl,
+  potentialColor,
   reqLevel,
 }: {
   imgUrl: string;
+  potentialColor: string;
   reqLevel: number;
 }) {
   return (
-    <Flex width="100%" align="center" gap={4}>
-      <Image src={imgUrl} />
-      <Text fontSize={8} color="#fad501">
-        REQ LEV : {reqLevel}
-      </Text>
+    <Flex width="100%" align="stretch">
+      <Flex
+        w="42px"
+        h="42px"
+        justify="center"
+        align="center"
+        borderRadius={2}
+        borderWidth={2}
+        borderColor={potentialColor + ".400"}
+      >
+        <Image src={imgUrl} style={{ imageRendering: "pixelated" }} />
+      </Flex>
+      {potentialColor && (
+        <Flex align="start">
+          <Text
+            textColor={potentialColor + ".400"}
+            transform="rotate(270deg) translateY(-1px);"
+          >
+            <IoBookmarkSharp size={8} />
+          </Text>
+        </Flex>
+      )}
+      <Flex align="center">
+        <Text pl={2} fontSize={8} color="#fad501">
+          REQ LEV : {reqLevel}
+        </Text>
+      </Flex>
     </Flex>
   );
 }
@@ -167,14 +196,16 @@ function Option({
   if (valTotal == 0) return <></>;
   return (
     <Flex>
-      <Text fontSize="xs" color="#63f3f3">
+      <Text fontSize="xs" color={valBase == valTotal ? undefined : "#63f3f3"}>
         {name} : +{valTotal}
       </Text>
-      <Text fontSize="xs">{"(" + valBase}</Text>
+      {valBase == valTotal ? undefined : (
+        <Text fontSize="xs">{"(" + valBase}</Text>
+      )}
       {valueElement(valAdd, "#d4ff00")}
       {valueElement(valEtc, "#a8a8fb")}
       {valueElement(valStar, "#fbc901")}
-      <Text>{")"}</Text>
+      {valBase == valTotal ? undefined : <Text>{")"}</Text>}
     </Flex>
   );
 }

@@ -8,6 +8,7 @@ import { setCharacterItemEquipment } from "../../reducer/characterSlice";
 import { AxiosError } from "axios";
 import DateUtil from "../../util/date";
 import SelectPreset from "./selectPreset";
+import ItemToolTip from "./itemToolTip";
 
 export default function Potential() {
   const toast = useToast();
