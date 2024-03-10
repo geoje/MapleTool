@@ -30,6 +30,14 @@ export default abstract class ItemEquipmentService {
       )
     );
   }
+  static maxPotentialGrade(item: CharacterItemEquipmentDetail) {
+    const gradeIndexes = [
+      item.potential_option_grade,
+      item.additional_potential_option_grade,
+    ].map((grade) => POTENTIAL_GRADE.findIndex((g) => g == grade));
+
+    return POTENTIAL_GRADE[Math.max(gradeIndexes[0], gradeIndexes[1])];
+  }
   static maxPotentialGradeColor(item: CharacterItemEquipmentDetail) {
     const gradeIndexes = [
       item.potential_option_grade,

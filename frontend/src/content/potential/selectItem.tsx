@@ -1,6 +1,7 @@
-import { Grid, GridItem, IconButton, Image } from "@chakra-ui/react";
+import { Grid, GridItem, IconButton, Image, Tooltip } from "@chakra-ui/react";
 import { CharacterItemEquipment } from "../../domain/character/characterItemEquipment";
 import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
+import ItemToolTip from "./itemToolTip";
 
 export default function SelectItem({
   characterItemEquipment,
@@ -31,24 +32,32 @@ export default function SelectItem({
           return (
             <GridItem key={"item-" + i + j}>
               {item && (
-                <IconButton
-                  aria-label={"item-" + i + j}
-                  borderWidth={1}
-                  borderColor={
-                    appear
-                      ? ItemEquipmentService.maxPotentialGradeColor(item) +
-                        ".400"
-                      : undefined
-                  }
-                  icon={
-                    appear ? (
-                      <Image
-                        src={item?.item_icon}
-                        style={{ imageRendering: "pixelated" }}
-                      />
-                    ) : undefined
-                  }
-                />
+                <Tooltip
+                  placement="right-start"
+                  color="white"
+                  background="blackAlpha.800"
+                  p={0}
+                  label={<ItemToolTip item={item} />}
+                >
+                  <IconButton
+                    aria-label={"item-" + i + j}
+                    borderWidth={1}
+                    borderColor={
+                      appear
+                        ? ItemEquipmentService.maxPotentialGradeColor(item) +
+                          ".400"
+                        : undefined
+                    }
+                    icon={
+                      appear ? (
+                        <Image
+                          src={item?.item_icon}
+                          style={{ imageRendering: "pixelated" }}
+                        />
+                      ) : undefined
+                    }
+                  />
+                </Tooltip>
               )}
             </GridItem>
           );

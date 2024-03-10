@@ -58,6 +58,7 @@ export interface CharacterItemEquipmentOption {
   str: string;
   dex: string;
   intellect: string;
+  int: string;
   luk: string;
   max_hp: string;
   max_mp: string;

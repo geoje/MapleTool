@@ -8,3 +8,4 @@ export const SLOT_GRID = [
 ];
 export const POTENTIAL_GRADE = ["레어", "에픽", "유니크", "레전드리"];
 export const POTENTIAL_GRADE_COLOR = ["blue", "purple", "yellow", "green"];
+export const MAX_STARFORCE_COUNT = 25;
