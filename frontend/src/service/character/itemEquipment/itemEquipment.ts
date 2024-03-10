@@ -2,11 +2,7 @@ import {
   CharacterItemEquipment,
   CharacterItemEquipmentDetail,
 } from "../../../domain/character/characterItemEquipment";
-import {
-  POTENTIAL_GRADE,
-  POTENTIAL_GRADE_BORDER_COLOR,
-  SLOT_GRID,
-} from "./itemEquipmentConstant";
+import { POTENTIAL_GRADE, SLOT_GRID } from "./itemEquipmentConstant";
 
 export default abstract class ItemEquipmentService {
   static itemGrid(
