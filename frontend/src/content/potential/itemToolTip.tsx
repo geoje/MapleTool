@@ -148,7 +148,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
     <>
       <Text fontSize="xs">장비분류 : {item.item_equipment_part}</Text>
       <Option
-        name="STR"
+        name="STR :"
         total={item.item_total_option.str}
         base={item.item_base_option.str}
         add={item.item_add_option.str}
@@ -156,7 +156,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.str}
       />
       <Option
-        name="DEX"
+        name="DEX :"
         total={item.item_total_option.dex}
         base={item.item_base_option.dex}
         add={item.item_add_option.dex}
@@ -164,7 +164,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.dex}
       />
       <Option
-        name="INT"
+        name="INT :"
         total={item.item_total_option.int}
         base={item.item_base_option.int}
         add={item.item_add_option.int}
@@ -172,7 +172,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.int}
       />
       <Option
-        name="LUK"
+        name="LUK :"
         total={item.item_total_option.luk}
         base={item.item_base_option.luk}
         add={item.item_add_option.luk}
@@ -180,7 +180,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.luk}
       />
       <Option
-        name="최대 HP"
+        name="최대 HP :"
         total={item.item_total_option.max_hp}
         base={item.item_base_option.max_hp}
         add={item.item_add_option.max_hp}
@@ -188,7 +188,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.max_hp}
       />
       <Option
-        name="최대 MP"
+        name="최대 MP :"
         total={item.item_total_option.max_mp}
         base={item.item_base_option.max_mp}
         add={item.item_add_option.max_mp}
@@ -196,7 +196,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.max_mp}
       />
       <Option
-        name="최대 HP"
+        name="최대 HP :"
         total={item.item_total_option.max_hp_rate}
         base={item.item_base_option.max_hp_rate}
         add={item.item_add_option.max_hp_rate}
@@ -205,7 +205,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         percent
       />
       <Option
-        name="최대 MP"
+        name="최대 MP :"
         total={item.item_total_option.max_mp_rate}
         base={item.item_base_option.max_mp_rate}
         add={item.item_add_option.max_mp_rate}
@@ -214,7 +214,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         percent
       />
       <Option
-        name="공격력"
+        name="공격력 :"
         total={item.item_total_option.attack_power}
         base={item.item_base_option.attack_power}
         add={item.item_add_option.attack_power}
@@ -222,7 +222,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.attack_power}
       />
       <Option
-        name="마력"
+        name="마력 :"
         total={item.item_total_option.magic_power}
         base={item.item_base_option.magic_power}
         add={item.item_add_option.magic_power}
@@ -230,7 +230,7 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.magic_power}
       />
       <Option
-        name="방어력"
+        name="방어력 :"
         total={item.item_total_option.armor}
         base={item.item_base_option.armor}
         add={item.item_add_option.armor}
@@ -238,13 +238,63 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         star={item.item_starforce_option.armor}
       />
       <Option
-        name="이동속도"
+        name="이동속도 :"
         total={item.item_total_option.speed}
         base={item.item_base_option.speed}
         add={item.item_add_option.speed}
         etc={item.item_etc_option.speed}
         star={item.item_starforce_option.speed}
       />
+      <Option
+        name="점프력 :"
+        total={item.item_total_option.jump}
+        base={item.item_base_option.jump}
+        add={item.item_add_option.jump}
+        etc={item.item_etc_option.jump}
+        star={item.item_starforce_option.jump}
+      />
+      <Option
+        name="보스 몬스터 공격 시 데미지 "
+        total={item.item_total_option.boss_damage}
+        base={item.item_base_option.boss_damage}
+        add={item.item_add_option.boss_damage}
+        etc={item.item_etc_option.boss_damage}
+        star={item.item_starforce_option.boss_damage}
+        percent
+      />
+      <Option
+        name="몬스터 방어율 무시  :"
+        total={item.item_total_option.ignore_monster_armor}
+        base={item.item_base_option.ignore_monster_armor}
+        add={item.item_add_option.ignore_monster_armor}
+        etc={item.item_etc_option.ignore_monster_armor}
+        star={item.item_starforce_option.ignore_monster_armor}
+        percent
+      />
+      <Option
+        name="데미지  :"
+        total={item.item_total_option.damage}
+        base={item.item_base_option.damage}
+        add={item.item_add_option.damage}
+        etc={item.item_etc_option.damage}
+        star={item.item_starforce_option.damage}
+        percent
+      />
+      <Option
+        name="올스텟  :"
+        total={item.item_total_option.all_stat}
+        base={item.item_base_option.all_stat}
+        add={item.item_add_option.all_stat}
+        etc={item.item_etc_option.all_stat}
+        star={item.item_starforce_option.all_stat}
+        percent
+      />
+      <OptionUpgrade
+        upgrade={item.scroll_upgrade}
+        upgradeable={item.scroll_upgradeable_count}
+        resilience={item.scroll_resilience_count}
+      />
+      <OptionCuttable cuttable={item.cuttable_count} />
     </>
   );
 }
@@ -272,9 +322,13 @@ function Option({
   const valEtc = etc ? parseInt(etc) : 0;
   const valStar = star ? parseInt(star) : 0;
 
+  const noNeedBrcsket =
+    valBase == valTotal ||
+    (valBase == 0 && valAdd == 0 && valEtc == 0 && valStar == 0);
+
   const valueElement = (value: number, color: string) =>
     value ? (
-      <Text fontSize="xs" color={color}>
+      <Text fontSize="xs" pl="2px" color={color}>
         {(value > 0 ? "+" : "") + value}
         {percent ? "%" : ""}
       </Text>
@@ -285,17 +339,13 @@ function Option({
     <Flex>
       <Text
         fontSize="xs"
-        color={
-          valBase > 0 || valAdd > 0 || valEtc > 0 || valStar > 0
-            ? TOOLTIP_COLORS.TOTAL
-            : undefined
-        }
+        color={noNeedBrcsket ? undefined : TOOLTIP_COLORS.TOTAL}
       >
-        {name} : +{valTotal}
+        {name} +{valTotal}
         {percent ? "%" : ""}
       </Text>
-      {valBase == valTotal || valBase == 0 ? undefined : (
-        <Text fontSize="xs">
+      {noNeedBrcsket ? undefined : (
+        <Text fontSize="xs" pl="2px">
           {"(" + valBase}
           {percent ? "%" : ""}
         </Text>
@@ -306,7 +356,40 @@ function Option({
       )}
       {valueElement(valEtc, TOOLTIP_COLORS.ETC)}
       {valueElement(valStar, TOOLTIP_COLORS.STAR)}
-      {valBase == valTotal || valBase == 0 ? undefined : <Text>{")"}</Text>}
+      {noNeedBrcsket ? undefined : <Text>{")"}</Text>}
+    </Flex>
+  );
+}
+
+function OptionUpgrade({
+  upgrade,
+  upgradeable,
+  resilience,
+}: {
+  upgrade: string;
+  upgradeable: string;
+  resilience: string;
+}) {
+  if (upgrade == "0" && upgradeable == "0" && resilience == "0") return <></>;
+  return (
+    <Flex>
+      <Text fontSize="xs">업그레이드 가능 횟수 : {upgradeable}</Text>
+      <Text fontSize="xs" pl="2px" color={TOOLTIP_COLORS.STAR}>
+        {"(복구 가능 횟수 : "}
+        {resilience}
+        {")"}
+      </Text>
+    </Flex>
+  );
+}
+
+function OptionCuttable({ cuttable }: { cuttable: string }) {
+  if (cuttable == "255") return <></>;
+  return (
+    <Flex>
+      <Text fontSize="xs" color={TOOLTIP_COLORS.STAR}>
+        가위 사용 가능 횟수 : {cuttable}회
+      </Text>
     </Flex>
   );
 }
