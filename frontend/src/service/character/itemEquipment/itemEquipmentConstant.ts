@@ -38,9 +38,9 @@ export const POTENTIALS = [
 ];
 export const TOOLTIP_COLORS = {
   TOTAL: "#66ffff",
-  ADD_POSITIVE: "#d4ff00",
-  ADD_NEAGTIVE: "#fe0066",
-  ETC: "#aaaaff",
+  ADD: "#d4ff00",
+  ETC_POSITIVE: "#aaaaff",
+  ETC_NEAGTIVE: "#fe0066",
   STAR: "#ffcc00",
   SOUL: "#fefe44",
 };

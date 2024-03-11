@@ -373,11 +373,11 @@ function Option({
           {percent ? "%" : ""}
         </Text>
       )}
+      {valueElement(valAdd, TOOLTIP_COLORS.ADD)}
       {valueElement(
-        valAdd,
-        valAdd > 0 ? TOOLTIP_COLORS.ADD_POSITIVE : TOOLTIP_COLORS.ADD_NEAGTIVE
+        valEtc,
+        valEtc > 0 ? TOOLTIP_COLORS.ETC_POSITIVE : TOOLTIP_COLORS.ETC_NEAGTIVE
       )}
-      {valueElement(valEtc, TOOLTIP_COLORS.ETC)}
       {valueElement(valStar, TOOLTIP_COLORS.STAR)}
       {noNeedBrcsket ? undefined : <Text fontSize="xs">{")"}</Text>}
     </Flex>
