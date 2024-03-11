@@ -20,7 +20,7 @@ export default abstract class ItemEquipmentService {
         ? itemEquipment.item_equipment_preset_2
         : preset == 3
         ? itemEquipment.item_equipment_preset_3
-        : itemEquipment.item_equipment;
+        : itemEquipment.item_equipment_preset_1;
 
     return SLOT_GRID.map((slots) =>
       slots.map((slot) =>
