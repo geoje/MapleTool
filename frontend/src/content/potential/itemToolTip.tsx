@@ -427,7 +427,8 @@ function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={`/public/item-equipment/potential/${potential?.ENG_NAME}.png`}
+            src={`/item-equipment/potential/${potential?.ENG_NAME}.png`}
+            style={{ imageRendering: "pixelated" }}
           />
           <Text fontSize="xs" color={potential?.TEXT_COLOR}>
             잠재옵션
@@ -458,7 +459,8 @@ function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={`/public/item-equipment/potential/${potential?.ENG_NAME}.png`}
+            src={`/item-equipment/potential/${potential?.ENG_NAME}.png`}
+            style={{ imageRendering: "pixelated" }}
           />
           <Text fontSize="xs" color={potential?.TEXT_COLOR}>
             에디셔널 잠재옵션
