@@ -15,10 +15,18 @@ import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
 import CharacterService from "../../service/character/character";
-import { setCharacterBasic } from "../../reducer/characterSlice";
+import {
+  setCharacterBasic,
+  setCharacterItemEquipment,
+} from "../../reducer/characterSlice";
 import DateUtil from "../../util/date";
 import { AlertHello, AlertUsage } from "./alert";
 import EditableControls from "./editableControls";
+import {
+  setUnionArtifact,
+  setUnionBasic,
+  setUnionRaider,
+} from "../../reducer/unionSlice";
 
 export default function Home() {
   const toast = useToast();
@@ -26,6 +34,13 @@ export default function Home() {
   const characterBasic = useAppSelector((state) => state.character.basic);
 
   const [requesting, setRequesting] = useState(false);
+
+  const clearData = () => {
+    dispatch(setCharacterItemEquipment());
+    dispatch(setUnionBasic());
+    dispatch(setUnionArtifact());
+    dispatch(setUnionRaider());
+  };
 
   useEffect(() => {
     // Check if empty
@@ -45,7 +60,10 @@ export default function Home() {
     CharacterService.requestBasic(characterBasic.character_name)
       .then((basic) => {
         if (DateUtil.compare(characterBasic.date, basic.date) >= 0) return;
+
         dispatch(setCharacterBasic(basic));
+        clearData();
+
         toast({
           position: "top-right",
           status: "success",
@@ -144,7 +162,10 @@ export default function Home() {
             <Spacer h={2} />
             <EditableControls
               requesting={requesting}
-              onCharacterDelete={() => dispatch(setCharacterBasic())}
+              onCharacterDelete={() => {
+                dispatch(setCharacterBasic());
+                clearData();
+              }}
             />
           </Editable>
         </CardBody>
