@@ -77,7 +77,7 @@ export default function Potential() {
       .catch((reason: AxiosError) => {
         toast({
           position: "top-right",
-          status: "error",
+          status: "warning",
           title: `캐릭터 장비 갱신 실패 (${reason.message})`,
           description: Object(reason.response?.data).message,
           isClosable: true,
@@ -100,6 +100,9 @@ export default function Potential() {
             preset={preset}
           />
         </BoardCard>
+        {/* {characterItemEquipment && (
+          <ItemToolTip item={characterItemEquipment?.item_equipment[0]} />
+        )} */}
       </Stack>
     </>
   );

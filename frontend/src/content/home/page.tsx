@@ -57,7 +57,7 @@ export default function Home() {
       .catch((reason: AxiosError) => {
         toast({
           position: "top-right",
-          status: "error",
+          status: "warning",
           title: `캐릭터 기본 정보 갱신 실패 (${reason.message})`,
           description: Object(reason.response?.data).message,
           isClosable: true,

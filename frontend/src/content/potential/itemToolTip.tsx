@@ -10,7 +10,6 @@ import {
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
 import {
-  MAX_STARFORCE_COUNT,
   POTENTIAL_GRADE,
   POTENTIAL_GRADE_IMAGE_COLOR,
   TOOLTIP_COLORS,
@@ -26,7 +25,10 @@ export default function ItemToolTip({
   return (
     <Box>
       <Stack align="stretch" p={2} gap={1}>
-        <Starforce count={parseInt(item.starforce)} />
+        <Starforce
+          count={parseInt(item.starforce)}
+          maxCount={ItemEquipmentService.maxStarforceCount(item)}
+        />
         <ItemName name={item.item_name} upgrade={item.scroll_upgrade} />
         <PotentialGrade
           potential={
@@ -34,33 +36,39 @@ export default function ItemToolTip({
           }
         />
       </Stack>
-      <Divider variant="dashed" />
-      <Box p={2}>
-        <ImageAndReqLevel
-          imgUrl={item.item_icon}
-          potentialColor={
-            POTENTIAL_GRADE_IMAGE_COLOR[
-              ItemEquipmentService.maxPotentialGradeIndex(item)
-            ]
-          }
-          reqLevel={item.item_base_option.base_equipment_level}
-        />
-      </Box>
-      <Divider variant="dashed" />
-      <Stack align="stretch" p={2} gap={1}>
+
+      <Divider variant="dashed" opacity={0.2} />
+      <ImageAndReqLevel
+        imgUrl={item.item_icon}
+        potentialColor={
+          POTENTIAL_GRADE_IMAGE_COLOR[
+            ItemEquipmentService.maxPotentialGradeIndex(item)
+          ]
+        }
+        reqLevel={item.item_base_option.base_equipment_level}
+      />
+
+      <Divider variant="dashed" opacity={0.2} />
+      <Stack align="stretch" p={2} gap={0} lineHeight={1.3}>
         <Options item={item} />
       </Stack>
+
+      <Divider variant="dashed" opacity={0.2} />
+      <Potential item={item} />
+
+      <Divider variant="dashed" opacity={0.2} />
+      <AddPotential item={item} />
     </Box>
   );
 }
 
-function Starforce({ count }: { count: number }) {
+function Starforce({ count, maxCount }: { count: number; maxCount: number }) {
   const stars = new Array(count).fill(true);
-  stars.splice(count, 0, ...new Array(MAX_STARFORCE_COUNT - count).fill(false));
+  stars.splice(count, 0, ...new Array(maxCount - count).fill(false));
 
   const starElement = (star: boolean) =>
     star ? (
-      <Text color="yellow.400" key={Math.random()}>
+      <Text color={TOOLTIP_COLORS.STAR} key={Math.random()}>
         <FaStar size={8} />
       </Text>
     ) : (
@@ -69,19 +77,22 @@ function Starforce({ count }: { count: number }) {
 
   return (
     <>
-      <Flex justify="center" px={2} gap={1}>
-        <Flex gap="1px">{stars.slice(0, 5).map(starElement)}</Flex>
-        <Flex gap="1px">{stars.slice(5, 10).map(starElement)}</Flex>
-        <Flex gap="1px">{stars.slice(10, 15).map(starElement)}</Flex>
-      </Flex>
-      <Flex justify="center" gap={1}>
-        <Flex gap="1px">{stars.slice(15, 20).map(starElement)}</Flex>
-        <Flex gap="1px">{stars.slice(20, 25).map(starElement)}</Flex>
-      </Flex>
+      {maxCount > 0 && (
+        <Flex justify="center" px={2} gap={1}>
+          <Flex gap="1px">{stars.slice(0, 5).map(starElement)}</Flex>
+          <Flex gap="1px">{stars.slice(5, 10).map(starElement)}</Flex>
+          <Flex gap="1px">{stars.slice(10, 15).map(starElement)}</Flex>
+        </Flex>
+      )}
+      {maxCount > 15 && (
+        <Flex justify="center" gap={1}>
+          <Flex gap="1px">{stars.slice(15, 20).map(starElement)}</Flex>
+          <Flex gap="1px">{stars.slice(20, 25).map(starElement)}</Flex>
+        </Flex>
+      )}
     </>
   );
 }
-
 function ItemName({ name, upgrade }: { name: string; upgrade: string }) {
   return (
     <Heading size="xs" textAlign="center">
@@ -90,7 +101,6 @@ function ItemName({ name, upgrade }: { name: string; upgrade: string }) {
     </Heading>
   );
 }
-
 function PotentialGrade({ potential }: { potential: string }) {
   return potential ? (
     <Text fontSize="xs" textAlign="center">
@@ -111,7 +121,7 @@ function ImageAndReqLevel({
   reqLevel: number;
 }) {
   return (
-    <Flex width="100%" align="stretch">
+    <Flex width="100%" align="stretch" p={2}>
       <Flex
         w="42px"
         h="42px"
@@ -298,7 +308,6 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
     </>
   );
 }
-
 function Option({
   name,
   total,
@@ -360,7 +369,6 @@ function Option({
     </Flex>
   );
 }
-
 function OptionUpgrade({
   upgrade,
   upgradeable,
@@ -382,7 +390,6 @@ function OptionUpgrade({
     </Flex>
   );
 }
-
 function OptionCuttable({ cuttable }: { cuttable: string }) {
   if (cuttable == "255") return <></>;
   return (
@@ -392,4 +399,18 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
       </Text>
     </Flex>
   );
+}
+
+function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
+  return (
+    <Stack p={2}>
+      <Flex>
+        <Image></Image>
+        <Text fontSize="xs">잠재 옵션</Text>
+      </Flex>
+    </Stack>
+  );
+}
+function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
+  return <></>;
 }

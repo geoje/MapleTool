@@ -7,6 +7,7 @@ export const SLOT_GRID = [
   ["", "", "신발", "", "기계 심장"],
 ];
 export const POTENTIAL_GRADE = ["레어", "에픽", "유니크", "레전드리"];
+export const POTENTIAL_GRADE_ENG = ["rare", "epic", "unique", "legendary"];
 export const POTENTIAL_GRADE_BORDER_COLOR = [
   "#66ffff",
   "#cc66ff",
@@ -19,7 +20,6 @@ export const POTENTIAL_GRADE_IMAGE_COLOR = [
   "#eeab00",
   "#00cc99",
 ];
-export const MAX_STARFORCE_COUNT = 25;
 export const TOOLTIP_COLORS = {
   TOTAL: "#66ffff",
   ADD_POSITIVE: "#d4ff00",
@@ -27,3 +27,11 @@ export const TOOLTIP_COLORS = {
   ETC: "#aaaaff",
   STAR: "#ffcc00",
 };
+export const MAX_STARFORCE_COUNT = [
+  { level: 138, common: 25, superior: 15 },
+  { level: 128, common: 20, superior: 12 },
+  { level: 118, common: 15, superior: 10 },
+  { level: 108, common: 10, superior: 8 },
+  { level: 95, common: 8, superior: 5 },
+  { level: 0, common: 5, superior: 3 },
+];

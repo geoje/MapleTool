@@ -51,12 +51,11 @@ export default function SelectItem({
                         : undefined
                     }
                     icon={
-                      appear ? (
-                        <Image
-                          src={item?.item_icon}
-                          style={{ imageRendering: "pixelated" }}
-                        />
-                      ) : undefined
+                      <Image
+                        src={item?.item_icon}
+                        opacity={appear ? 1 : 0.1}
+                        style={{ imageRendering: "pixelated" }}
+                      />
                     }
                   />
                 </Tooltip>
