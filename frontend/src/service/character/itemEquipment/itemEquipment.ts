@@ -3,9 +3,9 @@ import {
   CharacterItemEquipmentDetail,
 } from "../../../domain/character/characterItemEquipment";
 import {
-  POTENTIAL_GRADE,
+  MAX_STARFORCE_COUNTS,
+  POTENTIALS,
   SLOT_GRID,
-  MAX_STARFORCE_COUNT,
 } from "./itemEquipmentConstant";
 
 export default abstract class ItemEquipmentService {
@@ -30,13 +30,14 @@ export default abstract class ItemEquipmentService {
       )
     );
   }
-  static maxPotentialGradeIndex(item: CharacterItemEquipmentDetail) {
+  static maxPotential(item: CharacterItemEquipmentDetail) {
     const gradeIndexes = [
       item.potential_option_grade,
       item.additional_potential_option_grade,
-    ].map((grade) => POTENTIAL_GRADE.findIndex((g) => g == grade));
+    ].map((grade) => POTENTIALS.findIndex((p) => p.KOR_NAME == grade));
+    const index = Math.max(gradeIndexes[0], gradeIndexes[1]);
 
-    return Math.max(gradeIndexes[0], gradeIndexes[1]);
+    return index == -1 ? undefined : POTENTIALS[index];
   }
   static maxStarforceCount(item: CharacterItemEquipmentDetail) {
     if (
@@ -50,11 +51,11 @@ export default abstract class ItemEquipmentService {
     }
 
     // TODO: calculate for superior
-    for (const startforceCount of MAX_STARFORCE_COUNT) {
+    for (const startforceCount of MAX_STARFORCE_COUNTS) {
       if (item.item_base_option.base_equipment_level >= startforceCount.level) {
         return startforceCount.common;
       }
     }
-    return MAX_STARFORCE_COUNT[MAX_STARFORCE_COUNT.length - 1].common;
+    return MAX_STARFORCE_COUNTS[MAX_STARFORCE_COUNTS.length - 1].common;
   }
 }

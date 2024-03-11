@@ -6,19 +6,35 @@ export const SLOT_GRID = [
   ["포켓 아이템", "벨트", "하의", "장갑", "망토"],
   ["", "", "신발", "", "기계 심장"],
 ];
-export const POTENTIAL_GRADE = ["레어", "에픽", "유니크", "레전드리"];
-export const POTENTIAL_GRADE_ENG = ["rare", "epic", "unique", "legendary"];
-export const POTENTIAL_GRADE_BORDER_COLOR = [
-  "#66ffff",
-  "#cc66ff",
-  "#ffcc00",
-  "#01ff00",
-];
-export const POTENTIAL_GRADE_IMAGE_COLOR = [
-  "#0099cc",
-  "#7700cc",
-  "#eeab00",
-  "#00cc99",
+export const POTENTIALS = [
+  {
+    KOR_NAME: "레어",
+    ENG_NAME: "rare",
+    BORDER_COLOR: "#66ffff",
+    IMAGE_COLOR: "#0099cc",
+    TEXT_COLOR: "#66ffff",
+  },
+  {
+    KOR_NAME: "에픽",
+    ENG_NAME: "epic",
+    BORDER_COLOR: "#cc66ff",
+    IMAGE_COLOR: "#7700cc",
+    TEXT_COLOR: "#9966ff",
+  },
+  {
+    KOR_NAME: "유니크",
+    ENG_NAME: "unique",
+    BORDER_COLOR: "#ffcc00",
+    IMAGE_COLOR: "#eeab00",
+    TEXT_COLOR: "#ffcc00",
+  },
+  {
+    KOR_NAME: "레전드리",
+    ENG_NAME: "legendary",
+    BORDER_COLOR: "#01ff00",
+    IMAGE_COLOR: "#00cc99",
+    TEXT_COLOR: "#ccff00",
+  },
 ];
 export const TOOLTIP_COLORS = {
   TOTAL: "#66ffff",
@@ -26,8 +42,9 @@ export const TOOLTIP_COLORS = {
   ADD_NEAGTIVE: "#fe0066",
   ETC: "#aaaaff",
   STAR: "#ffcc00",
+  SOUL: "#fefe44",
 };
-export const MAX_STARFORCE_COUNT = [
+export const MAX_STARFORCE_COUNTS = [
   { level: 138, common: 25, superior: 15 },
   { level: 128, common: 20, superior: 12 },
   { level: 118, common: 15, superior: 10 },

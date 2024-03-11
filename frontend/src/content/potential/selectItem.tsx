@@ -2,7 +2,6 @@ import { Grid, GridItem, IconButton, Image, Tooltip } from "@chakra-ui/react";
 import { CharacterItemEquipment } from "../../domain/character/characterItemEquipment";
 import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
 import ItemToolTip from "./itemToolTip";
-import { POTENTIAL_GRADE_BORDER_COLOR } from "../../service/character/itemEquipment/itemEquipmentConstant";
 
 export default function SelectItem({
   characterItemEquipment,
@@ -34,10 +33,11 @@ export default function SelectItem({
             <GridItem key={"item-" + i + j}>
               {item && (
                 <Tooltip
-                  placement="right-start"
                   color="white"
                   background="blackAlpha.800"
+                  w={64}
                   p={0}
+                  borderRadius={4}
                   label={<ItemToolTip item={item} />}
                 >
                   <IconButton
@@ -45,9 +45,7 @@ export default function SelectItem({
                     borderWidth={1}
                     borderColor={
                       appear
-                        ? POTENTIAL_GRADE_BORDER_COLOR[
-                            ItemEquipmentService.maxPotentialGradeIndex(item)
-                          ]
+                        ? ItemEquipmentService.maxPotential(item)?.BORDER_COLOR
                         : undefined
                     }
                     icon={

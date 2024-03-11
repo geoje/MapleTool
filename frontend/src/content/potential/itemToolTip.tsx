@@ -7,11 +7,10 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { FaRegStar, FaStar } from "react-icons/fa6";
+import { FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
 import {
-  POTENTIAL_GRADE,
-  POTENTIAL_GRADE_IMAGE_COLOR,
+  POTENTIALS,
   TOOLTIP_COLORS,
 } from "../../service/character/itemEquipment/itemEquipmentConstant";
 import { CharacterItemEquipmentDetail } from "../../domain/character/characterItemEquipment";
@@ -29,35 +28,31 @@ export default function ItemToolTip({
           count={parseInt(item.starforce)}
           maxCount={ItemEquipmentService.maxStarforceCount(item)}
         />
-        <ItemName name={item.item_name} upgrade={item.scroll_upgrade} />
+        <ItemName
+          name={item.item_name}
+          upgrade={item.scroll_upgrade}
+          soulName={item.soul_name}
+        />
         <PotentialGrade
-          potential={
-            POTENTIAL_GRADE[ItemEquipmentService.maxPotentialGradeIndex(item)]
-          }
+          potential={ItemEquipmentService.maxPotential(item)?.KOR_NAME}
         />
       </Stack>
 
       <Divider variant="dashed" opacity={0.2} />
       <ImageAndReqLevel
         imgUrl={item.item_icon}
-        potentialColor={
-          POTENTIAL_GRADE_IMAGE_COLOR[
-            ItemEquipmentService.maxPotentialGradeIndex(item)
-          ]
-        }
+        potentialColor={ItemEquipmentService.maxPotential(item)?.IMAGE_COLOR}
         reqLevel={item.item_base_option.base_equipment_level}
       />
 
       <Divider variant="dashed" opacity={0.2} />
-      <Stack align="stretch" p={2} gap={0} lineHeight={1.3}>
+      <Stack align="stretch" p={2} gap={0}>
         <Options item={item} />
       </Stack>
 
-      <Divider variant="dashed" opacity={0.2} />
       <Potential item={item} />
-
-      <Divider variant="dashed" opacity={0.2} />
       <AddPotential item={item} />
+      <Soul name={item.soul_name} option={item.soul_option} />
     </Box>
   );
 }
@@ -66,26 +61,23 @@ function Starforce({ count, maxCount }: { count: number; maxCount: number }) {
   const stars = new Array(count).fill(true);
   stars.splice(count, 0, ...new Array(maxCount - count).fill(false));
 
-  const starElement = (star: boolean) =>
-    star ? (
-      <Text color={TOOLTIP_COLORS.STAR} key={Math.random()}>
-        <FaStar size={8} />
-      </Text>
-    ) : (
-      <FaRegStar size={8} key={Math.random()} />
-    );
+  const starElement = (star: boolean) => (
+    <Text color={star ? TOOLTIP_COLORS.STAR : "gray.500"} key={Math.random()}>
+      <FaStar size={8} />
+    </Text>
+  );
 
   return (
     <>
       {maxCount > 0 && (
-        <Flex justify="center" px={2} gap={1}>
+        <Flex justify="center" py={0.5} gap={2}>
           <Flex gap="1px">{stars.slice(0, 5).map(starElement)}</Flex>
           <Flex gap="1px">{stars.slice(5, 10).map(starElement)}</Flex>
           <Flex gap="1px">{stars.slice(10, 15).map(starElement)}</Flex>
         </Flex>
       )}
       {maxCount > 15 && (
-        <Flex justify="center" gap={1}>
+        <Flex justify="center" py={0.5} gap={2}>
           <Flex gap="1px">{stars.slice(15, 20).map(starElement)}</Flex>
           <Flex gap="1px">{stars.slice(20, 25).map(starElement)}</Flex>
         </Flex>
@@ -93,15 +85,34 @@ function Starforce({ count, maxCount }: { count: number; maxCount: number }) {
     </>
   );
 }
-function ItemName({ name, upgrade }: { name: string; upgrade: string }) {
+function ItemName({
+  name,
+  upgrade,
+  soulName,
+}: {
+  name: string;
+  upgrade: string;
+  soulName?: string;
+}) {
   return (
-    <Heading size="xs" textAlign="center">
-      {name}
-      {upgrade == "0" ? "" : ` (+${upgrade})`}
-    </Heading>
+    <>
+      {soulName && (
+        <Heading
+          size="xs"
+          textAlign="center"
+          color={POTENTIALS[POTENTIALS.length - 1].TEXT_COLOR}
+        >
+          {soulName.substring(0, soulName.indexOf(" 소울"))}
+        </Heading>
+      )}
+      <Heading size="xs" textAlign="center">
+        {name}
+        {upgrade == "0" ? "" : ` (+${upgrade})`}
+      </Heading>
+    </>
   );
 }
-function PotentialGrade({ potential }: { potential: string }) {
+function PotentialGrade({ potential }: { potential?: string }) {
   return potential ? (
     <Text fontSize="xs" textAlign="center">
       ({potential} 아이템)
@@ -117,7 +128,7 @@ function ImageAndReqLevel({
   reqLevel,
 }: {
   imgUrl: string;
-  potentialColor: string;
+  potentialColor?: string;
   reqLevel: number;
 }) {
   return (
@@ -304,6 +315,9 @@ function Options({ item }: { item: CharacterItemEquipmentDetail }) {
         upgradeable={item.scroll_upgradeable_count}
         resilience={item.scroll_resilience_count}
       />
+      {item.golden_hammer_flag == "적용" && (
+        <Text fontSize="xs">황금망치 제련 적용</Text>
+      )}
       <OptionCuttable cuttable={item.cuttable_count} />
     </>
   );
@@ -365,7 +379,7 @@ function Option({
       )}
       {valueElement(valEtc, TOOLTIP_COLORS.ETC)}
       {valueElement(valStar, TOOLTIP_COLORS.STAR)}
-      {noNeedBrcsket ? undefined : <Text>{")"}</Text>}
+      {noNeedBrcsket ? undefined : <Text fontSize="xs">{")"}</Text>}
     </Flex>
   );
 }
@@ -402,15 +416,79 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
 }
 
 function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
+  const potential = POTENTIALS.find(
+    (p) => p.KOR_NAME == item.potential_option_grade
+  );
+  if (!potential) return <></>;
+
   return (
-    <Stack p={2}>
-      <Flex>
-        <Image></Image>
-        <Text fontSize="xs">잠재 옵션</Text>
-      </Flex>
-    </Stack>
+    <>
+      <Divider variant="dashed" opacity={0.2} />
+      <Stack p={2} gap={0}>
+        <Flex align="center" gap={1}>
+          <Image
+            src={`/public/item-equipment/potential/${potential?.ENG_NAME}.png`}
+          />
+          <Text fontSize="xs" color={potential?.TEXT_COLOR}>
+            잠재옵션
+          </Text>
+        </Flex>
+        {[
+          item.potential_option_1,
+          item.potential_option_2,
+          item.potential_option_3,
+        ].map((option, i) => (
+          <Text key={"option-" + i} fontSize="xs">
+            {option}
+          </Text>
+        ))}
+      </Stack>
+    </>
   );
 }
 function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
-  return <></>;
+  const potential = POTENTIALS.find(
+    (p) => p.KOR_NAME == item.additional_potential_option_grade
+  );
+  if (!potential) return <></>;
+
+  return (
+    <>
+      <Divider variant="dashed" opacity={0.2} />
+      <Stack p={2} gap={0}>
+        <Flex align="center" gap={1}>
+          <Image
+            src={`/public/item-equipment/potential/${potential?.ENG_NAME}.png`}
+          />
+          <Text fontSize="xs" color={potential?.TEXT_COLOR}>
+            에디셔널 잠재옵션
+          </Text>
+        </Flex>
+        {[
+          item.additional_potential_option_1,
+          item.additional_potential_option_2,
+          item.additional_potential_option_3,
+        ].map((option, i) => (
+          <Text key={"option-" + i} fontSize="xs">
+            {option}
+          </Text>
+        ))}
+      </Stack>
+    </>
+  );
+}
+function Soul({ name, option }: { name?: string; option?: string }) {
+  if (!name || !option) return <></>;
+
+  return (
+    <>
+      <Divider variant="dashed" opacity={0.2} />
+      <Stack p={2} gap={0}>
+        <Text fontSize="xs" color={TOOLTIP_COLORS.SOUL}>
+          {name}
+        </Text>
+        <Text fontSize="xs">{option}</Text>
+      </Stack>
+    </>
+  );
 }
