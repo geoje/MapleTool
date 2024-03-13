@@ -13,6 +13,7 @@ maplegg:
     path: /api/v1/bypass/characters/{name}
 
 spring:
-  redis:
-    host: localhost # Required
-    port: 6379 # Required
+  data:
+    redis:
+      host: localhost
+      port: 6379
