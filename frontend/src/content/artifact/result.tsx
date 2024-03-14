@@ -7,10 +7,12 @@ import {
   Text,
   useBreakpointValue,
   useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FaDiamond } from "react-icons/fa6";
 import BoardCard from "../../components/boardCard";
 import { MAX_CRYSTAL_LEVEL } from "../../service/union/artifact/artifactConstants";
+import { useState } from "react";
 
 const CRYSTAL_URL_FORMAT = "/union-artifact/opened/{name}.webp";
 const CRYSTAL_IMAGES_URL = [
@@ -32,6 +34,8 @@ export default function ResultGrid({
   levels: number[];
   effectNames: string[][];
 }) {
+  const [hoverEffect, setHoverEffect] = useState("");
+
   return (
     <BoardCard order={4} title="배치도">
       <SimpleGrid columns={3} gap={3}>
@@ -41,6 +45,8 @@ export default function ResultGrid({
             level={levels[i] ?? 0}
             effects={effectNames[i] ?? ["", "", ""]}
             imgUrl={CRYSTAL_IMAGES_URL[i]}
+            hoverEffect={hoverEffect}
+            setHoverEffect={setHoverEffect}
           />
         ))}
       </SimpleGrid>
@@ -52,14 +58,24 @@ function Crystal({
   level,
   effects,
   imgUrl,
+  hoverEffect,
+  setHoverEffect,
 }: {
   level: number;
   effects: string[];
   imgUrl: string;
+  hoverEffect: string;
+  setHoverEffect: (value: string) => void;
 }) {
   const levelIconSize = useBreakpointValue({ base: 12, md: 16 });
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
+
+  const buttonBackgroundColor = useColorModeValue("gray.100", "whiteAlpha.200");
+  const buttonHoverBackgroundColor = useColorModeValue(
+    "gray.300",
+    "whiteAlpha.400"
+  );
 
   return (
     <Stack
@@ -99,7 +115,19 @@ function Crystal({
         />
       </Flex>
       {effects.map((effect, i) => (
-        <Button key={"effect-" + i} size="xs">
+        <Button
+          key={"effect-" + i}
+          size="xs"
+          backgroundColor={
+            effect &&
+            (hoverEffect == effect
+              ? buttonHoverBackgroundColor
+              : buttonBackgroundColor)
+          }
+          _hover={{ backgroundColor: buttonHoverBackgroundColor }}
+          onMouseEnter={() => setHoverEffect(effect)}
+          onMouseLeave={() => setHoverEffect("")}
+        >
           {effect}
         </Button>
       ))}

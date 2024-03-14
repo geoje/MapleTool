@@ -139,8 +139,10 @@ export default function Artifact() {
           effectLevels={effectLevels}
           currentEffectNames={effectNames}
           onChange={(effectName, index) => {
+            const symmetryIndex = effectNames.indexOf(effectName);
             const temp = [...effectNames];
             temp[index] = effectName;
+            if (symmetryIndex != -1) temp[symmetryIndex] = effectNames[index];
             setEffectNames(temp);
           }}
         />

@@ -1,4 +1,12 @@
-import { Badge, Flex, Select, Stack } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Flex,
+  Stack,
+  useColorMode,
+  useToken,
+} from "@chakra-ui/react";
+import { Select, components } from "chakra-react-select";
 import BoardCard from "../../components/boardCard";
 import { EFFECT_NAMES } from "../../service/union/artifact/artifactConstants";
 
@@ -17,8 +25,8 @@ export default function SelectEffect({
         {effectLevels.map((effectLevel, i) => (
           <Flex key={"effect-selector-" + i} align="center" gap={2}>
             <EffectSelector
-              value={currentEffectNames[i]}
-              disableNames={currentEffectNames}
+              effectName={currentEffectNames[i]}
+              currentEffectNames={currentEffectNames}
               onChange={(effectName) => onChange(effectName, i)}
             />
             <Badge colorScheme="blue">{effectLevel}</Badge>
@@ -30,27 +38,50 @@ export default function SelectEffect({
 }
 
 function EffectSelector({
-  value,
-  disableNames,
+  effectName,
+  currentEffectNames,
   onChange,
 }: {
-  value: string;
-  disableNames: string[];
+  effectName: string;
+  currentEffectNames: string[];
   onChange: (effectName: string) => void;
 }) {
+  const { colorMode } = useColorMode();
+  const dark = colorMode === "dark";
+  const [hoverColor, selectedColor, hoverSelectedColor] = useToken("colors", [
+    dark ? "whiteAlpha.200" : "blackAlpha.200",
+    dark ? "blue.800" : "blue.50",
+    dark ? "blue.700" : "blue.100",
+  ]);
+
   return (
-    <Select value={value} onChange={(e) => onChange(e.target.value)}>
-      {EFFECT_NAMES.map((effectName, i) => (
-        <option
-          key={"effect-" + i}
-          value={effectName.full}
-          disabled={disableNames.some(
-            (disableName) => disableName == effectName.full
-          )}
-        >
-          {effectName.full}
-        </option>
-      ))}
-    </Select>
+    <Box flex={1}>
+      <Select
+        options={EFFECT_NAMES.map(({ full }) => ({
+          label: full,
+          value: String(currentEffectNames.includes(full) ? true : false),
+        }))}
+        value={{ label: effectName, value: String(true) }}
+        onChange={(selected) => selected && onChange(selected.label)}
+        components={{
+          Option: (props) => <components.Option {...props}></components.Option>,
+        }}
+        styles={{
+          option: (base, props) => ({
+            ...base,
+            cursor: "pointer",
+            color: dark ? "white" : "black",
+            backgroundColor: props.isSelected
+              ? props.isFocused
+                ? hoverSelectedColor
+                : selectedColor
+              : props.isFocused
+              ? hoverColor
+              : undefined,
+          }),
+        }}
+        useBasicStyles
+      />
+    </Box>
   );
 }
