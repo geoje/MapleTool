@@ -100,16 +100,15 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 4, effects: [[4, 5, 6]] },
     {
       level: 4,
-      effects: [
-        [4, 5, 6],
-        [4, 5, 7],
-      ],
+      effects: [[4, 5, 6], [], [4, 5, 7], [4, 5, 6]],
     },
     {
       level: 3,
       effects: [
         [4, 5, 6],
+        [4, 5, 7],
         [4, 6, 7],
+        [7, 8, 9],
       ],
     },
   ],
@@ -119,16 +118,15 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 4, effects: [[4, 5, 6]] },
     {
       level: 4,
-      effects: [
-        [4, 5, 6],
-        [4, 5, 7],
-      ],
+      effects: [[4, 5, 6], [], [4, 5, 7], [4, 5, 6]],
     },
     {
       level: 4,
       effects: [
         [4, 5, 6],
+        [4, 5, 7],
         [4, 6, 7],
+        [7, 8, 9],
       ],
     },
   ],
@@ -140,16 +138,15 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[4, 5, 6]] },
     {
       level: 4,
-      effects: [
-        [4, 5, 6],
-        [4, 5, 7],
-      ],
+      effects: [[4, 5, 6], [], [4, 5, 7], [4, 5, 6]],
     },
     {
       level: 4,
       effects: [
         [4, 5, 6],
+        [4, 5, 7],
         [4, 6, 7],
+        [7, 8, 9],
       ],
     },
   ],
@@ -183,12 +180,13 @@ export const CRYSTALS_BY_LEVEL: {
   [
     { level: 5, effects: [[1, 2, 3]] }, // 32, 33
     { level: 5, effects: [[1, 2, 3]] },
-    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6], [], [4, 5, 9]] },
     {
       level: 5,
       effects: [
         [4, 5, 7],
         [4, 5, 6],
+        [4, 5, 10],
       ],
     },
     {
@@ -196,6 +194,7 @@ export const CRYSTALS_BY_LEVEL: {
       effects: [
         [6, 7, 8],
         [7, 8, 9],
+        [6, 7, 8],
       ],
     },
     {
@@ -203,6 +202,7 @@ export const CRYSTALS_BY_LEVEL: {
       effects: [
         [6, 7, 8],
         [7, 8, 9],
+        [6, 7, 8],
       ],
     },
   ],
@@ -210,12 +210,13 @@ export const CRYSTALS_BY_LEVEL: {
   [
     { level: 5, effects: [[1, 2, 3]] }, // 34
     { level: 5, effects: [[1, 2, 3]] },
-    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6], [], [4, 5, 9]] },
     {
       level: 5,
       effects: [
         [4, 5, 7],
         [4, 5, 6],
+        [4, 5, 10],
       ],
     },
     {
@@ -223,6 +224,7 @@ export const CRYSTALS_BY_LEVEL: {
       effects: [
         [6, 7, 8],
         [7, 8, 9],
+        [6, 7, 8],
       ],
     },
     {
@@ -230,18 +232,20 @@ export const CRYSTALS_BY_LEVEL: {
       effects: [
         [6, 7, 8],
         [7, 8, 9],
+        [6, 7, 8],
       ],
     },
   ],
   [
     { level: 5, effects: [[1, 2, 3]] }, // 35, 36, 37
     { level: 5, effects: [[1, 2, 3]] },
-    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6], [], [4, 5, 9]] },
     {
       level: 5,
       effects: [
         [4, 5, 7],
         [4, 5, 6],
+        [4, 5, 10],
       ],
     },
     {
@@ -249,6 +253,7 @@ export const CRYSTALS_BY_LEVEL: {
       effects: [
         [6, 7, 8],
         [7, 8, 9],
+        [6, 7, 8],
       ],
     },
     {
@@ -256,6 +261,7 @@ export const CRYSTALS_BY_LEVEL: {
       effects: [
         [6, 7, 8],
         [7, 8, 9],
+        [6, 7, 8],
       ],
     },
   ],
@@ -264,12 +270,13 @@ export const CRYSTALS_BY_LEVEL: {
   [
     { level: 5, effects: [[1, 2, 3]] }, // 38, 39
     { level: 5, effects: [[1, 2, 3]] },
-    { level: 5, effects: [[4, 5, 6]] },
+    { level: 5, effects: [[4, 5, 6], [], [4, 5, 9]] },
     {
       level: 5,
       effects: [
         [4, 5, 7],
         [4, 5, 6],
+        [4, 5, 10],
       ],
     },
     {
@@ -277,6 +284,7 @@ export const CRYSTALS_BY_LEVEL: {
       effects: [
         [6, 7, 8],
         [7, 8, 9],
+        [6, 7, 8],
       ],
     },
     {
@@ -284,6 +292,7 @@ export const CRYSTALS_BY_LEVEL: {
       effects: [
         [6, 7, 8],
         [7, 8, 9],
+        [6, 7, 8],
       ],
     },
   ],
@@ -294,8 +303,20 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[4, 5, 6]] },
     { level: 5, effects: [[4, 5, 6]] },
     { level: 5, effects: [[7, 8, 9]] },
-    { level: 5, effects: [[7, 8, 9]] },
-    { level: 1, effects: [[10, 11, 12]] },
+    {
+      level: 5,
+      effects: [
+        [7, 8, 9],
+        [7, 8, 10],
+      ],
+    },
+    {
+      level: 1,
+      effects: [
+        [10, 11, 12],
+        [11, 12, 13],
+      ],
+    },
   ],
   [
     { level: 5, effects: [[1, 2, 3]] }, // 41, 42
@@ -303,8 +324,20 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[4, 5, 6]] },
     { level: 5, effects: [[4, 5, 6]] },
     { level: 5, effects: [[7, 8, 9]] },
-    { level: 5, effects: [[7, 8, 9]] },
-    { level: 2, effects: [[10, 11, 12]] },
+    {
+      level: 5,
+      effects: [
+        [7, 8, 9],
+        [7, 8, 10],
+      ],
+    },
+    {
+      level: 2,
+      effects: [
+        [10, 11, 12],
+        [11, 12, 13],
+      ],
+    },
   ],
   [],
   [
@@ -313,8 +346,20 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[4, 5, 6]] },
     { level: 5, effects: [[4, 5, 6]] },
     { level: 5, effects: [[7, 8, 9]] },
-    { level: 5, effects: [[7, 8, 9]] },
-    { level: 3, effects: [[10, 11, 12]] },
+    {
+      level: 5,
+      effects: [
+        [7, 8, 9],
+        [7, 8, 10],
+      ],
+    },
+    {
+      level: 3,
+      effects: [
+        [10, 11, 12],
+        [11, 12, 13],
+      ],
+    },
   ],
   [],
   [
@@ -323,8 +368,20 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[4, 5, 6]] },
     { level: 5, effects: [[4, 5, 6]] },
     { level: 5, effects: [[7, 8, 9]] },
-    { level: 5, effects: [[7, 8, 9]] },
-    { level: 4, effects: [[10, 11, 12]] },
+    {
+      level: 5,
+      effects: [
+        [7, 8, 9],
+        [7, 8, 10],
+      ],
+    },
+    {
+      level: 4,
+      effects: [
+        [10, 11, 12],
+        [11, 12, 13],
+      ],
+    },
   ],
   [],
   [
@@ -346,7 +403,13 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[7, 8, 9]] },
     { level: 5, effects: [[7, 8, 10]] },
     { level: 5, effects: [[9, 10, 11]] },
-    { level: 3, effects: [[11, 12, 13]] },
+    {
+      level: 3,
+      effects: [
+        [11, 12, 13],
+        [12, 13, 14],
+      ],
+    },
   ],
   [
     { level: 5, effects: [[1, 2, 3]] }, // 51, 52, 53
@@ -356,7 +419,13 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[7, 8, 9]] },
     { level: 5, effects: [[7, 8, 10]] },
     { level: 5, effects: [[9, 10, 11]] },
-    { level: 4, effects: [[11, 12, 13]] },
+    {
+      level: 4,
+      effects: [
+        [11, 12, 13],
+        [12, 13, 14],
+      ],
+    },
   ],
   [],
   [],
@@ -368,7 +437,13 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[7, 8, 9]] },
     { level: 5, effects: [[7, 8, 9]] },
     { level: 5, effects: [[10, 11, 12]] },
-    { level: 5, effects: [[10, 11, 12]] },
+    {
+      level: 5,
+      effects: [
+        [10, 11, 12],
+        [10, 11, 13],
+      ],
+    },
   ],
   [],
   [],
@@ -407,9 +482,9 @@ export const EFFECT_NAMES = [
   { full: "파이널 어택류 스킬 데미지 증가", abbreviate: "파이널" },
 ];
 export const EFFECT_COUNT_PER_CRYSTAL =
-  CRYSTALS_BY_LEVEL[1][0].effects[0].length;
+  CRYSTALS_BY_LEVEL[1][0].effects[0].length; // 3
 export const MAX_APPLIED_EFFECT_LEVEL = 10;
 export const MIN_ARTIFACT_LEVEL = 1;
-export const MAX_ARTIFACT_LEVEL = CRYSTALS_BY_LEVEL.length - 1;
+export const MAX_ARTIFACT_LEVEL = CRYSTALS_BY_LEVEL.length - 1; // 60
 export const MAX_CRYSTAL_LEVEL =
-  CRYSTALS_BY_LEVEL[CRYSTALS_BY_LEVEL.length - 1][0].level;
+  CRYSTALS_BY_LEVEL[CRYSTALS_BY_LEVEL.length - 1][0].level; // 5

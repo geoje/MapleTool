@@ -1,6 +1,7 @@
 import { Badge, Flex, Radio, Stack } from "@chakra-ui/react";
 import ArtifactService from "../../service/union/artifact/artifact";
 import BoardCard from "../../components/boardCard";
+import { MAX_APPLIED_EFFECT_LEVEL } from "../../service/union/artifact/artifactConstants";
 
 export default function EffectLevel({
   artifactLevel,
@@ -22,7 +23,12 @@ export default function EffectLevel({
           >
             <Flex gap={1}>
               {effectLevels.map((effectLevel, j) => (
-                <Badge key={"effect-badge-" + j} colorScheme="blue">
+                <Badge
+                  key={"effect-badge-" + j}
+                  colorScheme={
+                    effectLevel > MAX_APPLIED_EFFECT_LEVEL ? "orange" : "blue"
+                  }
+                >
                   {effectLevel}
                 </Badge>
               ))}

@@ -1,7 +1,6 @@
 import {
   CRYSTALS_BY_LEVEL,
   EFFECT_COUNT_PER_CRYSTAL,
-  MAX_APPLIED_EFFECT_LEVEL,
   POINT_BY_CRYSTAL,
 } from "./artifactConstants";
 
@@ -19,17 +18,13 @@ export default abstract class ArtifactService {
       const effectCount = this.appliedEffectCount(artifactLevel, effectIndex);
       let effectLevels = new Array(effectCount + 1).fill(0);
 
+      // TODO: maybe duplicated with function
       for (const crystal of crystals)
-        for (let i = 0; i < EFFECT_COUNT_PER_CRYSTAL; i++)
-          effectLevels[
-            crystal.effects[Math.min(crystal.effects.length - 1, effectIndex)][
-              i
-            ]
-          ] += crystal.level;
-
-      for (let i = 0; i < effectLevels.length; i++)
-        if (effectLevels[i] > MAX_APPLIED_EFFECT_LEVEL)
-          effectLevels[i] = MAX_APPLIED_EFFECT_LEVEL;
+        for (let j = 0; j < EFFECT_COUNT_PER_CRYSTAL; j++) {
+          let i = Math.min(crystal.effects.length - 1, effectIndex);
+          for (; !crystal.effects[i].length; i--);
+          effectLevels[crystal.effects[i][j]] += crystal.level;
+        }
 
       effectLevels = effectLevels.slice(1);
       effectLevelsComb.push(effectLevels);
@@ -38,6 +33,11 @@ export default abstract class ArtifactService {
     return effectLevelsComb;
   }
 
+  static maxEffectsLength(artifactLevel: number) {
+    return Math.max(
+      ...this.crystals(artifactLevel).map((c) => c.effects.length)
+    );
+  }
   static appliedEffectCount(artifactLevel: number, effectIndex: number) {
     return Math.max(
       ...this.crystals(artifactLevel).map((c) =>
@@ -55,14 +55,11 @@ export default abstract class ArtifactService {
     return CRYSTALS_BY_LEVEL[1];
   }
   static crystalEffectIndexes(artifactLevel: number, index: number) {
-    return this.crystals(artifactLevel).map(
-      (crystal) => crystal.effects[Math.min(index, crystal.effects.length - 1)]
-    );
-  }
-  static maxEffectsLength(artifactLevel: number) {
-    return Math.max(
-      ...this.crystals(artifactLevel).map((c) => c.effects.length)
-    );
+    return this.crystals(artifactLevel).map((crystal) => {
+      let i = Math.min(index, crystal.effects.length - 1);
+      for (; !crystal.effects[i].length; i--);
+      return crystal.effects[i];
+    });
   }
   static remainPoint(artifactLevel: number) {
     const point = artifactLevel + Math.floor(artifactLevel / 5);

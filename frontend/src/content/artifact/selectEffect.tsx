@@ -8,7 +8,10 @@ import {
 } from "@chakra-ui/react";
 import { Select, components } from "chakra-react-select";
 import BoardCard from "../../components/boardCard";
-import { EFFECT_NAMES } from "../../service/union/artifact/artifactConstants";
+import {
+  EFFECT_NAMES,
+  MAX_APPLIED_EFFECT_LEVEL,
+} from "../../service/union/artifact/artifactConstants";
 
 export default function SelectEffect({
   effectLevels,
@@ -29,7 +32,13 @@ export default function SelectEffect({
               currentEffectNames={currentEffectNames}
               onChange={(effectName) => onChange(effectName, i)}
             />
-            <Badge colorScheme="blue">{effectLevel}</Badge>
+            <Badge
+              colorScheme={
+                effectLevel > MAX_APPLIED_EFFECT_LEVEL ? "orange" : "blue"
+              }
+            >
+              {Math.min(effectLevel, MAX_APPLIED_EFFECT_LEVEL)}
+            </Badge>
           </Flex>
         ))}
       </Stack>
