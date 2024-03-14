@@ -2,6 +2,7 @@ import {
   CRYSTALS_BY_LEVEL,
   EFFECT_COUNT_PER_CRYSTAL,
   MAX_APPLIED_EFFECT_LEVEL,
+  POINT_BY_CRYSTAL,
 } from "./artifactConstants";
 
 export default abstract class ArtifactService {
@@ -62,5 +63,12 @@ export default abstract class ArtifactService {
     return Math.max(
       ...this.crystals(artifactLevel).map((c) => c.effects.length)
     );
+  }
+  static remainPoint(artifactLevel: number) {
+    const point = artifactLevel + Math.floor(artifactLevel / 5);
+    const usedPoint = this.crystals(artifactLevel)
+      .map((c) => POINT_BY_CRYSTAL[c.level])
+      .reduce((prev, cur) => prev + cur);
+    return point - usedPoint;
   }
 }

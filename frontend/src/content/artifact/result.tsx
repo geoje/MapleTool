@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Flex,
   Image,
@@ -30,14 +31,20 @@ const CRYSTAL_IMAGES_URL = [
 export default function ResultGrid({
   levels,
   effectNames,
+  remainPoint,
 }: {
   levels: number[];
   effectNames: string[][];
+  remainPoint: number;
 }) {
   const [hoverEffect, setHoverEffect] = useState("");
 
   return (
-    <BoardCard order={4} title="배치도">
+    <BoardCard
+      order={4}
+      title="배치도"
+      right={<Badge>남은 AP {remainPoint}</Badge>}
+    >
       <SimpleGrid columns={3} gap={3}>
         {new Array(CRYSTAL_IMAGES_URL.length).fill(0).map((_, i) => (
           <Crystal

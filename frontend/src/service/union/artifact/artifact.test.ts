@@ -1,7 +1,7 @@
 import ArtifactService from "./artifact";
 import { MAX_ARTIFACT_LEVEL, MIN_ARTIFACT_LEVEL } from "./artifactConstants";
 
-test("generateEffectLevels", () => {
+test("effectLevels", () => {
   const result = [];
   for (
     let artifactLevel = MIN_ARTIFACT_LEVEL;
@@ -16,7 +16,7 @@ test("generateEffectLevels", () => {
   console.dir(result);
 });
 
-test("getEffectCount", () => {
+test("effectCount", () => {
   const result = [];
   for (
     let artifactLevel = MIN_ARTIFACT_LEVEL;
@@ -31,7 +31,7 @@ test("getEffectCount", () => {
   console.dir(result);
 });
 
-test("getCrystals", () => {
+test("crystals", () => {
   const result = [];
   for (
     let artifactLevel = MIN_ARTIFACT_LEVEL;
@@ -46,11 +46,17 @@ test("getCrystals", () => {
   console.dir(result);
 });
 
-test("getCrystalEffectIndexes", () => {
+test("crystalEffectIndexes", () => {
   const artifactLevel = 28;
   const result1 = ArtifactService.crystalEffectIndexes(artifactLevel, 0);
   const result2 = ArtifactService.crystalEffectIndexes(artifactLevel, 1);
 
   console.log(result1);
   console.log(result2);
+});
+
+test("remainPoint", () => {
+  const remainPoint = ArtifactService.remainPoint(36);
+
+  console.log(remainPoint);
 });

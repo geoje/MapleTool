@@ -165,6 +165,7 @@ export default function Artifact() {
               );
             })
           )}
+          remainPoint={ArtifactService.remainPoint(artifactLevel)}
         />
       </Stack>
     </>

@@ -387,7 +387,10 @@ export const CRYSTALS_BY_LEVEL: {
     { level: 5, effects: [[12, 13, 14]] },
   ],
 ];
+export const POINT_BY_CRYSTAL = [-1, 0, 1, 3, 5, 8];
 export const EFFECT_NAMES = [
+  { full: "올스탯 증가", abbreviate: "올스탯" },
+  { full: "최대 HP/MP 증가", abbreviate: "HP/MP" },
   { full: "공격력/마력 증가", abbreviate: "공마" },
   { full: "데미지 증가", abbreviate: "데미지" },
   { full: "보스 몬스터 공격시 데미지 증가", abbreviate: "보공" },
