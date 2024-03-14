@@ -15,6 +15,7 @@ import { MdMenu } from "react-icons/md";
 import { LINKS } from "../config";
 import MobileDrawer from "./mobileDrawer";
 import { useAppSelector } from "../reducer/hooks";
+import { useEffect } from "react";
 
 export default function Header() {
   return (
@@ -34,12 +35,18 @@ function Desktop() {
 
   const characterBasic = useAppSelector((state) => state.character.basic);
 
+  const title = LINKS.find((link) =>
+    pathname.startsWith("/" + link.name)
+  )?.label;
+
+  useEffect(() => {
+    document.title = "메이플 도구" + (title ? " | " + title : "");
+  }, [pathname]);
+
   return (
     <Flex p={2} justify="space-between" align="center">
       <Heading size="md" p={2}>
-        {pathname == "/"
-          ? "홈"
-          : LINKS.find((link) => pathname.startsWith("/" + link.name))?.label}
+        {title ?? "홈"}
       </Heading>
       {pathname == "/" || (
         <Button
