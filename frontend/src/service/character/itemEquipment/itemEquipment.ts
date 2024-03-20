@@ -6,7 +6,7 @@ import {
   MAX_STARFORCE_COUNTS,
   POTENTIALS,
   SLOT_GRID,
-} from "./itemEquipmentConstant";
+} from "./itemEquipmentConst";
 
 export default abstract class ItemEquipmentService {
   static itemGrid(
