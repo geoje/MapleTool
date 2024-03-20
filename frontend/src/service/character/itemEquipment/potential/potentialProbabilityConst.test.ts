@@ -1,4 +1,4 @@
-import { POTENTIAL_OPTIONS } from "./potentialOptionConst";
+import { POTENTIAL_OPTIONS } from "./potentialProbabilityConst";
 
 const PROPABILITY_OFFSET = 0.00001;
 
