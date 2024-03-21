@@ -1,0 +1,2333 @@
+{
+	"id": "265d53a8-ccb8-4643-9029-882066353dc1",
+	"name": "nexon",
+	"nodes": [
+		{
+			"id": "41b4a63c-76d3-4774-96c1-86441087c98f",
+			"name": "maplestory",
+			"nodes": [
+				{
+					"id": "ba8f84c6-bbc9-4dad-9241-b902b8138954",
+					"name": "grade",
+					"nodes": [],
+					"locators": [
+						{
+							"id": "4aabe019-a771-42eb-9dfc-539dd1061e6f",
+							"name": "epic",
+							"filePath": "224dd14d-3e21-4ee0-9b8f-af0fc223bff9.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectGrade"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "에픽"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "7ea3f18b-fb70-416a-bc12-632e704f2c08",
+							"name": "legendary",
+							"filePath": "7ced8cb2-36be-4ba3-bfd7-19753f11eed8.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectGrade"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "레전드리"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "5309f42f-6f61-440f-9415-da1c2ff4136f",
+							"name": "rare",
+							"filePath": "59f2ba17-08a6-4636-8c6f-574bfa8073eb.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectGrade"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a"
+													},
+													"sInfo": {
+														"value": "레어",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "23b7c2e4-4701-48b8-9507-aad873291338",
+							"name": "unique",
+							"filePath": "5248b9e0-1008-453f-a798-952596bec19e.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectGrade"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "유니크"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "d63159b3-e0b0-4f9f-8211-ed44ca519939",
+							"name": "select",
+							"filePath": "d505fd20-4da9-4f0b-b616-cc935a2128ed.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"class": {
+														"value": "cus_sel_a"
+													},
+													"ancestorId": {
+														"value": "selectGrade"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "레어",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"id": "8acd10b3-df81-42a7-9b75-54f9b6fcbe43",
+					"name": "part",
+					"nodes": [],
+					"locators": [
+						{
+							"id": "0a1ab3f8-1759-4d15-86bb-e1caa1559555",
+							"name": "select",
+							"filePath": "bcf27ba2-d849-456d-819e-5eb0034509cb.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"class": {
+														"value": "cus_sel_a"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "무기",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "1658943d-7ef8-4270-a635-fb009bde431a",
+							"name": "weapon",
+							"filePath": "5352a6f0-bb33-4308-9085-5a3f2a073458.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a"
+													},
+													"sInfo": {
+														"value": "무기",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "d56b2ca8-3b2f-465b-96ac-8467d919c99f",
+							"name": "emblem",
+							"filePath": "bc9a0fa8-95f0-493e-be1c-1c6b41ab6628.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "엠블렘"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "fe856f3c-48a8-4c9a-967f-d8f4582ebb32",
+							"name": "auxiliaryWithoutForceSoul",
+							"filePath": "682c3239-2f77-46d2-a2a8-bc325c71d11b.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "보조무기(포스실드, 소울링 제외)"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "bc83b8ae-c367-4a60-bf7c-197b4a9f2e2e",
+							"name": "forceSoul",
+							"filePath": "17208881-730d-4512-9e39-7ac79f9e49af.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "포스실드, 소울링"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "38117de5-002a-4dc2-ba20-037bf0f3e321",
+							"name": "shield",
+							"filePath": "99ce16da-5a72-4475-bf5b-ae8d03b3bbf1.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "방패"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "589ab169-a261-4618-a8db-20f000fb96d4",
+							"name": "hat",
+							"filePath": "fb07840b-4fa0-4dce-b242-97a35596e295.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "모자"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "3187bc9f-9c43-49a4-8483-f3c2cd17163e",
+							"name": "upper",
+							"filePath": "ddd4e31f-7c42-4940-ae58-6152e8facdaf.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "상의"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "bfc1ee08-dace-4810-a059-2c7a1ac39144",
+							"name": "clothes",
+							"filePath": "21098e90-9ee9-4e81-960f-dab8be31a8e7.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "한벌옷"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "ec856fd2-54c0-496b-8555-d81eb7384bd0",
+							"name": "bottom",
+							"filePath": "6f081321-6d6c-4de6-a0b5-71019d58230f.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "하의"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "7b4d993b-72d4-4a85-9691-bed54f8b7a52",
+							"name": "shoes",
+							"filePath": "3bbb2f0f-5359-4788-9f56-b8a1749c2dc5.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "신발"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "3b3dd0d2-9403-43b8-b581-a15cc4e68ee3",
+							"name": "gloves",
+							"filePath": "17727836-85c7-4a0a-bc0d-26f791329ab9.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "장갑"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "612a7c9c-4003-4242-b8c1-92662a2946af",
+							"name": "cloak",
+							"filePath": "678ce5ff-c22d-45c1-b509-7dcad3ca7342.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "망토"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "0792278c-6339-475f-8e41-6a5b650fe1cf",
+							"name": "belt",
+							"filePath": "4454bf0c-cd37-46b7-8556-6ec5871109e5.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "벨트"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "2ad78e18-d6dc-4f7e-99f1-9e513a9f66b9",
+							"name": "shoulder",
+							"filePath": "dde0fa55-81ab-43ea-b010-f85a3f63a13f.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "어깨장식"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "c1388369-2cd8-438b-8fd4-7881236ff40e",
+							"name": "face",
+							"filePath": "88adbe44-3cb0-48ab-a35f-460e830fde09.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "얼굴장식"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "f053f0b0-7eb7-4d4d-a6ea-b6c0e4ef51bb",
+							"name": "eye",
+							"filePath": "4b964a47-8d14-44eb-9ca8-7b5ba77c291c.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "눈장식"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "071acdd2-a2a0-4331-b1de-c575c88c9eb2",
+							"name": "earing",
+							"filePath": "2129948b-50bc-418e-87c2-c08aab2662bf.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "귀고리"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "2a3603d4-fca6-408a-a1df-3867c6218621",
+							"name": "ring",
+							"filePath": "9e21a44d-7ecf-41b1-9ff8-12db5946f389.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "반지"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "ba2d351e-bcef-48d2-81eb-3a1c448feb6b",
+							"name": "pendant",
+							"filePath": "e213cb1b-ea08-4bb5-826d-cdc9c22638d8.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "펜던트"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"id": "be9ec63a-7e3c-461a-b469-6b5d461fde37",
+							"name": "herart",
+							"filePath": "468ce10a-a009-45e9-a6fb-1b70e6aa034e.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "A"
+													},
+													"ancestorId": {
+														"value": "selectPartsType"
+													},
+													"ancestorClass": {
+														"value": "rank_sel_custom on",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "기계심장"
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"href": {
+														"value": "#a",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"id": "9f3c0103-0c9e-47e8-afc5-7a58fd4244c7",
+					"name": "level",
+					"locators": [
+						{
+							"id": "b48390ab-c29c-4ec5-89da-229d7f3a8328",
+							"name": "input",
+							"filePath": "37b32d3e-e6d9-4414-85fe-38237ba9a4fd.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "INPUT"
+													},
+													"id": {
+														"value": "lv"
+													},
+													"type": {
+														"value": "text",
+														"excluded": true
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea",
+														"excluded": true
+													},
+													"ancestorClass": {
+														"value": "input_sc",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>span>input",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "장비 레벨",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													},
+													"placeholder": {
+														"isCustom": true,
+														"value": "검색 레벨 입력",
+														"operator": "equals",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"id": "5745c142-6779-4bae-9611-0bd99dd065ec",
+					"name": "search",
+					"locators": [
+						{
+							"id": "9f3c3790-3ed7-41b1-b0cd-e349915b30d2",
+							"name": "button",
+							"filePath": "480e0027-f747-43f8-bbae-7486341d267b.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "BUTTON"
+													},
+													"class": {
+														"value": "btn_sc",
+														"excluded": true
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea",
+														"excluded": true
+													},
+													"ancestorClass": {
+														"value": "search_box",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>button",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "검색",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													},
+													"onclick": {
+														"isCustom": true,
+														"value": "searchCall()",
+														"operator": "equals",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			],
+			"locators": []
+		}
+	],
+	"locators": []
+}
