@@ -2135,6 +2135,7 @@
 				{
 					"id": "9f3c0103-0c9e-47e8-afc5-7a58fd4244c7",
 					"name": "level",
+					"nodes": [],
 					"locators": [
 						{
 							"id": "b48390ab-c29c-4ec5-89da-229d7f3a8328",
@@ -2233,6 +2234,7 @@
 				{
 					"id": "5745c142-6779-4bae-9611-0bd99dd065ec",
 					"name": "search",
+					"nodes": [],
 					"locators": [
 						{
 							"id": "9f3c3790-3ed7-41b1-b0cd-e349915b30d2",
@@ -2321,6 +2323,885 @@
 										]
 									}
 								]
+							}
+						}
+					]
+				},
+				{
+					"id": "f18c1663-19b9-4e14-ad8a-d4e64964ce16",
+					"name": "option",
+					"locators": [
+						{
+							"id": "84cf32a5-d8cf-4206-9e43-d2d9bf29ed87",
+							"name": "name1",
+							"filePath": "dde1948c-a6e9-476d-8970-a48426200895.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "TABLE"
+													},
+													"class": {
+														"value": "cube_data _1"
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea"
+													},
+													"ancestorClass": {
+														"value": "search_group",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "0",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>table",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													},
+													"rowCount": {
+														"isCustom": true,
+														"value": "20",
+														"operator": "equals",
+														"excluded": true
+													},
+													"columnCount": {
+														"isCustom": true,
+														"value": "2",
+														"operator": "equals",
+														"excluded": true
+													}
+												},
+												"childControls": [
+													{
+														"identifier": {
+															"tag": {
+																"value": "TD"
+															},
+															"ancestorId": {
+																"value": "CubeSearchGroupArea",
+																"excluded": true
+															},
+															"ancestorClass": {
+																"value": "cube_data _1",
+																"excluded": false
+															},
+															"isLeaf": {
+																"value": "1",
+																"excluded": true
+															},
+															"cssSelector": {
+																"value": "body>div>div>div>div>div>table>tbody>tr>td",
+																"excluded": true
+															},
+															"sInfo": {
+																"value": "STR : +2",
+																"excluded": true
+															},
+															"tableRow": {
+																"value": "2",
+																"excluded": true
+															},
+															"tableCol": {
+																"value": "1",
+																"excluded": false
+															},
+															"controlMetaType": "Web",
+															"index": {
+																"value": "1",
+																"excluded": true
+															},
+															"rowName": {
+																"isCustom": true,
+																"value": "STR : +2",
+																"operator": "equals",
+																"excluded": true
+															}
+														},
+														"childControls": [],
+														"excluded": false
+													}
+												],
+												"excluded": false
+											}
+										],
+										"excluded": false
+									}
+								],
+								"parameters": {
+									"excluded": true,
+									"operator": "equals",
+									"value": ""
+								}
+							}
+						},
+						{
+							"id": "8c2bc3be-a703-4e9d-bdeb-eb14b8a7bf45",
+							"name": "name2",
+							"filePath": "ab5a8bee-36ea-4d8d-a7e6-a5d8a73eb09d.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "TABLE"
+													},
+													"class": {
+														"value": "cube_data _2"
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea"
+													},
+													"ancestorClass": {
+														"value": "search_group",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "0",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>table",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													},
+													"rowCount": {
+														"isCustom": true,
+														"value": "28",
+														"operator": "equals",
+														"excluded": true
+													},
+													"columnCount": {
+														"isCustom": true,
+														"value": "2",
+														"operator": "equals",
+														"excluded": true
+													}
+												},
+												"childControls": [
+													{
+														"identifier": {
+															"tag": {
+																"value": "TD"
+															},
+															"ancestorId": {
+																"value": "CubeSearchGroupArea",
+																"excluded": true
+															},
+															"ancestorClass": {
+																"value": "cube_data _2",
+																"excluded": false
+															},
+															"isLeaf": {
+																"value": "1",
+																"excluded": true
+															},
+															"cssSelector": {
+																"value": "body>div>div>div>div>div>table>tbody>tr>td",
+																"excluded": true
+															},
+															"sInfo": {
+																"value": "STR : +1",
+																"excluded": true
+															},
+															"tableRow": {
+																"value": "2",
+																"excluded": true
+															},
+															"tableCol": {
+																"value": "1",
+																"excluded": false
+															},
+															"controlMetaType": "Web",
+															"index": {
+																"value": "1",
+																"excluded": true
+															},
+															"rowName": {
+																"isCustom": true,
+																"value": "STR : +1",
+																"operator": "equals",
+																"excluded": true
+															}
+														},
+														"childControls": [],
+														"excluded": false
+													}
+												],
+												"excluded": false
+											}
+										],
+										"excluded": false
+									}
+								],
+								"parameters": {
+									"excluded": true,
+									"operator": "equals",
+									"value": ""
+								}
+							}
+						},
+						{
+							"id": "15fe63ca-ed54-42e4-8eb5-75eb06d697e6",
+							"name": "name3",
+							"filePath": "c64c2b63-8ede-4e43-8779-bdd03b10e183.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "TABLE"
+													},
+													"class": {
+														"value": "cube_data _3"
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea"
+													},
+													"ancestorClass": {
+														"value": "search_group",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "0",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>table",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													},
+													"rowCount": {
+														"isCustom": true,
+														"value": "28",
+														"operator": "equals",
+														"excluded": true
+													},
+													"columnCount": {
+														"isCustom": true,
+														"value": "2",
+														"operator": "equals",
+														"excluded": true
+													}
+												},
+												"childControls": [
+													{
+														"identifier": {
+															"tag": {
+																"value": "TD"
+															},
+															"ancestorId": {
+																"value": "CubeSearchGroupArea",
+																"excluded": true
+															},
+															"ancestorClass": {
+																"value": "cube_data _3",
+																"excluded": false
+															},
+															"isLeaf": {
+																"value": "1",
+																"excluded": true
+															},
+															"cssSelector": {
+																"value": "body>div>div>div>div>div>table>tbody>tr>td",
+																"excluded": true
+															},
+															"sInfo": {
+																"value": "STR : +1",
+																"excluded": true
+															},
+															"tableRow": {
+																"value": "2",
+																"excluded": true
+															},
+															"tableCol": {
+																"value": "1",
+																"excluded": false
+															},
+															"controlMetaType": "Web",
+															"index": {
+																"value": "1",
+																"excluded": true
+															},
+															"rowName": {
+																"isCustom": true,
+																"value": "STR : +1",
+																"operator": "equals",
+																"excluded": true
+															}
+														},
+														"childControls": [],
+														"excluded": false
+													}
+												],
+												"excluded": false
+											}
+										],
+										"excluded": false
+									}
+								],
+								"parameters": {
+									"excluded": true,
+									"operator": "equals",
+									"value": ""
+								}
+							}
+						},
+						{
+							"id": "6e333f71-27d5-4583-8aa4-318960b9fff8",
+							"name": "probability2",
+							"filePath": "0be6f18d-85ec-47de-807f-e041c2182030.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "TABLE"
+													},
+													"class": {
+														"value": "cube_data _2"
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea"
+													},
+													"ancestorClass": {
+														"value": "search_group",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "0",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>table",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													},
+													"rowCount": {
+														"isCustom": true,
+														"value": "28",
+														"operator": "equals",
+														"excluded": true
+													},
+													"columnCount": {
+														"isCustom": true,
+														"value": "2",
+														"operator": "equals",
+														"excluded": true
+													}
+												},
+												"childControls": [
+													{
+														"identifier": {
+															"tag": {
+																"value": "TD"
+															},
+															"ancestorId": {
+																"value": "CubeSearchGroupArea",
+																"excluded": true
+															},
+															"ancestorClass": {
+																"value": "cube_data _2",
+																"excluded": false
+															},
+															"isLeaf": {
+																"value": "1",
+																"excluded": true
+															},
+															"cssSelector": {
+																"value": "body>div>div>div>div>div>table>tbody>tr>td",
+																"excluded": true
+															},
+															"sInfo": {
+																"value": "10.9091%",
+																"excluded": true
+															},
+															"tableRow": {
+																"value": "2",
+																"excluded": true
+															},
+															"tableCol": {
+																"value": "2"
+															},
+															"controlMetaType": "Web",
+															"index": {
+																"value": "1",
+																"excluded": true
+															},
+															"rowName": {
+																"isCustom": true,
+																"value": "STR : +1",
+																"operator": "equals",
+																"excluded": true
+															}
+														},
+														"childControls": [],
+														"excluded": false
+													}
+												],
+												"excluded": false
+											}
+										],
+										"excluded": false
+									}
+								],
+								"parameters": {
+									"excluded": true,
+									"operator": "equals",
+									"value": ""
+								}
+							}
+						},
+						{
+							"id": "d7c1278b-9554-475d-9d36-0750c8b27a6e",
+							"name": "probability3",
+							"filePath": "b9a035c8-3ee0-436d-8140-fc152262004c.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "TABLE"
+													},
+													"class": {
+														"value": "cube_data _3"
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea"
+													},
+													"ancestorClass": {
+														"value": "search_group",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "0",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>table",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													},
+													"rowCount": {
+														"isCustom": true,
+														"value": "28",
+														"operator": "equals",
+														"excluded": true
+													},
+													"columnCount": {
+														"isCustom": true,
+														"value": "2",
+														"operator": "equals",
+														"excluded": true
+													}
+												},
+												"childControls": [
+													{
+														"identifier": {
+															"tag": {
+																"value": "TD"
+															},
+															"ancestorId": {
+																"value": "CubeSearchGroupArea",
+																"excluded": true
+															},
+															"ancestorClass": {
+																"value": "cube_data _3",
+																"excluded": false
+															},
+															"isLeaf": {
+																"value": "1",
+																"excluded": true
+															},
+															"cssSelector": {
+																"value": "body>div>div>div>div>div>table>tbody>tr>td",
+																"excluded": true
+															},
+															"sInfo": {
+																"value": "12.9545%",
+																"excluded": true
+															},
+															"tableRow": {
+																"value": "2",
+																"excluded": true
+															},
+															"tableCol": {
+																"value": "2"
+															},
+															"controlMetaType": "Web",
+															"index": {
+																"value": "1",
+																"excluded": true
+															},
+															"rowName": {
+																"isCustom": true,
+																"value": "STR : +1",
+																"operator": "equals",
+																"excluded": true
+															}
+														},
+														"childControls": [],
+														"excluded": false
+													}
+												],
+												"excluded": false
+											}
+										],
+										"excluded": false
+									}
+								],
+								"parameters": {
+									"excluded": true,
+									"operator": "equals",
+									"value": ""
+								}
+							}
+						},
+						{
+							"id": "dfd564ae-3021-452b-aa21-37d63e62d064",
+							"name": "probability1",
+							"filePath": "3dda09ef-b7ea-4d01-9b23-99a3f01cb59b.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "TABLE"
+													},
+													"class": {
+														"value": "cube_data _1"
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea"
+													},
+													"ancestorClass": {
+														"value": "search_group",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "0",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>table",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													},
+													"rowCount": {
+														"isCustom": true,
+														"value": "20",
+														"operator": "equals",
+														"excluded": true
+													},
+													"columnCount": {
+														"isCustom": true,
+														"value": "2",
+														"operator": "equals",
+														"excluded": true
+													}
+												},
+												"childControls": [
+													{
+														"identifier": {
+															"tag": {
+																"value": "TD"
+															},
+															"ancestorId": {
+																"value": "CubeSearchGroupArea",
+																"excluded": true
+															},
+															"ancestorClass": {
+																"value": "cube_data _1",
+																"excluded": false
+															},
+															"isLeaf": {
+																"value": "1",
+																"excluded": true
+															},
+															"cssSelector": {
+																"value": "body>div>div>div>div>div>table>tbody>tr>td",
+																"excluded": true
+															},
+															"sInfo": {
+																"value": "7.1429%",
+																"excluded": true
+															},
+															"tableRow": {
+																"value": "2",
+																"excluded": true
+															},
+															"tableCol": {
+																"value": "2"
+															},
+															"controlMetaType": "Web",
+															"index": {
+																"value": "1",
+																"excluded": true
+															},
+															"rowName": {
+																"isCustom": true,
+																"value": "STR : +2",
+																"operator": "equals",
+																"excluded": true
+															}
+														},
+														"childControls": [],
+														"excluded": false
+													}
+												],
+												"excluded": false
+											}
+										],
+										"excluded": false
+									}
+								],
+								"parameters": {
+									"excluded": true,
+									"operator": "equals",
+									"value": ""
+								}
 							}
 						}
 					]
