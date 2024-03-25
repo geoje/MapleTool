@@ -1,18 +1,21 @@
-import re
-import json
+import re, json, os.path
 from time import sleep
 from clicknium import clicknium as cc, locator
 from clicknium.core.models.web.browsertab import BrowserTab
 
+URL = "https://maplestory.nexon.com/Guide/OtherProbability/cube/black"
+FILENAME = "./tools/potentialProbability.json"
+RETRY_COUNT = 2
+
 levels = [0, 10, 11, 20, 21, 30, 31, 40, 41, 50, 51, 60, 61, 70, 71, 80, 81, 90, 91,
          100, 101, 110, 111, 120, 201]
 
-grades = [locator.nexon.maplestory.grade.rare,
+gradeLocators = [locator.nexon.maplestory.grade.rare,
          locator.nexon.maplestory.grade.epic,
          locator.nexon.maplestory.grade.unique,
          locator.nexon.maplestory.grade.legendary]
 
-parts = [locator.nexon.maplestory.part.weapon,
+partLocators = [locator.nexon.maplestory.part.weapon,
         locator.nexon.maplestory.part.emblem,
         locator.nexon.maplestory.part.auxiliaryWithoutForceSoul,
         locator.nexon.maplestory.part.forceSoul,
@@ -33,27 +36,50 @@ parts = [locator.nexon.maplestory.part.weapon,
         locator.nexon.maplestory.part.pendant,
         locator.nexon.maplestory.part.herart]
 
-data = {}
-
 def main():
-    tab = cc.chrome.open("https://maplestory.nexon.com/Guide/OtherProbability/cube/black", False)
-    print(crawlData(tab, parts[0], grades[0], levels[0]))
+    data = {}
+    if os.path.exists(FILENAME):
+        with open(FILENAME, 'r', encoding='UTF-8') as f:
+            data = json.load(f)
+    tab = cc.chrome.open(URL, False)
     
-    # for part in parts:
-    #     for level in levels:
-    #         for grade in grade:
-    #             crawlData(tab, part, grade, level)
+    for partLocator in partLocators:
+        for level in levels:
+            for gradeLocator in gradeLocators:
+                partStr = tab.find_element(partLocator).get_text()
+                levelStr = str(level)
+                gradeStr = tab.find_element(gradeLocator).get_text()
+
+                if partStr not in data:
+                    data[partStr] = {}
+                if levelStr not in data[partStr]:
+                    data[partStr][levelStr] = {}
+                if gradeStr in data[partStr][levelStr]:
+                    continue
+
+                print([partStr, levelStr, gradeStr])
+                data[partStr][levelStr][gradeStr] = crawlData(tab, partLocator, levelStr, gradeLocator)
+                with open(FILENAME, 'w', encoding='UTF-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
     
     tab.close()
 
-def crawlData(tab: BrowserTab, part: str, grade: str, level: str) -> list:
+def crawlData(tab: BrowserTab, partLocator, levelStr, gradeLocator) -> list:
+    gradeStr = tab.find_element(gradeLocator).get_text()
     tab.find_element(locator.nexon.maplestory.grade.select).click()
-    tab.find_element(grade).click()
+    tab.find_element(gradeLocator).click()
     tab.find_element(locator.nexon.maplestory.part.select).click()
-    tab.find_element(part).click()
-    tab.find_element(locator.nexon.maplestory.level.input).set_text(level)
+    tab.find_element(partLocator).click()
+    tab.find_element(locator.nexon.maplestory.level.input).set_text(levelStr)
     tab.find_element(locator.nexon.maplestory.search.button).click()
     sleep(1)
+
+    for i in range(RETRY_COUNT):
+        if (tab.is_existing(locator.nexon.maplestory.option.potential, timeout=1) and
+            (tab.find_element(locator.nexon.maplestory.option.potential).get_text() == gradeStr)):
+            break
+    else:
+        return []
     
     nameGrid = [
         tab.find_elements(locator.nexon.maplestory.option.name1),
@@ -68,7 +94,7 @@ def crawlData(tab: BrowserTab, part: str, grade: str, level: str) -> list:
     result = []
     for i in range(len(nameGrid)):
         row = []
-        for j in range(len(nameGrid[0])):
+        for j in range(len(nameGrid[i])):
             name = nameGrid[i][j].get_text()
             value = int(re.findall(pattern, name)[-1])
             name = name[::-1].replace(str(value)[::-1], "n", 1)[::-1]

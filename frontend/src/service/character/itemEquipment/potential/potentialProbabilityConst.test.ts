@@ -1,4 +1,4 @@
-import { POTENTIAL_OPTIONS } from "./potentialProbabilityConst";
+import { POTENTIAL_OPTIONS } from "./potentialConst";
 
 const PROPABILITY_OFFSET = 0.00001;
 
@@ -13,6 +13,7 @@ test("sumOfProbabilityIsOne", () => {
             .reduce((p, c) => p + c);
           const actual = Math.abs(1 - sumOfPropability);
 
+          console.log([type, level, grade, order]);
           expect(actual).toBeLessThan(PROPABILITY_OFFSET);
         }
       }

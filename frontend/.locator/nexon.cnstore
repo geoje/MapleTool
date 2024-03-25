@@ -2330,6 +2330,7 @@
 				{
 					"id": "f18c1663-19b9-4e14-ad8a-d4e64964ce16",
 					"name": "option",
+					"nodes": [],
 					"locators": [
 						{
 							"id": "84cf32a5-d8cf-4206-9e43-d2d9bf29ed87",
@@ -3202,6 +3203,88 @@
 									"operator": "equals",
 									"value": ""
 								}
+							}
+						},
+						{
+							"id": "d02119e2-6335-4be4-9e2c-950e131ad865",
+							"name": "potential",
+							"filePath": "3170a8a1-573f-4fcd-b553-138dfd95044e.jpg",
+							"content": {
+								"automationType": "Chrome",
+								"processName": {
+									"value": "chrome"
+								},
+								"filePath": {
+									"value": "chrome.exe"
+								},
+								"version": {
+									"value": "1.3"
+								},
+								"childControls": [
+									{
+										"identifier": {
+											"role": {
+												"value": "window"
+											},
+											"title": {
+												"value": "확률형아이템 | 가이드 | 메이플스토리"
+											},
+											"url": {
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"excluded": true
+											},
+											"className": {
+												"value": "Chrome_WidgetWin_1"
+											},
+											"controlMetaType": "Tab"
+										},
+										"childControls": [
+											{
+												"identifier": {
+													"tag": {
+														"value": "SPAN"
+													},
+													"id": {
+														"value": "searchGrade"
+													},
+													"ancestorId": {
+														"value": "CubeSearchGroupArea",
+														"excluded": true
+													},
+													"ancestorClass": {
+														"value": "cube_option",
+														"excluded": true
+													},
+													"isLeaf": {
+														"value": "1",
+														"excluded": true
+													},
+													"cssSelector": {
+														"value": "body>div>div>div>div>div>div>ul>li>span",
+														"excluded": true
+													},
+													"sInfo": {
+														"value": "에픽",
+														"excluded": true
+													},
+													"tableRow": {
+														"value": "-1",
+														"excluded": true
+													},
+													"tableCol": {
+														"value": "-1",
+														"excluded": true
+													},
+													"controlMetaType": "Web",
+													"index": {
+														"value": "1",
+														"excluded": true
+													}
+												}
+											}
+										]
+									}
+								]
 							}
 						}
 					]
