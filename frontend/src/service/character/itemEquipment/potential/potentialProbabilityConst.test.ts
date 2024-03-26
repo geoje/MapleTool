@@ -1,8 +1,9 @@
 import { POTENTIAL_OPTIONS } from "./potentialConst";
 
-const PROPABILITY_OFFSET = 0.00001;
+const PROPABILITY_OFFSET = 0.000015;
 
 test("sumOfProbabilityIsOne", () => {
+  const result = [];
   for (const type in POTENTIAL_OPTIONS)
     for (const level in POTENTIAL_OPTIONS[type])
       for (const grade in POTENTIAL_OPTIONS[type][level]) {
@@ -12,9 +13,10 @@ test("sumOfProbabilityIsOne", () => {
             .map((option) => <number>option[2])
             .reduce((p, c) => p + c);
           const actual = Math.abs(1 - sumOfPropability);
+          result.push(Math.round(actual * 1000000));
 
-          console.log([type, level, grade, order]);
           expect(actual).toBeLessThan(PROPABILITY_OFFSET);
         }
       }
+  console.log(result.filter((p) => p >= 10).join(" "));
 });

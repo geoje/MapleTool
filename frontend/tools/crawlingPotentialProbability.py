@@ -95,14 +95,20 @@ def crawlData(tab: BrowserTab, partLocator, levelStr, gradeLocator) -> list:
     for i in range(len(nameGrid)):
         row = []
         for j in range(len(nameGrid[i])):
-            name = nameGrid[i][j].get_text()
-            value = int(re.findall(pattern, name)[-1])
-            name = name[::-1].replace(str(value)[::-1], "n", 1)[::-1]
+            nameAndValue = extractValueFromOption(nameGrid[i][j].get_text())
             p = round(float(probabilityGrid[i][j].get_text().rstrip("%")) / 100, 6)
-            row.append([name, value, p])
+            row.append(nameAndValue + [p])
         result.append(row)
 
     return result
+
+def extractValueFromOption(option: str):
+    pattern = r"\d+"
+    splitted = option.split("(")
+    numsInName = re.findall(pattern, splitted[0])
+    value = int(numsInName[-1]) if numsInName else 0
+    splitted[0] = splitted[0][::-1].replace(str(value)[::-1], "n", 1)[::-1] if numsInName else splitted[0]
+    return ["(".join(splitted), value]
 
 if __name__ == "__main__":
     main()
