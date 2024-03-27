@@ -1,8 +1,8 @@
-package kr.ygh.maple.domain.union;
+package kr.ygh.maple.dto.union;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import kr.ygh.maple.domain.union.subset.UnionArtifactCrystal;
-import kr.ygh.maple.domain.union.subset.UnionArtifactEffect;
+import kr.ygh.maple.dto.union.subset.UnionArtifactCrystal;
+import kr.ygh.maple.dto.union.subset.UnionArtifactEffect;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record UnionArtifact(String date, UnionArtifactEffect[] union_artifact_effect,

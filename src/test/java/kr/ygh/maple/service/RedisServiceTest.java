@@ -2,8 +2,8 @@ package kr.ygh.maple.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ygh.maple.domain.character.CharacterItemEquipment;
-import kr.ygh.maple.domain.character.CharacterOcid;
+import kr.ygh.maple.dto.character.CharacterItemEquipment;
+import kr.ygh.maple.dto.character.CharacterOcid;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

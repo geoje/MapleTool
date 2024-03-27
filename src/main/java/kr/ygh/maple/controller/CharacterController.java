@@ -1,7 +1,7 @@
 package kr.ygh.maple.controller;
 
-import kr.ygh.maple.domain.character.CharacterBasic;
-import kr.ygh.maple.domain.character.CharacterItemEquipment;
+import kr.ygh.maple.dto.character.CharacterBasic;
+import kr.ygh.maple.dto.character.CharacterItemEquipment;
 import kr.ygh.maple.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

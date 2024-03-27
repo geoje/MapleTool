@@ -1,8 +1,8 @@
-package kr.ygh.maple.domain;
+package kr.ygh.maple.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ygh.maple.domain.character.CharacterOcid;
+import kr.ygh.maple.dto.character.CharacterOcid;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -1,8 +1,8 @@
-package kr.ygh.maple.domain.character;
+package kr.ygh.maple.dto.character;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import kr.ygh.maple.domain.character.subset.CharacterItemEquipmentDetail;
-import kr.ygh.maple.domain.character.subset.CharacterItemEquipmentTitle;
+import kr.ygh.maple.dto.character.subset.CharacterItemEquipmentDetail;
+import kr.ygh.maple.dto.character.subset.CharacterItemEquipmentTitle;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record CharacterItemEquipment(String date, String character_gender, String character_class, long preset_no,

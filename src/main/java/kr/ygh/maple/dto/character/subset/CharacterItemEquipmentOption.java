@@ -1,4 +1,4 @@
-package kr.ygh.maple.domain.character.subset;
+package kr.ygh.maple.dto.character.subset;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;

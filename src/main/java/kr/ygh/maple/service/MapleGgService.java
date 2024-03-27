@@ -1,6 +1,6 @@
 package kr.ygh.maple.service;
 
-import kr.ygh.maple.domain.MapleGgBypass;
+import kr.ygh.maple.dto.MapleGgBypass;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;

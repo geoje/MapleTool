@@ -1,4 +1,4 @@
-package kr.ygh.maple.domain.union.subset;
+package kr.ygh.maple.dto.union.subset;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
