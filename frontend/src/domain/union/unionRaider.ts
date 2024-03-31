@@ -4,6 +4,12 @@ export interface UnionRaider {
   union_occupied_stat: string[];
   union_inner_stat: UnionRaiderStat[];
   union_block: UnionRaiderBlock[];
+  use_preset_no: number;
+  union_raider_preset_1: UnionRaiderPreset;
+  union_raider_preset_2: UnionRaiderPreset;
+  union_raider_preset_3: UnionRaiderPreset;
+  union_raider_preset_4: UnionRaiderPreset;
+  union_raider_preset_5: UnionRaiderPreset;
 }
 
 export interface UnionRaiderStat {
@@ -22,4 +28,11 @@ export interface UnionRaiderBlock {
 export interface UnionRaiderBlockPoint {
   x: number;
   y: number;
+}
+
+export interface UnionRaiderPreset {
+  union_raider_stat: string[];
+  union_occupied_stat: string[];
+  union_inner_stat: UnionRaiderStat[];
+  union_block: UnionRaiderBlock[];
 }
