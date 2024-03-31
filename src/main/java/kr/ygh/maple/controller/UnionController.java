@@ -4,7 +4,7 @@ import kr.ygh.maple.dto.union.UnionArtifact;
 import kr.ygh.maple.dto.union.UnionBasic;
 import kr.ygh.maple.dto.union.UnionRaider;
 import kr.ygh.maple.service.RedisService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/union", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UnionController {
 
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
 
     private static void validateBlankOrEmpty(String data) {
         if (data.trim().isEmpty()) {

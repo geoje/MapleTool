@@ -2,8 +2,10 @@ package kr.ygh.maple.controller;
 
 import kr.ygh.maple.dto.character.CharacterBasic;
 import kr.ygh.maple.dto.character.CharacterItemEquipment;
+import kr.ygh.maple.dto.character.itemEquipment.Potential;
+import kr.ygh.maple.service.PotentialService;
 import kr.ygh.maple.service.RedisService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/character", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CharacterController {
 
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
+    private final PotentialService potentialService;
 
     private static void validateBlankOrEmpty(String data) {
         if (data.trim().isEmpty()) {
@@ -36,5 +39,13 @@ public class CharacterController {
     public Mono<CharacterItemEquipment> itemEquipment(@RequestParam("name") String name) {
         validateBlankOrEmpty(name);
         return redisService.characterItemEquipment(name);
+    }
+
+    @GetMapping("item-equipment/potential")
+    public Mono<Potential> potential(@RequestParam("part") String part,
+                                     @RequestParam("grade") String grade,
+                                     @RequestParam("level") int level) {
+//        return potentialService.potential(part, grade, level);
+        return null;
     }
 }

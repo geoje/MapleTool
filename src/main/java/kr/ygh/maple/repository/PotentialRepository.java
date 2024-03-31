@@ -3,6 +3,7 @@ package kr.ygh.maple.repository;
 import kr.ygh.maple.entity.Potential;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,4 +15,12 @@ public interface PotentialRepository extends JpaRepository<Potential, Long> {
             "FROM Potential p " +
             "GROUP BY p.part, p.grade, p.level, p.position")
     List<Object[]> findProbabilitySum();
+
+    @Query("SELECT DISTINCT level " +
+            "FROM Potential " +
+            "WHERE part = :part AND level <= :level " +
+            "ORDER BY level DESC " +
+            "LIMIT 1")
+    int findMaxLevelLessOrEqualThan(@Param("part") String part,
+                                    @Param("level") int level);
 }
