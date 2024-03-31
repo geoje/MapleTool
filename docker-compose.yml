@@ -10,7 +10,7 @@ services:
       - redis:/data
 
   db:
-    image: mysql
+    image: mysql:8.3.0
     restart: always
     command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     volumes:
