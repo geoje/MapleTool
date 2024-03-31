@@ -8,6 +8,7 @@ import kr.ygh.maple.dto.character.CharacterOcid;
 import kr.ygh.maple.dto.union.UnionArtifact;
 import kr.ygh.maple.dto.union.UnionBasic;
 import kr.ygh.maple.dto.union.UnionRaider;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("local")
+@DisplayName("넥슨")
 public class NexonApiServiceTest {
 
     @Autowired
