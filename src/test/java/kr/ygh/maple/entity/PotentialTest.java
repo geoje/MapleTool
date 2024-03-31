@@ -43,4 +43,18 @@ class PotentialTest {
                         .collect(Collectors.joining()))
                 .forEach(System.out::println);
     }
+
+    @Test
+    @DisplayName("입력한 레벨 보다 낮은 것 중 가장 근처 레벨을 조회한다.")
+    void findMaxLevelLessOrEqualThan() {
+        // given
+        String part = "무기";
+        int level = 200;
+
+        // when
+        final int maxLevel = potentialRepository.findMaxLevelLessOrEqualThan(part, level);
+
+        // then
+        assertThat(maxLevel).isEqualTo(120);
+    }
 }
