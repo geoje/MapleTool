@@ -2,7 +2,7 @@ package kr.ygh.maple.controller;
 
 import kr.ygh.maple.dto.character.CharacterBasic;
 import kr.ygh.maple.dto.character.CharacterItemEquipment;
-import kr.ygh.maple.dto.character.itemEquipment.Potential;
+import kr.ygh.maple.dto.character.itemEquipment.PotentialDto;
 import kr.ygh.maple.service.PotentialService;
 import kr.ygh.maple.service.RedisService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,10 +44,9 @@ public class CharacterController {
     }
 
     @GetMapping("item-equipment/potential")
-    public Mono<Potential> potential(@RequestParam("part") String part,
-                                     @RequestParam("grade") String grade,
-                                     @RequestParam("level") int level) {
-//        return potentialService.potential(part, grade, level);
-        return null;
+    public Mono<List<PotentialDto>> potential(@RequestParam("part") String part,
+                                              @RequestParam("grade") String grade,
+                                              @RequestParam("level") int level) {
+        return potentialService.potential(part, grade, level);
     }
 }

@@ -23,4 +23,6 @@ public interface PotentialRepository extends JpaRepository<Potential, Long> {
             "LIMIT 1")
     int findMaxLevelLessOrEqualThan(@Param("part") String part,
                                     @Param("level") int level);
+
+    List<Potential> findAllByPartAndGradeAndLevel(String part, String grade, int level);
 }
