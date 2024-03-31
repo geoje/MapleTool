@@ -12,7 +12,6 @@ services:
   db:
     image: mysql:8.3.0
     restart: always
-    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     volumes:
       - db:/var/lib/mysql
     environment:
