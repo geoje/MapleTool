@@ -19,6 +19,8 @@ services:
       - db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
+      - --character-set-server=utf8
+      - --collation-server=utf8_general_ci
 
   app:
     image: openjdk:17.0.2
