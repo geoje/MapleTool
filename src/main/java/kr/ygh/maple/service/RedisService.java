@@ -19,7 +19,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Objects;
 import java.util.function.Function;
 
 @Service
@@ -30,24 +29,31 @@ public class RedisService {
     private final NexonApiService nexonApiService;
     private final MapleGgService mapleGgService;
 
+    private static Instant getTomorrow() {
+        return LocalDateTime.now()
+                .plusDays(1).withHour(1).withMinute(0).withSecond(0)
+                .atZone(ZoneId.systemDefault()).toInstant();
+    }
+
     private <T> Mono<T> cacheOrRequest(String name, String key, Class<T> classType, Function<String, Mono<T>> requestNexonFunc) {
         // Return redis data if exists
-        T obj = get(key, name, classType);
-        if (obj != null) return Mono.just(obj);
+        T objRedis = get(key, name, classType);
+        if (objRedis != null) return Mono.just(objRedis);
 
         // Request to maple.gg if time is between 0 and 1 am
         if (NexonApiService.isCollectingTime()) {
             getAndSaveMapleGgBypass(name);
-            obj = get(key, name, classType);
-            return Mono.just(obj);
+            objRedis = get(key, name, classType);
+            return Mono.just(objRedis);
         }
 
         // Request to Nexon
-        String ocid = Objects.requireNonNull(characterOcid(name).block()).ocid();
-        obj = requestNexonFunc.apply(ocid).block();
-        assert obj != null;
-        put(key, name, obj);
-        return Mono.just(obj);
+        return characterOcid(name)
+                .flatMap(ocid -> requestNexonFunc.apply(ocid.ocid()))
+                .map(objNexon -> {
+                    put(key, name, objNexon);
+                    return objNexon;
+                });
     }
 
     private void getAndSaveMapleGgBypass(String name) {
@@ -68,10 +74,7 @@ public class RedisService {
             throw new RuntimeException(e);
         }
 
-        Instant tomorrow = LocalDateTime.now()
-                .plusDays(1).withHour(1).withMinute(0).withSecond(0)
-                .atZone(ZoneId.systemDefault()).toInstant();
-        redisTemplate.expireAt(key, Date.from(tomorrow));
+        redisTemplate.expireAt(key, Date.from(getTomorrow()));
     }
 
     public <T> T get(String key, String hashKey, Class<T> classType) {
@@ -91,9 +94,11 @@ public class RedisService {
         if (obj != null) return Mono.just(obj);
 
         // Request to Nexon
-        obj = nexonApiService.characterOcid(name).block();
-        put("character:ocid", name, obj);
-        return Mono.just(obj);
+        return nexonApiService.characterOcid(name)
+                .map(ocid -> {
+                    put("character:ocid", name, ocid);
+                    return ocid;
+                });
     }
 
     public Mono<CharacterBasic> characterBasic(String name) {
