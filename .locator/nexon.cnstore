@@ -3206,9 +3206,9 @@
 							}
 						},
 						{
-							"id": "d02119e2-6335-4be4-9e2c-950e131ad865",
-							"name": "potential",
-							"filePath": "3170a8a1-573f-4fcd-b553-138dfd95044e.jpg",
+							"id": "941c4bbe-e943-43f1-9e21-338e259cf395",
+							"name": "level",
+							"filePath": "b8999dbc-1359-4dfb-a998-c7cb7ce8462d.jpg",
 							"content": {
 								"automationType": "Chrome",
 								"processName": {
@@ -3245,7 +3245,7 @@
 														"value": "SPAN"
 													},
 													"id": {
-														"value": "searchGrade"
+														"value": "searchReqLev"
 													},
 													"ancestorId": {
 														"value": "CubeSearchGroupArea",
@@ -3264,7 +3264,7 @@
 														"excluded": true
 													},
 													"sInfo": {
-														"value": "에픽",
+														"value": "0~9",
 														"excluded": true
 													},
 													"tableRow": {
