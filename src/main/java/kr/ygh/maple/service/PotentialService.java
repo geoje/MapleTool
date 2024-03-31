@@ -41,6 +41,14 @@ public class PotentialService {
 
     public Mono<List<PotentialDto>> potential(String part, String grade, int level) {
         final String convertedPart = partMap.getOrDefault(part, part);
+
+        final int maxLevel = potentialRepository.findMaxLevelLessOrEqualThan(convertedPart, level);
+        System.out.println("part = " + part);
+        System.out.println("convertedPart = " + convertedPart);
+        System.out.println("grade = " + grade);
+        System.out.println("level = " + level);
+        System.out.println("maxLevel = " + maxLevel);
+
         CompletableFuture<Integer> existLevelFuture = CompletableFuture.supplyAsync(() ->
                 potentialRepository.findMaxLevelLessOrEqualThan(convertedPart, level));
         CompletableFuture<List<Potential>> potentialsFuture = existLevelFuture.thenApplyAsync(existLevel ->
