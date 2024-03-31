@@ -36,7 +36,7 @@ public class MapleGgServiceTest {
         softly.assertAll();
 
         // output
-        System.out.println("character_name=" + bypass.characterBasic().character_name());
-        System.out.println("union_preset_description=" + bypass.unionRaider().union_raider_preset_1());
+        System.out.println("character_name = " + bypass.characterBasic().character_name());
+        System.out.println("union_preset_description = " + bypass.unionRaider().union_raider_preset_1());
     }
 }

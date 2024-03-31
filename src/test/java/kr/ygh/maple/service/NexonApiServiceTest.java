@@ -1,12 +1,7 @@
 package kr.ygh.maple.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ygh.maple.dto.character.CharacterBasic;
-import kr.ygh.maple.dto.character.CharacterItemEquipment;
 import kr.ygh.maple.dto.character.CharacterOcid;
-import kr.ygh.maple.dto.union.UnionArtifact;
-import kr.ygh.maple.dto.union.UnionBasic;
 import kr.ygh.maple.dto.union.UnionRaider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,64 +9,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @ActiveProfiles("local")
 @DisplayName("넥슨")
 public class NexonApiServiceTest {
 
+    static String ocid = "7a2d5a8b3e84eb08c0cd8c0df0bc4c16";
+
     @Autowired
     NexonApiService service;
 
     @Test
-    void ocidAndBasicWork() {
-        CharacterOcid ocid = service.characterOcid("새벽너울").block();
-        CharacterBasic basic = service.characterBasic(ocid.ocid()).block();
+    void basicTest() {
+        // given & when
+        CharacterBasic basic = service.characterBasic(ocid).block();
 
-        System.out.println("ocid = " + ocid);
+        // then
+        assertThat(basic).isNotNull();
+
+        // output
         System.out.println("basic = " + basic);
     }
 
     @Test
-    void itemEquipmentWork() throws JsonProcessingException {
-        CharacterOcid ocid = service.characterOcid("수빈양").block();
-        CharacterItemEquipment item = service.characterItemEquipment(ocid.ocid()).block();
+    void anyTest() {
+        // given
+        String name = "수빈양";
 
-        String itemJson = new ObjectMapper().writeValueAsString(item);
+        // when  & then
+        CharacterOcid ocid = service.characterOcid(name).block();
+        assertThat(ocid).isNotNull();
+        UnionRaider data = service.unionRaider(ocid.ocid()).block();
+        assertThat(data).isNotNull();
 
-        System.out.println("item = " + item);
-        System.out.println("itemJson = " + itemJson);
-    }
-
-    @Test
-    void unionBasictWork() throws JsonProcessingException {
-        CharacterOcid ocid = service.characterOcid("수빈양").block();
-        UnionBasic basic = service.unionBasic(ocid.ocid()).block();
-
-        String basicJson = new ObjectMapper().writeValueAsString(basic);
-
-        System.out.println("basic = " + basic);
-        System.out.println("basicJson = " + basicJson);
-    }
-
-    @Test
-    void unionArtifactWork() throws JsonProcessingException {
-        CharacterOcid ocid = service.characterOcid("수빈양").block();
-        UnionArtifact artifact = service.unionArtifact(ocid.ocid()).block();
-
-        String artifactJson = new ObjectMapper().writeValueAsString(artifact);
-
-        System.out.println("artifact = " + artifact);
-        System.out.println("artifactJson = " + artifactJson);
-    }
-
-    @Test
-    void unioRaiderWork() throws JsonProcessingException {
-        CharacterOcid ocid = service.characterOcid("수빈양").block();
-        UnionRaider raider = service.unionRaider(ocid.ocid()).block();
-
-        String raiderJson = new ObjectMapper().writeValueAsString(raider);
-
-        System.out.println("raider = " + raider);
-        System.out.println("raiderJson = " + raiderJson);
+        // output
+        System.out.println("data = " + data);
     }
 }

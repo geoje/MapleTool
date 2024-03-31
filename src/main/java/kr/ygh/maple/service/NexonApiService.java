@@ -7,13 +7,10 @@ import kr.ygh.maple.dto.union.UnionArtifact;
 import kr.ygh.maple.dto.union.UnionBasic;
 import kr.ygh.maple.dto.union.UnionRaider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -27,14 +24,6 @@ public class NexonApiService {
     private String NEXON_API_URL;
     @Value("${nexon.api.key}")
     private String NEXON_API_KEY;
-
-    public static Mono<? extends Throwable> onRequestError(ClientResponse response) {
-        return response.bodyToMono(String.class)
-                .flatMap(error -> Mono.error(new ResponseStatusException(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        response.statusCode() + " from " + response.request().getMethod().name() + " " +
-                                response.request().getURI().getPath() + " " + error)));
-    }
 
     private static String yesterday() {
         return LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1).toString();
@@ -51,7 +40,7 @@ public class NexonApiService {
                 .uri(uri, variables)
                 .header("x-nxopen-api-key", NEXON_API_KEY)
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, NexonApiService::onRequestError)
+                .onStatus(HttpStatusCode::isError, MapleGgService::onRequestError)
                 .bodyToMono(elementClass);
     }
 

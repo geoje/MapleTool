@@ -9,7 +9,7 @@ import kr.ygh.maple.dto.character.CharacterOcid;
 import kr.ygh.maple.dto.union.UnionArtifact;
 import kr.ygh.maple.dto.union.UnionBasic;
 import kr.ygh.maple.dto.union.UnionRaider;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,14 +23,12 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class RedisService {
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-    @Autowired
-    private NexonApiService nexonApiService;
-    @Autowired
-    private MapleGgService mapleGgService;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final NexonApiService nexonApiService;
+    private final MapleGgService mapleGgService;
 
     private <T> Mono<T> cacheOrRequest(String name, String key, Class<T> classType, Function<String, Mono<T>> requestNexonFunc) {
         // Return redis data if exists
