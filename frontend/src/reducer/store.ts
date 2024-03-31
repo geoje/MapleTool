@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import characterSlice from "./characterSlice";
 import unionSlice from "./unionSlice";
+import userSlice from "./userSlice";
 
 export const store = configureStore({
   reducer: {
     character: characterSlice,
     union: unionSlice,
+    user: userSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

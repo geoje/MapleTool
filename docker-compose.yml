@@ -1,9 +1,21 @@
+volumes:
+  db:
+
 services:
   redis:
     image: redis:alpine
     restart: always
     ports:
       - 6379:6379
+
+  db:
+    image: mysql
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
 
   app:
     image: openjdk:17.0.2
@@ -12,6 +24,7 @@ services:
       - 4853:8080
     links:
       - redis
+      - db
     volumes:
       - WORKSPACE/build/libs/:/var/www/
     command: "java -jar -Dspring.profiles.active=prod /var/www/maple.jar"

@@ -1,67 +1,30 @@
-import { Grid, GridItem, IconButton, Image, Tooltip } from "@chakra-ui/react";
-import { CharacterItemEquipment } from "../../domain/character/characterItemEquipment";
-import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
-import ItemToolTip from "./itemToolTip";
+import { Grid, GridItem } from "@chakra-ui/react";
+import { useAppSelector } from "../../reducer/hooks";
+import ItemButton from "./import/itemButton";
+import { CharacterItemEquipmentDetail } from "../../domain/character/characterItemEquipment";
 
 export default function SelectItem({
-  characterItemEquipment,
-  preset,
+  onClick,
 }: {
-  characterItemEquipment?: CharacterItemEquipment;
-  preset: number;
+  onClick?: (item: CharacterItemEquipmentDetail) => void;
 }) {
-  if (!characterItemEquipment) return <></>;
-
-  const defaultItemGrid = ItemEquipmentService.itemGrid(
-    characterItemEquipment,
-    0
-  );
-
-  const presetItemGrid = ItemEquipmentService.itemGrid(
-    characterItemEquipment,
-    preset
-  );
+  const inventory = useAppSelector((state) => state.user.inventory);
 
   return (
     <Grid templateColumns="repeat(5, 1fr)" gap={1}>
-      {presetItemGrid.flatMap((items, i) =>
-        items.flatMap((item, j) => {
-          const appear =
-            preset == 1 ||
-            JSON.stringify(item) != JSON.stringify(defaultItemGrid[i][j]);
-          return (
-            <GridItem key={"item-" + i + j}>
-              {item && (
-                <Tooltip
-                  color="white"
-                  background="blackAlpha.800"
-                  w={64}
-                  p={0}
-                  borderRadius={4}
-                  label={<ItemToolTip item={item} />}
-                >
-                  <IconButton
-                    aria-label={"item-" + i + j}
-                    borderWidth={1}
-                    borderColor={
-                      appear
-                        ? ItemEquipmentService.maxPotential(item)?.BORDER_COLOR
-                        : undefined
-                    }
-                    icon={
-                      <Image
-                        src={item?.item_icon}
-                        opacity={appear ? 1 : 0.1}
-                        style={{ imageRendering: "pixelated" }}
-                      />
-                    }
-                  />
-                </Tooltip>
-              )}
-            </GridItem>
-          );
-        })
-      )}
+      {inventory.map((item, i) => (
+        <GridItem key={"item-" + i}>
+          <ItemButton
+            item={item}
+            onClick={onClick ? () => onClick(item) : undefined}
+          />
+        </GridItem>
+      ))}
+      {new Array(5 - (inventory.length % 5)).fill(undefined).map((_, i) => (
+        <GridItem key={"item-empty-" + i}>
+          <ItemButton />
+        </GridItem>
+      ))}
     </Grid>
   );
 }

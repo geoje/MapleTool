@@ -1,6 +1,7 @@
 import axios from "axios";
 import { CharacterBasic } from "../../domain/character/characterBasic";
 import { CharacterItemEquipment } from "../../domain/character/characterItemEquipment";
+import ItemPotential from "../../domain/character/itemEquipment/itemPotential";
 
 const KEY_BASIC = "character-basic";
 const KEY_ITEM_EQUIPMENT = "character-item-equipment";
@@ -14,6 +15,17 @@ export default abstract class CharacterService {
   static requestItemEquipment(name: string): Promise<CharacterItemEquipment> {
     return axios
       .get(`/api/character/item-equipment?name=${name}`)
+      .then((res) => res.data);
+  }
+  static requestPotential(
+    part: string,
+    grade: string,
+    level: number
+  ): Promise<ItemPotential[]> {
+    return axios
+      .get(
+        `/api/character/item-equipment/potential?part=${part}&grade=${grade}&level=${level}`
+      )
       .then((res) => res.data);
   }
 

@@ -1,13 +1,15 @@
-import { Stack, useToast } from "@chakra-ui/react";
+import { Badge, Flex, Stack, Text, useToast } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
-import SelectItem from "./selectItem";
+import ImportItem from "./importItem";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
 import CharacterService from "../../service/character/character";
 import { useEffect, useState } from "react";
 import { setCharacterItemEquipment } from "../../reducer/characterSlice";
 import { AxiosError } from "axios";
 import DateUtil from "../../util/date";
-import SelectPreset from "./selectPreset";
+import SelectPreset from "./import/selectPreset";
+import SelectItem from "./selectItem";
+import ItemPotential from "../../domain/character/itemEquipment/itemPotential";
 
 export default function Potential() {
   const toast = useToast();
@@ -18,6 +20,7 @@ export default function Potential() {
   );
 
   const [preset, setPreset] = useState(1);
+  const [temp, setTemp] = useState<ItemPotential[]>([]);
 
   useEffect(() => {
     // Check character name
@@ -92,17 +95,41 @@ export default function Potential() {
       <Stack>
         <BoardCard
           order={1}
-          title="장비 선택"
+          title="장비 가져오기"
           right={<SelectPreset preset={preset} onChange={setPreset} />}
         >
-          <SelectItem
+          <ImportItem
             characterItemEquipment={characterItemEquipment}
             preset={preset}
           />
         </BoardCard>
-        {/* {characterItemEquipment && (
-          <ItemToolTip item={characterItemEquipment?.item_equipment[0]} />
-        )} */}
+        <BoardCard order={2} title="장비 선택">
+          <SelectItem
+            onClick={(item) => {
+              CharacterService.requestPotential(
+                item.item_equipment_part,
+                item.potential_option_grade,
+                item.item_base_option.base_equipment_level
+              ).then((potentials) => setTemp(potentials));
+            }}
+          />
+        </BoardCard>
+      </Stack>
+      <Stack flex={1}>
+        <BoardCard order={3} title="잠재능력 재설정">
+          {[...new Set(temp.map((p) => p.position))].map((pos) => (
+            <Flex key={"pos-" + pos} gap={1} wrap="wrap" mb={8}>
+              {temp
+                .filter((p) => p.position == pos)
+                .map((p, i) => (
+                  <Badge key={"p-" + i}>
+                    {p.name.replace("n", p.value.toString())} / {p.probability}
+                  </Badge>
+                ))}
+            </Flex>
+          ))}
+        </BoardCard>
+        <BoardCard order={4} title="에디셔널 잠재능력 재설정"></BoardCard>
       </Stack>
     </>
   );
