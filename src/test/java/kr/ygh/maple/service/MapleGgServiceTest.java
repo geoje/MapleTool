@@ -17,7 +17,7 @@ public class MapleGgServiceTest {
     MapleGgService service;
 
     @Test
-    @DisplayName("데이터를 요청한다.")
+    @DisplayName("바이패스 API를 요청한다.")
     void requestWork() {
         // given
         String name = "수빈양";

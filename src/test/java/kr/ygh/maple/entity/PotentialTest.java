@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,18 +22,25 @@ class PotentialTest {
     PotentialRepository potentialRepository;
 
     @Test
-    @DisplayName("각 라인의 확률 합이 1 과 오차 0.000015 사이 이다.")
+    @DisplayName("모든 경우의 수에 각 라인 확률 합이 1과 오차 0.000015사이 이다.")
     void validateProbabilitiesSum() {
         // given
         final double offset = 0.000015;
         final List<Object[]> results = potentialRepository.findProbabilitySum();
 
         // when
-        final boolean actual = results.stream()
-                .map(result -> (double) result[4])
-                .allMatch(p -> Math.abs(p - 1) < offset);
+        final List<Object[]> overOffsetResults = results.stream()
+                .filter(result -> Math.abs(((double) result[4]) - 1) > offset)
+                .toList();
 
         // then
-        assertThat(actual).isTrue();
+        assertThat(overOffsetResults.size()).isZero();
+
+        // output
+        overOffsetResults.stream()
+                .map(result -> Arrays.stream(result)
+                        .map(Object::toString)
+                        .collect(Collectors.joining()))
+                .forEach(System.out::println);
     }
 }

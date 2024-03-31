@@ -22,7 +22,8 @@ public class NexonApiServiceTest {
     NexonApiService service;
 
     @Test
-    void basicTest() {
+    @DisplayName("캐릭터 기본 정보를 요청한다.")
+    void basic() {
         // given & when
         CharacterBasic basic = service.characterBasic(ocid).block();
 
@@ -34,7 +35,8 @@ public class NexonApiServiceTest {
     }
 
     @Test
-    void anyTest() {
+    @DisplayName("캐릭터 명으로 OCID 요청 후 데이터를 요청한다.")
+    void any() {
         // given
         String name = "수빈양";
 
