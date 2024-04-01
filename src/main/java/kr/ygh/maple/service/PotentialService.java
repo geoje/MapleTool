@@ -43,9 +43,7 @@ public class PotentialService {
         final String convertedPart = partMap.getOrDefault(part, part);
 
         CompletableFuture<Integer> existLevelFuture = CompletableFuture.supplyAsync(() ->
-                        120
-//                potentialRepository.findMaxLevelLessOrEqualThan(convertedPart, level)
-        );
+                potentialRepository.findMaxLevelLessOrEqualThan(convertedPart, level));
         CompletableFuture<List<Potential>> potentialsFuture = existLevelFuture.thenApplyAsync(existLevel ->
                 potentialRepository.findAllByPartAndGradeAndLevel(convertedPart, grade, existLevel));
 
