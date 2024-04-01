@@ -1,6 +1,10 @@
 package kr.ygh.maple.config;
 
-import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -40,27 +44,28 @@ public class StaticContentFilter implements Filter {
     }
 
     private void resourceToResponse(String resourcePath, HttpServletResponse response) throws IOException {
-        InputStream inputStream = Thread.currentThread()
+        try (InputStream inputStream = Thread.currentThread()
                 .getContextClassLoader()
-                .getResourceAsStream(resourcePath);
+                .getResourceAsStream(resourcePath)) {
 
-        if (inputStream == null) {
-            response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
-            return;
-        }
+            if (inputStream == null) {
+                response.sendError(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase());
+                return;
+            }
 
-        if (resourcePath.endsWith(".html")) {
-            response.setContentType("text/html");
-        }
-        if (resourcePath.endsWith(".css")) {
-            response.setContentType("text/css");
-        }
-        if (resourcePath.endsWith(".js")) {
-            response.setContentType("text/javascript");
-        } else {
-            response.setContentType(URLConnection.guessContentTypeFromName(resourcePath));
-        }
+            if (resourcePath.endsWith(".html")) {
+                response.setContentType("text/html");
+            }
+            if (resourcePath.endsWith(".css")) {
+                response.setContentType("text/css");
+            }
+            if (resourcePath.endsWith(".js")) {
+                response.setContentType("text/javascript");
+            } else {
+                response.setContentType(URLConnection.guessContentTypeFromName(resourcePath));
+            }
 
-        inputStream.transferTo(response.getOutputStream());
+            inputStream.transferTo(response.getOutputStream());
+        }
     }
 }
