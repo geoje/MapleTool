@@ -1,7 +1,12 @@
-import { Badge, Flex, IconButton, Stack, useToast } from "@chakra-ui/react";
+import {
+  Badge,
+  Flex,
+  Stack,
+  UseToastOptions,
+  useToast,
+} from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
 import ImportItem from "./importItem";
-import { FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
 import CharacterService from "../../service/character/character";
 import { useEffect, useState } from "react";
@@ -13,6 +18,7 @@ import SelectItem from "./selectItem";
 import ItemPotential from "../../dto/character/itemEquipment/itemPotential";
 import DeleteButton from "./select/deleteButton";
 import { spliceUserInventory } from "../../reducer/userSlice";
+import { CharacterItemEquipmentDetail } from "../../dto/character/characterItemEquipment";
 
 export default function Potential() {
   const toast = useToast();
@@ -120,13 +126,7 @@ export default function Potential() {
         >
           <SelectItem
             deleteModeOn={deleteMode}
-            onSelect={(item) => {
-              CharacterService.requestPotential(
-                item.item_equipment_part,
-                item.potential_option_grade,
-                item.item_base_option.base_equipment_level
-              ).then((potentials) => setTemp(potentials));
-            }}
+            onSelect={(item) => onSelected(item, setTemp, toast)}
             onDelete={(index) => dispatch(spliceUserInventory(index))}
           />
         </BoardCard>
@@ -149,4 +149,26 @@ export default function Potential() {
       </Stack>
     </>
   );
+}
+
+function onSelected(
+  item: CharacterItemEquipmentDetail,
+  setPotentials: (potentials: ItemPotential[]) => void,
+  onErrorToast: (options?: UseToastOptions | undefined) => void
+) {
+  CharacterService.requestPotential(
+    item.item_equipment_part,
+    item.potential_option_grade,
+    item.item_base_option.base_equipment_level
+  )
+    .then((potentials) => setPotentials(potentials))
+    .catch((reason) =>
+      onErrorToast({
+        position: "top-right",
+        status: "warning",
+        title: `잠재능력 확률 데이터 요청 실패 (${reason.message})`,
+        description: Object(reason.response?.data).message,
+        isClosable: true,
+      })
+    );
 }
