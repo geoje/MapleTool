@@ -1,27 +1,28 @@
 import {
-  Flex,
   Grid,
   GridItem,
   IconButton,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useAppSelector } from "../../reducer/hooks";
 import ItemButton from "./import/itemButton";
-import { CharacterItemEquipmentDetail } from "../../dto/character/characterItemEquipment";
 
 export default function SelectItem({
   deleteModeOn,
+  selectedIndex,
   onSelect,
   onDelete,
 }: {
   deleteModeOn: boolean;
-  onSelect: (item: CharacterItemEquipmentDetail) => void;
+  selectedIndex: number;
+  onSelect: (index: number) => void;
   onDelete: (index: number) => void;
 }) {
   const inventory = useAppSelector((state) => state.user.inventory);
 
-  const deleteIconColor = useColorModeValue("white", "black");
+  const iconColor = useColorModeValue("white", "black");
 
   return (
     <Grid templateColumns="repeat(5, 1fr)" gap={1}>
@@ -29,8 +30,18 @@ export default function SelectItem({
         <GridItem key={"item-" + i} position="relative">
           <ItemButton
             item={item}
-            onClick={onSelect ? () => onSelect(item) : undefined}
+            onClick={onSelect ? () => onSelect(i) : undefined}
           />
+          {!deleteModeOn && selectedIndex == i && (
+            <IconButton
+              aria-label="selected"
+              position="absolute"
+              left={0}
+              opacity={0.6}
+              colorScheme="blue"
+              icon={<FaCheck size={24} color={iconColor} />}
+            />
+          )}
           {deleteModeOn && (
             <IconButton
               aria-label="delete"
@@ -38,7 +49,7 @@ export default function SelectItem({
               left={0}
               opacity={0.6}
               colorScheme="red"
-              icon={<IoClose size={24} color={deleteIconColor} />}
+              icon={<IoClose size={24} color={iconColor} />}
               onClick={() => onDelete(i)}
             />
           )}

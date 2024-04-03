@@ -6,10 +6,12 @@ import { CharacterItemEquipmentDetail } from "../../../dto/character/characterIt
 export default function ItemButton({
   item,
   appear = true,
+  colorScheme,
   onClick,
 }: {
   item?: CharacterItemEquipmentDetail;
   appear?: boolean;
+  colorScheme?: string;
   onClick?: () => void;
 }) {
   return item ? (
@@ -29,6 +31,7 @@ export default function ItemButton({
             ? ItemEquipmentService.maxPotential(item)?.BORDER_COLOR
             : undefined
         }
+        colorScheme={colorScheme}
         icon={
           <Image
             src={item?.item_icon}

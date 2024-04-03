@@ -1,4 +1,4 @@
-export default interface ItemPotential {
+export default interface potentialProbability {
   position: number;
   name: string;
   value: number;

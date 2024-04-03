@@ -15,7 +15,7 @@ import { AxiosError } from "axios";
 import DateUtil from "../../util/date";
 import SelectPreset from "./import/selectPreset";
 import SelectItem from "./selectItem";
-import ItemPotential from "../../dto/character/itemEquipment/itemPotential";
+import potentialProbability from "../../dto/character/itemEquipment/potentialProbability";
 import DeleteButton from "./select/deleteButton";
 import { spliceUserInventory } from "../../reducer/userSlice";
 import { CharacterItemEquipmentDetail } from "../../dto/character/characterItemEquipment";
@@ -31,7 +31,10 @@ export default function Potential() {
 
   const [preset, setPreset] = useState(1);
   const [deleteMode, setDeleteMode] = useState(false);
-  const [temp, setTemp] = useState<ItemPotential[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [probabilities, setProbabilities] = useState<potentialProbability[]>(
+    []
+  );
 
   useEffect(() => {
     // Check character name
@@ -125,17 +128,25 @@ export default function Potential() {
           }
         >
           <SelectItem
+            selectedIndex={selectedIndex}
             deleteModeOn={deleteMode}
-            onSelect={(item) => onSelected(item, setTemp, toast)}
+            onSelect={(index) => {
+              setSelectedIndex(index);
+              requestPotentialProbabilities(
+                inventory[index],
+                setProbabilities,
+                toast
+              );
+            }}
             onDelete={(index) => dispatch(spliceUserInventory(index))}
           />
         </BoardCard>
       </Stack>
       <Stack flex={1}>
         <BoardCard order={3} title="잠재능력 재설정">
-          {[...new Set(temp.map((p) => p.position))].map((pos) => (
+          {[...new Set(probabilities.map((p) => p.position))].map((pos) => (
             <Flex key={"pos-" + pos} gap={1} wrap="wrap" mb={8}>
-              {temp
+              {probabilities
                 .filter((p) => p.position == pos)
                 .map((p, i) => (
                   <Badge key={"p-" + i}>
@@ -151,9 +162,9 @@ export default function Potential() {
   );
 }
 
-function onSelected(
+function requestPotentialProbabilities(
   item: CharacterItemEquipmentDetail,
-  setPotentials: (potentials: ItemPotential[]) => void,
+  setPotentials: (potentials: potentialProbability[]) => void,
   onErrorToast: (options?: UseToastOptions | undefined) => void
 ) {
   CharacterService.requestPotential(
