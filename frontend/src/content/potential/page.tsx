@@ -1,6 +1,7 @@
-import { Badge, Flex, Stack, Text, useToast } from "@chakra-ui/react";
+import { Badge, Flex, IconButton, Stack, useToast } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
 import ImportItem from "./importItem";
+import { FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
 import CharacterService from "../../service/character/character";
 import { useEffect, useState } from "react";
@@ -10,6 +11,8 @@ import DateUtil from "../../util/date";
 import SelectPreset from "./import/selectPreset";
 import SelectItem from "./selectItem";
 import ItemPotential from "../../domain/character/itemEquipment/itemPotential";
+import DeleteButton from "./select/deleteButton";
+import { spliceUserInventory } from "../../reducer/userSlice";
 
 export default function Potential() {
   const toast = useToast();
@@ -18,8 +21,10 @@ export default function Potential() {
   const characterItemEquipment = useAppSelector(
     (state) => state.character.itemEquipment
   );
+  const inventory = useAppSelector((state) => state.user.inventory);
 
   const [preset, setPreset] = useState(1);
+  const [deleteMode, setDeleteMode] = useState(false);
   const [temp, setTemp] = useState<ItemPotential[]>([]);
 
   useEffect(() => {
@@ -103,15 +108,26 @@ export default function Potential() {
             preset={preset}
           />
         </BoardCard>
-        <BoardCard order={2} title="장비 선택">
+        <BoardCard
+          order={2}
+          title="장비 선택"
+          right={
+            <DeleteButton
+              modeOn={deleteMode}
+              onClick={() => setDeleteMode(!deleteMode)}
+            />
+          }
+        >
           <SelectItem
-            onClick={(item) => {
+            deleteModeOn={deleteMode}
+            onSelect={(item) => {
               CharacterService.requestPotential(
                 item.item_equipment_part,
                 item.potential_option_grade,
                 item.item_base_option.base_equipment_level
               ).then((potentials) => setTemp(potentials));
             }}
+            onDelete={(index) => dispatch(spliceUserInventory(index))}
           />
         </BoardCard>
       </Stack>
