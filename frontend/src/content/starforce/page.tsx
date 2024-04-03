@@ -8,7 +8,6 @@ import { AxiosError } from "axios";
 import DateUtil from "../../util/date";
 import SelectPreset from "../potential/import/selectPreset";
 import ImportItem from "../potential/importItem";
-import SelectItem from "../potential/selectItem";
 
 export default function Starforce() {
   const toast = useToast();
@@ -101,12 +100,6 @@ export default function Starforce() {
             preset={preset}
           />
         </BoardCard>
-        <BoardCard order={2} title="장비 선택">
-          <SelectItem />
-        </BoardCard>
-      </Stack>
-      <Stack>
-        <BoardCard order={3} title="스타포스 강화"></BoardCard>
       </Stack>
     </>
   );

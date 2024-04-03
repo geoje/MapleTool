@@ -1,7 +1,7 @@
 import axios from "axios";
-import { CharacterBasic } from "../../domain/character/characterBasic";
-import { CharacterItemEquipment } from "../../domain/character/characterItemEquipment";
-import ItemPotential from "../../domain/character/itemEquipment/itemPotential";
+import { CharacterBasic } from "../../dto/character/characterBasic";
+import { CharacterItemEquipment } from "../../dto/character/characterItemEquipment";
+import ItemPotential from "../../dto/character/itemEquipment/itemPotential";
 
 const KEY_BASIC = "character-basic";
 const KEY_ITEM_EQUIPMENT = "character-item-equipment";

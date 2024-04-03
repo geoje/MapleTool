@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Union from "../domain/union/union";
+import Union from "../dto/union/union";
 import UnionService from "../service/union/union";
-import { UnionBasic } from "../domain/union/unionBasic";
-import { UnionArtifact } from "../domain/union/unionArtifact";
-import { UnionRaider } from "../domain/union/unionRaider";
+import { UnionBasic } from "../dto/union/unionBasic";
+import { UnionArtifact } from "../dto/union/unionArtifact";
+import { UnionRaider } from "../dto/union/unionRaider";
 
 const unionSlice = createSlice({
   name: "union",

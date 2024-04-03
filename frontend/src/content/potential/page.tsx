@@ -10,7 +10,7 @@ import { AxiosError } from "axios";
 import DateUtil from "../../util/date";
 import SelectPreset from "./import/selectPreset";
 import SelectItem from "./selectItem";
-import ItemPotential from "../../domain/character/itemEquipment/itemPotential";
+import ItemPotential from "../../dto/character/itemEquipment/itemPotential";
 import DeleteButton from "./select/deleteButton";
 import { spliceUserInventory } from "../../reducer/userSlice";
 

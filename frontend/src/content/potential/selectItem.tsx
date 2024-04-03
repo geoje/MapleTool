@@ -8,7 +8,7 @@ import {
 import { IoClose } from "react-icons/io5";
 import { useAppSelector } from "../../reducer/hooks";
 import ItemButton from "./import/itemButton";
-import { CharacterItemEquipmentDetail } from "../../domain/character/characterItemEquipment";
+import { CharacterItemEquipmentDetail } from "../../dto/character/characterItemEquipment";
 
 export default function SelectItem({
   deleteModeOn,

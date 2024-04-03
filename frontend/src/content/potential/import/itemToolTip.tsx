@@ -13,7 +13,7 @@ import {
   POTENTIALS,
   TOOLTIP_COLORS,
 } from "../../../service/character/itemEquipment/itemEquipmentConst";
-import { CharacterItemEquipmentDetail } from "../../../domain/character/characterItemEquipment";
+import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
 import ItemEquipmentService from "../../../service/character/itemEquipment/itemEquipment";
 
 export default function ItemToolTip({

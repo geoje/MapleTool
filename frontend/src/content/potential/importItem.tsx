@@ -1,5 +1,5 @@
 import { Grid, GridItem } from "@chakra-ui/react";
-import { CharacterItemEquipment } from "../../domain/character/characterItemEquipment";
+import { CharacterItemEquipment } from "../../dto/character/characterItemEquipment";
 import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
 import ItemButton from "./import/itemButton";
 import { useAppDispatch } from "../../reducer/hooks";

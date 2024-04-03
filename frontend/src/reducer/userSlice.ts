@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CharacterItemEquipmentDetail } from "../domain/character/characterItemEquipment";
+import { CharacterItemEquipmentDetail } from "../dto/character/characterItemEquipment";
 
 const userSlice = createSlice({
   name: "user",

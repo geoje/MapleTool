@@ -1,7 +1,7 @@
 import { IconButton, Image, Tooltip } from "@chakra-ui/react";
 import ItemToolTip from "./itemToolTip";
 import ItemEquipmentService from "../../../service/character/itemEquipment/itemEquipment";
-import { CharacterItemEquipmentDetail } from "../../../domain/character/characterItemEquipment";
+import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
 
 export default function ItemButton({
   item,

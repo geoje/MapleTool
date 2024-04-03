@@ -1,7 +1,7 @@
 import {
   CharacterItemEquipment,
   CharacterItemEquipmentDetail,
-} from "../../../domain/character/characterItemEquipment";
+} from "../../../dto/character/characterItemEquipment";
 import {
   MAX_STARFORCE_COUNTS,
   POTENTIALS,

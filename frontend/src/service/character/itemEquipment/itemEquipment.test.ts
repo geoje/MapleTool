@@ -1,4 +1,4 @@
-import { CharacterItemEquipment } from "../../../domain/character/characterItemEquipment";
+import { CharacterItemEquipment } from "../../../dto/character/characterItemEquipment";
 import ItemEquipmentService from "./itemEquipment";
 import sampleJson from "./itemEquipment.sample.json";
 
