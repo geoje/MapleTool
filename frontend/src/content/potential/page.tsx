@@ -19,6 +19,7 @@ import potentialProbability from "../../dto/character/itemEquipment/potentialPro
 import DeleteButton from "./select/deleteButton";
 import { spliceUserInventory } from "../../reducer/userSlice";
 import { CharacterItemEquipmentDetail } from "../../dto/character/characterItemEquipment";
+import ResetPotential from "./resetPotential";
 
 export default function Potential() {
   const toast = useToast();
@@ -138,24 +139,21 @@ export default function Potential() {
                 toast
               );
             }}
-            onDelete={(index) => dispatch(spliceUserInventory(index))}
+            onDelete={(index) => {
+              if (index == selectedIndex) setSelectedIndex(-1);
+              else if (index < selectedIndex)
+                setSelectedIndex(selectedIndex - 1);
+              dispatch(spliceUserInventory(index));
+            }}
           />
         </BoardCard>
       </Stack>
-      <Stack flex={1}>
+      <Stack>
         <BoardCard order={3} title="잠재능력 재설정">
-          {[...new Set(probabilities.map((p) => p.position))].map((pos) => (
-            <Flex key={"pos-" + pos} gap={1} wrap="wrap" mb={8}>
-              {probabilities
-                .filter((p) => p.position == pos)
-                .map((p, i) => (
-                  <Badge key={"p-" + i}>
-                    {p.name.replace("n", p.value.toString())} / {p.probability}
-                  </Badge>
-                ))}
-            </Flex>
-          ))}
+          <ResetPotential itemIndex={selectedIndex} />
         </BoardCard>
+      </Stack>
+      <Stack>
         <BoardCard order={4} title="에디셔널 잠재능력 재설정"></BoardCard>
       </Stack>
     </>
