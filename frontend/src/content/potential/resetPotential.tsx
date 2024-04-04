@@ -9,12 +9,16 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
+import { AnimatedCounter } from "react-animated-counter";
 import { useAppSelector } from "../../reducer/hooks";
+import { useState } from "react";
 
 export default function ResetPotential({ itemIndex }: { itemIndex: number }) {
   const inventory = useAppSelector((state) => state.user.inventory);
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
+
+  const [meso, setMeso] = useState(0);
 
   const item = inventory[itemIndex];
 
@@ -66,7 +70,16 @@ export default function ResetPotential({ itemIndex }: { itemIndex: number }) {
       >
         <Text fontSize={12}>40,000,000 메소</Text>
       </Flex>
-      <Button size="xs">한 번 더 재설정하기</Button>
+      <Button size="xs" onClick={() => setMeso(meso + 40000000)}>
+        한 번 더 재설정하기
+      </Button>
+      <AnimatedCounter
+        includeDecimals={false}
+        incrementColor="black"
+        includeCommas
+        fontSize="16px"
+        value={meso}
+      />
     </Stack>
   );
 }
