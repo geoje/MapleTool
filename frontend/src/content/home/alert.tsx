@@ -15,7 +15,7 @@ export function AlertUsage() {
     <Alert status="success" variant="left-accent" gap={2}>
       <MdCheckCircle />
       좌측 또는 모바일일 경우 상단 메뉴 버튼을 누른 후 서비스를 선택하여
-      이용하실 수 있습니다
+      이용하실 수 있습니다 <br /> 새양이랑 낙낙은 사이좋은 친구입니다
     </Alert>
   );
 }
