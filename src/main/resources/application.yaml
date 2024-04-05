@@ -28,4 +28,3 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
-    show-sql: true

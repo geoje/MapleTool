@@ -10,6 +10,7 @@ import {
   Spacer,
   Tooltip,
   useColorMode,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
@@ -110,20 +111,26 @@ function Mobile() {
 function SpentButton() {
   const dispatch = useDispatch();
   const spent = useAppSelector((state) => state.user.spent);
+  const color = useColorModeValue("black", "white");
 
   return (
     <Tooltip label="사용한 메소 (클릭 시 초기화)">
       <Button
         variant="ghost"
-        leftIcon={<Image src="/item-equipment/meso.png" />}
+        leftIcon={
+          <Image
+            src="/item-equipment/meso.png"
+            style={{ imageRendering: "pixelated" }}
+          />
+        }
         onClick={() => dispatch(clearUserSpent())}
-        style={{ imageRendering: "pixelated" }}
       >
         <AnimatedCounter
           includeDecimals={false}
-          incrementColor="black"
+          incrementColor={color}
           includeCommas
           fontSize="12px"
+          color={color}
           value={spent}
         />
       </Button>

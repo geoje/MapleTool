@@ -3,7 +3,6 @@ import {
   Button,
   Flex,
   Heading,
-  IconButton,
   Image,
   Stack,
   Text,
@@ -12,14 +11,41 @@ import {
 import { useAppSelector } from "../../reducer/hooks";
 import { useDispatch } from "react-redux";
 import { addUserSpent } from "../../reducer/userSlice";
+import { useState } from "react";
 
-export default function ResetPotential({ itemIndex }: { itemIndex: number }) {
+export default function ResetPotential({
+  type,
+  itemIndex,
+}: {
+  type: "normal" | "additional";
+  itemIndex: number;
+}) {
   const dispatch = useDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
 
   const item = inventory[itemIndex];
+  const grade =
+    type == "additional"
+      ? item?.additional_potential_option_grade
+      : item?.potential_option_grade;
+  const options =
+    type == "additional"
+      ? [
+          item?.additional_potential_option_1,
+          item?.additional_potential_option_2,
+          item?.additional_potential_option_3,
+        ]
+      : [
+          item?.potential_option_1,
+          item?.potential_option_2,
+          item?.potential_option_3,
+        ];
+  const cost = 40000000;
+
+  const [newGrade, setNewGrade] = useState("");
+  const [newOptions, setNewOptions] = useState([]);
 
   return (
     <Stack minW={44}>
@@ -46,30 +72,24 @@ export default function ResetPotential({ itemIndex }: { itemIndex: number }) {
           />
         </Flex>
       </Flex>
-      <OptionsButton
-        grade={item?.potential_option_grade}
-        options={[
-          item?.potential_option_1,
-          item?.potential_option_2,
-          item?.potential_option_3,
-        ]}
-      />
-      <OptionsButton
-        grade={item?.potential_option_grade}
-        options={[
-          item?.potential_option_1,
-          item?.potential_option_2,
-          item?.potential_option_3,
-        ]}
-      />
+      <OptionsButton title="BEFORE" grade={grade} options={options} />
+      <OptionsButton title="AFTER" grade={newGrade} options={newOptions} />
       <Flex
         justifyContent="space-between"
+        align="center"
         bgColor={dark ? "gray.800" : "gray.50"}
+        px={1}
         borderRadius={8}
       >
-        <Text fontSize={12}>40,000,000 메소</Text>
+        <Image
+          src="/item-equipment/meso.png"
+          style={{ imageRendering: "pixelated" }}
+        />
+        <Text fontSize={12}>
+          {cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 메소
+        </Text>
       </Flex>
-      <Button size="xs" onClick={() => dispatch(addUserSpent(40000000))}>
+      <Button size="xs" onClick={() => dispatch(addUserSpent(cost))}>
         한 번 더 재설정하기
       </Button>
     </Stack>
@@ -77,9 +97,11 @@ export default function ResetPotential({ itemIndex }: { itemIndex: number }) {
 }
 
 function OptionsButton({
+  title,
   grade,
   options,
 }: {
+  title: string;
   grade: string;
   options: string[];
 }) {
@@ -96,7 +118,7 @@ function OptionsButton({
     >
       <Flex justify="space-between" mb={1}>
         <Heading pl={1} fontSize={12}>
-          BEFORE
+          {title}
         </Heading>
         <Badge px={1} variant="solid" colorScheme="orange" borderRadius={4}>
           선택
@@ -106,7 +128,7 @@ function OptionsButton({
         pb={1}
         gap={0}
         borderRadius={4}
-        backgroundColor={dark ? "gray.700" : "gray.300"}
+        backgroundColor={dark ? "gray.800" : "gray.300"}
       >
         <Text
           h={4}
@@ -114,7 +136,7 @@ function OptionsButton({
           fontSize={12}
           textAlign="center"
           borderTopRadius={4}
-          backgroundColor={dark ? "gray.800" : "gray.400"}
+          backgroundColor={dark ? "gray.700" : "gray.400"}
         >
           {grade}
         </Text>

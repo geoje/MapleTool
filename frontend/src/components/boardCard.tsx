@@ -40,7 +40,7 @@ export default function BoardCard({
   return (
     <Card>
       <CardBody>
-        <Flex pb={6} gap={2}>
+        <Flex pb={5} gap={2}>
           {NumberIcons[order]}
           <Heading size="sm">{title}</Heading>
           <Spacer />

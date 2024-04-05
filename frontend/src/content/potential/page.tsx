@@ -151,11 +151,13 @@ export default function Potential() {
       </Stack>
       <Stack>
         <BoardCard order={3} title="잠재능력 재설정">
-          <ResetPotential itemIndex={selectedIndex} />
+          <ResetPotential type="normal" itemIndex={selectedIndex} />
         </BoardCard>
       </Stack>
       <Stack>
-        <BoardCard order={4} title="에디셔널 잠재능력 재설정"></BoardCard>
+        <BoardCard order={4} title="에디셔널 재설정">
+          <ResetPotential type="additional" itemIndex={selectedIndex} />
+        </BoardCard>
       </Stack>
     </>
   );
