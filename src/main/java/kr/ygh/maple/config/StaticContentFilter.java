@@ -55,11 +55,9 @@ public class StaticContentFilter implements Filter {
 
             if (resourcePath.endsWith(".html")) {
                 response.setContentType("text/html");
-            }
-            if (resourcePath.endsWith(".css")) {
+            } else if (resourcePath.endsWith(".css")) {
                 response.setContentType("text/css");
-            }
-            if (resourcePath.endsWith(".js")) {
+            } else if (resourcePath.endsWith(".js")) {
                 response.setContentType("text/javascript");
             } else {
                 response.setContentType(URLConnection.guessContentTypeFromName(resourcePath));
