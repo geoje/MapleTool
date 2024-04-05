@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Flex,
   Heading,
@@ -46,6 +45,7 @@ function Desktop() {
 
   useEffect(() => {
     document.title = "메이플 도구" + (title ? " | " + title : "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (

@@ -2,6 +2,7 @@ import { IconButton, Image, Tooltip } from "@chakra-ui/react";
 import ItemToolTip from "./itemToolTip";
 import ItemEquipmentService from "../../../service/character/itemEquipment/itemEquipment";
 import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
+import { BORDER_COLOR } from "../../../service/character/itemEquipment/potentialConst";
 
 export default function ItemButton({
   item,
@@ -14,6 +15,10 @@ export default function ItemButton({
   colorScheme?: string;
   onClick?: () => void;
 }) {
+  const potentialIndex = item
+    ? ItemEquipmentService.getMaxPotentialIndex(item)
+    : -1;
+
   return item ? (
     <Tooltip
       color="white"
@@ -27,8 +32,8 @@ export default function ItemButton({
         aria-label="item"
         borderWidth={1}
         borderColor={
-          appear
-            ? ItemEquipmentService.maxPotential(item)?.BORDER_COLOR
+          appear && potentialIndex != -1
+            ? BORDER_COLOR[potentialIndex]
             : undefined
         }
         colorScheme={colorScheme}

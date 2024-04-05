@@ -2,11 +2,8 @@ import {
   CharacterItemEquipment,
   CharacterItemEquipmentDetail,
 } from "../../../dto/character/characterItemEquipment";
-import {
-  MAX_STARFORCE_COUNTS,
-  POTENTIALS,
-  SLOT_GRID,
-} from "./itemEquipmentConst";
+import { MAX_STARFORCE_COUNTS, SLOT_GRID } from "./itemEquipmentConst";
+import { KOR_NAME } from "./potentialConst";
 
 export default abstract class ItemEquipmentService {
   static itemGrid(
@@ -30,16 +27,15 @@ export default abstract class ItemEquipmentService {
       )
     );
   }
-  static maxPotential(item: CharacterItemEquipmentDetail) {
+  static getMaxPotentialIndex(item: CharacterItemEquipmentDetail) {
     const gradeIndexes = [
       item.potential_option_grade,
       item.additional_potential_option_grade,
-    ].map((grade) => POTENTIALS.findIndex((p) => p.KOR_NAME == grade));
-    const index = Math.max(gradeIndexes[0], gradeIndexes[1]);
-
-    return index == -1 ? undefined : POTENTIALS[index];
+    ].map((grade) => KOR_NAME.findIndex((name) => name == grade));
+    
+    return Math.max(gradeIndexes[0], gradeIndexes[1]);
   }
-  static maxStarforceCount(item: CharacterItemEquipmentDetail) {
+  static getMaxStarforceCount(item: CharacterItemEquipmentDetail) {
     if (
       [
         item.scroll_upgrade,

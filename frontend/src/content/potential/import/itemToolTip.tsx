@@ -9,39 +9,42 @@ import {
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
-import {
-  POTENTIALS,
-  TOOLTIP_COLORS,
-} from "../../../service/character/itemEquipment/itemEquipmentConst";
+import { TOOLTIP_COLORS } from "../../../service/character/itemEquipment/itemEquipmentConst";
 import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
 import ItemEquipmentService from "../../../service/character/itemEquipment/itemEquipment";
+import {
+  ENG_NAME,
+  IMAGE_COLOR,
+  KOR_NAME,
+  TEXT_COLOR,
+} from "../../../service/character/itemEquipment/potentialConst";
 
 export default function ItemToolTip({
   item,
 }: {
   item: CharacterItemEquipmentDetail;
 }) {
+  const potentialIndex = ItemEquipmentService.getMaxPotentialIndex(item);
+
   return (
     <Box>
       <Stack align="stretch" p={2} gap={1}>
         <Starforce
           count={parseInt(item.starforce)}
-          maxCount={ItemEquipmentService.maxStarforceCount(item)}
+          maxCount={ItemEquipmentService.getMaxStarforceCount(item)}
         />
         <ItemName
           name={item.item_name}
           upgrade={item.scroll_upgrade}
           soulName={item.soul_name}
         />
-        <PotentialGrade
-          potential={ItemEquipmentService.maxPotential(item)?.KOR_NAME}
-        />
+        <PotentialGrade potential={KOR_NAME[potentialIndex]} />
       </Stack>
 
       <Divider variant="dashed" opacity={0.2} />
       <ImageAndReqLevel
         imgUrl={item.item_icon}
-        potentialColor={ItemEquipmentService.maxPotential(item)?.IMAGE_COLOR}
+        potentialColor={IMAGE_COLOR[potentialIndex]}
         reqLevel={item.item_base_option.base_equipment_level}
       />
 
@@ -100,7 +103,7 @@ function ItemName({
         <Heading
           size="xs"
           textAlign="center"
-          color={POTENTIALS[POTENTIALS.length - 1].TEXT_COLOR}
+          color={TEXT_COLOR[TEXT_COLOR.length - 1]}
         >
           {soulName.substring(0, soulName.indexOf(" 소울"))}
         </Heading>
@@ -416,10 +419,8 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
 }
 
 function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
-  const potential = POTENTIALS.find(
-    (p) => p.KOR_NAME == item.potential_option_grade
-  );
-  if (!potential) return <></>;
+  const potentialIndex = ItemEquipmentService.getMaxPotentialIndex(item);
+  if (potentialIndex == -1) return <></>;
 
   return (
     <>
@@ -427,10 +428,10 @@ function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={`/item-equipment/potential/${potential?.ENG_NAME}.png`}
+            src={`/item-equipment/potential/${ENG_NAME[potentialIndex]}.png`}
             style={{ imageRendering: "pixelated" }}
           />
-          <Text fontSize="xs" color={potential?.TEXT_COLOR}>
+          <Text fontSize="xs" color={TEXT_COLOR[potentialIndex]}>
             잠재옵션
           </Text>
         </Flex>
@@ -448,10 +449,8 @@ function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
   );
 }
 function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
-  const potential = POTENTIALS.find(
-    (p) => p.KOR_NAME == item.additional_potential_option_grade
-  );
-  if (!potential) return <></>;
+  const potentialIndex = ItemEquipmentService.getMaxPotentialIndex(item);
+  if (potentialIndex == -1) return <></>;
 
   return (
     <>
@@ -459,10 +458,10 @@ function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={`/item-equipment/potential/${potential?.ENG_NAME}.png`}
+            src={`/item-equipment/potential/${ENG_NAME[potentialIndex]}.png`}
             style={{ imageRendering: "pixelated" }}
           />
-          <Text fontSize="xs" color={potential?.TEXT_COLOR}>
+          <Text fontSize="xs" color={TEXT_COLOR[potentialIndex]}>
             에디셔널 잠재옵션
           </Text>
         </Flex>

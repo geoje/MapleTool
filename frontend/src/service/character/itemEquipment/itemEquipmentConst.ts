@@ -6,36 +6,6 @@ export const SLOT_GRID = [
   ["포켓 아이템", "벨트", "하의", "장갑", "망토"],
   ["", "", "신발", "", "기계 심장"],
 ];
-export const POTENTIALS = [
-  {
-    KOR_NAME: "레어",
-    ENG_NAME: "rare",
-    BORDER_COLOR: "#66ffff",
-    IMAGE_COLOR: "#0099cc",
-    TEXT_COLOR: "#66ffff",
-  },
-  {
-    KOR_NAME: "에픽",
-    ENG_NAME: "epic",
-    BORDER_COLOR: "#cc66ff",
-    IMAGE_COLOR: "#7700cc",
-    TEXT_COLOR: "#9966ff",
-  },
-  {
-    KOR_NAME: "유니크",
-    ENG_NAME: "unique",
-    BORDER_COLOR: "#ffcc00",
-    IMAGE_COLOR: "#eeab00",
-    TEXT_COLOR: "#ffcc00",
-  },
-  {
-    KOR_NAME: "레전드리",
-    ENG_NAME: "legendary",
-    BORDER_COLOR: "#01ff00",
-    IMAGE_COLOR: "#00cc99",
-    TEXT_COLOR: "#ccff00",
-  },
-];
 export const TOOLTIP_COLORS = {
   TOTAL: "#66ffff",
   ADD: "#d4ff00",
