@@ -9,16 +9,15 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { AnimatedCounter } from "react-animated-counter";
 import { useAppSelector } from "../../reducer/hooks";
-import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUserSpent } from "../../reducer/userSlice";
 
 export default function ResetPotential({ itemIndex }: { itemIndex: number }) {
+  const dispatch = useDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
-
-  const [meso, setMeso] = useState(0);
 
   const item = inventory[itemIndex];
 
@@ -31,21 +30,21 @@ export default function ResetPotential({ itemIndex }: { itemIndex: number }) {
         justify="center"
         align="center"
       >
-        <IconButton
-          aria-label="item"
-          size="lg"
-          variant="none"
+        <Flex
+          w={12}
+          h={12}
+          justify="center"
+          align="center"
           backgroundColor={dark ? "gray.700" : "gray.200"}
           borderWidth={1}
           borderColor={dark ? "gray.400" : "gray.600"}
           borderStyle="dashed"
-          icon={
-            <Image
-              src={item?.item_icon}
-              style={{ imageRendering: "pixelated" }}
-            />
-          }
-        />
+        >
+          <Image
+            src={item?.item_icon}
+            style={{ imageRendering: "pixelated" }}
+          />
+        </Flex>
       </Flex>
       <OptionsButton
         grade={item?.potential_option_grade}
@@ -70,16 +69,9 @@ export default function ResetPotential({ itemIndex }: { itemIndex: number }) {
       >
         <Text fontSize={12}>40,000,000 메소</Text>
       </Flex>
-      <Button size="xs" onClick={() => setMeso(meso + 40000000)}>
+      <Button size="xs" onClick={() => dispatch(addUserSpent(40000000))}>
         한 번 더 재설정하기
       </Button>
-      <AnimatedCounter
-        includeDecimals={false}
-        incrementColor="black"
-        includeCommas
-        fontSize="16px"
-        value={meso}
-      />
     </Stack>
   );
 }
@@ -117,6 +109,7 @@ function OptionsButton({
         backgroundColor={dark ? "gray.700" : "gray.300"}
       >
         <Text
+          h={4}
           mb={1}
           fontSize={12}
           textAlign="center"
@@ -125,13 +118,13 @@ function OptionsButton({
         >
           {grade}
         </Text>
-        <Text px={2} fontSize={12}>
+        <Text h={4} px={2} fontSize={12}>
           {options[0]}
         </Text>
-        <Text px={2} fontSize={12}>
+        <Text h={4} px={2} fontSize={12}>
           {options[1]}
         </Text>
-        <Text px={2} fontSize={12}>
+        <Text h={4} px={2} fontSize={12}>
           {options[2]}
         </Text>
       </Stack>

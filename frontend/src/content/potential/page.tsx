@@ -139,6 +139,7 @@ export default function Potential() {
                 toast
               );
             }}
+            onSelectedSelect={() => setSelectedIndex(-1)}
             onDelete={(index) => {
               if (index == selectedIndex) setSelectedIndex(-1);
               else if (index < selectedIndex)

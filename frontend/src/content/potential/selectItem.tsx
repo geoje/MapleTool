@@ -13,11 +13,13 @@ export default function SelectItem({
   deleteModeOn,
   selectedIndex,
   onSelect,
+  onSelectedSelect,
   onDelete,
 }: {
   deleteModeOn: boolean;
   selectedIndex: number;
   onSelect: (index: number) => void;
+  onSelectedSelect: () => void;
   onDelete: (index: number) => void;
 }) {
   const inventory = useAppSelector((state) => state.user.inventory);
@@ -28,10 +30,7 @@ export default function SelectItem({
     <Grid templateColumns="repeat(5, 1fr)" gap={1}>
       {inventory.map((item, i) => (
         <GridItem key={"item-" + i} position="relative">
-          <ItemButton
-            item={item}
-            onClick={onSelect ? () => onSelect(i) : undefined}
-          />
+          <ItemButton item={item} onClick={() => onSelect(i)} />
           {!deleteModeOn && selectedIndex == i && (
             <IconButton
               aria-label="selected"
@@ -40,6 +39,7 @@ export default function SelectItem({
               opacity={0.6}
               colorScheme="blue"
               icon={<FaCheck size={24} color={iconColor} />}
+              onClick={onSelectedSelect}
             />
           )}
           {deleteModeOn && (

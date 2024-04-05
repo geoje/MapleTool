@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Flex,
   Heading,
@@ -7,6 +8,7 @@ import {
   Image,
   Show,
   Spacer,
+  Tooltip,
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -16,6 +18,9 @@ import { LINKS } from "../config";
 import MobileDrawer from "./mobileDrawer";
 import { useAppSelector } from "../reducer/hooks";
 import { useEffect } from "react";
+import { AnimatedCounter } from "react-animated-counter";
+import { useDispatch } from "react-redux";
+import { clearUserSpent } from "../reducer/userSlice";
 
 export default function Header() {
   return (
@@ -32,7 +37,6 @@ export default function Header() {
 
 function Desktop() {
   const { pathname } = useLocation();
-
   const characterBasic = useAppSelector((state) => state.character.basic);
 
   const title = LINKS.find((link) =>
@@ -44,10 +48,12 @@ function Desktop() {
   }, [pathname]);
 
   return (
-    <Flex p={2} justify="space-between" align="center">
+    <Flex p={2} align="center">
       <Heading size="md" p={2}>
         {title ?? "홈"}
       </Heading>
+      <Spacer />
+      <SpentButton />
       {pathname == "/" || (
         <Button
           as={Link}
@@ -85,6 +91,7 @@ function Mobile() {
           : LINKS.find((link) => pathname.startsWith("/" + link.name))?.label}
       </Heading>
       <Spacer />
+      <SpentButton />
       {pathname == "/" || (
         <IconButton
           aria-label="profile"
@@ -100,12 +107,37 @@ function Mobile() {
   );
 }
 
+function SpentButton() {
+  const dispatch = useDispatch();
+  const spent = useAppSelector((state) => state.user.spent);
+
+  return (
+    <Tooltip label="사용한 메소 (클릭 시 초기화)">
+      <Button
+        variant="ghost"
+        leftIcon={<Image src="/item-equipment/meso.png" />}
+        onClick={() => dispatch(clearUserSpent())}
+        style={{ imageRendering: "pixelated" }}
+      >
+        <AnimatedCounter
+          includeDecimals={false}
+          incrementColor="black"
+          includeCommas
+          fontSize="12px"
+          value={spent}
+        />
+      </Button>
+    </Tooltip>
+  );
+}
+
 function ProfileImage({ src }: { src?: string }) {
   return (
     <Image
       boxSize="32px"
       src={src ?? "/union-raid/character-blank.png"}
       filter={src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"}
+      style={{ imageRendering: "pixelated" }}
     />
   );
 }
