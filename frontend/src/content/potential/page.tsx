@@ -9,7 +9,7 @@ import { AxiosError } from "axios";
 import DateUtil from "../../util/date";
 import SelectPreset from "./import/selectPreset";
 import SelectItem from "./selectItem";
-import potentialProbability from "../../dto/character/itemEquipment/potentialProbability";
+import PotentialProbability from "../../dto/character/itemEquipment/potentialProbability";
 import DeleteButton from "./select/deleteButton";
 import { spliceUserInventory } from "../../reducer/userSlice";
 import { CharacterItemEquipmentDetail } from "../../dto/character/characterItemEquipment";
@@ -27,7 +27,7 @@ export default function Potential() {
   const [preset, setPreset] = useState(1);
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [probabilities, setProbabilities] = useState<potentialProbability[]>(
+  const [probabilities, setProbabilities] = useState<PotentialProbability[]>(
     []
   );
 
@@ -159,7 +159,7 @@ export default function Potential() {
 
 function requestPotentialProbabilities(
   item: CharacterItemEquipmentDetail,
-  setPotentials: (potentials: potentialProbability[]) => void,
+  setPotentials: (potentials: PotentialProbability[]) => void,
   onErrorToast: (options?: UseToastOptions | undefined) => void
 ) {
   CharacterService.requestPotential(

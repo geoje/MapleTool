@@ -90,7 +90,7 @@ export default function ResetPotential({
         </Text>
       </Flex>
       <Button size="xs" onClick={() => dispatch(addUserSpent(cost))}>
-        한 번 더 재설정하기
+        재설정하기
       </Button>
     </Stack>
   );

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CharacterBasic } from "../../dto/character/characterBasic";
 import { CharacterItemEquipment } from "../../dto/character/characterItemEquipment";
-import potentialProbability from "../../dto/character/itemEquipment/potentialProbability";
+import PotentialProbability from "../../dto/character/itemEquipment/potentialProbability";
 
 const KEY_BASIC = "character-basic";
 const KEY_ITEM_EQUIPMENT = "character-item-equipment";
@@ -21,7 +21,7 @@ export default abstract class CharacterService {
     part: string,
     grade: string,
     level: number
-  ): Promise<potentialProbability[]> {
+  ): Promise<PotentialProbability[]> {
     return axios
       .get(
         `/api/character/item-equipment/potential?part=${part}&grade=${grade}&level=${level}`

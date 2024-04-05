@@ -2,10 +2,19 @@ import {
   CharacterItemEquipment,
   CharacterItemEquipmentDetail,
 } from "../../../dto/character/characterItemEquipment";
+import PotentialProbability from "../../../dto/character/itemEquipment/potentialProbability";
 import { MAX_STARFORCE_COUNTS, SLOT_GRID } from "./itemEquipmentConst";
 import { KOR_NAME } from "./potentialConst";
 
+interface Search {
+  part: string;
+  grade: string;
+  level: number;
+}
+
 export default abstract class ItemEquipmentService {
+  static probabilities = new Map<Search, PotentialProbability[]>();
+
   static itemGrid(
     itemEquipment: CharacterItemEquipment,
     preset: number
@@ -32,7 +41,7 @@ export default abstract class ItemEquipmentService {
       item.potential_option_grade,
       item.additional_potential_option_grade,
     ].map((grade) => KOR_NAME.findIndex((name) => name == grade));
-    
+
     return Math.max(gradeIndexes[0], gradeIndexes[1]);
   }
   static getMaxStarforceCount(item: CharacterItemEquipmentDetail) {
