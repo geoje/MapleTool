@@ -11,7 +11,9 @@ import {
 import { useAppSelector } from "../../reducer/hooks";
 import { useDispatch } from "react-redux";
 import { addUserSpent } from "../../reducer/userSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
+import { KOR_NAME } from "../../service/character/itemEquipment/potentialConst";
 
 export default function ResetPotential({
   type,
@@ -27,25 +29,46 @@ export default function ResetPotential({
 
   const item = inventory[itemIndex];
   const grade =
-    type == "additional"
+    type == "normal"
+      ? item?.potential_option_grade
+      : type == "additional"
       ? item?.additional_potential_option_grade
-      : item?.potential_option_grade;
+      : "";
   const options =
-    type == "additional"
+    type == "normal"
+      ? [
+          item?.potential_option_1,
+          item?.potential_option_2,
+          item?.potential_option_3,
+        ]
+      : type == "additional"
       ? [
           item?.additional_potential_option_1,
           item?.additional_potential_option_2,
           item?.additional_potential_option_3,
         ]
-      : [
-          item?.potential_option_1,
-          item?.potential_option_2,
-          item?.potential_option_3,
-        ];
-  const cost = 40000000;
+      : [];
+  const cost = item
+    ? type == "normal"
+      ? ItemEquipmentService.getResetCost(
+          item.item_base_option.base_equipment_level,
+          KOR_NAME.indexOf(item.potential_option_grade)
+        )
+      : type == "additional"
+      ? ItemEquipmentService.getAdditionalResetCost(
+          item.item_base_option.base_equipment_level,
+          KOR_NAME.indexOf(item.additional_potential_option_grade)
+        )
+      : 0
+    : 0;
 
   const [newGrade, setNewGrade] = useState("");
-  const [newOptions, setNewOptions] = useState([]);
+  const [newOptions, setNewOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    setNewGrade("");
+    setNewOptions([]);
+  }, [item]);
 
   return (
     <Stack minW={44}>
@@ -89,7 +112,27 @@ export default function ResetPotential({
           {cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 메소
         </Text>
       </Flex>
-      <Button size="xs" onClick={() => dispatch(addUserSpent(cost))}>
+      <Button
+        size="xs"
+        onClick={() => {
+          if (!item) return;
+          dispatch(addUserSpent(cost));
+          if (type == "normal") {
+            ItemEquipmentService.pickRandomPotentials(
+              item.item_equipment_part,
+              item.potential_option_grade,
+              item.item_base_option.base_equipment_level
+            ).then((probabilities) =>
+              setNewOptions(
+                probabilities.map((p) =>
+                  p.name.replace("n", p.value.toString())
+                )
+              )
+            );
+          } else {
+          }
+        }}
+      >
         재설정하기
       </Button>
     </Stack>

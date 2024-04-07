@@ -6,3 +6,15 @@ export const TEXT_COLOR = ["#66ffff", "#9966ff", "#ffcc00", "#ccff00"];
 
 export const UPGRADE_RATE = [0, 0.1, 0.035, 0.014];
 export const CEILING_COUNT = [0, 10, 42, 107];
+export const RESET_COST = [
+  { level: 0, values: [4800000, 19200000, 40800000, 48000000] },
+  { level: 160, values: [5100000, 20400000, 43350000, 51000000] },
+  { level: 200, values: [540000, 21600000, 45900000, 54000000] },
+  { level: 250, values: [600000, 24000000, 51000000, 60000000] },
+];
+export const ADDITIONAL_RESET_COST = [
+  { level: 0, values: [16000000, 44800000, 54400000, 64000000] },
+  { level: 160, values: [17000000, 47600000, 57800000, 68000000] },
+  { level: 200, values: [18000000, 50400000, 61200000, 72000000] },
+  { level: 250, values: [20000000, 56000000, 68000000, 80000000] },
+];

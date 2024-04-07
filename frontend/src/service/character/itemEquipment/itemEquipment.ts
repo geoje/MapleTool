@@ -3,8 +3,9 @@ import {
   CharacterItemEquipmentDetail,
 } from "../../../dto/character/characterItemEquipment";
 import PotentialProbability from "../../../dto/character/itemEquipment/potentialProbability";
+import CharacterService from "../character";
 import { MAX_STARFORCE_COUNTS, SLOT_GRID } from "./itemEquipmentConst";
-import { KOR_NAME } from "./potentialConst";
+import { KOR_NAME, ADDITIONAL_RESET_COST, RESET_COST } from "./potentialConst";
 
 interface Search {
   part: string;
@@ -62,5 +63,64 @@ export default abstract class ItemEquipmentService {
       }
     }
     return MAX_STARFORCE_COUNTS[MAX_STARFORCE_COUNTS.length - 1].common;
+  }
+  static getResetCost(level: number, gradeIndex: number) {
+    const index = Math.max(
+      0,
+      Math.min(RESET_COST[0].values.length, gradeIndex)
+    );
+    const costs = RESET_COST.sort((a, b) => b.level - a.level);
+
+    for (const cost of costs) {
+      if (level >= cost.level) {
+        return cost.values[index];
+      }
+    }
+    return RESET_COST[0].values[index];
+  }
+  static getAdditionalResetCost(level: number, gradeIndex: number) {
+    const index = Math.max(
+      0,
+      Math.min(ADDITIONAL_RESET_COST[0].values.length, gradeIndex)
+    );
+    const costs = ADDITIONAL_RESET_COST.sort((a, b) => b.level - a.level);
+
+    for (const cost of costs) {
+      if (level >= cost.level) {
+        return cost.values[index];
+      }
+    }
+    return ADDITIONAL_RESET_COST[0].values[index];
+  }
+  static async pickRandomPotentials(
+    part: string,
+    grade: string,
+    level: number
+  ) {
+    const key: Search = { part, grade, level };
+    if (!ItemEquipmentService.probabilities.has(key)) {
+      const value = await CharacterService.requestPotential(part, grade, level);
+      ItemEquipmentService.probabilities.set(key, value);
+    }
+    const probabilities = ItemEquipmentService.probabilities.get(key) ?? [];
+    const result: PotentialProbability[] = [];
+    const positions = new Set(probabilities.map((p) => p.position));
+
+    positions.forEach((position) => {
+      const probabilitiesAtPosition = probabilities.filter(
+        (p) => p.position == position
+      );
+      const rand = Math.random();
+      let cumul = 0;
+      for (const p of probabilitiesAtPosition) {
+        cumul += p.probability;
+        if (rand < cumul) {
+          result.push(p);
+          return;
+        }
+      }
+    });
+
+    return result;
   }
 }
