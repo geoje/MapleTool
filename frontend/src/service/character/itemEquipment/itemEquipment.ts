@@ -14,7 +14,7 @@ interface Search {
 }
 
 export default abstract class ItemEquipmentService {
-  static probabilities = new Map<Search, PotentialProbability[]>();
+  static probabilities = new Map<string, PotentialProbability[]>();
 
   static itemGrid(
     itemEquipment: CharacterItemEquipment,
@@ -97,7 +97,7 @@ export default abstract class ItemEquipmentService {
     grade: string,
     level: number
   ) {
-    const key: Search = { part, grade, level };
+    const key = JSON.stringify({ part, grade, level });
     if (!ItemEquipmentService.probabilities.has(key)) {
       const value = await CharacterService.requestPotential(part, grade, level);
       ItemEquipmentService.probabilities.set(key, value);

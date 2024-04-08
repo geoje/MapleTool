@@ -6,9 +6,11 @@ const KEY_SPENT = "user:spent";
 
 const userSlice = createSlice({
   name: "user",
-  initialState: <{ inventory: CharacterItemEquipmentDetail[]; spent: number }>{
-    inventory: JSON.parse(localStorage.getItem(KEY_INVENTORY) ?? "[]"),
-    spent: JSON.parse(localStorage.getItem(KEY_SPENT) ?? "0"),
+  initialState: {
+    inventory: <CharacterItemEquipmentDetail[]>(
+      JSON.parse(localStorage.getItem(KEY_INVENTORY) ?? "[]")
+    ),
+    spent: <number>JSON.parse(localStorage.getItem(KEY_SPENT) ?? "0"),
   },
   reducers: {
     pushUserInventory(

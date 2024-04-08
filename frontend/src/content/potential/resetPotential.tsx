@@ -71,7 +71,7 @@ export default function ResetPotential({
   }, [item]);
 
   return (
-    <Stack minW={44}>
+    <Stack minW={60} maxW={60}>
       <Flex
         p={4}
         bgColor={dark ? "gray.800" : "gray.50"}
@@ -183,16 +183,18 @@ function OptionsButton({
         >
           {grade}
         </Text>
-        <Text h={4} px={2} fontSize={12}>
-          {options[0]}
-        </Text>
-        <Text h={4} px={2} fontSize={12}>
-          {options[1]}
-        </Text>
-        <Text h={4} px={2} fontSize={12}>
-          {options[2]}
-        </Text>
+        <OptionText text={options[0]} />
+        <OptionText text={options[1]} />
+        <OptionText text={options[2]} />
       </Stack>
     </Button>
+  );
+}
+
+function OptionText({ text }: { text: string }) {
+  return (
+    <Text h={4} px={2} fontSize={12} overflow="hidden" textOverflow="ellipsis">
+      {text}
+    </Text>
   );
 }
