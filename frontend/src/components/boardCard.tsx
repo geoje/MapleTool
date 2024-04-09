@@ -1,4 +1,4 @@
-import { Card, CardBody, Flex, Heading, Spacer } from "@chakra-ui/react";
+import { Card, CardBody, Flex, Heading } from "@chakra-ui/react";
 import {
   TbSquareRoundedNumber0Filled,
   TbSquareRoundedNumber1Filled,

@@ -11,9 +11,9 @@ import {
   GURANTEE_BOUND,
   KOR_NAME,
 } from "../../service/character/itemEquipment/potentialConst";
-import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
-import { setGuarantee } from "../../reducer/userSlice";
+import { setUserGuarantee } from "../../reducer/userSlice";
+import PotentialService from "../../service/character/itemEquipment/potential";
 
 export default function Guarantee() {
   const dispatch = useAppDispatch();
@@ -40,7 +40,7 @@ export default function Guarantee() {
                   e.target.value,
                   bound
                 );
-                dispatch(setGuarantee({ value, i: 0, j: i }));
+                dispatch(setUserGuarantee({ value, i: 0, j: i }));
               }}
             />
             <InputRightAddon>{bound}</InputRightAddon>
@@ -59,7 +59,7 @@ export default function Guarantee() {
                   e.target.value,
                   bound
                 );
-                dispatch(setGuarantee({ value, i: 1, j: i }));
+                dispatch(setUserGuarantee({ value, i: 1, j: i }));
               }}
             />
             <InputRightAddon>{bound}</InputRightAddon>
@@ -88,7 +88,7 @@ function HeaderGridItem({
     >
       {gradeIndex && (
         <Image
-          src={ItemEquipmentService.getPotentialIconUrl(gradeIndex)}
+          src={PotentialService.getPotentialIconUrl(gradeIndex)}
           style={{ imageRendering: "pixelated" }}
         />
       )}

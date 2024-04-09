@@ -1,4 +1,4 @@
-import { Flex, Stack, UseToastOptions, useToast } from "@chakra-ui/react";
+import { Flex, Stack, useToast } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
 import ImportItem from "./importItem";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
@@ -9,10 +9,8 @@ import { AxiosError } from "axios";
 import DateUtil from "../../util/date";
 import SelectPreset from "./import/selectPreset";
 import SelectItem from "./selectItem";
-import PotentialProbability from "../../dto/character/itemEquipment/potentialProbability";
 import DeleteButton from "./select/deleteButton";
 import { spliceUserInventory } from "../../reducer/userSlice";
-import { CharacterItemEquipmentDetail } from "../../dto/character/characterItemEquipment";
 import ResetPotential from "./resetPotential";
 import Guarantee from "./guarantee";
 
@@ -23,14 +21,10 @@ export default function Potential() {
   const characterItemEquipment = useAppSelector(
     (state) => state.character.itemEquipment
   );
-  const inventory = useAppSelector((state) => state.user.inventory);
 
   const [preset, setPreset] = useState(1);
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [probabilities, setProbabilities] = useState<PotentialProbability[]>(
-    []
-  );
 
   useEffect(() => {
     // Check character name
@@ -128,14 +122,7 @@ export default function Potential() {
           <SelectItem
             selectedIndex={selectedIndex}
             deleteModeOn={deleteMode}
-            onSelect={(index) => {
-              setSelectedIndex(index);
-              requestPotentialProbabilities(
-                inventory[index],
-                setProbabilities,
-                toast
-              );
-            }}
+            onSelect={(index) => setSelectedIndex(index)}
             onSelectedSelect={() => setSelectedIndex(-1)}
             onDelete={(index) => {
               if (index == selectedIndex) setSelectedIndex(-1);
@@ -161,26 +148,4 @@ export default function Potential() {
       </Stack>
     </>
   );
-}
-
-function requestPotentialProbabilities(
-  item: CharacterItemEquipmentDetail,
-  setPotentials: (potentials: PotentialProbability[]) => void,
-  onErrorToast: (options?: UseToastOptions | undefined) => void
-) {
-  CharacterService.requestPotential(
-    item.item_equipment_part,
-    item.potential_option_grade,
-    item.item_base_option.base_equipment_level
-  )
-    .then((potentials) => setPotentials(potentials))
-    .catch((reason) =>
-      onErrorToast({
-        position: "top-right",
-        status: "warning",
-        title: `잠재능력 확률 데이터 요청 실패 (${reason.message})`,
-        description: Object(reason.response?.data).message,
-        isClosable: true,
-      })
-    );
 }

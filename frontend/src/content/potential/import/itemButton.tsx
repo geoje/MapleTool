@@ -1,8 +1,8 @@
 import { IconButton, Image, Tooltip } from "@chakra-ui/react";
 import ItemToolTip from "./itemToolTip";
-import ItemEquipmentService from "../../../service/character/itemEquipment/itemEquipment";
 import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
 import { BORDER_COLOR } from "../../../service/character/itemEquipment/potentialConst";
+import PotentialService from "../../../service/character/itemEquipment/potential";
 
 export default function ItemButton({
   item,
@@ -16,7 +16,7 @@ export default function ItemButton({
   onClick?: () => void;
 }) {
   const potentialIndex = item
-    ? ItemEquipmentService.getMaxPotentialIndex(item)
+    ? PotentialService.getMaxPotentialIndex(item)
     : -1;
 
   return item ? (

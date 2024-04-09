@@ -33,6 +33,18 @@ const userSlice = createSlice({
       state.inventory.splice(action.payload, 1);
       localStorage.setItem(KEY_INVENTORY, JSON.stringify(state.inventory));
     },
+    setUserInventoryPotentials(
+      state,
+      action: PayloadAction<{ index: number; grade: string; values: string[] }>
+    ) {
+      const item = state.inventory[action.payload.index];
+      item.potential_option_grade = action.payload.grade;
+      item.potential_option_1 = action.payload.values[0];
+      item.potential_option_2 = action.payload.values[1];
+      item.potential_option_3 = action.payload.values[2];
+      localStorage.setItem(KEY_INVENTORY, JSON.stringify(state.inventory));
+      console.log(item.potential_option_1);
+    },
     addUserSpent(state, action: PayloadAction<number>) {
       state.spent += action.payload;
       localStorage.setItem(KEY_SPENT, JSON.stringify(state.spent));
@@ -41,7 +53,7 @@ const userSlice = createSlice({
       state.spent = 0;
       localStorage.removeItem(KEY_SPENT);
     },
-    setGuarantee(
+    setUserGuarantee(
       state: { guarantee: number[][] },
       action: PayloadAction<{ value: number; i: number; j: number }>
     ) {
@@ -55,8 +67,9 @@ const userSlice = createSlice({
 export const {
   pushUserInventory,
   spliceUserInventory,
+  setUserInventoryPotentials,
   addUserSpent,
   clearUserSpent,
-  setGuarantee,
+  setUserGuarantee,
 } = userSlice.actions;
 export default userSlice.reducer;

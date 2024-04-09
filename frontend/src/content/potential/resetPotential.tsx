@@ -6,14 +6,22 @@ import {
   Image,
   Stack,
   Text,
+  Tooltip,
   useColorMode,
 } from "@chakra-ui/react";
 import { useAppSelector } from "../../reducer/hooks";
 import { useDispatch } from "react-redux";
-import { addUserSpent } from "../../reducer/userSlice";
+import {
+  addUserSpent,
+  setUserInventoryPotentials,
+} from "../../reducer/userSlice";
 import { useEffect, useState } from "react";
-import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
-import { KOR_NAME } from "../../service/character/itemEquipment/potentialConst";
+import {
+  BORDER_COLOR,
+  KOR_NAME,
+  TEXT_COLOR,
+} from "../../service/character/itemEquipment/potentialConst";
+import PotentialService from "../../service/character/itemEquipment/potential";
 
 export default function ResetPotential({
   type,
@@ -28,14 +36,15 @@ export default function ResetPotential({
   const dark = colorMode === "dark";
 
   const item = inventory[itemIndex];
-  const grade =
-    type == "normal"
+  const grade = item
+    ? type == "normal"
       ? item?.potential_option_grade
       : type == "additional"
       ? item?.additional_potential_option_grade
-      : "";
-  const options =
-    type == "normal"
+      : ""
+    : "";
+  const options = item
+    ? type == "normal"
       ? [
           item?.potential_option_1,
           item?.potential_option_2,
@@ -47,15 +56,16 @@ export default function ResetPotential({
           item?.additional_potential_option_2,
           item?.additional_potential_option_3,
         ]
-      : [];
+      : []
+    : [];
   const cost = item
     ? type == "normal"
-      ? ItemEquipmentService.getResetCost(
+      ? PotentialService.getResetCost(
           item.item_base_option.base_equipment_level,
           KOR_NAME.indexOf(item.potential_option_grade)
         )
       : type == "additional"
-      ? ItemEquipmentService.getAdditionalResetCost(
+      ? PotentialService.getAdditionalResetCost(
           item.item_base_option.base_equipment_level,
           KOR_NAME.indexOf(item.additional_potential_option_grade)
         )
@@ -95,8 +105,42 @@ export default function ResetPotential({
           />
         </Flex>
       </Flex>
-      <OptionsButton title="BEFORE" grade={grade} options={options} />
-      <OptionsButton title="AFTER" grade={newGrade} options={newOptions} />
+      <OptionsButton
+        title="BEFORE"
+        grade={grade}
+        options={options}
+        isDisabled={!options.length}
+        onClick={() => {
+          if (!options.length) return;
+          dispatch(
+            setUserInventoryPotentials({
+              index: itemIndex,
+              grade: grade,
+              values: options,
+            })
+          );
+          setNewGrade("");
+          setNewOptions([]);
+        }}
+      />
+      <OptionsButton
+        title="AFTER"
+        grade={newGrade}
+        options={newOptions}
+        isDisabled={!newOptions.length}
+        onClick={() => {
+          if (!options.length) return;
+          dispatch(
+            setUserInventoryPotentials({
+              index: itemIndex,
+              grade: newGrade,
+              values: newOptions,
+            })
+          );
+          setNewGrade("");
+          setNewOptions([]);
+        }}
+      />
       <Flex
         justifyContent="space-between"
         align="center"
@@ -114,22 +158,38 @@ export default function ResetPotential({
       </Flex>
       <Button
         size="xs"
+        isDisabled={!item || (newGrade != "" && grade != newGrade)}
         onClick={() => {
           if (!item) return;
           dispatch(addUserSpent(cost));
           if (type == "normal") {
-            ItemEquipmentService.pickRandomPotentials(
-              item.item_equipment_part,
-              item.potential_option_grade,
-              item.item_base_option.base_equipment_level
-            ).then((probabilities) =>
-              setNewOptions(
-                probabilities.map((p) =>
-                  p.name.replace("n", p.value.toString())
-                )
-              )
+            const nextGrade = PotentialService.pickNextGrade(
+              item.potential_option_grade
             );
-          } else {
+            PotentialService.pickRandomPotentials(
+              item.item_equipment_part,
+              nextGrade,
+              item.item_base_option.base_equipment_level
+            ).then((potentials) => {
+              setNewGrade(nextGrade);
+              setNewOptions(
+                potentials.map((p) => p.name.replace("n", p.value.toString()))
+              );
+            });
+          } else if (type == "additional") {
+            const nextGrade = PotentialService.pickNextAdditionalGrade(
+              item.additional_potential_option_grade
+            );
+            PotentialService.pickRandomAdditionalPotentials(
+              item.item_equipment_part,
+              item.additional_potential_option_grade,
+              item.item_base_option.base_equipment_level
+            ).then((potentials) => {
+              setNewGrade(nextGrade);
+              setNewOptions(
+                potentials.map((p) => p.name.replace("n", p.value.toString()))
+              );
+            });
           }
         }}
       >
@@ -143,51 +203,83 @@ function OptionsButton({
   title,
   grade,
   options,
+  isDisabled,
+  onClick,
 }: {
   title: string;
   grade: string;
   options: string[];
+  isDisabled: boolean;
+  onClick: () => void;
 }) {
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
 
+  const potentialIndex = KOR_NAME.indexOf(grade);
+
   return (
-    <Button
-      h="auto"
-      p={1}
-      flexDir="column"
-      alignItems="stretch"
-      textAlign="start"
+    <Tooltip
+      display={options.length ? "block" : "none"}
+      fontSize="xs"
+      label={options.map((option, i) => (
+        <Text key={"option-" + i}>{option}</Text>
+      ))}
     >
-      <Flex justify="space-between" mb={1}>
-        <Heading pl={1} fontSize={12}>
-          {title}
-        </Heading>
-        <Badge px={1} variant="solid" colorScheme="orange" borderRadius={4}>
-          선택
-        </Badge>
-      </Flex>
-      <Stack
-        pb={1}
-        gap={0}
-        borderRadius={4}
-        backgroundColor={dark ? "gray.800" : "gray.300"}
+      <Button
+        h="auto"
+        p={1}
+        flexDir="column"
+        alignItems="stretch"
+        textAlign="start"
+        borderWidth={1}
+        borderColor={
+          potentialIndex == -1 ? undefined : BORDER_COLOR[potentialIndex]
+        }
+        isDisabled={isDisabled}
+        onClick={onClick}
       >
-        <Text
-          h={4}
-          mb={1}
-          fontSize={12}
-          textAlign="center"
-          borderTopRadius={4}
-          backgroundColor={dark ? "gray.700" : "gray.400"}
+        <Flex justify="space-between" mb={1}>
+          <Heading pl={1} fontSize={12}>
+            {title}
+          </Heading>
+          <Badge
+            px={1}
+            variant="solid"
+            colorScheme={isDisabled ? "gray" : "orange"}
+            borderRadius={4}
+          >
+            선택
+          </Badge>
+        </Flex>
+        <Stack
+          pb={1}
+          gap={0}
+          borderRadius={4}
+          backgroundColor={dark ? "gray.800" : "gray.300"}
         >
-          {grade}
-        </Text>
-        <OptionText text={options[0]} />
-        <OptionText text={options[1]} />
-        <OptionText text={options[2]} />
-      </Stack>
-    </Button>
+          <Flex
+            h={4}
+            mb={1}
+            gap={1}
+            justify="center"
+            align="center"
+            borderTopRadius={4}
+            backgroundColor={dark ? "gray.700" : "gray.400"}
+          >
+            {potentialIndex != -1 && (
+              <Image
+                src={PotentialService.getPotentialIconUrl(potentialIndex)}
+                style={{ imageRendering: "pixelated" }}
+              />
+            )}
+            <Text fontSize={12}>{grade}</Text>
+          </Flex>
+          <OptionText text={options[0]} />
+          <OptionText text={options[1]} />
+          <OptionText text={options[2]} />
+        </Stack>
+      </Button>
+    </Tooltip>
   );
 }
 

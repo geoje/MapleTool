@@ -11,27 +11,28 @@ import { FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
 import { TOOLTIP_COLORS } from "../../../service/character/itemEquipment/itemEquipmentConst";
 import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
-import ItemEquipmentService from "../../../service/character/itemEquipment/itemEquipment";
 import {
   ENG_NAME,
   IMAGE_COLOR,
   KOR_NAME,
   TEXT_COLOR,
 } from "../../../service/character/itemEquipment/potentialConst";
+import PotentialService from "../../../service/character/itemEquipment/potential";
+import StarfoceService from "../../../service/character/itemEquipment/startfoce";
 
 export default function ItemToolTip({
   item,
 }: {
   item: CharacterItemEquipmentDetail;
 }) {
-  const potentialIndex = ItemEquipmentService.getMaxPotentialIndex(item);
+  const potentialIndex = PotentialService.getMaxPotentialIndex(item);
 
   return (
     <Box>
       <Stack align="stretch" p={2} gap={1}>
         <Starforce
           count={parseInt(item.starforce)}
-          maxCount={ItemEquipmentService.getMaxStarforceCount(item)}
+          maxCount={StarfoceService.getMaxStarforceCount(item)}
         />
         <ItemName
           name={item.item_name}
@@ -419,7 +420,7 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
 }
 
 function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
-  const gradeIndex = ItemEquipmentService.getMaxPotentialIndex(item);
+  const gradeIndex = PotentialService.getMaxPotentialIndex(item);
   if (gradeIndex == -1) return <></>;
 
   return (
@@ -428,7 +429,7 @@ function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={ItemEquipmentService.getPotentialIconUrl(gradeIndex)}
+            src={PotentialService.getPotentialIconUrl(gradeIndex)}
             style={{ imageRendering: "pixelated" }}
           />
           <Text fontSize="xs" color={TEXT_COLOR[gradeIndex]}>
@@ -449,7 +450,7 @@ function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
   );
 }
 function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
-  const potentialIndex = ItemEquipmentService.getMaxPotentialIndex(item);
+  const potentialIndex = PotentialService.getMaxPotentialIndex(item);
   if (potentialIndex == -1) return <></>;
 
   return (
@@ -458,7 +459,7 @@ function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={`/item-equipment/potential/${ENG_NAME[potentialIndex]}.png`}
+            src={PotentialService.getPotentialIconUrl(potentialIndex)}
             style={{ imageRendering: "pixelated" }}
           />
           <Text fontSize="xs" color={TEXT_COLOR[potentialIndex]}>
