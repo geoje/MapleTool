@@ -8,6 +8,8 @@ import {
   ENG_NAME,
   UPGRADE_RATE,
   ADDITIONAL_UPGRADE_RATE,
+  GURANTEE_BOUND,
+  ADDITIONAL_GURANTEE_BOUND,
 } from "./potentialConst";
 
 export default abstract class PotentialService {
@@ -53,16 +55,23 @@ export default abstract class PotentialService {
     }
     return ADDITIONAL_RESET_COST[0].values[index];
   }
-  static pickNextGrade(grade: string) {
+  static pickNextGrade(grade: string, guarantee: number) {
     const index = KOR_NAME.indexOf(grade);
     if (index == -1 || index == KOR_NAME.length - 1) return grade;
-    if (Math.random() <= UPGRADE_RATE[index]) return KOR_NAME[index + 1];
+    if (
+      guarantee == GURANTEE_BOUND[index] ||
+      Math.random() <= UPGRADE_RATE[index]
+    )
+      return KOR_NAME[index + 1];
     return grade;
   }
-  static pickNextAdditionalGrade(grade: string) {
+  static pickNextAdditionalGrade(grade: string, guarantee: number) {
     const index = KOR_NAME.indexOf(grade);
     if (index == -1 || index == KOR_NAME.length - 1) return grade;
-    if (Math.random() <= ADDITIONAL_UPGRADE_RATE[index])
+    if (
+      guarantee == ADDITIONAL_GURANTEE_BOUND[index] ||
+      Math.random() <= ADDITIONAL_UPGRADE_RATE[index]
+    )
       return KOR_NAME[index + 1];
     return grade;
   }

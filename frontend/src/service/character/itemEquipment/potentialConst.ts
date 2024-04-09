@@ -6,8 +6,8 @@ export const TEXT_COLOR = ["#66ffff", "#9966ff", "#ffcc00", "#ccff00"];
 
 export const UPGRADE_RATE = [0, 0.150000001275, 0.035, 0.014];
 export const ADDITIONAL_UPGRADE_RATE = [0, 0.047619, 0.019608, 0.007];
-export const GURANTEE_BOUND = [0, 10, 42, 107];
-export const ADDITIONAL_GURANTEE_BOUND = [0, 31, 76, 214];
+export const GURANTEE_BOUND = [10, 42, 107];
+export const ADDITIONAL_GURANTEE_BOUND = [31, 76, 214];
 export const RESET_COST = [
   { level: 0, values: [4800000, 19200000, 40800000, 48000000] },
   { level: 160, values: [5100000, 20400000, 43350000, 51000000] },

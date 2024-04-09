@@ -29,7 +29,7 @@ export default function Guarantee() {
         <HeaderGridItem key={"grade-" + i} text={name} gradeIndex={i + 1} />
       ))}
       <HeaderGridItem text="잠재능력" />
-      {GURANTEE_BOUND.slice(1).map((bound, i) => (
+      {GURANTEE_BOUND.map((bound, i) => (
         <GridItem key={"bound-" + i}>
           <InputGroup size="xs">
             <Input
@@ -48,7 +48,7 @@ export default function Guarantee() {
         </GridItem>
       ))}
       <HeaderGridItem text="에디셔널" />
-      {ADDITIONAL_GURANTEE_BOUND.slice(1).map((bound, i) => (
+      {ADDITIONAL_GURANTEE_BOUND.map((bound, i) => (
         <GridItem key={"add-bound-" + i}>
           <InputGroup size="xs">
             <Input

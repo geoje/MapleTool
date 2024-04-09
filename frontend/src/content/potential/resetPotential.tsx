@@ -13,13 +13,13 @@ import { useAppSelector } from "../../reducer/hooks";
 import { useDispatch } from "react-redux";
 import {
   addUserSpent,
+  setUserGuarantee,
   setUserInventoryPotentials,
 } from "../../reducer/userSlice";
 import { useEffect, useState } from "react";
 import {
   BORDER_COLOR,
   KOR_NAME,
-  TEXT_COLOR,
 } from "../../service/character/itemEquipment/potentialConst";
 import PotentialService from "../../service/character/itemEquipment/potential";
 
@@ -32,6 +32,7 @@ export default function ResetPotential({
 }) {
   const dispatch = useDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
+  const guarantee = useAppSelector((state) => state.user.guarantee);
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
 
@@ -163,9 +164,25 @@ export default function ResetPotential({
           if (!item) return;
           dispatch(addUserSpent(cost));
           if (type == "normal") {
+            // Next grade
+            const index = KOR_NAME.indexOf(item.potential_option_grade);
             const nextGrade = PotentialService.pickNextGrade(
-              item.potential_option_grade
+              item.potential_option_grade,
+              guarantee[0][index]
             );
+
+            // Set guarantee
+            if (item.potential_option_grade == nextGrade)
+              dispatch(
+                setUserGuarantee({
+                  value: guarantee[0][index] + 1,
+                  i: 0,
+                  j: index,
+                })
+              );
+            else dispatch(setUserGuarantee({ value: 0, i: 0, j: index }));
+
+            // Next potentials
             PotentialService.pickRandomPotentials(
               item.item_equipment_part,
               nextGrade,
@@ -177,9 +194,16 @@ export default function ResetPotential({
               );
             });
           } else if (type == "additional") {
-            const nextGrade = PotentialService.pickNextAdditionalGrade(
+            // Next grade
+            const index = KOR_NAME.indexOf(
               item.additional_potential_option_grade
             );
+            const nextGrade = PotentialService.pickNextAdditionalGrade(
+              item.additional_potential_option_grade,
+              guarantee[1][index]
+            );
+
+            // Next potentials
             PotentialService.pickRandomAdditionalPotentials(
               item.item_equipment_part,
               item.additional_potential_option_grade,
