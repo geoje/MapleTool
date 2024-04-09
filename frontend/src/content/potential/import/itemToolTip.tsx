@@ -419,8 +419,8 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
 }
 
 function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
-  const potentialIndex = ItemEquipmentService.getMaxPotentialIndex(item);
-  if (potentialIndex == -1) return <></>;
+  const gradeIndex = ItemEquipmentService.getMaxPotentialIndex(item);
+  if (gradeIndex == -1) return <></>;
 
   return (
     <>
@@ -428,10 +428,10 @@ function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={`/item-equipment/potential/${ENG_NAME[potentialIndex]}.png`}
+            src={ItemEquipmentService.getPotentialIconUrl(gradeIndex)}
             style={{ imageRendering: "pixelated" }}
           />
-          <Text fontSize="xs" color={TEXT_COLOR[potentialIndex]}>
+          <Text fontSize="xs" color={TEXT_COLOR[gradeIndex]}>
             잠재옵션
           </Text>
         </Flex>

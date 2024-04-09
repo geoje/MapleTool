@@ -5,7 +5,12 @@ import {
 import PotentialProbability from "../../../dto/character/itemEquipment/potentialProbability";
 import CharacterService from "../character";
 import { MAX_STARFORCE_COUNTS, SLOT_GRID } from "./itemEquipmentConst";
-import { KOR_NAME, ADDITIONAL_RESET_COST, RESET_COST } from "./potentialConst";
+import {
+  KOR_NAME,
+  ADDITIONAL_RESET_COST,
+  RESET_COST,
+  ENG_NAME,
+} from "./potentialConst";
 
 interface Search {
   part: string;
@@ -63,6 +68,9 @@ export default abstract class ItemEquipmentService {
       }
     }
     return MAX_STARFORCE_COUNTS[MAX_STARFORCE_COUNTS.length - 1].common;
+  }
+  static getPotentialIconUrl(gradeIndex: number) {
+    return `/item-equipment/potential/${ENG_NAME[gradeIndex]}.png`;
   }
   static getResetCost(level: number, gradeIndex: number) {
     const index = Math.max(

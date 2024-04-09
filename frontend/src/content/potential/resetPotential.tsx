@@ -71,7 +71,7 @@ export default function ResetPotential({
   }, [item]);
 
   return (
-    <Stack minW={60} maxW={60}>
+    <Stack minW={[null, null, 60]}>
       <Flex
         p={4}
         bgColor={dark ? "gray.800" : "gray.50"}

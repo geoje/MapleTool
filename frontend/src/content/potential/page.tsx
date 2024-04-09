@@ -148,7 +148,7 @@ export default function Potential() {
         <BoardCard order={3} title="등급 상승 보장">
           <Guarantee />
         </BoardCard>
-        <Flex gap={4}>
+        <Flex gap={4} wrap="wrap">
           <BoardCard order={4} title="잠재능력 재설정">
             <ResetPotential type="normal" itemIndex={selectedIndex} />
           </BoardCard>

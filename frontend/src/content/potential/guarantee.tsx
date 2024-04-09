@@ -1,59 +1,104 @@
 import {
-  Flex,
   Grid,
   GridItem,
+  Image,
   Input,
   InputGroup,
   InputRightAddon,
-  InputRightElement,
-  Table,
-  Tr,
 } from "@chakra-ui/react";
-import { KOR_NAME } from "../../service/character/itemEquipment/potentialConst";
+import {
+  ADDITIONAL_GURANTEE_BOUND,
+  GURANTEE_BOUND,
+  KOR_NAME,
+} from "../../service/character/itemEquipment/potentialConst";
+import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
+import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
+import { setGuarantee } from "../../reducer/userSlice";
 
 export default function Guarantee() {
+  const dispatch = useAppDispatch();
+  const guarantee = useAppSelector((state) => state.user.guarantee);
+
   return (
     <Grid
-      templateColumns={["60px repeat(4, 1fr)", null, "60px repeat(4, 80px)"]}
-      gap={1}
+      templateColumns={["60px repeat(3, 1fr)", null, "60px 62px 62px 76px"]}
+      gap={2}
     >
       <GridItem></GridItem>
-      {KOR_NAME.map((name, i) => (
-        <HeaderGridItem key={"grade-" + i} text={name} />
+      {KOR_NAME.slice(1).map((name, i) => (
+        <HeaderGridItem key={"grade-" + i} text={name} gradeIndex={i + 1} />
       ))}
       <HeaderGridItem text="잠재능력" />
-      <GridItem>
-        <InputGroup size="xs">
-          <Input defaultValue={0} />
-          <InputRightAddon>10</InputRightAddon>
-        </InputGroup>
-      </GridItem>
-      <GridItem>
-        <InputGroup size="xs">
-          <Input defaultValue={0} />
-          <InputRightAddon>10</InputRightAddon>
-        </InputGroup>
-      </GridItem>
-      <GridItem>
-        <InputGroup size="xs">
-          <Input defaultValue={0} />
-          <InputRightAddon>10</InputRightAddon>
-        </InputGroup>
-      </GridItem>
-      <GridItem>
-        <InputGroup size="xs">
-          <Input defaultValue={0} />
-          <InputRightAddon>10</InputRightAddon>
-        </InputGroup>
-      </GridItem>
+      {GURANTEE_BOUND.slice(1).map((bound, i) => (
+        <GridItem key={"bound-" + i}>
+          <InputGroup size="xs">
+            <Input
+              value={guarantee[0][i]}
+              onChange={(e) => {
+                const value = parseValue(
+                  guarantee[0][i],
+                  e.target.value,
+                  bound
+                );
+                dispatch(setGuarantee({ value, i: 0, j: i }));
+              }}
+            />
+            <InputRightAddon>{bound}</InputRightAddon>
+          </InputGroup>
+        </GridItem>
+      ))}
+      <HeaderGridItem text="에디셔널" />
+      {ADDITIONAL_GURANTEE_BOUND.slice(1).map((bound, i) => (
+        <GridItem key={"add-bound-" + i}>
+          <InputGroup size="xs">
+            <Input
+              value={guarantee[1][i]}
+              onChange={(e) => {
+                const value = parseValue(
+                  guarantee[1][i],
+                  e.target.value,
+                  bound
+                );
+                dispatch(setGuarantee({ value, i: 1, j: i }));
+              }}
+            />
+            <InputRightAddon>{bound}</InputRightAddon>
+          </InputGroup>
+        </GridItem>
+      ))}
     </Grid>
   );
 }
 
-function HeaderGridItem({ text }: { text: string }) {
+function HeaderGridItem({
+  text,
+  gradeIndex,
+}: {
+  text: string;
+  gradeIndex?: number;
+}) {
   return (
-    <GridItem fontSize={12} textAlign="center" fontWeight="bold">
+    <GridItem
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      gap={1}
+      fontSize={12}
+      fontWeight="bold"
+    >
+      {gradeIndex && (
+        <Image
+          src={ItemEquipmentService.getPotentialIconUrl(gradeIndex)}
+          style={{ imageRendering: "pixelated" }}
+        />
+      )}
       {text}
     </GridItem>
   );
+}
+
+function parseValue(currentValue: number, newValue: string, bound: number) {
+  if (!newValue) return 0;
+  if (!newValue.match(/\d+/)) return currentValue;
+  return Math.max(0, Math.min(bound, parseInt(newValue)));
 }

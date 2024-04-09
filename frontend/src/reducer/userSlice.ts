@@ -3,6 +3,9 @@ import { CharacterItemEquipmentDetail } from "../dto/character/characterItemEqui
 
 const KEY_INVENTORY = "user:inventory";
 const KEY_SPENT = "user:spent";
+const KEY_GUARANTEE = "user:guarantee";
+
+const DEFAULT_GUARANTEE_JSON = "[[0,0,0],[0,0,0]]";
 
 const userSlice = createSlice({
   name: "user",
@@ -11,6 +14,9 @@ const userSlice = createSlice({
       JSON.parse(localStorage.getItem(KEY_INVENTORY) ?? "[]")
     ),
     spent: <number>JSON.parse(localStorage.getItem(KEY_SPENT) ?? "0"),
+    guarantee: <number[][]>(
+      JSON.parse(localStorage.getItem(KEY_GUARANTEE) ?? DEFAULT_GUARANTEE_JSON)
+    ),
   },
   reducers: {
     pushUserInventory(
@@ -35,6 +41,14 @@ const userSlice = createSlice({
       state.spent = 0;
       localStorage.removeItem(KEY_SPENT);
     },
+    setGuarantee(
+      state: { guarantee: number[][] },
+      action: PayloadAction<{ value: number; i: number; j: number }>
+    ) {
+      state.guarantee[action.payload.i][action.payload.j] =
+        action.payload.value;
+      localStorage.setItem(KEY_GUARANTEE, JSON.stringify(state.guarantee));
+    },
   },
 });
 
@@ -43,5 +57,6 @@ export const {
   spliceUserInventory,
   addUserSpent,
   clearUserSpent,
+  setGuarantee,
 } = userSlice.actions;
 export default userSlice.reducer;
