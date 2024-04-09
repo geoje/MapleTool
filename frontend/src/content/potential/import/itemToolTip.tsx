@@ -12,7 +12,6 @@ import { IoBookmarkSharp } from "react-icons/io5";
 import { TOOLTIP_COLORS } from "../../../service/character/itemEquipment/itemEquipmentConst";
 import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
 import {
-  ENG_NAME,
   IMAGE_COLOR,
   KOR_NAME,
   TEXT_COLOR,
