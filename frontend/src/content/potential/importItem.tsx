@@ -27,7 +27,7 @@ export default function ImportItem({
   );
 
   return (
-    <Grid templateColumns="repeat(5, 1fr)" gap={1}>
+    <Grid templateColumns="repeat(5, 1fr)" px={1} gap={1}>
       {presetItemGrid.flatMap((items, i) =>
         items.flatMap((item, j) => {
           const appear =

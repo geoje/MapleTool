@@ -1,4 +1,5 @@
 import {
+  Flex,
   Grid,
   GridItem,
   IconButton,
@@ -27,7 +28,7 @@ export default function SelectItem({
   const iconColor = useColorModeValue("white", "black");
 
   return (
-    <Grid templateColumns="repeat(5, 1fr)" gap={1}>
+    <Flex justify="center" wrap="wrap" gap={1}>
       {inventory.map((item, i) => (
         <GridItem key={"item-" + i} position="relative">
           <ItemButton item={item} onClick={() => onSelect(i)} />
@@ -60,6 +61,6 @@ export default function SelectItem({
           <ItemButton />
         </GridItem>
       ))}
-    </Grid>
+    </Flex>
   );
 }

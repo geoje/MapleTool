@@ -21,7 +21,7 @@ export default function Guarantee() {
 
   return (
     <Grid
-      templateColumns={["60px repeat(3, 1fr)", null, "60px 62px 62px 76px"]}
+      templateColumns={["60px repeat(3, 1fr)", null, "60px repeat(3, 100px)"]}
       gap={2}
     >
       <GridItem></GridItem>

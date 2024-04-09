@@ -1,5 +1,4 @@
 import {
-  Badge,
   Button,
   Flex,
   Image,
@@ -11,7 +10,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaDiamond } from "react-icons/fa6";
-import BoardCard from "../../components/boardCard";
 import { MAX_CRYSTAL_LEVEL } from "../../service/union/artifact/artifactConstants";
 import { useState } from "react";
 
@@ -31,33 +29,25 @@ const CRYSTAL_IMAGES_URL = [
 export default function ResultGrid({
   levels,
   effectNames,
-  remainPoint,
 }: {
   levels: number[];
   effectNames: string[][];
-  remainPoint: number;
 }) {
   const [hoverEffect, setHoverEffect] = useState("");
 
   return (
-    <BoardCard
-      order={4}
-      title="배치도"
-      right={<Badge>남은 AP {remainPoint}</Badge>}
-    >
-      <SimpleGrid columns={3} gap={3}>
-        {new Array(CRYSTAL_IMAGES_URL.length).fill(0).map((_, i) => (
-          <Crystal
-            key={"crystal-" + i}
-            level={levels[i] ?? 0}
-            effects={effectNames[i] ?? ["", "", ""]}
-            imgUrl={CRYSTAL_IMAGES_URL[i]}
-            hoverEffect={hoverEffect}
-            setHoverEffect={setHoverEffect}
-          />
-        ))}
-      </SimpleGrid>
-    </BoardCard>
+    <SimpleGrid columns={3} gap={3}>
+      {new Array(CRYSTAL_IMAGES_URL.length).fill(0).map((_, i) => (
+        <Crystal
+          key={"crystal-" + i}
+          level={levels[i] ?? 0}
+          effects={effectNames[i] ?? ["", "", ""]}
+          imgUrl={CRYSTAL_IMAGES_URL[i]}
+          hoverEffect={hoverEffect}
+          setHoverEffect={setHoverEffect}
+        />
+      ))}
+    </SimpleGrid>
   );
 }
 

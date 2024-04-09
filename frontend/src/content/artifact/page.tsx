@@ -1,4 +1,4 @@
-import { Stack, useToast } from "@chakra-ui/react";
+import { Badge, Stack, useToast } from "@chakra-ui/react";
 import ArtifactService from "../../service/union/artifact/artifact";
 import { useEffect, useState } from "react";
 import ArtifactLevel from "./artifactLevel";
@@ -14,6 +14,7 @@ import DateUtil from "../../util/date";
 import UnionService from "../../service/union/union";
 import { setUnionBasic } from "../../reducer/unionSlice";
 import { AxiosError } from "axios";
+import BoardCard from "../../components/boardCard";
 
 export default function Artifact() {
   const toast = useToast();
@@ -113,60 +114,74 @@ export default function Artifact() {
 
   return (
     <>
-      <Stack width={["100%", "100%", "auto"]}>
-        <ArtifactLevel
-          value={artifactLevel}
-          onChange={(value) => setArtifactLevel(value)}
-        />
-        <EffectLevel
-          artifactLevel={artifactLevel}
-          effectIndex={effectIndex}
-          onChange={(index, newEffectLevels) => {
-            setEffectIndex(index);
-            setEffectLevels(newEffectLevels);
+      <Stack w={["100%", "100%", "auto"]}>
+        <BoardCard order={1} title="아티팩트 레벨">
+          <ArtifactLevel
+            value={artifactLevel}
+            onChange={(value) => setArtifactLevel(value)}
+          />
+        </BoardCard>
+        <BoardCard order={2} title="효과 레벨">
+          <EffectLevel
+            artifactLevel={artifactLevel}
+            effectIndex={effectIndex}
+            onChange={(index, newEffectLevels) => {
+              setEffectIndex(index);
+              setEffectLevels(newEffectLevels);
 
-            const unusedEffectNames = EFFECT_NAMES.filter(
-              ({ full }) => !effectNames.some((existName) => existName == full)
-            ).map(({ full }) => full);
-            const newEffectNames = [...effectNames, ...unusedEffectNames].slice(
-              0,
-              newEffectLevels.length
-            );
-            setEffectNames(newEffectNames);
-          }}
-        />
-        <SelectEffect
-          effectLevels={effectLevels}
-          currentEffectNames={effectNames}
-          onChange={(effectName, index) => {
-            const symmetryIndex = effectNames.indexOf(effectName);
-            const temp = [...effectNames];
-            temp[index] = effectName;
-            if (symmetryIndex != -1) temp[symmetryIndex] = effectNames[index];
-            setEffectNames(temp);
-          }}
-        />
+              const unusedEffectNames = EFFECT_NAMES.filter(
+                ({ full }) =>
+                  !effectNames.some((existName) => existName == full)
+              ).map(({ full }) => full);
+              const newEffectNames = [
+                ...effectNames,
+                ...unusedEffectNames,
+              ].slice(0, newEffectLevels.length);
+              setEffectNames(newEffectNames);
+            }}
+          />
+        </BoardCard>
+        <BoardCard order={3} title="효과 선택">
+          <SelectEffect
+            effectLevels={effectLevels}
+            currentEffectNames={effectNames}
+            onChange={(effectName, index) => {
+              const symmetryIndex = effectNames.indexOf(effectName);
+              const temp = [...effectNames];
+              temp[index] = effectName;
+              if (symmetryIndex != -1) temp[symmetryIndex] = effectNames[index];
+              setEffectNames(temp);
+            }}
+          />
+        </BoardCard>
       </Stack>
-      <Stack>
-        <ResultGrid
-          levels={ArtifactService.crystals(artifactLevel).map(
-            (crystal) => crystal.level
-          )}
-          effectNames={ArtifactService.crystalEffectIndexes(
-            artifactLevel,
-            effectIndex
-          ).map((indexes) =>
-            indexes.map((oneAddedEffectNameIndex) => {
-              const fullEffectName = effectNames[oneAddedEffectNameIndex - 1];
-              return (
-                EFFECT_NAMES.find(
-                  (effectName) => effectName.full == fullEffectName
-                )?.abbreviate ?? ""
-              );
-            })
-          )}
-          remainPoint={ArtifactService.remainPoint(artifactLevel)}
-        />
+      <Stack w={["100%", "100%", "auto"]}>
+        <BoardCard
+          order={4}
+          title="배치도"
+          right={
+            <Badge>남은 AP {ArtifactService.remainPoint(artifactLevel)}</Badge>
+          }
+        >
+          <ResultGrid
+            levels={ArtifactService.crystals(artifactLevel).map(
+              (crystal) => crystal.level
+            )}
+            effectNames={ArtifactService.crystalEffectIndexes(
+              artifactLevel,
+              effectIndex
+            ).map((indexes) =>
+              indexes.map((oneAddedEffectNameIndex) => {
+                const fullEffectName = effectNames[oneAddedEffectNameIndex - 1];
+                return (
+                  EFFECT_NAMES.find(
+                    (effectName) => effectName.full == fullEffectName
+                  )?.abbreviate ?? ""
+                );
+              })
+            )}
+          />
+        </BoardCard>
       </Stack>
     </>
   );

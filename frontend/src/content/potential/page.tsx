@@ -102,16 +102,18 @@ export default function Potential() {
 
   return (
     <>
-      <Stack>
+      <Stack width={["100%", "100%", "min-content"]}>
         <BoardCard
           order={1}
           title="장비 가져오기"
           right={<SelectPreset preset={preset} onChange={setPreset} />}
         >
-          <ImportItem
-            characterItemEquipment={characterItemEquipment}
-            preset={preset}
-          />
+          <Flex justify="center">
+            <ImportItem
+              characterItemEquipment={characterItemEquipment}
+              preset={preset}
+            />
+          </Flex>
         </BoardCard>
         <BoardCard
           order={2}
@@ -148,7 +150,7 @@ export default function Potential() {
         <BoardCard order={3} title="등급 상승 보장">
           <Guarantee />
         </BoardCard>
-        <Flex gap={4} wrap="wrap">
+        <Flex gap={4} wrap={"wrap"}>
           <BoardCard order={4} title="잠재능력 재설정">
             <ResetPotential type="normal" itemIndex={selectedIndex} />
           </BoardCard>

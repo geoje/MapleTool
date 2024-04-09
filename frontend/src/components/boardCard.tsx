@@ -38,12 +38,13 @@ export default function BoardCard({
   children?: React.ReactNode;
 }) {
   return (
-    <Card>
+    <Card width={["100%", "100%", "auto"]}>
       <CardBody>
         <Flex pb={5} gap={2}>
           {NumberIcons[order]}
-          <Heading size="sm">{title}</Heading>
-          <Spacer />
+          <Heading size="sm" mr="auto">
+            {title}
+          </Heading>
           {right}
         </Flex>
         {children}

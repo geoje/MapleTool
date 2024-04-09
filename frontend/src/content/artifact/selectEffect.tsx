@@ -7,7 +7,6 @@ import {
   useToken,
 } from "@chakra-ui/react";
 import { Select, components } from "chakra-react-select";
-import BoardCard from "../../components/boardCard";
 import {
   EFFECT_NAMES,
   MAX_APPLIED_EFFECT_LEVEL,
@@ -23,26 +22,24 @@ export default function SelectEffect({
   onChange: (effectName: string, index: number) => void;
 }) {
   return (
-    <BoardCard order={3} title="효과 선택">
-      <Stack>
-        {effectLevels.map((effectLevel, i) => (
-          <Flex key={"effect-selector-" + i} align="center" gap={2}>
-            <EffectSelector
-              effectName={currentEffectNames[i]}
-              currentEffectNames={currentEffectNames}
-              onChange={(effectName) => onChange(effectName, i)}
-            />
-            <Badge
-              colorScheme={
-                effectLevel > MAX_APPLIED_EFFECT_LEVEL ? "orange" : "blue"
-              }
-            >
-              {Math.min(effectLevel, MAX_APPLIED_EFFECT_LEVEL)}
-            </Badge>
-          </Flex>
-        ))}
-      </Stack>
-    </BoardCard>
+    <Stack>
+      {effectLevels.map((effectLevel, i) => (
+        <Flex key={"effect-selector-" + i} align="center" gap={2}>
+          <EffectSelector
+            effectName={currentEffectNames[i]}
+            currentEffectNames={currentEffectNames}
+            onChange={(effectName) => onChange(effectName, i)}
+          />
+          <Badge
+            colorScheme={
+              effectLevel > MAX_APPLIED_EFFECT_LEVEL ? "orange" : "blue"
+            }
+          >
+            {Math.min(effectLevel, MAX_APPLIED_EFFECT_LEVEL)}
+          </Badge>
+        </Flex>
+      ))}
+    </Stack>
   );
 }
 

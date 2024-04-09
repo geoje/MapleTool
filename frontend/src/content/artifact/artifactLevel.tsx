@@ -5,27 +5,12 @@ import {
   Tooltip,
   useNumberInput,
 } from "@chakra-ui/react";
-import BoardCard from "../../components/boardCard";
 import {
   MAX_ARTIFACT_LEVEL,
   MIN_ARTIFACT_LEVEL,
 } from "../../service/union/artifact/artifactConstants";
 
 export default function ArtifactLevel({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <BoardCard order={1} title="아티팩트 레벨">
-      <InputArtifactLevel value={value} onChange={onChange} />
-    </BoardCard>
-  );
-}
-
-function InputArtifactLevel({
   value,
   onChange,
 }: {
