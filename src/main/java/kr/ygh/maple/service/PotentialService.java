@@ -5,7 +5,9 @@ import kr.ygh.maple.entity.AdditionalPotential;
 import kr.ygh.maple.entity.Potential;
 import kr.ygh.maple.repository.AdditionalPotentialRepository;
 import kr.ygh.maple.repository.PotentialRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -54,7 +56,9 @@ public class PotentialService {
                         .findAllByPartAndGradeAndLevel(convertedPart, grade, existLevel));
 
         return Mono.fromFuture(potentialsFuture)
-                .map(potentials -> potentials.stream().map(PotentialDto::from).toList());
+                .map(potentials -> potentials.stream().map(PotentialDto::from).toList())
+                .onErrorResume(NullPointerException.class, ex -> Mono.error(
+                        new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 아이템은 잠재능력이 존재하지 않습니다.")));
     }
 
     public Mono<List<PotentialDto>> additionalPotential(String part, String grade, int level) {
@@ -68,6 +72,8 @@ public class PotentialService {
                         .findAllByPartAndGradeAndLevel(convertedPart, grade, existLevel));
 
         return Mono.fromFuture(potentialsFuture)
-                .map(potentials -> potentials.stream().map(PotentialDto::from).toList());
+                .map(potentials -> potentials.stream().map(PotentialDto::from).toList())
+                .onErrorResume(NullPointerException.class, ex -> Mono.error(
+                        new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 아이템은 에디셔널 잠재능력이 존재하지 않습니다.")));
     }
 }

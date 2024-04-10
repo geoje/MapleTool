@@ -191,12 +191,6 @@ export default function ResetPotential({
               })
             );
           } else {
-            const rate = Math.round((currentGuarantee / guaranteeBound) * 100);
-            toast({
-              colorScheme: "blue",
-              title: `${potentialTitle} 등급업 - ${nextGrade}`,
-              description: `상승 보장: ${currentGuarantee} / ${guaranteeBound} (${rate}%)`,
-            });
             dispatch(
               setUserGuarantee({ value: 0, i: guaranteeIndex, j: gradeIndex })
             );
@@ -209,11 +203,24 @@ export default function ResetPotential({
               setNewOptions(
                 potentials.map((p) => p.name.replace("n", p.value.toString()))
               );
+              if (grade != nextGrade) {
+                const rate = Math.round(
+                  (currentGuarantee / guaranteeBound) * 100
+                );
+                toast({
+                  colorScheme: "blue",
+                  title: `${potentialTitle} 등급업 - ${nextGrade}`,
+                  description:
+                    gradeIndex == -1
+                      ? `노멀 아이템에 ${potentialTitle}을 부여합니다.`
+                      : `상승 보장: ${currentGuarantee} / ${guaranteeBound} (${rate}%)`,
+                });
+              }
             })
             .catch((reason) => {
               toast({
                 position: "top-right",
-                status: "error",
+                status: "warning",
                 title: `${potentialTitle} 데이터 요청 실패 (${reason.message})`,
                 description: Object(reason.response?.data).message,
                 isClosable: true,

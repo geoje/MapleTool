@@ -53,7 +53,8 @@ export default abstract class PotentialService {
   }
   static pickNextGrade(grade: string, guarantee: number) {
     const index = KOR_NAME.indexOf(grade);
-    if (index == -1 || index == KOR_NAME.length - 1) return grade;
+    if (index == -1) return KOR_NAME[0];
+    if (index == KOR_NAME.length - 1) return grade;
     if (
       guarantee == GUARANTEE_BOUND[index] ||
       Math.random() <= UPGRADE_RATE[index]
@@ -63,7 +64,8 @@ export default abstract class PotentialService {
   }
   static pickNextAdditionalGrade(grade: string, guarantee: number) {
     const index = KOR_NAME.indexOf(grade);
-    if (index == -1 || index == KOR_NAME.length - 1) return grade;
+    if (index == -1) return KOR_NAME[0];
+    if (index == KOR_NAME.length - 1) return grade;
     if (
       guarantee == ADDITIONAL_GUARANTEE_BOUND[index] ||
       Math.random() <= ADDITIONAL_UPGRADE_RATE[index]
