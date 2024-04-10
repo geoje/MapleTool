@@ -203,12 +203,22 @@ export default function ResetPotential({
           }
 
           // Next potentials
-          pickRandomPotentials(nextGrade).then((potentials) => {
-            setNewGrade(nextGrade);
-            setNewOptions(
-              potentials.map((p) => p.name.replace("n", p.value.toString()))
-            );
-          });
+          pickRandomPotentials(nextGrade)
+            .then((potentials) => {
+              setNewGrade(nextGrade);
+              setNewOptions(
+                potentials.map((p) => p.name.replace("n", p.value.toString()))
+              );
+            })
+            .catch((reason) => {
+              toast({
+                position: "top-right",
+                status: "error",
+                title: `${potentialTitle} 데이터 요청 실패 (${reason.message})`,
+                description: Object(reason.response?.data).message,
+                isClosable: true,
+              });
+            });
         }}
       >
         재설정하기

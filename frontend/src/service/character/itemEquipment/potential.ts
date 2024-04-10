@@ -29,10 +29,7 @@ export default abstract class PotentialService {
   }
   static getResetCost(level: number | undefined, gradeIndex: number) {
     if (level == undefined) return 0;
-    const index = Math.max(
-      0,
-      Math.min(RESET_COST[0].values.length, gradeIndex)
-    );
+    const index = Math.max(0, gradeIndex);
     const costs = RESET_COST.sort((a, b) => b.level - a.level);
 
     for (const cost of costs) {
@@ -44,10 +41,7 @@ export default abstract class PotentialService {
   }
   static getAdditionalResetCost(level: number | undefined, gradeIndex: number) {
     if (level == undefined) return 0;
-    const index = Math.max(
-      0,
-      Math.min(ADDITIONAL_RESET_COST[0].values.length, gradeIndex)
-    );
+    const index = Math.max(0, gradeIndex);
     const costs = ADDITIONAL_RESET_COST.sort((a, b) => b.level - a.level);
 
     for (const cost of costs) {

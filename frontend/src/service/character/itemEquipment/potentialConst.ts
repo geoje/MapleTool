@@ -11,8 +11,8 @@ export const ADDITIONAL_GUARANTEE_BOUND = [31, 76, 214];
 export const RESET_COST = [
   { level: 0, values: [4800000, 19200000, 40800000, 48000000] },
   { level: 160, values: [5100000, 20400000, 43350000, 51000000] },
-  { level: 200, values: [540000, 21600000, 45900000, 54000000] },
-  { level: 250, values: [600000, 24000000, 51000000, 60000000] },
+  { level: 200, values: [5400000, 21600000, 45900000, 54000000] },
+  { level: 250, values: [6000000, 24000000, 51000000, 60000000] },
 ];
 export const ADDITIONAL_RESET_COST = [
   { level: 0, values: [16000000, 44800000, 54400000, 64000000] },
