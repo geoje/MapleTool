@@ -41,6 +41,7 @@ export default function ResetPotential({
   const dark = colorMode === "dark";
 
   const item = inventory[itemIndex];
+  // TODO: 최적화
   const grade = item
     ? type == "normal"
       ? item?.potential_option_grade
@@ -172,9 +173,6 @@ export default function ResetPotential({
           if (!item) return;
           dispatch(addUserSpent(cost));
           const isNormal = type == "normal";
-          const curGrade = isNormal
-            ? item.potential_option_grade
-            : item.additional_potential_option_grade;
 
           if (type == "normal") {
             // Next grade
