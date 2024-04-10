@@ -7,8 +7,14 @@ from clicknium.core.models.web.browsertab import BrowserTab
 
 RETRY_COUNT = 2
 ROUND_NUM_DIGITS = 12
-URL = "https://maplestory.nexon.com/Guide/OtherProbability/cube/black"
-INSERT_QUERY = ("INSERT INTO potential (part, grade, level, position, name, value, probability)"
+
+# URL = "https://maplestory.nexon.com/Guide/OtherProbability/cube/black"
+# SELECT_QUERY = "SELECT * FROM potential WHERE part = %s AND grade = %s AND level = %s"
+# INSERT_QUERY = ("INSERT INTO potential (part, grade, level, position, name, value, probability)"
+#                 "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+URL = "https://maplestory.nexon.com/Guide/OtherProbability/cube/addi"
+SELECT_QUERY = "SELECT * FROM additional_potential WHERE part = %s AND grade = %s AND level = %s"
+INSERT_QUERY = ("INSERT INTO additional_potential (part, grade, level, position, name, value, probability)"
                 "VALUES (%s, %s, %s, %s, %s, %s, %s)")
 
 connection = pymysql.connect(host='127.0.0.1', user='root', password='root', db='maple', charset='utf8')
@@ -70,7 +76,7 @@ def main():
 
 
 def exist_data(part: str, grade: str, level: int) -> bool:
-    cursor.execute(f"SELECT * FROM potential WHERE part = '{part}' AND grade = '{grade}' AND level = {level}")
+    cursor.execute(SELECT_QUERY, [part, grade, level])
     return bool(cursor.fetchone())
 
 
