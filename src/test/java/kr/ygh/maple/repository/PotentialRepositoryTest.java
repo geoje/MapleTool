@@ -1,22 +1,20 @@
-package kr.ygh.maple.entity;
+package kr.ygh.maple.repository;
 
 import jakarta.transaction.Transactional;
-import kr.ygh.maple.repository.PotentialRepository;
+import kr.ygh.maple.entity.Potential;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-@DisplayName("잠재능력")
-class PotentialTest {
+@DisplayName("잠재능력 저장소")
+class PotentialRepositoryTest {
 
     @Autowired
     PotentialRepository potentialRepository;
@@ -25,27 +23,25 @@ class PotentialTest {
     @DisplayName("모든 경우의 수에 각 라인 확률 합이 1과 오차 0.000015사이 이다.")
     void validateProbabilitiesSum() {
         // given
+        final List<Potential> potentials = potentialRepository.findAll();
         final double offset = 0.000015;
-        final List<Object[]> results = potentialRepository.findProbabilitySum();
+        int position = -1;
+        double sumOfProbability = 1;
 
-        // when
-        final List<Object[]> overOffsetResults = results.stream()
-                .filter(result -> Math.abs(((double) result[4]) - 1) > offset)
-                .toList();
-
-        // then
-        assertThat(overOffsetResults.size()).isZero();
-
-        // output
-        overOffsetResults.stream()
-                .map(result -> Arrays.stream(result)
-                        .map(Object::toString)
-                        .collect(Collectors.joining()))
-                .forEach(System.out::println);
+        // when & then
+        for (Potential potential : potentials) {
+            if (potential.getPosition() != position) {
+                position = potential.getPosition();
+                assertThat(sumOfProbability).isBetween(1 - offset, 1 + offset);
+                sumOfProbability = 0;
+            }
+            sumOfProbability += potential.getProbability();
+        }
+        assertThat(sumOfProbability).isBetween(1 - offset, 1 + offset);
     }
 
     @Test
-    @DisplayName("입력한 레벨 보다 낮은 것 중 가장 근처 레벨을 조회한다.")
+    @DisplayName("입력한 레벨 보다 낮은 것 중 가장 근처 레벨을 조회 한다.")
     void findMaxLevelLessOrEqualThan() {
         // given
         String part = "무기";

@@ -1,7 +1,9 @@
 package kr.ygh.maple.service;
 
 import kr.ygh.maple.dto.character.itemEquipment.PotentialDto;
+import kr.ygh.maple.entity.AdditionalPotential;
 import kr.ygh.maple.entity.Potential;
+import kr.ygh.maple.repository.AdditionalPotentialRepository;
 import kr.ygh.maple.repository.PotentialRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -15,11 +17,13 @@ import java.util.concurrent.CompletableFuture;
 public class PotentialService {
 
     private final PotentialRepository potentialRepository;
+    private final AdditionalPotentialRepository additionalPotentialRepository;
 
     private final Map<String, String> partMap;
 
-    public PotentialService(PotentialRepository potentialRepository) {
+    public PotentialService(PotentialRepository potentialRepository, AdditionalPotentialRepository additionalPotentialRepository) {
         this.potentialRepository = potentialRepository;
+        this.additionalPotentialRepository = additionalPotentialRepository;
         this.partMap = new HashMap<>();
 
         List.of("샤이닝로드", "소울슈터", "데스페라도", "에너지소드", "한손검", "한손도끼", "한손둔기", "단검",
@@ -46,6 +50,18 @@ public class PotentialService {
                 potentialRepository.findMaxLevelLessOrEqualThan(convertedPart, level));
         CompletableFuture<List<Potential>> potentialsFuture = existLevelFuture.thenApplyAsync(existLevel ->
                 potentialRepository.findAllByPartAndGradeAndLevel(convertedPart, grade, existLevel));
+
+        return Mono.fromFuture(potentialsFuture)
+                .map(potentials -> potentials.stream().map(PotentialDto::from).toList());
+    }
+
+    public Mono<List<PotentialDto>> additionalPotential(String part, String grade, int level) {
+        final String convertedPart = partMap.getOrDefault(part, part);
+
+        CompletableFuture<Integer> existLevelFuture = CompletableFuture.supplyAsync(() ->
+                additionalPotentialRepository.findMaxLevelLessOrEqualThan(convertedPart, level));
+        CompletableFuture<List<AdditionalPotential>> potentialsFuture = existLevelFuture.thenApplyAsync(existLevel ->
+                additionalPotentialRepository.findAllByPartAndGradeAndLevel(convertedPart, grade, existLevel));
 
         return Mono.fromFuture(potentialsFuture)
                 .map(potentials -> potentials.stream().map(PotentialDto::from).toList());

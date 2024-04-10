@@ -49,4 +49,11 @@ public class CharacterController {
                                               @RequestParam("level") int level) {
         return potentialService.potential(part, grade, level);
     }
+
+    @GetMapping("item-equipment/additional-potential")
+    public Mono<List<PotentialDto>> additionalPotential(@RequestParam("part") String part,
+                                                        @RequestParam("grade") String grade,
+                                                        @RequestParam("level") int level) {
+        return potentialService.additionalPotential(part, grade, level);
+    }
 }
