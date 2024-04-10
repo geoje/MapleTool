@@ -4,8 +4,8 @@ export const BORDER_COLOR = ["#66ffff", "#cc66ff", "#ffcc00", "#01ff00"];
 export const IMAGE_COLOR = ["#0099cc", "#7700cc", "#eeab00", "#00cc99"];
 export const TEXT_COLOR = ["#66ffff", "#9966ff", "#ffcc00", "#ccff00"];
 
-export const UPGRADE_RATE = [0, 0.150000001275, 0.035, 0.014];
-export const ADDITIONAL_UPGRADE_RATE = [0, 0.047619, 0.019608, 0.007];
+export const UPGRADE_RATE = [0.150000001275, 0.035, 0.014];
+export const ADDITIONAL_UPGRADE_RATE = [0.047619, 0.019608, 0.007];
 export const GURANTEE_BOUND = [10, 42, 107];
 export const ADDITIONAL_GURANTEE_BOUND = [31, 76, 214];
 export const RESET_COST = [

@@ -43,7 +43,17 @@ const userSlice = createSlice({
       item.potential_option_2 = action.payload.values[1];
       item.potential_option_3 = action.payload.values[2];
       localStorage.setItem(KEY_INVENTORY, JSON.stringify(state.inventory));
-      console.log(item.potential_option_1);
+    },
+    setUserInventoryAdditionalPotentials(
+      state,
+      action: PayloadAction<{ index: number; grade: string; values: string[] }>
+    ) {
+      const item = state.inventory[action.payload.index];
+      item.additional_potential_option_grade = action.payload.grade;
+      item.additional_potential_option_1 = action.payload.values[0];
+      item.additional_potential_option_2 = action.payload.values[1];
+      item.additional_potential_option_3 = action.payload.values[2];
+      localStorage.setItem(KEY_INVENTORY, JSON.stringify(state.inventory));
     },
     addUserSpent(state, action: PayloadAction<number>) {
       state.spent += action.payload;
@@ -68,6 +78,7 @@ export const {
   pushUserInventory,
   spliceUserInventory,
   setUserInventoryPotentials,
+  setUserInventoryAdditionalPotentials,
   addUserSpent,
   clearUserSpent,
   setUserGuarantee,

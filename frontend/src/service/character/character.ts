@@ -28,6 +28,17 @@ export default abstract class CharacterService {
       )
       .then((res) => res.data);
   }
+  static requestAdditionalPotential(
+    part: string,
+    grade: string,
+    level: number
+  ): Promise<PotentialProbability[]> {
+    return axios
+      .get(
+        `/api/character/item-equipment/additional-potential?part=${part}&grade=${grade}&level=${level}`
+      )
+      .then((res) => res.data);
+  }
 
   static loadBasic(): CharacterBasic | null {
     return JSON.parse(localStorage.getItem(KEY_BASIC) ?? "null");

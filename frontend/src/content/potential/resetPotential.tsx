@@ -8,17 +8,20 @@ import {
   Text,
   Tooltip,
   useColorMode,
+  useToast,
 } from "@chakra-ui/react";
 import { useAppSelector } from "../../reducer/hooks";
 import { useDispatch } from "react-redux";
 import {
   addUserSpent,
   setUserGuarantee,
+  setUserInventoryAdditionalPotentials,
   setUserInventoryPotentials,
 } from "../../reducer/userSlice";
 import { useEffect, useState } from "react";
 import {
   BORDER_COLOR,
+  GURANTEE_BOUND,
   KOR_NAME,
 } from "../../service/character/itemEquipment/potentialConst";
 import PotentialService from "../../service/character/itemEquipment/potential";
@@ -30,6 +33,7 @@ export default function ResetPotential({
   type: "normal" | "additional";
   itemIndex: number;
 }) {
+  const toast = useToast();
   const dispatch = useDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
   const guarantee = useAppSelector((state) => state.user.guarantee);
@@ -114,7 +118,9 @@ export default function ResetPotential({
         onClick={() => {
           if (!options.length) return;
           dispatch(
-            setUserInventoryPotentials({
+            (type == "normal"
+              ? setUserInventoryPotentials
+              : setUserInventoryAdditionalPotentials)({
               index: itemIndex,
               grade: grade,
               values: options,
@@ -132,7 +138,9 @@ export default function ResetPotential({
         onClick={() => {
           if (!options.length) return;
           dispatch(
-            setUserInventoryPotentials({
+            (type == "normal"
+              ? setUserInventoryPotentials
+              : setUserInventoryAdditionalPotentials)({
               index: itemIndex,
               grade: newGrade,
               values: newOptions,
@@ -163,6 +171,11 @@ export default function ResetPotential({
         onClick={() => {
           if (!item) return;
           dispatch(addUserSpent(cost));
+          const isNormal = type == "normal";
+          const curGrade = isNormal
+            ? item.potential_option_grade
+            : item.additional_potential_option_grade;
+
           if (type == "normal") {
             // Next grade
             const index = KOR_NAME.indexOf(item.potential_option_grade);
@@ -180,7 +193,16 @@ export default function ResetPotential({
                   j: index,
                 })
               );
-            else dispatch(setUserGuarantee({ value: 0, i: 0, j: index }));
+            else {
+              const bound = GURANTEE_BOUND[index];
+              const rate = Math.round((guarantee[0][index] / bound) * 100);
+              toast({
+                colorScheme: "blue",
+                title: `잠재능력 등급업 - ${nextGrade}`,
+                description: `상승 보장: ${guarantee[0][index]} / ${bound} (${rate}%)`,
+              });
+              dispatch(setUserGuarantee({ value: 0, i: 0, j: index }));
+            }
 
             // Next potentials
             PotentialService.pickRandomPotentials(
@@ -203,10 +225,30 @@ export default function ResetPotential({
               guarantee[1][index]
             );
 
+            // Set guarantee
+            if (item.additional_potential_option_grade == nextGrade)
+              dispatch(
+                setUserGuarantee({
+                  value: guarantee[1][index] + 1,
+                  i: 1,
+                  j: index,
+                })
+              );
+            else {
+              const bound = GURANTEE_BOUND[index];
+              const rate = Math.round((guarantee[1][index] / bound) * 100);
+              toast({
+                colorScheme: "blue",
+                title: `에디셔너 잠재능력 등급업 - ${nextGrade}`,
+                description: `상승 보장: ${guarantee[1][index]} / ${bound} (${rate}%)`,
+              });
+              dispatch(setUserGuarantee({ value: 0, i: 1, j: index }));
+            }
+
             // Next potentials
             PotentialService.pickRandomAdditionalPotentials(
               item.item_equipment_part,
-              item.additional_potential_option_grade,
+              nextGrade,
               item.item_base_option.base_equipment_level
             ).then((potentials) => {
               setNewGrade(nextGrade);

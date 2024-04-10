@@ -419,7 +419,7 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
 }
 
 function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
-  const gradeIndex = PotentialService.getMaxPotentialIndex(item);
+  const gradeIndex = KOR_NAME.indexOf(item.potential_option_grade);
   if (gradeIndex == -1) return <></>;
 
   return (
@@ -449,8 +449,8 @@ function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
   );
 }
 function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
-  const potentialIndex = PotentialService.getMaxPotentialIndex(item);
-  if (potentialIndex == -1) return <></>;
+  const gradeIndex = KOR_NAME.indexOf(item.additional_potential_option_grade);
+  if (gradeIndex == -1) return <></>;
 
   return (
     <>
@@ -458,10 +458,10 @@ function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={PotentialService.getPotentialIconUrl(potentialIndex)}
+            src={PotentialService.getPotentialIconUrl(gradeIndex)}
             style={{ imageRendering: "pixelated" }}
           />
-          <Text fontSize="xs" color={TEXT_COLOR[potentialIndex]}>
+          <Text fontSize="xs" color={TEXT_COLOR[gradeIndex]}>
             에디셔널 잠재옵션
           </Text>
         </Flex>

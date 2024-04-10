@@ -113,7 +113,11 @@ export default abstract class PotentialService {
   ) {
     const key = JSON.stringify({ part, grade, level });
     if (!PotentialService.additionalProbabilities.has(key)) {
-      const value = await CharacterService.requestPotential(part, grade, level);
+      const value = await CharacterService.requestAdditionalPotential(
+        part,
+        grade,
+        level
+      );
       PotentialService.additionalProbabilities.set(key, value);
     }
     const probabilities =
