@@ -1,4 +1,4 @@
-import { Stack, useToast } from "@chakra-ui/react";
+import { Flex, Stack, useToast } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
 import CharacterService from "../../service/character/character";
@@ -8,6 +8,9 @@ import { AxiosError } from "axios";
 import DateUtil from "../../util/date";
 import SelectPreset from "../potential/import/selectPreset";
 import ImportItem from "../potential/importItem";
+import DeleteButton from "../potential/select/deleteButton";
+import SelectItem from "../potential/selectItem";
+import { spliceUserInventory } from "../../reducer/userSlice";
 
 export default function Starforce() {
   const toast = useToast();
@@ -18,6 +21,8 @@ export default function Starforce() {
   );
 
   const [preset, setPreset] = useState(1);
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
     // Check character name
@@ -89,15 +94,40 @@ export default function Starforce() {
 
   return (
     <>
-      <Stack>
+      <Stack width={["100%", "100%", "min-content"]}>
         <BoardCard
           order={1}
           title="장비 가져오기"
           right={<SelectPreset preset={preset} onChange={setPreset} />}
         >
-          <ImportItem
-            characterItemEquipment={characterItemEquipment}
-            preset={preset}
+          <Flex justify="center">
+            <ImportItem
+              characterItemEquipment={characterItemEquipment}
+              preset={preset}
+            />
+          </Flex>
+        </BoardCard>
+        <BoardCard
+          order={2}
+          title="장비 선택"
+          right={
+            <DeleteButton
+              modeOn={deleteMode}
+              onClick={() => setDeleteMode(!deleteMode)}
+            />
+          }
+        >
+          <SelectItem
+            selectedIndex={selectedIndex}
+            deleteModeOn={deleteMode}
+            onSelect={(index) => setSelectedIndex(index)}
+            onSelectedSelect={() => setSelectedIndex(-1)}
+            onDelete={(index) => {
+              if (index == selectedIndex) setSelectedIndex(-1);
+              else if (index < selectedIndex)
+                setSelectedIndex(selectedIndex - 1);
+              dispatch(spliceUserInventory(index));
+            }}
           />
         </BoardCard>
       </Stack>
