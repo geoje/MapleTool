@@ -7,8 +7,8 @@ import {
   InputRightAddon,
 } from "@chakra-ui/react";
 import {
-  ADDITIONAL_GURANTEE_BOUND,
-  GURANTEE_BOUND,
+  ADDITIONAL_GUARANTEE_BOUND,
+  GUARANTEE_BOUND,
   KOR_NAME,
 } from "../../service/character/itemEquipment/potentialConst";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
@@ -29,7 +29,7 @@ export default function Guarantee() {
         <HeaderGridItem key={"grade-" + i} text={name} gradeIndex={i + 1} />
       ))}
       <HeaderGridItem text="잠재능력" />
-      {GURANTEE_BOUND.map((bound, i) => (
+      {GUARANTEE_BOUND.map((bound, i) => (
         <GridItem key={"bound-" + i}>
           <InputGroup size="xs">
             <Input
@@ -48,7 +48,7 @@ export default function Guarantee() {
         </GridItem>
       ))}
       <HeaderGridItem text="에디셔널" />
-      {ADDITIONAL_GURANTEE_BOUND.map((bound, i) => (
+      {ADDITIONAL_GUARANTEE_BOUND.map((bound, i) => (
         <GridItem key={"add-bound-" + i}>
           <InputGroup size="xs">
             <Input

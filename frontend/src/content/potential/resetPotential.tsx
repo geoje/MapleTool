@@ -20,11 +20,14 @@ import {
 } from "../../reducer/userSlice";
 import { useEffect, useState } from "react";
 import {
+  ADDITIONAL_GUARANTEE_BOUND,
   BORDER_COLOR,
-  GURANTEE_BOUND,
+  GUARANTEE_BOUND,
   KOR_NAME,
 } from "../../service/character/itemEquipment/potentialConst";
 import PotentialService from "../../service/character/itemEquipment/potential";
+
+const DEFAULT_OPTIONS = ["", "", ""];
 
 export default function ResetPotential({
   type,
@@ -40,50 +43,75 @@ export default function ResetPotential({
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
 
-  const item = inventory[itemIndex];
-  // TODO: 최적화
-  const grade = item
-    ? type == "normal"
-      ? item?.potential_option_grade
-      : type == "additional"
-      ? item?.additional_potential_option_grade
-      : ""
-    : "";
-  const options = item
-    ? type == "normal"
+  const item = itemIndex == -1 ? null : inventory[itemIndex];
+  const potentialTitle = type == "normal" ? "잠재능력" : "에디셔널 잠재능력";
+  const grade =
+    type == "normal"
+      ? item?.potential_option_grade ?? ""
+      : item?.additional_potential_option_grade ?? "";
+  const gradeIndex = KOR_NAME.indexOf(grade);
+  const guaranteeIndex = type == "normal" ? 0 : 1;
+  const guaranteeBound =
+    type == "normal"
+      ? GUARANTEE_BOUND[gradeIndex]
+      : ADDITIONAL_GUARANTEE_BOUND[gradeIndex];
+  const options =
+    type == "normal"
       ? [
-          item?.potential_option_1,
-          item?.potential_option_2,
-          item?.potential_option_3,
+          item?.potential_option_1 ?? "",
+          item?.potential_option_2 ?? "",
+          item?.potential_option_3 ?? "",
         ]
-      : type == "additional"
-      ? [
-          item?.additional_potential_option_1,
-          item?.additional_potential_option_2,
-          item?.additional_potential_option_3,
-        ]
-      : []
-    : [];
-  const cost = item
-    ? type == "normal"
+      : [
+          item?.additional_potential_option_1 ?? "",
+          item?.additional_potential_option_2 ?? "",
+          item?.additional_potential_option_3 ?? "",
+        ];
+  const cost =
+    type == "normal"
       ? PotentialService.getResetCost(
-          item.item_base_option.base_equipment_level,
-          KOR_NAME.indexOf(item.potential_option_grade)
+          item?.item_base_option.base_equipment_level,
+          gradeIndex
         )
-      : type == "additional"
-      ? PotentialService.getAdditionalResetCost(
-          item.item_base_option.base_equipment_level,
-          KOR_NAME.indexOf(item.additional_potential_option_grade)
-        )
-      : 0
-    : 0;
+      : PotentialService.getAdditionalResetCost(
+          item?.item_base_option.base_equipment_level,
+          gradeIndex
+        );
+  const pickNextGrade = () =>
+    (type == "normal"
+      ? PotentialService.pickNextGrade
+      : PotentialService.pickNextAdditionalGrade)(
+      grade,
+      guarantee[guaranteeIndex][gradeIndex]
+    );
+  const pickRandomPotentials = (grade: string) =>
+    (type == "normal"
+      ? PotentialService.pickRandomPotentials
+      : PotentialService.pickRandomAdditionalPotentials)(
+      item?.item_equipment_part ?? "",
+      grade,
+      item?.item_base_option.base_equipment_level ?? -1
+    );
+  const onOptionsButtonClick = (grade: string, options: string[]) => {
+    dispatch(
+      (type == "normal"
+        ? setUserInventoryPotentials
+        : setUserInventoryAdditionalPotentials)({
+        index: itemIndex,
+        grade,
+        values: options,
+      })
+    );
+    setNewGrade("");
+    setNewOptions(DEFAULT_OPTIONS);
+  };
 
   const [newGrade, setNewGrade] = useState("");
-  const [newOptions, setNewOptions] = useState<string[]>([]);
+  const [newOptions, setNewOptions] = useState<string[]>(DEFAULT_OPTIONS);
 
   useEffect(() => {
     setNewGrade("");
-    setNewOptions([]);
+    setNewOptions(DEFAULT_OPTIONS);
   }, [item]);
 
   return (
@@ -115,41 +143,15 @@ export default function ResetPotential({
         title="BEFORE"
         grade={grade}
         options={options}
-        isDisabled={!options.length}
-        onClick={() => {
-          if (!options.length) return;
-          dispatch(
-            (type == "normal"
-              ? setUserInventoryPotentials
-              : setUserInventoryAdditionalPotentials)({
-              index: itemIndex,
-              grade: grade,
-              values: options,
-            })
-          );
-          setNewGrade("");
-          setNewOptions([]);
-        }}
+        isDisabled={!options[0]}
+        onClick={() => onOptionsButtonClick(grade, options)}
       />
       <OptionsButton
         title="AFTER"
         grade={newGrade}
         options={newOptions}
-        isDisabled={!newOptions.length}
-        onClick={() => {
-          if (!options.length) return;
-          dispatch(
-            (type == "normal"
-              ? setUserInventoryPotentials
-              : setUserInventoryAdditionalPotentials)({
-              index: itemIndex,
-              grade: newGrade,
-              values: newOptions,
-            })
-          );
-          setNewGrade("");
-          setNewOptions([]);
-        }}
+        isDisabled={!newOptions[0]}
+        onClick={() => onOptionsButtonClick(newGrade, newOptions)}
       />
       <Flex
         justifyContent="space-between"
@@ -171,90 +173,42 @@ export default function ResetPotential({
         isDisabled={!item || (newGrade != "" && grade != newGrade)}
         onClick={() => {
           if (!item) return;
+
+          // Add spent
           dispatch(addUserSpent(cost));
-          const isNormal = type == "normal";
 
-          if (type == "normal") {
-            // Next grade
-            const index = KOR_NAME.indexOf(item.potential_option_grade);
-            const nextGrade = PotentialService.pickNextGrade(
-              item.potential_option_grade,
-              guarantee[0][index]
+          // Next grade
+          const nextGrade = pickNextGrade();
+
+          // Set guarantee
+          const currentGuarantee = guarantee[guaranteeIndex][gradeIndex];
+          if (grade == nextGrade) {
+            dispatch(
+              setUserGuarantee({
+                value: currentGuarantee + 1,
+                i: guaranteeIndex,
+                j: gradeIndex,
+              })
             );
-
-            // Set guarantee
-            if (item.potential_option_grade == nextGrade)
-              dispatch(
-                setUserGuarantee({
-                  value: guarantee[0][index] + 1,
-                  i: 0,
-                  j: index,
-                })
-              );
-            else {
-              const bound = GURANTEE_BOUND[index];
-              const rate = Math.round((guarantee[0][index] / bound) * 100);
-              toast({
-                colorScheme: "blue",
-                title: `잠재능력 등급업 - ${nextGrade}`,
-                description: `상승 보장: ${guarantee[0][index]} / ${bound} (${rate}%)`,
-              });
-              dispatch(setUserGuarantee({ value: 0, i: 0, j: index }));
-            }
-
-            // Next potentials
-            PotentialService.pickRandomPotentials(
-              item.item_equipment_part,
-              nextGrade,
-              item.item_base_option.base_equipment_level
-            ).then((potentials) => {
-              setNewGrade(nextGrade);
-              setNewOptions(
-                potentials.map((p) => p.name.replace("n", p.value.toString()))
-              );
+          } else {
+            const rate = Math.round((currentGuarantee / guaranteeBound) * 100);
+            toast({
+              colorScheme: "blue",
+              title: `${potentialTitle} 등급업 - ${nextGrade}`,
+              description: `상승 보장: ${currentGuarantee} / ${guaranteeBound} (${rate}%)`,
             });
-          } else if (type == "additional") {
-            // Next grade
-            const index = KOR_NAME.indexOf(
-              item.additional_potential_option_grade
+            dispatch(
+              setUserGuarantee({ value: 0, i: guaranteeIndex, j: gradeIndex })
             );
-            const nextGrade = PotentialService.pickNextAdditionalGrade(
-              item.additional_potential_option_grade,
-              guarantee[1][index]
-            );
-
-            // Set guarantee
-            if (item.additional_potential_option_grade == nextGrade)
-              dispatch(
-                setUserGuarantee({
-                  value: guarantee[1][index] + 1,
-                  i: 1,
-                  j: index,
-                })
-              );
-            else {
-              const bound = GURANTEE_BOUND[index];
-              const rate = Math.round((guarantee[1][index] / bound) * 100);
-              toast({
-                colorScheme: "blue",
-                title: `에디셔너 잠재능력 등급업 - ${nextGrade}`,
-                description: `상승 보장: ${guarantee[1][index]} / ${bound} (${rate}%)`,
-              });
-              dispatch(setUserGuarantee({ value: 0, i: 1, j: index }));
-            }
-
-            // Next potentials
-            PotentialService.pickRandomAdditionalPotentials(
-              item.item_equipment_part,
-              nextGrade,
-              item.item_base_option.base_equipment_level
-            ).then((potentials) => {
-              setNewGrade(nextGrade);
-              setNewOptions(
-                potentials.map((p) => p.name.replace("n", p.value.toString()))
-              );
-            });
           }
+
+          // Next potentials
+          pickRandomPotentials(nextGrade).then((potentials) => {
+            setNewGrade(nextGrade);
+            setNewOptions(
+              potentials.map((p) => p.name.replace("n", p.value.toString()))
+            );
+          });
         }}
       >
         재설정하기
@@ -283,7 +237,7 @@ function OptionsButton({
 
   return (
     <Tooltip
-      display={options.length ? "block" : "none"}
+      display={isDisabled ? "none" : undefined}
       fontSize="xs"
       label={options.map((option, i) => (
         <Text key={"option-" + i}>{option}</Text>

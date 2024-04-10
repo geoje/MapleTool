@@ -8,8 +8,8 @@ import {
   ENG_NAME,
   UPGRADE_RATE,
   ADDITIONAL_UPGRADE_RATE,
-  GURANTEE_BOUND,
-  ADDITIONAL_GURANTEE_BOUND,
+  GUARANTEE_BOUND,
+  ADDITIONAL_GUARANTEE_BOUND,
 } from "./potentialConst";
 
 export default abstract class PotentialService {
@@ -27,7 +27,8 @@ export default abstract class PotentialService {
   static getPotentialIconUrl(gradeIndex: number) {
     return `/item-equipment/potential/${ENG_NAME[gradeIndex]}.png`;
   }
-  static getResetCost(level: number, gradeIndex: number) {
+  static getResetCost(level: number | undefined, gradeIndex: number) {
+    if (level == undefined) return 0;
     const index = Math.max(
       0,
       Math.min(RESET_COST[0].values.length, gradeIndex)
@@ -41,7 +42,8 @@ export default abstract class PotentialService {
     }
     return RESET_COST[0].values[index];
   }
-  static getAdditionalResetCost(level: number, gradeIndex: number) {
+  static getAdditionalResetCost(level: number | undefined, gradeIndex: number) {
+    if (level == undefined) return 0;
     const index = Math.max(
       0,
       Math.min(ADDITIONAL_RESET_COST[0].values.length, gradeIndex)
@@ -59,7 +61,7 @@ export default abstract class PotentialService {
     const index = KOR_NAME.indexOf(grade);
     if (index == -1 || index == KOR_NAME.length - 1) return grade;
     if (
-      guarantee == GURANTEE_BOUND[index] ||
+      guarantee == GUARANTEE_BOUND[index] ||
       Math.random() <= UPGRADE_RATE[index]
     )
       return KOR_NAME[index + 1];
@@ -69,7 +71,7 @@ export default abstract class PotentialService {
     const index = KOR_NAME.indexOf(grade);
     if (index == -1 || index == KOR_NAME.length - 1) return grade;
     if (
-      guarantee == ADDITIONAL_GURANTEE_BOUND[index] ||
+      guarantee == ADDITIONAL_GUARANTEE_BOUND[index] ||
       Math.random() <= ADDITIONAL_UPGRADE_RATE[index]
     )
       return KOR_NAME[index + 1];
