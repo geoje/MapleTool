@@ -73,7 +73,7 @@ export default abstract class PotentialService {
       return KOR_NAME[index + 1];
     return grade;
   }
-  static async pickRandomPotentials(
+  static async getOrRequestProbabilities(
     part: string,
     grade: string,
     level: number
@@ -83,10 +83,38 @@ export default abstract class PotentialService {
       const value = await CharacterService.requestPotential(part, grade, level);
       PotentialService.probabilities.set(key, value);
     }
-    const probabilities = PotentialService.probabilities.get(key) ?? [];
+    return PotentialService.probabilities.get(key) ?? [];
+  }
+  static async getOrRequestAdditionalProbabilities(
+    part: string,
+    grade: string,
+    level: number
+  ) {
+    const key = JSON.stringify({ part, grade, level });
+    if (!PotentialService.additionalProbabilities.has(key)) {
+      const value = await CharacterService.requestAdditionalPotential(
+        part,
+        grade,
+        level
+      );
+      PotentialService.additionalProbabilities.set(key, value);
+    }
+    return PotentialService.additionalProbabilities.get(key) ?? [];
+  }
+  static async pickRandomPotentials(
+    part: string,
+    grade: string,
+    level: number
+  ) {
+    const probabilities = await PotentialService.getOrRequestProbabilities(
+      part,
+      grade,
+      level
+    );
     const result: PotentialProbability[] = [];
     const positions = new Set(probabilities.map((p) => p.position));
 
+    // TODO: 3줄 안나오는 것 제거
     positions.forEach((position) => {
       const probabilitiesAtPosition = probabilities.filter(
         (p) => p.position == position
@@ -109,20 +137,16 @@ export default abstract class PotentialService {
     grade: string,
     level: number
   ) {
-    const key = JSON.stringify({ part, grade, level });
-    if (!PotentialService.additionalProbabilities.has(key)) {
-      const value = await CharacterService.requestAdditionalPotential(
+    const probabilities =
+      await PotentialService.getOrRequestAdditionalProbabilities(
         part,
         grade,
         level
       );
-      PotentialService.additionalProbabilities.set(key, value);
-    }
-    const probabilities =
-      PotentialService.additionalProbabilities.get(key) ?? [];
     const result: PotentialProbability[] = [];
     const positions = new Set(probabilities.map((p) => p.position));
 
+    // TODO: 3줄 안나오는 것 제거
     positions.forEach((position) => {
       const probabilitiesAtPosition = probabilities.filter(
         (p) => p.position == position
