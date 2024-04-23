@@ -5,6 +5,7 @@ import {
   Stack,
   Text,
   useColorMode,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useAppSelector } from "../../reducer/hooks";
@@ -23,6 +24,7 @@ import {
 } from "../../service/character/itemEquipment/potentialConst";
 import PotentialService from "../../service/character/itemEquipment/potential";
 import OptionsButton from "./reset/optionsButton";
+import TriggerModal from "./reset/triggerModal";
 
 const DEFAULT_OPTIONS = ["", "", ""];
 
@@ -37,6 +39,7 @@ export default function ResetPotential({
   const dispatch = useDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
   const guarantee = useAppSelector((state) => state.user.guarantee);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
 
@@ -102,6 +105,61 @@ export default function ResetPotential({
     setNewGrade("");
     setNewOptions(DEFAULT_OPTIONS);
   };
+  const onResetButtonClick = () => {
+    if (!item) return;
+
+    // Add spent
+    dispatch(addUserSpent(cost));
+
+    // Next grade
+    const nextGrade = pickNextGrade();
+
+    // Set guarantee
+    const currentGuarantee = guarantee[guaranteeIndex][gradeIndex];
+    if (grade == nextGrade) {
+      dispatch(
+        setUserGuarantee({
+          value: currentGuarantee + 1,
+          i: guaranteeIndex,
+          j: gradeIndex,
+        })
+      );
+    } else {
+      dispatch(
+        setUserGuarantee({ value: 0, i: guaranteeIndex, j: gradeIndex })
+      );
+    }
+
+    // Next potentials
+    pickRandomPotentials(nextGrade)
+      .then((potentials) => {
+        setNewGrade(nextGrade);
+        setNewOptions(
+          potentials.map((p) => p.name.replace("n", p.value.toString()))
+        );
+        if (grade != nextGrade) {
+          const rate = Math.round((currentGuarantee / guaranteeBound) * 100);
+          toast({
+            colorScheme: "blue",
+            title: `${potentialTitle} 등급업 - ${nextGrade}`,
+            description:
+              gradeIndex == -1
+                ? `노멀 아이템에 ${potentialTitle}을 부여합니다.`
+                : `상승 보장: ${currentGuarantee} / ${guaranteeBound} (${rate}%)`,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((reason) => {
+        toast({
+          position: "top-right",
+          status: "warning",
+          title: `${potentialTitle} 데이터 요청 실패 (${reason.message})`,
+          description: Object(reason.response?.data).message,
+          isClosable: true,
+        });
+      });
+  };
 
   const [newGrade, setNewGrade] = useState("");
   const [newOptions, setNewOptions] = useState<string[]>(DEFAULT_OPTIONS);
@@ -165,68 +223,20 @@ export default function ResetPotential({
           {cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 메소
         </Text>
       </Flex>
-      <Button
-        size="xs"
-        isDisabled={!item || (newGrade != "" && grade != newGrade)}
-        onClick={() => {
-          if (!item) return;
-
-          // Add spent
-          dispatch(addUserSpent(cost));
-
-          // Next grade
-          const nextGrade = pickNextGrade();
-
-          // Set guarantee
-          const currentGuarantee = guarantee[guaranteeIndex][gradeIndex];
-          if (grade == nextGrade) {
-            dispatch(
-              setUserGuarantee({
-                value: currentGuarantee + 1,
-                i: guaranteeIndex,
-                j: gradeIndex,
-              })
-            );
-          } else {
-            dispatch(
-              setUserGuarantee({ value: 0, i: guaranteeIndex, j: gradeIndex })
-            );
-          }
-
-          // Next potentials
-          pickRandomPotentials(nextGrade)
-            .then((potentials) => {
-              setNewGrade(nextGrade);
-              setNewOptions(
-                potentials.map((p) => p.name.replace("n", p.value.toString()))
-              );
-              if (grade != nextGrade) {
-                const rate = Math.round(
-                  (currentGuarantee / guaranteeBound) * 100
-                );
-                toast({
-                  colorScheme: "blue",
-                  title: `${potentialTitle} 등급업 - ${nextGrade}`,
-                  description:
-                    gradeIndex == -1
-                      ? `노멀 아이템에 ${potentialTitle}을 부여합니다.`
-                      : `상승 보장: ${currentGuarantee} / ${guaranteeBound} (${rate}%)`,
-                });
-              }
-            })
-            .catch((reason) => {
-              toast({
-                position: "top-right",
-                status: "warning",
-                title: `${potentialTitle} 데이터 요청 실패 (${reason.message})`,
-                description: Object(reason.response?.data).message,
-                isClosable: true,
-              });
-            });
-        }}
-      >
-        재설정하기
-      </Button>
+      <Flex gap={2}>
+        <Button size="xs" onClick={onOpen}>
+          트리거
+        </Button>
+        <Button
+          flex={1}
+          size="xs"
+          isDisabled={!item || (newGrade != "" && grade != newGrade)}
+          onClick={onResetButtonClick}
+        >
+          재설정하기
+        </Button>
+      </Flex>
+      <TriggerModal isOpen={isOpen} onClose={onClose} title={potentialTitle} />
     </Stack>
   );
 }
