@@ -1,5 +1,6 @@
 import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
 import PotentialProbability from "../../../dto/character/itemEquipment/potentialProbability";
+import PotentialSummantion from "../../../dto/character/itemEquipment/potentialSummation";
 import CharacterService from "../character";
 import {
   KOR_NAME,
@@ -51,6 +52,7 @@ export default abstract class PotentialService {
     }
     return ADDITIONAL_RESET_COST[0].values[index];
   }
+
   static pickNextGrade(grade: string, guarantee: number) {
     const index = KOR_NAME.indexOf(grade);
     if (index == -1) return KOR_NAME[0];
@@ -163,5 +165,103 @@ export default abstract class PotentialService {
     });
 
     return result;
+  }
+
+  static async getSummantions(part: string, grade: string, level: number) {
+    const probabilities = await PotentialService.getOrRequestProbabilities(
+      part,
+      grade,
+      level
+    );
+    const probabilitiesGroup = groupProbabilitiesByPosition(probabilities);
+    const summantions = new Map<string, PotentialSummantion>();
+    const positions = Array.from(probabilitiesGroup.keys());
+
+    calculateAllSummantions(summantions, probabilitiesGroup, positions, []);
+    distinctPositionGridSummantions(summantions);
+
+    return Array.from(summantions.values());
+  }
+}
+
+function groupProbabilitiesByPosition(
+  probabilities: PotentialProbability[]
+): Map<number, PotentialProbability[]> {
+  const groups = new Map<number, PotentialProbability[]>();
+
+  for (const probability of probabilities) {
+    const { position } = probability;
+    if (groups.has(position)) {
+      groups.get(position)!.push(probability);
+    } else {
+      groups.set(position, [probability]);
+    }
+  }
+
+  return groups;
+}
+
+function calculateAllSummantions(
+  resultRef: Map<string, PotentialSummantion>,
+  probabilitiesGroupByPosition: Map<number, PotentialProbability[]>,
+  keys: number[],
+  accumulate: PotentialProbability[]
+) {
+  if (keys.length == 0) {
+    const summantions = convertProbabilitiesToSummantions(accumulate);
+    for (const summantion of summantions) {
+      const key = summantion.name.replace("n", summantion.value.toString());
+      if (resultRef.has(key)) {
+        resultRef.get(key)!.positionGrid.push(summantion.positionGrid[0]);
+        continue;
+      }
+      resultRef.set(key, summantion);
+    }
+    return;
+  }
+
+  const probabilities = probabilitiesGroupByPosition.get(keys[0])!;
+  for (const probability of probabilities) {
+    calculateAllSummantions(
+      resultRef,
+      probabilitiesGroupByPosition,
+      keys.slice(1),
+      [...accumulate, probability]
+    );
+  }
+}
+
+function convertProbabilitiesToSummantions(
+  probabilities: PotentialProbability[]
+): PotentialSummantion[] {
+  const summantionsGroupByName = new Map<string, PotentialSummantion>();
+
+  for (const probability of probabilities) {
+    const key = probability.name;
+    if (summantionsGroupByName.has(key)) {
+      const valueRef = summantionsGroupByName.get(key)!;
+      valueRef.value += probability.value;
+      valueRef.positionGrid[0].push(probability.position);
+      continue;
+    }
+    summantionsGroupByName.set(key, {
+      name: key,
+      value: probability.value,
+      positionGrid: [[probability.position]],
+    });
+  }
+
+  return Array.from(summantionsGroupByName.values());
+}
+
+function distinctPositionGridSummantions(
+  resultRef: Map<string, PotentialSummantion>
+) {
+  for (const key of resultRef.keys()) {
+    const positionGrid = resultRef.get(key)!.positionGrid;
+    resultRef.get(key)!.positionGrid = Array.from(
+      new Set(positionGrid.map((positions) => JSON.stringify(positions))),
+      (positions) => JSON.parse(positions)
+    );
   }
 }
