@@ -51,35 +51,87 @@ export default function TriggerModal({
       <ModalContent>
         <ModalHeader>{title} 트리거</ModalHeader>
         <ModalCloseButton />
-        <ModalBody pb={6}>
-          <Text></Text>
+        <ModalBody>
           {[...potentialGrid, []].map((potentials, i) => {
             return (
-              <Stack>
-                <Flex justify="space-between" align="center">
-                  <Badge size="lg">옵션세트 {i + 1}</Badge>
-                  <Button size="xs" variant="ghost">
-                    삭제
-                  </Button>
+              <Stack pb={4}>
+                <Flex align="center">
+                  <Badge
+                    mr="auto"
+                    colorScheme={
+                      potentials.length
+                        ? PotentialService.isCompatibleSummantions(
+                            convertPotentialsToSummantions(
+                              summantions,
+                              potentials
+                            )
+                          )
+                          ? "green"
+                          : "red"
+                        : undefined
+                    }
+                  >
+                    옵션세트 {i + 1}
+                  </Badge>
+                  {potentials.length ? (
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      onClick={() => {
+                        const temp = [...potentialGrid];
+                        temp.splice(i, 1);
+                        setPotentialGrid(temp);
+                      }}
+                    >
+                      삭제
+                    </Button>
+                  ) : undefined}
                 </Flex>
                 {potentials.map((p, j) => (
-                  <Flex>
-                    <Select size="sm">
+                  <Flex gap={2}>
+                    <Select
+                      size="sm"
+                      value={potentialGrid[i][j].name}
+                      onChange={(event) => {
+                        const temp = [...potentialGrid];
+                        if (event.target.value) {
+                          const defaultValue = summantions
+                            .filter((s) => s.name == p.name)
+                            .map((s) => s.value)
+                            .sort((a, b) => a - b)[0];
+                          temp[i][j] = {
+                            name: event.target.value,
+                            value: defaultValue,
+                          };
+                        } else {
+                          temp[i].splice(j, 1);
+                        }
+                        setPotentialGrid(temp);
+                      }}
+                    >
                       <option></option>
-                      {summantions.map((summantion) => (
-                        <option value={summantion.name}>
-                          {summantion.name}
-                        </option>
+                      {uniquePotentialNames.map((name) => (
+                        <option value={name}>{name}</option>
                       ))}
                     </Select>
-                    <Select width={20} size="sm">
-                      <option></option>
+                    <Select
+                      width={20}
+                      size="sm"
+                      value={potentialGrid[i][j].value}
+                      onChange={(event) => {
+                        const value = parseInt(event.target.value);
+                        const temp = [...potentialGrid];
+                        temp[i][j].value = value;
+
+                        setPotentialGrid(temp);
+                      }}
+                    >
                       {summantions
-                        .filter((summantion) => summantion.name == p.name)
-                        .map((summantion) => (
-                          <option value={summantion.value}>
-                            {summantion.value}
-                          </option>
+                        .filter((s) => s.name == p.name)
+                        .map((s) => s.value)
+                        .sort((a, b) => a - b)
+                        .map((value) => (
+                          <option value={value}>{value}</option>
                         ))}
                     </Select>
                   </Flex>
@@ -88,15 +140,34 @@ export default function TriggerModal({
                   .fill(1)
                   .map((_, j) => (
                     <Flex gap={2}>
-                      <Select size="sm" disabled={j > 0} onChange={console.log}>
+                      <Select
+                        size="sm"
+                        disabled={j > 0}
+                        value=""
+                        onChange={(event) => {
+                          const name = event.target.value;
+                          if (!name) return;
+
+                          const temp = [...potentialGrid];
+                          const defaultValue = summantions
+                            .filter((s) => s.name == name)
+                            .map((s) => s.value)
+                            .sort((a, b) => a - b)[0];
+                          const potential = { name, value: defaultValue };
+                          if (potentials.length == 0) {
+                            temp.push([potential]);
+                          } else {
+                            temp[i].push(potential);
+                          }
+                          setPotentialGrid(temp);
+                        }}
+                      >
                         <option></option>
                         {uniquePotentialNames.map((name) => (
                           <option value={name}>{name}</option>
                         ))}
                       </Select>
-                      <Select width={20} size="sm" disabled={j > 0}>
-                        <option></option>
-                      </Select>
+                      <Select width={20} size="sm" disabled={j > 0}></Select>
                     </Flex>
                   ))}
               </Stack>
@@ -105,5 +176,14 @@ export default function TriggerModal({
         </ModalBody>
       </ModalContent>
     </Modal>
+  );
+}
+
+function convertPotentialsToSummantions(
+  summantions: PotentialSummantion[],
+  potentials: { name: string; value: number }[]
+): PotentialSummantion[] {
+  return potentials.map(
+    (p) => summantions.find((s) => s.name == p.name && s.value == p.value)!
   );
 }
