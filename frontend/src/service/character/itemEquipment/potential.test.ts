@@ -15,3 +15,49 @@ test("getSummantions", async () => {
   result.sort();
   console.log(result);
 });
+
+test("isCompatibleSummantions", () => {
+  const summantionsNotCompatible = [
+    {
+      name: "공격력 : +n%",
+      value: 21,
+      positionGrid: [
+        [1, 2],
+        [0, 2],
+        [0, 1],
+      ],
+    },
+    {
+      name: "보스 몬스터 공격 시 데미지 : +n%",
+      value: 65,
+      positionGrid: [
+        [1, 2],
+        [0, 2],
+        [0, 1],
+      ],
+    },
+  ];
+  const summantionsCompatible = [
+    {
+      name: "공격력 : +n%",
+      value: 21,
+      positionGrid: [
+        [1, 2],
+        [0, 2],
+        [0, 1],
+      ],
+    },
+    {
+      name: "보스 몬스터 공격 시 데미지 : +n%",
+      value: 30,
+      positionGrid: [[2], [1]],
+    },
+  ];
+
+  expect(
+    PotentialService.isCompatibleSummantions(summantionsNotCompatible)
+  ).toBeFalsy();
+  expect(
+    PotentialService.isCompatibleSummantions(summantionsCompatible)
+  ).toBeTruthy();
+});

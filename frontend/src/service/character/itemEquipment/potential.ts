@@ -182,6 +182,14 @@ export default abstract class PotentialService {
 
     return Array.from(summantions.values());
   }
+
+  static isCompatibleSummantions(summantions: PotentialSummantion[]): boolean {
+    const positionGrids = summantions.map(
+      (summantion) => summantion.positionGrid
+    );
+
+    return isCompatiblePositionGrids(positionGrids, [], 0);
+  }
 }
 
 function groupProbabilitiesByPosition(
@@ -264,4 +272,25 @@ function distinctPositionGridSummantions(
       (positions) => JSON.parse(positions)
     );
   }
+}
+
+function isCompatiblePositionGrids(
+  positionGrids: number[][][],
+  accumulate: number[],
+  index: number
+): boolean {
+  if (index == positionGrids.length) {
+    return accumulate.length == new Set(accumulate).size;
+  }
+
+  for (const positions of positionGrids[index]) {
+    const result = isCompatiblePositionGrids(
+      positionGrids,
+      [...accumulate, ...positions],
+      index + 1
+    );
+    if (result) return true;
+  }
+
+  return false;
 }
