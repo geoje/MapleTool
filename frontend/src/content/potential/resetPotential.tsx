@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Flex,
   Image,
@@ -311,15 +312,13 @@ export default function ResetPotential({
         </Text>
       </Flex>
       <Flex gap={2}>
-        <Tooltip label="지정한 옵션 중 하나가 나올 때 까지 자동으로 재설정">
-          <Button
-            size="xs"
-            colorScheme={conditionGrid.length > 0 ? "blue" : undefined}
-            onClick={onOpen}
-          >
-            트리거
-          </Button>
-        </Tooltip>
+        <Button
+          size="xs"
+          colorScheme={conditionGrid.length > 0 ? "blue" : undefined}
+          onClick={onOpen}
+        >
+          트리거
+        </Button>
         <Button
           flex={1}
           size="xs"
@@ -351,6 +350,18 @@ export default function ResetPotential({
             : "재설정하기"}
         </Button>
       </Flex>
+      {conditionGrid.map((conditions, i) => (
+        <Flex key={"conditions-" + i} gap={2}>
+          <Badge colorScheme="blue">{i + 1}</Badge>
+          <Flex gap={2} wrap="wrap">
+            {conditions.map((condition, j) => (
+              <Badge key={"condition-" + j}>
+                {condition.name.replace("n", condition.value.toString())}
+              </Badge>
+            ))}
+          </Flex>
+        </Flex>
+      ))}
       <TriggerModal
         isOpen={isOpen}
         onClose={onClose}

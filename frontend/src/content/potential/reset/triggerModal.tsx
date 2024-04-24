@@ -1,4 +1,5 @@
 import {
+  Alert,
   Badge,
   Button,
   Flex,
@@ -15,6 +16,7 @@ import PotentialService from "../../../service/character/itemEquipment/potential
 import { useEffect, useState } from "react";
 import PotentialSummantion from "../../../dto/character/itemEquipment/potentialSummation";
 import { MAX_POTENTIAL_COUNT } from "../../../service/character/itemEquipment/potentialConst";
+import { MdInfo } from "react-icons/md";
 
 export default function TriggerModal({
   isOpen,
@@ -74,6 +76,10 @@ export default function TriggerModal({
         <ModalHeader>{title} 트리거</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+          <Alert variant="left-accent" mb={4} gap={2}>
+            <MdInfo />
+            지정한 옵션세트 중 하나가 나올 때까지 자동으로 재설정합니다.
+          </Alert>
           {[...potentialGrid, []].map((potentials, i) => (
             <Stack key={"potentials-" + title + i} pb={4}>
               <Flex align="center">
