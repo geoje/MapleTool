@@ -12,7 +12,7 @@ export const LINKS = [
     label: "잠재능력",
     image: "/link/cube.svg",
     content: <Potential />,
-    building: true,
+    building: false,
   },
   {
     name: "starforce",
