@@ -21,6 +21,7 @@ export default function TriggerModal({
   onClose,
   title,
   getSummantions,
+  setConditions,
   part,
   grade,
   level,
@@ -33,6 +34,7 @@ export default function TriggerModal({
     grade: string,
     level: number
   ) => Promise<PotentialSummantion[]>;
+  setConditions: (conditions: PotentialSummantion[][]) => void;
   part: string;
   grade: string;
   level: number;
@@ -50,6 +52,14 @@ export default function TriggerModal({
 
     getSummantions(part, grade, level).then(setSummantions);
   }, [part, grade, level]);
+
+  useEffect(() => {
+    setConditions(
+      potentialGrid.map((potentials) =>
+        convertPotentialsToSummantions(summantions, potentials)
+      )
+    );
+  }, [potentialGrid]);
 
   const uniquePotentialNames = [
     ...new Set(summantions.map((summantion) => summantion.name)),

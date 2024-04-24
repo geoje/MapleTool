@@ -18,6 +18,7 @@ import {
   setUserInventoryPotentials,
 } from "../../reducer/userSlice";
 import { useEffect, useState } from "react";
+import { FaPlay, FaStop } from "react-icons/fa";
 import {
   ADDITIONAL_GUARANTEE_BOUND,
   GUARANTEE_BOUND,
@@ -26,8 +27,10 @@ import {
 import PotentialService from "../../service/character/itemEquipment/potential";
 import OptionsButton from "./reset/optionsButton";
 import TriggerModal from "./reset/triggerModal";
+import PotentialSummantion from "../../dto/character/itemEquipment/potentialSummation";
 
 const DEFAULT_OPTIONS = ["", "", ""];
+const RESET_DELAY = 400;
 
 export default function ResetPotential({
   type,
@@ -112,7 +115,7 @@ export default function ResetPotential({
     setNewGrade("");
     setNewOptions(DEFAULT_OPTIONS);
   };
-  const onResetButtonClick = () => {
+  const resetNormally = (intervalId?: NodeJS.Timeout) => {
     if (!item) return;
 
     // Add spent
@@ -155,6 +158,29 @@ export default function ResetPotential({
                 : `상승 보장: ${currentGuarantee} / ${guaranteeBound} (${rate}%)`,
             isClosable: true,
           });
+
+          // Stop trigger if upgraded
+          if (intervalId) {
+            clearInterval(intervalId);
+            setPlayIntervalId(undefined);
+          }
+          return;
+        }
+
+        // Stop if trigged
+        const newSummantions =
+          PotentialService.convertProbabilitiesToSummantions(potentials);
+        if (
+          conditionGrid.some((conditions) =>
+            conditions.every((c) =>
+              newSummantions.some((s) => s.name == c.name && s.value >= c.value)
+            )
+          )
+        ) {
+          if (intervalId) {
+            clearInterval(intervalId);
+            setPlayIntervalId(undefined);
+          }
         }
       })
       .catch((reason) => {
@@ -168,13 +194,41 @@ export default function ResetPotential({
       });
   };
 
+  const resetUntilTrigged = () => {
+    if (playIntervalId) {
+      stopAndClearPlayInterval();
+      return;
+    }
+    const intervalId = setInterval(() => {
+      resetNormally(intervalId);
+    }, RESET_DELAY);
+    setPlayIntervalId(intervalId);
+  };
+  const stopAndClearPlayInterval = () => {
+    if (playIntervalId) {
+      clearInterval(playIntervalId);
+    }
+    setPlayIntervalId(undefined);
+  };
+
   const [newGrade, setNewGrade] = useState("");
   const [newOptions, setNewOptions] = useState<string[]>(DEFAULT_OPTIONS);
+  const [conditionGrid, setConditionGrid] = useState<PotentialSummantion[][]>(
+    []
+  );
+  const [playIntervalId, setPlayIntervalId] = useState<NodeJS.Timeout>();
 
   useEffect(() => {
     setNewGrade("");
     setNewOptions(DEFAULT_OPTIONS);
+    setConditionGrid([]);
   }, [item]);
+
+  useEffect(() => {
+    if (!conditionGrid.length) {
+      stopAndClearPlayInterval();
+    }
+  }, [conditionGrid]);
 
   return (
     <Stack width={["100%", "100%", 60]}>
@@ -231,16 +285,38 @@ export default function ResetPotential({
         </Text>
       </Flex>
       <Flex gap={2}>
-        <Tooltip label="지정한 옵션 중 하나가 나올 때 까지 자동으로 재설정하는 기능">
-          <Button size="xs" onClick={onOpen}>
+        <Tooltip label="지정한 옵션 중 하나가 나올 때 까지 자동으로 재설정">
+          <Button
+            size="xs"
+            colorScheme={conditionGrid.length > 0 ? "blue" : undefined}
+            onClick={onOpen}
+          >
             트리거
           </Button>
         </Tooltip>
         <Button
           flex={1}
           size="xs"
+          leftIcon={
+            conditionGrid.length > 0 ? (
+              playIntervalId ? (
+                <FaStop />
+              ) : (
+                <FaPlay />
+              )
+            ) : undefined
+          }
+          colorScheme={
+            conditionGrid.length > 0 && playIntervalId ? "red" : undefined
+          }
           isDisabled={!item || (newGrade != "" && grade != newGrade)}
-          onClick={onResetButtonClick}
+          onClick={
+            conditionGrid.length > 0
+              ? resetUntilTrigged
+              : () => {
+                  resetNormally();
+                }
+          }
         >
           재설정하기
         </Button>
@@ -250,6 +326,7 @@ export default function ResetPotential({
         onClose={onClose}
         title={potentialTitle}
         getSummantions={getSummantions}
+        setConditions={setConditionGrid}
         part={part}
         grade={grade}
         level={level}

@@ -205,6 +205,29 @@ export default abstract class PotentialService {
     return Array.from(summantions.values());
   }
 
+  static convertProbabilitiesToSummantions(
+    probabilities: PotentialProbability[]
+  ): PotentialSummantion[] {
+    const summantionsGroupByName = new Map<string, PotentialSummantion>();
+
+    for (const probability of probabilities) {
+      const key = probability.name;
+      if (summantionsGroupByName.has(key)) {
+        const valueRef = summantionsGroupByName.get(key)!;
+        valueRef.value += probability.value;
+        valueRef.positionGrid[0].push(probability.position);
+        continue;
+      }
+      summantionsGroupByName.set(key, {
+        name: key,
+        value: probability.value,
+        positionGrid: [[probability.position]],
+      });
+    }
+
+    return Array.from(summantionsGroupByName.values());
+  }
+
   static isCompatibleSummantions(summantions: PotentialSummantion[]): boolean {
     const positionGrids = summantions.map(
       (summantion) => summantion.positionGrid
@@ -238,7 +261,8 @@ function calculateAllSummantions(
   accumulate: PotentialProbability[]
 ) {
   if (keys.length == 0) {
-    const summantions = convertProbabilitiesToSummantions(accumulate);
+    const summantions =
+      PotentialService.convertProbabilitiesToSummantions(accumulate);
     for (const summantion of summantions) {
       const key = summantion.name.replace("n", summantion.value.toString());
       if (resultRef.has(key)) {
@@ -259,29 +283,6 @@ function calculateAllSummantions(
       [...accumulate, probability]
     );
   }
-}
-
-function convertProbabilitiesToSummantions(
-  probabilities: PotentialProbability[]
-): PotentialSummantion[] {
-  const summantionsGroupByName = new Map<string, PotentialSummantion>();
-
-  for (const probability of probabilities) {
-    const key = probability.name;
-    if (summantionsGroupByName.has(key)) {
-      const valueRef = summantionsGroupByName.get(key)!;
-      valueRef.value += probability.value;
-      valueRef.positionGrid[0].push(probability.position);
-      continue;
-    }
-    summantionsGroupByName.set(key, {
-      name: key,
-      value: probability.value,
-      positionGrid: [[probability.position]],
-    });
-  }
-
-  return Array.from(summantionsGroupByName.values());
 }
 
 function distinctPositionGridSummantions(
