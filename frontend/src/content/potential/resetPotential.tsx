@@ -45,10 +45,12 @@ export default function ResetPotential({
 
   const item = itemIndex == -1 ? null : inventory[itemIndex];
   const potentialTitle = type == "normal" ? "잠재능력" : "에디셔널 잠재능력";
+  const part = item?.item_equipment_part ?? "";
   const grade =
     type == "normal"
       ? item?.potential_option_grade ?? ""
       : item?.additional_potential_option_grade ?? "";
+  const level = item?.item_base_option.base_equipment_level ?? 0;
   const gradeIndex = KOR_NAME.indexOf(grade);
   const guaranteeIndex = type == "normal" ? 0 : 1;
   const guaranteeBound =
@@ -236,7 +238,14 @@ export default function ResetPotential({
           재설정하기
         </Button>
       </Flex>
-      <TriggerModal isOpen={isOpen} onClose={onClose} title={potentialTitle} />
+      <TriggerModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={potentialTitle}
+        part={part}
+        grade={grade}
+        level={level}
+      />
     </Stack>
   );
 }
