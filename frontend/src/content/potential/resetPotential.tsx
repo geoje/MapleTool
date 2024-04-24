@@ -5,7 +5,6 @@ import {
   Image,
   Stack,
   Text,
-  Tooltip,
   useColorMode,
   useDisclosure,
   useToast,
@@ -44,7 +43,7 @@ export default function ResetPotential({
   const dispatch = useDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
   const guarantee = useAppSelector((state) => state.user.guarantee);
-  let guaranteeCopy: number[][] = JSON.parse(JSON.stringify(guarantee));
+  const guaranteeCopy: number[][] = JSON.parse(JSON.stringify(guarantee));
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
@@ -214,7 +213,10 @@ export default function ResetPotential({
         isClosable: true,
       });
 
-      stopAndClearPlayInterval();
+      if (playIntervalId) {
+        clearInterval(playIntervalId);
+      }
+      setPlayIntervalId(undefined);
       return;
     }
 
@@ -230,12 +232,6 @@ export default function ResetPotential({
       resetNormally(intervalId);
     }, RESET_DELAY);
     setPlayIntervalId(intervalId);
-  };
-  const stopAndClearPlayInterval = () => {
-    if (playIntervalId) {
-      clearInterval(playIntervalId);
-    }
-    setPlayIntervalId(undefined);
   };
 
   const [newGrade, setNewGrade] = useState("");
@@ -253,8 +249,13 @@ export default function ResetPotential({
 
   useEffect(() => {
     if (!conditionGrid.length) {
-      stopAndClearPlayInterval();
+      if (playIntervalId) {
+        clearInterval(playIntervalId);
+      }
+      setPlayIntervalId(undefined);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionGrid]);
 
   return (

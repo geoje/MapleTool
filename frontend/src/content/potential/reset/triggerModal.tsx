@@ -55,6 +55,8 @@ export default function TriggerModal({
     }
 
     getSummantions(part, grade, level).then(setSummantions);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [part, grade, level]);
 
   useEffect(() => {
@@ -63,6 +65,8 @@ export default function TriggerModal({
         convertPotentialsToSummantions(summantions, potentials)
       )
     );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [potentialGrid]);
 
   const uniquePotentialNames = [
