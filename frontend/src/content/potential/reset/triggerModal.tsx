@@ -45,6 +45,8 @@ export default function TriggerModal({
   >([]);
 
   useEffect(() => {
+    setPotentialGrid([]);
+
     if (!part || !grade || !level) {
       setSummantions([]);
       return;
@@ -78,7 +80,7 @@ export default function TriggerModal({
                 <Badge
                   mr="auto"
                   colorScheme={
-                    potentials.length
+                    summantions.length && potentials.length
                       ? PotentialService.isCompatibleSummantions(
                           convertPotentialsToSummantions(
                             summantions,
@@ -140,7 +142,7 @@ export default function TriggerModal({
                     ))}
                   </Select>
                   <Select
-                    width={20}
+                    width={32}
                     size="sm"
                     value={potentialGrid[i][j].value}
                     onChange={(event) => {
@@ -200,7 +202,7 @@ export default function TriggerModal({
                         </option>
                       ))}
                     </Select>
-                    <Select width={20} size="sm" disabled={j > 0}></Select>
+                    <Select width={32} size="sm" disabled={j > 0}></Select>
                   </Flex>
                 ))}
             </Stack>
@@ -215,7 +217,7 @@ function convertPotentialsToSummantions(
   summantions: PotentialSummantion[],
   potentials: { name: string; value: number }[]
 ): PotentialSummantion[] {
-  return potentials.map(
-    (p) => summantions.find((s) => s.name == p.name && s.value == p.value)!
-  );
+  return potentials
+    .map((p) => summantions.find((s) => s.name == p.name && s.value == p.value))
+    .filter((p): p is PotentialSummantion => p !== undefined);
 }

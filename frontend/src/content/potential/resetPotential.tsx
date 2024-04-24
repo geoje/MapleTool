@@ -30,7 +30,7 @@ import TriggerModal from "./reset/triggerModal";
 import PotentialSummantion from "../../dto/character/itemEquipment/potentialSummation";
 
 const DEFAULT_OPTIONS = ["", "", ""];
-const RESET_DELAY = 400;
+const RESET_DELAY = 100;
 
 export default function ResetPotential({
   type,
@@ -43,6 +43,8 @@ export default function ResetPotential({
   const dispatch = useDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
   const guarantee = useAppSelector((state) => state.user.guarantee);
+  let guaranteeCopy: number[][] = JSON.parse(JSON.stringify(guarantee));
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
@@ -88,7 +90,7 @@ export default function ResetPotential({
       ? PotentialService.pickNextGrade
       : PotentialService.pickNextAdditionalGrade)(
       grade,
-      guarantee[guaranteeIndex][gradeIndex]
+      guaranteeCopy[guaranteeIndex][gradeIndex]
     );
   const pickRandomPotentials = (grade: string) =>
     (type == "normal"
@@ -125,8 +127,9 @@ export default function ResetPotential({
     const nextGrade = pickNextGrade();
 
     // Set guarantee
-    const currentGuarantee = guarantee[guaranteeIndex][gradeIndex];
+    const currentGuarantee = guaranteeCopy[guaranteeIndex][gradeIndex];
     if (grade == nextGrade) {
+      guaranteeCopy[guaranteeIndex][gradeIndex] += 1;
       dispatch(
         setUserGuarantee({
           value: currentGuarantee + 1,
@@ -135,6 +138,7 @@ export default function ResetPotential({
         })
       );
     } else {
+      guaranteeCopy[guaranteeIndex][gradeIndex] = 0;
       dispatch(
         setUserGuarantee({ value: 0, i: guaranteeIndex, j: gradeIndex })
       );
@@ -177,6 +181,13 @@ export default function ResetPotential({
             )
           )
         ) {
+          toast({
+            colorScheme: "green",
+            title: `${potentialTitle} 재설정 완료`,
+            description: "트리거로 지정한 옵션 중 하나가 등장하였습니다.",
+            isClosable: true,
+          });
+
           if (intervalId) {
             clearInterval(intervalId);
             setPlayIntervalId(undefined);
@@ -196,9 +207,24 @@ export default function ResetPotential({
 
   const resetUntilTrigged = () => {
     if (playIntervalId) {
+      toast({
+        colorScheme: "blue",
+        title: `${potentialTitle} 재설정 중지`,
+        isClosable: true,
+      });
+
       stopAndClearPlayInterval();
       return;
     }
+
+    toast({
+      colorScheme: "blue",
+      title: `${potentialTitle} 재설정 시작`,
+      description:
+        "트리거로 지정한 옵션 중 하나가 나올 때 까지 자동으로 재설정을 합니다.",
+      isClosable: true,
+    });
+
     const intervalId = setInterval(() => {
       resetNormally(intervalId);
     }, RESET_DELAY);
@@ -318,7 +344,11 @@ export default function ResetPotential({
                 }
           }
         >
-          재설정하기
+          {conditionGrid.length > 0
+            ? playIntervalId
+              ? "재설정 중지"
+              : "재설정 시작"
+            : "재설정하기"}
         </Button>
       </Flex>
       <TriggerModal
