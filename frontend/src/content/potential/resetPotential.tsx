@@ -4,6 +4,7 @@ import {
   Image,
   Stack,
   Text,
+  Tooltip,
   useColorMode,
   useDisclosure,
   useToast,
@@ -226,9 +227,11 @@ export default function ResetPotential({
         </Text>
       </Flex>
       <Flex gap={2}>
-        <Button size="xs" onClick={onOpen}>
-          트리거
-        </Button>
+        <Tooltip label="지정한 옵션 중 하나가 나올 때 까지 자동으로 재설정하는 기능">
+          <Button size="xs" onClick={onOpen}>
+            트리거
+          </Button>
+        </Tooltip>
         <Button
           flex={1}
           size="xs"
