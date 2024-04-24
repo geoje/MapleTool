@@ -95,6 +95,10 @@ export default function ResetPotential({
       grade,
       item?.item_base_option.base_equipment_level ?? -1
     );
+  const getSummantions = (part: string, grade: string, level: number) =>
+    (type == "normal"
+      ? PotentialService.getSummantions
+      : PotentialService.getAdditionalSummantions)(part, grade, level);
   const onOptionsButtonClick = (grade: string, options: string[]) => {
     dispatch(
       (type == "normal"
@@ -245,6 +249,7 @@ export default function ResetPotential({
         isOpen={isOpen}
         onClose={onClose}
         title={potentialTitle}
+        getSummantions={getSummantions}
         part={part}
         grade={grade}
         level={level}

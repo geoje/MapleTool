@@ -183,6 +183,28 @@ export default abstract class PotentialService {
     return Array.from(summantions.values());
   }
 
+  static async getAdditionalSummantions(
+    part: string,
+    grade: string,
+    level: number
+  ) {
+    const probabilities =
+      await PotentialService.getOrRequestAdditionalProbabilities(
+        part,
+        grade,
+        level
+      );
+    const probabilitiesGroup = groupProbabilitiesByPosition(probabilities);
+
+    const summantions = new Map<string, PotentialSummantion>();
+    const positions = Array.from(probabilitiesGroup.keys());
+
+    calculateAllSummantions(summantions, probabilitiesGroup, positions, []);
+    distinctPositionGridSummantions(summantions);
+
+    return Array.from(summantions.values());
+  }
+
   static isCompatibleSummantions(summantions: PotentialSummantion[]): boolean {
     const positionGrids = summantions.map(
       (summantion) => summantion.positionGrid
