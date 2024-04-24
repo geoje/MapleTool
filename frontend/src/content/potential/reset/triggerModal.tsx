@@ -110,7 +110,7 @@ export default function TriggerModal({
                 <Flex key={"potential-" + i + j} gap={2}>
                   <Select
                     size="sm"
-                    value={potentialGrid[i][j].name}
+                    value={p.name}
                     onChange={(event) => {
                       const temp = [...potentialGrid];
                       if (event.target.value) {
@@ -130,7 +130,11 @@ export default function TriggerModal({
                   >
                     <option></option>
                     {uniquePotentialNames.map((name, k) => (
-                      <option key={"option-" + k} value={name}>
+                      <option
+                        key={"option-" + k}
+                        value={name}
+                        disabled={potentials.some((p2) => p2.name == name)}
+                      >
                         {name}
                       </option>
                     ))}
@@ -187,7 +191,11 @@ export default function TriggerModal({
                     >
                       <option></option>
                       {uniquePotentialNames.map((name, k) => (
-                        <option key={"option-" + k} value={name}>
+                        <option
+                          key={"option-" + k}
+                          value={name}
+                          disabled={potentials.some((p2) => p2.name == name)}
+                        >
                           {name}
                         </option>
                       ))}
