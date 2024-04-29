@@ -103,6 +103,7 @@ export default abstract class PotentialService {
     }
     return PotentialService.additionalProbabilities.get(key) ?? [];
   }
+  // TODO: 2줄 이상 안나오는 옵션 처리
   static async pickRandomPotentials(
     part: string,
     grade: string,

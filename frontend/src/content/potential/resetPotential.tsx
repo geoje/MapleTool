@@ -172,6 +172,7 @@ export default function ResetPotential({
         }
 
         // Stop if trigged
+        // TODO: 올스텟 +n% 도 각 스텟 +n% 에 포함 시키기
         const newSummantions =
           PotentialService.convertProbabilitiesToSummantions(potentials);
         if (
