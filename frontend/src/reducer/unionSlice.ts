@@ -15,15 +15,15 @@ const unionSlice = createSlice({
   reducers: {
     setUnionBasic(state, action: PayloadAction<UnionBasic | undefined>) {
       state.basic = action.payload;
-      if (action.payload) UnionService.saveBasic(action.payload);
+      UnionService.saveBasic(action.payload);
     },
     setUnionArtifact(state, action: PayloadAction<UnionArtifact | undefined>) {
       state.artifact = action.payload;
-      if (action.payload) UnionService.saveArtifact(action.payload);
+      UnionService.saveArtifact(action.payload);
     },
     setUnionRaider(state, action: PayloadAction<UnionRaider | undefined>) {
       state.raider = action.payload;
-      if (action.payload) UnionService.saveRaider(action.payload);
+      UnionService.saveRaider(action.payload);
     },
   },
 });

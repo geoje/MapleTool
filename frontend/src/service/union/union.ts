@@ -30,13 +30,25 @@ export default abstract class UnionService {
     return JSON.parse(localStorage.getItem(KEY_RAIDER) ?? "null");
   }
 
-  static saveBasic(basic: UnionBasic) {
+  static saveBasic(basic?: UnionBasic) {
+    if (!basic) {
+      localStorage.removeItem(KEY_BASIC);
+      return;
+    }
     localStorage.setItem(KEY_BASIC, JSON.stringify(basic));
   }
-  static saveArtifact(artifact: UnionArtifact) {
+  static saveArtifact(artifact?: UnionArtifact) {
+    if (!artifact) {
+      localStorage.removeItem(KEY_ARTIFACT);
+      return;
+    }
     localStorage.setItem(KEY_ARTIFACT, JSON.stringify(artifact));
   }
-  static saveRaider(radier: UnionRaider) {
+  static saveRaider(radier?: UnionRaider) {
+    if (!radier) {
+      localStorage.removeItem(KEY_BASIC);
+      return;
+    }
     localStorage.setItem(KEY_RAIDER, JSON.stringify(radier));
   }
 }

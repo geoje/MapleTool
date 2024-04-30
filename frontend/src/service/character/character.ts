@@ -47,10 +47,18 @@ export default abstract class CharacterService {
     return JSON.parse(localStorage.getItem(KEY_ITEM_EQUIPMENT) ?? "null");
   }
 
-  static saveBasic(basic: CharacterBasic) {
+  static saveBasic(basic?: CharacterBasic) {
+    if (!basic) {
+      localStorage.removeItem(KEY_BASIC);
+      return;
+    }
     localStorage.setItem(KEY_BASIC, JSON.stringify(basic));
   }
-  static saveItemEquipment(itemEquipment: CharacterItemEquipment) {
+  static saveItemEquipment(itemEquipment?: CharacterItemEquipment) {
+    if (!itemEquipment) {
+      localStorage.removeItem(KEY_ITEM_EQUIPMENT);
+      return;
+    }
     localStorage.setItem(KEY_ITEM_EQUIPMENT, JSON.stringify(itemEquipment));
   }
 }
