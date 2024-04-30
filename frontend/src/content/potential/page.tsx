@@ -106,6 +106,7 @@ export default function Potential() {
             <ImportItem
               characterItemEquipment={characterItemEquipment}
               preset={preset}
+              setPreset={setPreset}
             />
           </Flex>
         </BoardCard>
