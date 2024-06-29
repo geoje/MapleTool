@@ -1,11 +1,7 @@
-server:
-  error:
-    include-message: always
-
 nexon:
   api:
     url: https://open.api.nexon.com
-    key: # Required
+    key: ''
 
 maplegg:
   api:
@@ -19,12 +15,12 @@ spring:
       port: 6379
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost/maple?createDatabaseIfNotExist=true
-    username: root
-    password: root
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:mapletool
+    username: sa
+    password: password
 
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
-    open-in-view: false
