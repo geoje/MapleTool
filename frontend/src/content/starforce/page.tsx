@@ -104,6 +104,7 @@ export default function Starforce() {
             <ImportItem
               characterItemEquipment={characterItemEquipment}
               preset={preset}
+              setPreset={setPreset}
             />
           </Flex>
         </BoardCard>

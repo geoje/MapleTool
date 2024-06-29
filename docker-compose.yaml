@@ -1,4 +1,7 @@
-version: "3"
+networks:
+  default:
+    external: true
+    name: npm
 
 volumes:
   redis:
@@ -7,13 +10,13 @@ volumes:
 services:
   redis:
     image: redis:alpine
-    restart: always
+    restart: unless-stopped
     volumes:
       - redis:/data
 
   db:
     image: mysql:8.3.0
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       LANG: C.UTF-8
@@ -24,13 +27,9 @@ services:
       - --collation-server=utf8_general_ci
 
   app:
-    image: openjdk:17.0.2
-    restart: always
-    ports:
-      - 4853:8080
+    build: .
+    image: mapletool:latest
+    restart: unless-stopped
     links:
       - redis
       - db
-    volumes:
-      - WORKSPACE/build/libs/:/var/www/
-    command: "java -jar -Dspring.profiles.active=prod /var/www/maple.jar"
