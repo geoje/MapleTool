@@ -19,6 +19,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: maple
       LANG: C.UTF-8
     volumes:
       - db:/var/lib/mysql
