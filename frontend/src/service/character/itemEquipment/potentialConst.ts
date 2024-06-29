@@ -8,7 +8,7 @@ export const MAX_POTENTIAL_COUNT = 3;
 export const UPGRADE_RATE = [0.150000001275, 0.035, 0.014];
 export const ADDITIONAL_UPGRADE_RATE = [0.047619, 0.019608, 0.007];
 export const GUARANTEE_BOUND = [10, 42, 107];
-export const ADDITIONAL_GUARANTEE_BOUND = [31, 76, 214];
+export const ADDITIONAL_GUARANTEE_BOUND = [62, 152, 214];
 // TODO: 감정 비용 추가
 export const RESET_COST = [
   { level: 0, values: [4000000, 16000000, 34000000, 40000000] },
