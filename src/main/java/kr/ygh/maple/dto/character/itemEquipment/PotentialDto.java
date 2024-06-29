@@ -8,7 +8,7 @@ public record PotentialDto(int position, String name, int value, double probabil
         return new PotentialDto(
                 potential.getPosition(),
                 potential.getName(),
-                potential.getValue(),
+                potential.getParam(),
                 potential.getProbability());
     }
 
@@ -16,7 +16,7 @@ public record PotentialDto(int position, String name, int value, double probabil
         return new PotentialDto(
                 potential.getPosition(),
                 potential.getName(),
-                potential.getValue(),
+                potential.getParam(),
                 potential.getProbability());
     }
 }

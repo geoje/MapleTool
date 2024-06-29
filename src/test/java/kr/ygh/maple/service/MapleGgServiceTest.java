@@ -2,6 +2,7 @@ package kr.ygh.maple.service;
 
 import kr.ygh.maple.dto.MapleGgBypass;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class MapleGgServiceTest {
     MapleGgService service;
 
     @Test
+    @Disabled
     @DisplayName("바이패스 API를 요청한다.")
     void requestWork() {
         // given

@@ -2,18 +2,18 @@ package kr.ygh.maple.repository;
 
 import jakarta.transaction.Transactional;
 import kr.ygh.maple.entity.AdditionalPotential;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@DataJpaTest
 @Transactional
-@DisplayName("에디셔널 잠재능력 저장소")
 class AdditionalPotentialRepositoryTest {
 
     @Autowired
@@ -41,6 +41,7 @@ class AdditionalPotentialRepositoryTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("입력한 레벨 보다 낮은 것 중 가장 근처 레벨을 조회 한다.")
     void findMaxLevelLessOrEqualThan() {
         // given

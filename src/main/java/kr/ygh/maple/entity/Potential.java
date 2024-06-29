@@ -20,6 +20,6 @@ public class Potential {
 
     private int position;
     private String name;
-    private int value;
+    private int param;
     private double probability;
 }
