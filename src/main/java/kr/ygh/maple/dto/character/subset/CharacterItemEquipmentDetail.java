@@ -1,7 +1,9 @@
 package kr.ygh.maple.dto.character.subset;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record CharacterItemEquipmentDetail(String item_equipment_part, String item_equipment_slot, String item_name,
                                            String item_icon, String item_description, String item_shape_name,

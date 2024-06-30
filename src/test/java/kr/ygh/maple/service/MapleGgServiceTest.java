@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 @DisplayName("메이플지지")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class MapleGgServiceTest {
 
     @Autowired

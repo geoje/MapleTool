@@ -1,6 +1,7 @@
 package kr.ygh.maple.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,7 @@ import kr.ygh.maple.dto.union.UnionArtifact;
 import kr.ygh.maple.dto.union.UnionBasic;
 import kr.ygh.maple.dto.union.UnionRaider;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record MapleGgBypass(CharacterBasic characterBasic, CharacterItemEquipment characterItemEquipment,
                             UnionBasic unionBasic, UnionRaider unionRaider, UnionArtifact unionArtifact) {
