@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MapleGgServiceTest {
 
     @Autowired
-    MapleGgService service;
+    MapleGgService mapleGgService;
 
     @Test
     @Disabled
@@ -26,7 +26,7 @@ public class MapleGgServiceTest {
         SoftAssertions softly = new SoftAssertions();
 
         // when
-        MapleGgBypass bypass = service.bypass(name).block();
+        MapleGgBypass bypass = mapleGgService.bypass(name).block();
 
         // then
         assertThat(bypass).isNotNull();

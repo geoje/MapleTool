@@ -6,7 +6,6 @@ nexon:
 maplegg:
   api:
     url: https://maple.dakgg.io
-    path: /api/v1/bypass/characters/{name}
 
 spring:
   data:

@@ -14,10 +14,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class MapleGgService {
 
+    private static final String MAPLEGG_API_PATH = "/api/v1/bypass/characters/{name}";
+    
     @Value("${maplegg.api.url}")
     private String MAPLEGG_API_URL;
-    @Value("${maplegg.api.path}")
-    private String MAPLEGG_API_PATH;
 
     public static Mono<? extends Throwable> onRequestError(ClientResponse response) {
         return response.bodyToMono(String.class)

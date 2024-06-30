@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("에디셔널 잠재능력 저장소")
 @DataJpaTest
 @Transactional
 class AdditionalPotentialRepositoryTest {

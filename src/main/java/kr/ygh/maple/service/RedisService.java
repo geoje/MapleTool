@@ -2,7 +2,6 @@ package kr.ygh.maple.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ygh.maple.dto.MapleGgBypass;
 import kr.ygh.maple.dto.character.CharacterBasic;
 import kr.ygh.maple.dto.character.CharacterItemEquipment;
 import kr.ygh.maple.dto.character.CharacterOcid;
@@ -27,9 +26,9 @@ import java.util.function.Function;
 public class RedisService {
 
     public static final int QUARTER_OF_HOUR = 15;
+    
     private final RedisTemplate<String, String> redisTemplate;
     private final NexonApiService nexonApiService;
-    private final MapleGgService mapleGgService;
 
     private static Instant getNextQuarterOfHour() {
         int expireMinutes = QUARTER_OF_HOUR * (LocalTime.now().getMinute() / QUARTER_OF_HOUR + 1);
@@ -46,13 +45,6 @@ public class RedisService {
         T objRedis = get(key, name, classType);
         if (objRedis != null) return Mono.just(objRedis);
 
-        // Request to maple.gg if time is between 0 and 1 am
-        if (NexonApiService.isCollectingTime()) {
-            saveFromMapleGgBypass(name);
-            objRedis = get(key, name, classType);
-            return Mono.just(objRedis);
-        }
-
         // Request to Nexon
         return characterOcid(name)
                 .flatMap(ocid -> requestNexonFunc.apply(ocid.ocid()))
@@ -60,16 +52,6 @@ public class RedisService {
                     put(key, name, objNexon);
                     return objNexon;
                 });
-    }
-
-    private void saveFromMapleGgBypass(String name) {
-        MapleGgBypass bypass = mapleGgService.bypass(name).block();
-        assert bypass != null;
-        put("character:basic", name, bypass.characterBasic());
-        put("character:item-equipment", name, bypass.characterItemEquipment());
-        put("union:basic", name, bypass.unionBasic());
-        put("union:raider", name, bypass.unionRaider());
-        put("union:artifact", name, bypass.unionArtifact());
     }
 
     public void put(String key, String hashKey, Object value) {
@@ -94,7 +76,7 @@ public class RedisService {
         }
     }
 
-    public Mono<CharacterOcid> characterOcid(String name) {
+    private Mono<CharacterOcid> characterOcid(String name) {
         // Return redis data if exists
         CharacterOcid obj = get("character:ocid", name, CharacterOcid.class);
         if (obj != null) return Mono.just(obj);
