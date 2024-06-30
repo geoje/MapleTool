@@ -1,4 +1,4 @@
-package kr.ygh.maple.repository;
+package kr.ygh.maple.repository.db;
 
 import kr.ygh.maple.entity.AdditionalPotential;
 import org.springframework.data.jpa.repository.JpaRepository;

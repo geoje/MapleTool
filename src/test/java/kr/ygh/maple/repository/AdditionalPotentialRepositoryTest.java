@@ -2,6 +2,7 @@ package kr.ygh.maple.repository;
 
 import jakarta.transaction.Transactional;
 import kr.ygh.maple.entity.AdditionalPotential;
+import kr.ygh.maple.repository.db.AdditionalPotentialRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
