@@ -28,8 +28,7 @@ services:
       - --collation-server=utf8_general_ci
 
   app:
-    build: .
-    image: mapletool:latest
+    image: mapletool
     restart: unless-stopped
     links:
       - redis
