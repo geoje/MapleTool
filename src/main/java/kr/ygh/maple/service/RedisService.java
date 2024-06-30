@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.function.Function;
@@ -25,14 +26,19 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class RedisService {
 
+    public static final int QUARTER_OF_HOUR = 15;
     private final RedisTemplate<String, String> redisTemplate;
     private final NexonApiService nexonApiService;
     private final MapleGgService mapleGgService;
 
-    private static Instant getTomorrow() {
+    private static Instant getNextQuarterOfHour() {
+        int expireMinutes = QUARTER_OF_HOUR * (LocalTime.now().getMinute() / QUARTER_OF_HOUR + 1);
         return LocalDateTime.now()
-                .plusDays(1).withHour(1).withMinute(0).withSecond(0)
-                .atZone(ZoneId.systemDefault()).toInstant();
+                .withMinute(0)
+                .withSecond(0)
+                .plusMinutes(expireMinutes)
+                .atZone(ZoneId.of("Asia/Seoul"))
+                .toInstant();
     }
 
     private <T> Mono<T> cacheOrRequest(String name, String key, Class<T> classType, Function<String, Mono<T>> requestNexonFunc) {
@@ -42,7 +48,7 @@ public class RedisService {
 
         // Request to maple.gg if time is between 0 and 1 am
         if (NexonApiService.isCollectingTime()) {
-            getAndSaveMapleGgBypass(name);
+            saveFromMapleGgBypass(name);
             objRedis = get(key, name, classType);
             return Mono.just(objRedis);
         }
@@ -56,7 +62,7 @@ public class RedisService {
                 });
     }
 
-    private void getAndSaveMapleGgBypass(String name) {
+    private void saveFromMapleGgBypass(String name) {
         MapleGgBypass bypass = mapleGgService.bypass(name).block();
         assert bypass != null;
         put("character:basic", name, bypass.characterBasic());
@@ -74,7 +80,7 @@ public class RedisService {
             throw new RuntimeException(e);
         }
 
-        redisTemplate.expireAt(key, Date.from(getTomorrow()));
+        redisTemplate.expireAt(key, Date.from(getNextQuarterOfHour()));
     }
 
     public <T> T get(String key, String hashKey, Class<T> classType) {

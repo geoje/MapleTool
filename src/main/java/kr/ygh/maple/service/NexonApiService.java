@@ -13,7 +13,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 
@@ -24,10 +23,6 @@ public class NexonApiService {
     private String NEXON_API_URL;
     @Value("${nexon.api.key}")
     private String NEXON_API_KEY;
-
-    private static String yesterday() {
-        return LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1).toString();
-    }
 
     public static boolean isCollectingTime() {
         return LocalTime.now(ZoneId.of("Asia/Seoul")).getHour() == 0;
@@ -49,22 +44,22 @@ public class NexonApiService {
     }
 
     public Mono<CharacterBasic> characterBasic(String ocid) {
-        return requestApi(CharacterBasic.class, "/maplestory/v1/character/basic?ocid={ocid}&date={date}", ocid, yesterday());
+        return requestApi(CharacterBasic.class, "/maplestory/v1/character/basic?ocid={ocid}", ocid);
     }
 
     public Mono<CharacterItemEquipment> characterItemEquipment(String ocid) {
-        return requestApi(CharacterItemEquipment.class, "/maplestory/v1/character/item-equipment?ocid={ocid}&date={date}", ocid, yesterday());
+        return requestApi(CharacterItemEquipment.class, "/maplestory/v1/character/item-equipment?ocid={ocid}", ocid);
     }
 
     public Mono<UnionBasic> unionBasic(String ocid) {
-        return requestApi(UnionBasic.class, "/maplestory/v1/user/union?ocid={ocid}&date={date}", ocid, yesterday());
+        return requestApi(UnionBasic.class, "/maplestory/v1/user/union?ocid={ocid}", ocid);
     }
 
     public Mono<UnionRaider> unionRaider(String ocid) {
-        return requestApi(UnionRaider.class, "/maplestory/v1/user/union-raider?ocid={ocid}&date={date}", ocid, yesterday());
+        return requestApi(UnionRaider.class, "/maplestory/v1/user/union-raider?ocid={ocid}", ocid);
     }
 
     public Mono<UnionArtifact> unionArtifact(String ocid) {
-        return requestApi(UnionArtifact.class, "/maplestory/v1/user/union-artifact?ocid={ocid}&date={date}", ocid, yesterday());
+        return requestApi(UnionArtifact.class, "/maplestory/v1/user/union-artifact?ocid={ocid}", ocid);
     }
 }

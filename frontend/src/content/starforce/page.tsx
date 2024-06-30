@@ -5,7 +5,6 @@ import CharacterService from "../../service/character/character";
 import { useEffect, useState } from "react";
 import { setCharacterItemEquipment } from "../../reducer/characterSlice";
 import { AxiosError } from "axios";
-import DateUtil from "../../util/date";
 import SelectPreset from "../potential/import/selectPreset";
 import ImportItem from "../potential/importItem";
 import DeleteButton from "../potential/select/deleteButton";
@@ -58,18 +57,9 @@ export default function Starforce() {
       return;
     }
 
-    // Use cached
-    if (DateUtil.isYesterday(characterItemEquipment)) {
-      return;
-    }
-
     // Request new data
     CharacterService.requestItemEquipment(characterBasic.character_name)
       .then((itemEquipment) => {
-        if (
-          DateUtil.compare(characterItemEquipment.date, itemEquipment.date) >= 0
-        )
-          return;
         dispatch(setCharacterItemEquipment(itemEquipment));
         toast({
           position: "top-right",

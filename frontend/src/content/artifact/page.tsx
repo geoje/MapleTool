@@ -10,7 +10,6 @@ import {
 } from "../../service/union/artifact/artifactConstants";
 import ResultGrid from "./result";
 import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
-import DateUtil from "../../util/date";
 import UnionService from "../../service/union/union";
 import { setUnionBasic } from "../../reducer/unionSlice";
 import { AxiosError } from "axios";
@@ -64,15 +63,9 @@ export default function Artifact() {
       return;
     }
 
-    // Use cached
-    if (DateUtil.isYesterday(unionBasic)) {
-      return;
-    }
-
     // Request new data
     UnionService.requestBasic(characterBasic.character_name)
       .then((basic) => {
-        if (DateUtil.compare(unionBasic.date, basic.date) >= 0) return;
         dispatch(setUnionBasic(basic));
         toast({
           position: "top-right",

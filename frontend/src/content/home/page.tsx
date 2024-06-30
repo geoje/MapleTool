@@ -19,7 +19,6 @@ import {
   setCharacterBasic,
   setCharacterItemEquipment,
 } from "../../reducer/characterSlice";
-import DateUtil from "../../util/date";
 import { AlertHello, AlertUsage } from "./alert";
 import EditableControls from "./editableControls";
 import {
@@ -51,16 +50,9 @@ export default function Home() {
       return;
     }
 
-    // Use cached
-    if (DateUtil.isYesterday(characterBasic)) {
-      return;
-    }
-
     // Request new data
     CharacterService.requestBasic(characterBasic.character_name)
       .then((basic) => {
-        if (DateUtil.compare(characterBasic.date, basic.date) >= 0) return;
-
         dispatch(setCharacterBasic(basic));
         clearData();
 

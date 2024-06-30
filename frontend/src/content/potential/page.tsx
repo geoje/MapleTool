@@ -6,7 +6,6 @@ import CharacterService from "../../service/character/character";
 import { useEffect, useState } from "react";
 import { setCharacterItemEquipment } from "../../reducer/characterSlice";
 import { AxiosError } from "axios";
-import DateUtil from "../../util/date";
 import SelectPreset from "./import/selectPreset";
 import SelectItem from "./selectItem";
 import DeleteButton from "./select/deleteButton";
@@ -60,18 +59,9 @@ export default function Potential() {
       return;
     }
 
-    // Use cached
-    if (DateUtil.isYesterday(characterItemEquipment)) {
-      return;
-    }
-
     // Request new data
     CharacterService.requestItemEquipment(characterBasic.character_name)
       .then((itemEquipment) => {
-        if (
-          DateUtil.compare(characterItemEquipment.date, itemEquipment.date) >= 0
-        )
-          return;
         dispatch(setCharacterItemEquipment(itemEquipment));
         toast({
           position: "top-right",
