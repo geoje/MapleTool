@@ -31,16 +31,48 @@ export enum BOSS_DIFFICULTY {
 }
 export const BOSS_MAXIMUN_SELECTABLE = 12;
 
+interface ColorSet {
+  text: string;
+  back: string;
+  border: string;
+}
+export const COLOR: Partial<Record<BOSS_DIFFICULTY, ColorSet>> = {
+  [BOSS_DIFFICULTY.EASY]: {
+    text: "#ffffff",
+    back: "#999999",
+    border: "#999999",
+  },
+  [BOSS_DIFFICULTY.NORMAL]: {
+    text: "#ffffff",
+    back: "#33aabb",
+    border: "#33aabb",
+  },
+  [BOSS_DIFFICULTY.HARD]: {
+    text: "#ffffff",
+    back: "#dd4489",
+    border: "#dd4489",
+  },
+  [BOSS_DIFFICULTY.CHAOS]: {
+    text: "#ffddbb",
+    back: "#444444",
+    border: "#ddbb88",
+  },
+  [BOSS_DIFFICULTY.EXTREME]: {
+    text: "#ee4455",
+    back: "#444444",
+    border: "#ee3355",
+  },
+};
+
 interface Boss {
   name: string;
   icon: string;
   price: Partial<Record<BOSS_DIFFICULTY, number>>;
 }
-
 export const BOSS: Record<BOSS_TYPE, Boss> = {
   [BOSS_TYPE.ZZAKUM]: {
     name: "자쿰",
-    icon: "/crystal/boss/zzakum.png",
+    icon: "/crystal/boss/zakum.png",
     price: {
       [BOSS_DIFFICULTY.CHAOS]: 8_980_000,
     },
@@ -120,7 +152,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.DAMIEN]: {
     name: "데미안",
-    icon: "/crystal/boss/demien.png",
+    icon: "/crystal/boss/damien.png",
     price: {
       [BOSS_DIFFICULTY.NORMAL]: 32_900_000,
       [BOSS_DIFFICULTY.HARD]: 113_000_000,
@@ -145,7 +177,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.WILL]: {
     name: "윌",
-    icon: "/crystal/boss/WILL.png",
+    icon: "/crystal/boss/will.png",
     price: {
       [BOSS_DIFFICULTY.EASY]: 53_100_000,
       [BOSS_DIFFICULTY.NORMAL]: 67_600_000,
