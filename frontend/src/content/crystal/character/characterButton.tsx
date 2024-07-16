@@ -1,15 +1,12 @@
 import { Button, Flex, Hide, Show } from "@chakra-ui/react";
 import Profile from "./profile";
 import BossSummary from "./bossSummary";
-import { CharacterBoss } from "../page";
+import BossPlan from "../../../dto/user/crystal/bossPlan";
+import CrystalService from "../../../service/user/crystal/crystal";
 
 const TEMP_CHARACTER_IMAGE_URL = "/union-raid/character-blank.png";
 
-export default function CharacterButton({
-  characterBoss,
-}: {
-  characterBoss: CharacterBoss;
-}) {
+export default function CharacterButton({ bossPlan }: { bossPlan: BossPlan }) {
   return (
     <Button
       py={2}
@@ -17,15 +14,13 @@ export default function CharacterButton({
       h="fit-content"
       variant="ghost"
       justifyContent="space-between"
-      leftIcon={
-        <Profile src={TEMP_CHARACTER_IMAGE_URL} name={characterBoss.name} />
-      }
+      leftIcon={<Profile src={TEMP_CHARACTER_IMAGE_URL} name={bossPlan.name} />}
     >
       <Flex gap={1} wrap="wrap">
-        {characterBoss.boss.map((boss, i) => (
+        {bossPlan.boss.map((boss, i) => (
           <BossSummary
-            key={`boss-${characterBoss.name}-${i}`}
-            src={boss.icon}
+            key={`boss-${bossPlan.name}-${i}`}
+            src={CrystalService.getBossIcon(boss.type)}
             difficulty={boss.difficulty}
             partyMembers={boss.partMembers}
           />

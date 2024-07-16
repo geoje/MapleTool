@@ -1,9 +1,12 @@
-import { BOSS_DIFFICULTY } from "../../../service/user/crystal/bossConstants";
+import {
+  BOSS_DIFFICULTY,
+  BOSS_TYPE,
+} from "../../../service/user/crystal/bossConstants";
 
-export interface CharacterBoss {
+export default interface BossPlan {
   name: string;
   boss: {
-    icon: string;
+    type: BOSS_TYPE;
     difficulty: BOSS_DIFFICULTY;
     partMembers: number;
   }[];

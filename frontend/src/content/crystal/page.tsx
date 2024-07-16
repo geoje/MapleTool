@@ -3,80 +3,72 @@ import BoardCard from "../../components/boardCard";
 import { FaPlusCircle } from "react-icons/fa";
 import CharacterButton from "./character/characterButton";
 import {
-  BOSS,
+  BOSS_TYPE,
   BOSS_DIFFICULTY,
 } from "../../service/user/crystal/bossConstants";
+import BossPlan from "../../dto/user/crystal/bossPlan";
 
-export interface CharacterBoss {
-  name: string;
-  boss: {
-    icon: string;
-    difficulty: BOSS_DIFFICULTY;
-    partMembers: number;
-  }[];
-}
-
-const sampleData: CharacterBoss[] = [
+const sampleData: BossPlan[] = [
   {
     name: "수빈양",
     boss: [
       {
-        icon: BOSS.MAGNUS.icon,
+        type: BOSS_TYPE.MAGNUS,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 1,
       },
       {
-        icon: BOSS.PAPULATUS.icon,
+        type: BOSS_TYPE.PAPULATUS,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.CRIMSON_QUEEN.icon,
+        type: BOSS_TYPE.CRIMSON_QUEEN,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.VELLUM.icon,
+        type: BOSS_TYPE.VELLUM,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.LOTUS.icon,
+        type: BOSS_TYPE.LOTUS,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 1,
       },
       {
-        icon: BOSS.DAMIEN.icon,
+        type: BOSS_TYPE.DAMIEN,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 1,
       },
       {
-        icon: BOSS.GUARDIAN_ANGEL_SLIME.icon,
+        type: BOSS_TYPE.GUARDIAN_ANGEL_SLIME,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 2,
       },
       {
-        icon: BOSS.LUCID.icon,
+        type: BOSS_TYPE.LUCID,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 1,
       },
       {
-        icon: BOSS.WILL.icon,
+        type: BOSS_TYPE.WILL,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 2,
       },
       {
-        icon: BOSS.GLOOM.icon,
+        type: BOSS_TYPE.GLOOM,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.VERUS_HILLA.icon,
+        type: BOSS_TYPE.VERUS_HILLA,
         difficulty: BOSS_DIFFICULTY.NORMAL,
         partMembers: 1,
       },
       {
-        icon: BOSS.DARKNELL.icon,
+        type: BOSS_TYPE.DARKNELL,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 2,
       },
@@ -86,62 +78,62 @@ const sampleData: CharacterBoss[] = [
     name: "새벽쌍쌍",
     boss: [
       {
-        icon: BOSS.ZZAKUM.icon,
+        type: BOSS_TYPE.ZZAKUM,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.MAGNUS.icon,
+        type: BOSS_TYPE.MAGNUS,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 1,
       },
       {
-        icon: BOSS.HILLA.icon,
+        type: BOSS_TYPE.HILLA,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 1,
       },
       {
-        icon: BOSS.PAPULATUS.icon,
+        type: BOSS_TYPE.PAPULATUS,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.PIERRE.icon,
+        type: BOSS_TYPE.PIERRE,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.CRIMSON_QUEEN.icon,
+        type: BOSS_TYPE.CRIMSON_QUEEN,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.VON_BON.icon,
+        type: BOSS_TYPE.VON_BON,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.VELLUM.icon,
+        type: BOSS_TYPE.VELLUM,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.PINK_BEAN.icon,
+        type: BOSS_TYPE.PINK_BEAN,
         difficulty: BOSS_DIFFICULTY.CHAOS,
         partMembers: 1,
       },
       {
-        icon: BOSS.CYGNUS.icon,
+        type: BOSS_TYPE.CYGNUS,
         difficulty: BOSS_DIFFICULTY.NORMAL,
         partMembers: 1,
       },
       {
-        icon: BOSS.LOTUS.icon,
+        type: BOSS_TYPE.LOTUS,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 1,
       },
       {
-        icon: BOSS.DAMIEN.icon,
+        type: BOSS_TYPE.DAMIEN,
         difficulty: BOSS_DIFFICULTY.HARD,
         partMembers: 1,
       },
@@ -150,16 +142,15 @@ const sampleData: CharacterBoss[] = [
 ];
 
 export default function Crystal() {
+  console.log(sampleData);
+
   return (
     <>
       <Stack>
         <BoardCard order={1} title="캐릭터 등록">
           <Stack>
-            {sampleData.map((characterBoss, i) => (
-              <CharacterButton
-                key={"character-" + i}
-                characterBoss={characterBoss}
-              />
+            {sampleData.map((bossPlan, i) => (
+              <CharacterButton key={"character-" + i} bossPlan={bossPlan} />
             ))}
             <IconButton
               aria-label="add"

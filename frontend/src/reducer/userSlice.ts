@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CharacterItemEquipmentDetail } from "../dto/character/characterItemEquipment";
+import BossPlan from "../dto/user/crystal/bossPlan";
 
 const KEY_INVENTORY = "user:inventory";
 const KEY_SPENT = "user:spent";
 const KEY_GUARANTEE = "user:guarantee";
+const KEY_BOSS_PLAN = "user:boss-plan";
 
 const DEFAULT_GUARANTEE_JSON = "[[0,0,0],[0,0,0]]";
 
@@ -16,6 +18,9 @@ const userSlice = createSlice({
     spent: <number>JSON.parse(localStorage.getItem(KEY_SPENT) ?? "0"),
     guarantee: <number[][]>(
       JSON.parse(localStorage.getItem(KEY_GUARANTEE) ?? DEFAULT_GUARANTEE_JSON)
+    ),
+    bossPlan: <BossPlan[]>(
+      JSON.parse(localStorage.getItem(KEY_INVENTORY) ?? "[]")
     ),
   },
   reducers: {
@@ -55,6 +60,7 @@ const userSlice = createSlice({
       item.additional_potential_option_3 = action.payload.values[2];
       localStorage.setItem(KEY_INVENTORY, JSON.stringify(state.inventory));
     },
+
     addUserSpent(state, action: PayloadAction<number>) {
       state.spent += action.payload;
       localStorage.setItem(KEY_SPENT, JSON.stringify(state.spent));
@@ -63,6 +69,7 @@ const userSlice = createSlice({
       state.spent = 0;
       localStorage.removeItem(KEY_SPENT);
     },
+
     setUserGuarantee(
       state: { guarantee: number[][] },
       action: PayloadAction<{ value: number; i: number; j: number }>
@@ -70,6 +77,22 @@ const userSlice = createSlice({
       state.guarantee[action.payload.i][action.payload.j] =
         action.payload.value;
       localStorage.setItem(KEY_GUARANTEE, JSON.stringify(state.guarantee));
+    },
+
+    addUserBossPlan(state, action: PayloadAction<BossPlan>) {
+      state.bossPlan.push(action.payload);
+      localStorage.setItem(KEY_BOSS_PLAN, JSON.stringify(state.bossPlan));
+    },
+    setUserBossPlan(
+      state,
+      action: PayloadAction<{ index: number; value: BossPlan }>
+    ) {
+      state.bossPlan.splice(action.payload.index, 1, action.payload.value);
+      localStorage.setItem(KEY_BOSS_PLAN, JSON.stringify(state.bossPlan));
+    },
+    spliceUserBossPlan(state, action: PayloadAction<number>) {
+      state.bossPlan.splice(action.payload, 1);
+      localStorage.setItem(KEY_BOSS_PLAN, JSON.stringify(state.bossPlan));
     },
   },
 });
@@ -79,8 +102,14 @@ export const {
   spliceUserInventory,
   setUserInventoryPotentials,
   setUserInventoryAdditionalPotentials,
+
   addUserSpent,
   clearUserSpent,
+
   setUserGuarantee,
+
+  addUserBossPlan,
+  setUserBossPlan,
+  spliceUserBossPlan,
 } = userSlice.actions;
 export default userSlice.reducer;
