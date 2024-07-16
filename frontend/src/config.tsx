@@ -1,8 +1,9 @@
-import { ThemeComponentProps, extendTheme } from "@chakra-ui/react";
+import { Badge, ThemeComponentProps, extendTheme } from "@chakra-ui/react";
 import Potential from "./content/potential/page";
 import Starforce from "./content/starforce/page";
 import Raider from "./content/raider/page";
 import Artifact from "./content/artifact/page";
+import Crystal from "./content/crystal/page";
 
 export const KEY_COLLAPSED = "sidebar-collapsed";
 
@@ -12,28 +13,35 @@ export const LINKS = [
     label: "잠재능력",
     image: "/link/cube.svg",
     content: <Potential />,
-    building: false,
+    status: <></>,
   },
   {
     name: "starforce",
     label: "스타포스",
     image: "/link/star.svg",
     content: <Starforce />,
-    building: true,
+    status: <Badge colorScheme="yellow">제작중</Badge>,
   },
   {
     name: "union-raid",
     label: "공격대",
     image: "/link/union-raid.svg",
     content: <Raider />,
-    building: true,
+    status: <Badge colorScheme="yellow">제작중</Badge>,
   },
   {
     name: "union-artifact",
     label: "아티팩트",
     image: "/link/union-artifact.svg",
     content: <Artifact />,
-    building: false,
+    status: <></>,
+  },
+  {
+    name: "crystal",
+    label: "결정석",
+    image: "/link/crystal.svg",
+    content: <Crystal />,
+    status: <Badge colorScheme="blue">새 기능</Badge>,
   },
 ];
 

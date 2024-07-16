@@ -108,7 +108,7 @@ export function ExpandedSidebar({
           >
             {link.label}
             <Spacer />
-            {link.building && <Badge colorScheme="yellow">제작중</Badge>}
+            {link.status}
           </Button>
         ))}
         <Divider my={2} />
