@@ -1,5 +1,8 @@
 import { Badge, Box, Flex, Image, Stack } from "@chakra-ui/react";
-import { BOSS_DIFFICULTY, COLOR } from "../../../service/boss/bossConstants";
+import {
+  BOSS_DIFFICULTY,
+  COLOR,
+} from "../../../service/user/crystal/bossConstants";
 
 export default function BossSummary({
   src,

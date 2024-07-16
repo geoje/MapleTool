@@ -2,7 +2,10 @@ import { IconButton, Stack } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
 import { FaPlusCircle } from "react-icons/fa";
 import CharacterButton from "./character/characterButton";
-import { BOSS, BOSS_DIFFICULTY } from "../../service/boss/bossConstants";
+import {
+  BOSS,
+  BOSS_DIFFICULTY,
+} from "../../service/user/crystal/bossConstants";
 
 export interface CharacterBoss {
   name: string;
