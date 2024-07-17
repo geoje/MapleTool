@@ -1,4 +1,4 @@
-import { IconButton, Stack } from "@chakra-ui/react";
+import { IconButton, Stack, useDisclosure } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
 import { FaPlusCircle } from "react-icons/fa";
 import CharacterButton from "./character/characterButton";
@@ -7,6 +7,8 @@ import {
   BOSS_DIFFICULTY,
 } from "../../service/user/crystal/bossConstants";
 import BossPlan from "../../dto/user/crystal/bossPlan";
+import PlanModal from "./character/planModal";
+import { useState } from "react";
 
 const sampleData: BossPlan[] = [
   {
@@ -142,7 +144,9 @@ const sampleData: BossPlan[] = [
 ];
 
 export default function Crystal() {
-  console.log(sampleData);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [planIndex, setPlanIndex] = useState(-1);
 
   return (
     <>
@@ -150,11 +154,22 @@ export default function Crystal() {
         <BoardCard order={1} title="캐릭터 등록">
           <Stack>
             {sampleData.map((bossPlan, i) => (
-              <CharacterButton key={"character-" + i} bossPlan={bossPlan} />
+              <CharacterButton
+                key={"character-" + i}
+                bossPlan={bossPlan}
+                onClick={() => {
+                  setPlanIndex(i);
+                  onOpen();
+                }}
+              />
             ))}
             <IconButton
               aria-label="add"
               icon={<FaPlusCircle opacity={0.8} />}
+              onClick={() => {
+                setPlanIndex(-1);
+                onOpen();
+              }}
             />
           </Stack>
         </BoardCard>
@@ -162,6 +177,7 @@ export default function Crystal() {
       <Stack>
         <BoardCard order={2} title="통계"></BoardCard>
       </Stack>
+      <PlanModal isOpen={isOpen} onClose={onClose} bossPlanIndex={planIndex} />
     </>
   );
 }

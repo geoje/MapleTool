@@ -6,7 +6,13 @@ import CrystalService from "../../../service/user/crystal/crystal";
 
 const TEMP_CHARACTER_IMAGE_URL = "/union-raid/character-blank.png";
 
-export default function CharacterButton({ bossPlan }: { bossPlan: BossPlan }) {
+export default function CharacterButton({
+  bossPlan,
+  onClick,
+}: {
+    bossPlan: BossPlan;
+  onClick?: () => void;
+}) {
   return (
     <Button
       py={2}
@@ -14,7 +20,10 @@ export default function CharacterButton({ bossPlan }: { bossPlan: BossPlan }) {
       h="fit-content"
       variant="ghost"
       justifyContent="space-between"
-      leftIcon={<Profile src={TEMP_CHARACTER_IMAGE_URL} name={bossPlan.name} />}
+      leftIcon={
+        <Profile src={TEMP_CHARACTER_IMAGE_URL} name={bossPlan.name} />
+      }
+      onClick={onClick}
     >
       <Flex gap={1} wrap="wrap">
         {bossPlan.boss.map((boss, i) => (
