@@ -2,18 +2,25 @@ import {
   Editable,
   EditableInput,
   EditablePreview,
+  Flex,
   IconButton,
+  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  SimpleGrid,
+  Stack,
+  Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../../reducer/hooks";
 import { spliceUserBossPlan } from "../../../reducer/userSlice";
+import { BOSS } from "../../../service/user/crystal/bossConstants";
 
 export default function PlanModal({
   isOpen,
@@ -54,7 +61,19 @@ export default function PlanModal({
           }}
         />
         <ModalCloseButton />
-        <ModalBody></ModalBody>
+        <ModalBody>
+          <SimpleGrid columns={2} gap={2}>
+            {Object.entries(BOSS).map(([_, boss]) => (
+              <>
+                <Flex gap={2}>
+                  <Image src={boss.icon} />
+                  <Text>{boss.name}</Text>
+                </Flex>
+                <Flex></Flex>
+              </>
+            ))}
+          </SimpleGrid>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );
@@ -62,16 +81,18 @@ export default function PlanModal({
 
 function ModalDeleteButton({ onClick }: { onClick?: () => void }) {
   return (
-    <IconButton
-      aria-label="delete"
-      variant="ghost"
-      icon={<FiTrash2 />}
-      size="sm"
-      position="absolute"
-      colorScheme="red"
-      top={2}
-      right={12}
-      onClick={onClick}
-    />
+    <Tooltip label="캐릭터 삭제">
+      <IconButton
+        aria-label="delete"
+        variant="ghost"
+        icon={<FiTrash2 />}
+        size="sm"
+        position="absolute"
+        colorScheme="red"
+        top={2}
+        right={12}
+        onClick={onClick}
+      />
+    </Tooltip>
   );
 }
