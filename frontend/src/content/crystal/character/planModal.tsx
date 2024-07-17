@@ -1,4 +1,7 @@
 import {
+  Badge,
+  Center,
+  Checkbox,
   Editable,
   EditableInput,
   EditablePreview,
@@ -20,7 +23,11 @@ import { useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../../reducer/hooks";
 import { spliceUserBossPlan } from "../../../reducer/userSlice";
-import { BOSS } from "../../../service/user/crystal/bossConstants";
+import {
+  BOSS,
+  BOSS_DIFFICULTY,
+  COLOR,
+} from "../../../service/user/crystal/bossConstants";
 
 export default function PlanModal({
   isOpen,
@@ -41,7 +48,7 @@ export default function PlanModal({
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal size="xl" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader pr={24}>
@@ -61,15 +68,33 @@ export default function PlanModal({
           }}
         />
         <ModalCloseButton />
-        <ModalBody>
-          <SimpleGrid columns={2} gap={2}>
+        <ModalBody pb={4}>
+          <SimpleGrid gridTemplateColumns="max-content 1fr" gap={2}>
             {Object.entries(BOSS).map(([_, boss]) => (
               <>
                 <Flex gap={2}>
                   <Image src={boss.icon} />
                   <Text>{boss.name}</Text>
                 </Flex>
-                <Flex></Flex>
+                <Flex gap={2}>
+                  {Object.entries(boss.prices).map(([difficulty, price]) => (
+                    <Checkbox>
+                      <Center>
+                        <Badge
+                          color={COLOR[difficulty as BOSS_DIFFICULTY]?.text}
+                          bgColor={COLOR[difficulty as BOSS_DIFFICULTY]?.back}
+                          borderColor={
+                            COLOR[difficulty as BOSS_DIFFICULTY]?.border
+                          }
+                          borderWidth={1}
+                          fontSize="xx-small"
+                        >
+                          {difficulty}
+                        </Badge>
+                      </Center>
+                    </Checkbox>
+                  ))}
+                </Flex>
               </>
             ))}
           </SimpleGrid>
