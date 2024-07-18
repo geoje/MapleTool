@@ -4,6 +4,7 @@ import {
   Checkbox,
   Flex,
   Heading,
+  Hide,
   IconButton,
   Image,
   Modal,
@@ -13,11 +14,12 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Show,
   SimpleGrid,
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, ReactElement, ReactNode, useEffect, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../../../reducer/hooks";
 import {
@@ -34,6 +36,7 @@ import {
 } from "../../../../service/user/crystal/bossConstants";
 import BossPlan from "../../../../dto/user/crystal/bossPlan";
 import NameEditable from "./nameEditable";
+import CrystalService from "../../../../service/user/crystal/crystal";
 
 const DEFAULT_CURRENT_PLAN = {
   name: "",
@@ -149,7 +152,7 @@ export default function PlanModal({
         />
         <ModalCloseButton />
         <ModalBody pb={4}>
-          <SimpleGrid gridTemplateColumns="max-content 1fr max-content">
+          <ResponsableSimpleGrid>
             <Heading size="xs" pb={2}>
               보스
             </Heading>
@@ -159,6 +162,11 @@ export default function PlanModal({
             <Heading size="xs" pb={2}>
               인원 수
             </Heading>
+            <Show above="md">
+              <Heading size="xs" pb={2} textAlign="end">
+                가격
+              </Heading>
+            </Show>
             {Object.entries(BOSS).map(([type, boss], i) => (
               <Fragment key={"boss-" + i}>
                 <Flex
@@ -249,9 +257,29 @@ export default function PlanModal({
                     <option value="6">6</option>
                   </Select>
                 </Center>
+                <Show above="md">
+                  <Flex
+                    gap={2}
+                    pl={4}
+                    py={1}
+                    borderTopWidth={1}
+                    justify="end"
+                    alignItems="center"
+                    fontSize="xs"
+                  >
+                    {currentPlan.difficulty.has(type as BOSS_TYPE) &&
+                      Math.round(
+                        CrystalService.price(
+                          type as BOSS_TYPE,
+                          currentPlan.difficulty.get(type as BOSS_TYPE)!
+                        ) /
+                          (currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1)
+                      ).toLocaleString()}
+                  </Flex>
+                </Show>
               </Fragment>
             ))}
-          </SimpleGrid>
+          </ResponsableSimpleGrid>
         </ModalBody>
       </ModalContent>
     </Modal>
@@ -273,5 +301,22 @@ function ModalDeleteButton({ onClick }: { onClick?: () => void }) {
         onClick={onClick}
       />
     </Tooltip>
+  );
+}
+
+function ResponsableSimpleGrid({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <Show above="md">
+        <SimpleGrid gridTemplateColumns="max-content 1fr max-content max-content">
+          {children}
+        </SimpleGrid>
+      </Show>
+      <Hide above="md">
+        <SimpleGrid gridTemplateColumns="max-content 1fr max-content">
+          {children}
+        </SimpleGrid>
+      </Hide>
+    </>
   );
 }
