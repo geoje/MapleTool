@@ -62,7 +62,7 @@ export default function PlanModal({
       image: currentPlan.image,
       boss: [],
     };
-    Object.entries(BOSS).forEach(([type, _]) => {
+    Object.entries(BOSS).forEach(([type]) => {
       if (currentPlan.difficulty.has(type as BOSS_TYPE)) {
         plan.boss.push({
           type: type as BOSS_TYPE,
@@ -100,6 +100,8 @@ export default function PlanModal({
       difficulty: loadedDifficulty,
       partyMembers: loadedParty,
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bossPlanIndex]);
 
   return (
@@ -179,7 +181,7 @@ export default function PlanModal({
                   </Text>
                 </Flex>
                 <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
-                  {Object.entries(boss.prices).map(([difficulty, _], j) => (
+                  {Object.entries(boss.prices).map(([difficulty], j) => (
                     <Checkbox
                       key={`boss-difficulty-${i}-${j}`}
                       mr={2}
