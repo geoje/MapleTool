@@ -35,6 +35,13 @@ import {
 import BossPlan from "../../../../dto/user/crystal/bossPlan";
 import NameEditable from "./nameEditable";
 
+const DEFAULT_CURRENT_PLAN = {
+  name: "",
+  image: "",
+  difficulty: new Map<BOSS_TYPE, BOSS_DIFFICULTY>(),
+  partyMembers: new Map<BOSS_TYPE, number>(),
+};
+
 export default function PlanModal({
   isOpen,
   onClose,
@@ -49,33 +56,20 @@ export default function PlanModal({
   const dispatch = useAppDispatch();
   const bossPlan = useAppSelector((state) => state.user.bossPlan);
 
-  const [name, setName] = useState(bossPlan[bossPlanIndex].name);
-  const [imageUrl, setImageUrl] = useState(bossPlan[bossPlanIndex].image);
-  const [selectedDiffi, setSelectedDiffi] = useState<
-    Map<BOSS_TYPE, BOSS_DIFFICULTY>
-  >(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
-  const [selectedParty, setSelectedParty] = useState<Map<BOSS_TYPE, number>>(
-    new Map<BOSS_TYPE, number>()
-  );
+  const [currentPlan, setCurrentPlan] = useState(DEFAULT_CURRENT_PLAN);
 
-  const clearData = () => {
-    setName("");
-    setImageUrl("");
-    setSelectedDiffi(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
-    setSelectedParty(new Map<BOSS_TYPE, number>());
-  };
   const saveData = () => {
     const plan: BossPlan = {
-      name,
-      image: imageUrl,
+      name: currentPlan.name,
+      image: currentPlan.image,
       boss: [],
     };
     Object.entries(BOSS).forEach(([type, _]) => {
-      if (selectedDiffi.has(type as BOSS_TYPE)) {
+      if (currentPlan.difficulty.has(type as BOSS_TYPE)) {
         plan.boss.push({
           type: type as BOSS_TYPE,
-          difficulty: selectedDiffi.get(type as BOSS_TYPE)!,
-          partyMembers: selectedParty.get(type as BOSS_TYPE) ?? 1,
+          difficulty: currentPlan.difficulty.get(type as BOSS_TYPE)!,
+          partyMembers: currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1,
         });
       }
     });
@@ -83,32 +77,31 @@ export default function PlanModal({
     if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
       if (!plan.name.length && !plan.boss.length) return;
       dispatch(addUserBossPlan(plan));
-      clearData();
+      setCurrentPlan(DEFAULT_CURRENT_PLAN);
     } else dispatch(setUserBossPlan({ index: bossPlanIndex, value: plan }));
   };
 
   useEffect(() => {
-    console.log(bossPlanIndex);
-
     if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
-      clearData();
+      setCurrentPlan(DEFAULT_CURRENT_PLAN);
       return;
     }
 
-    const difficulty = new Map<BOSS_TYPE, BOSS_DIFFICULTY>();
-    const party = new Map<BOSS_TYPE, number>();
+    const loadedDifficulty = new Map<BOSS_TYPE, BOSS_DIFFICULTY>();
+    const loadedParty = new Map<BOSS_TYPE, number>();
     const plan = bossPlan[bossPlanIndex];
-
-    setName(plan.name);
-    setImageUrl(plan.image);
-
     plan.boss.forEach((b) => {
-      difficulty.set(b.type, b.difficulty);
-      party.set(b.type, b.partyMembers);
+      ``;
+      loadedDifficulty.set(b.type, b.difficulty);
+      loadedParty.set(b.type, b.partyMembers);
     });
 
-    setSelectedDiffi(difficulty);
-    setSelectedParty(party);
+    setCurrentPlan({
+      name: plan.name,
+      image: plan.image,
+      difficulty: loadedDifficulty,
+      partyMembers: loadedParty,
+    });
   }, [bossPlanIndex]);
 
   return (
@@ -126,17 +119,25 @@ export default function PlanModal({
           <Image
             boxSize="48px"
             src={
-              imageUrl?.length ? imageUrl : "/union-raid/character-blank.png"
+              currentPlan.image.length
+                ? currentPlan.image
+                : "/union-raid/character-blank.png"
             }
             filter={
-              imageUrl ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"
+              currentPlan.image.length
+                ? undefined
+                : "opacity(0.2) drop-shadow(0 0 0 #000000);"
             }
             style={{ imageRendering: "pixelated" }}
           />
           <NameEditable
-            name={name}
-            onNameChanged={setName}
-            onImageReceived={setImageUrl}
+            name={currentPlan.name}
+            onNameChanged={(name) =>
+              setCurrentPlan((prevPlan) => ({ ...prevPlan, name }))
+            }
+            onImageReceived={(image) =>
+              setCurrentPlan((prevPlan) => ({ ...prevPlan, image }))
+            }
           />
         </ModalHeader>
         <ModalDeleteButton
@@ -171,8 +172,8 @@ export default function PlanModal({
                   <Image src={boss.icon} />
                   <Text
                     opacity={
-                      !selectedDiffi.has(type as BOSS_TYPE) &&
-                      selectedDiffi.size >= BOSS_MAXIMUN_SELECTABLE
+                      !currentPlan.difficulty.has(type as BOSS_TYPE) &&
+                      currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
                         ? 0.6
                         : 1
                     }
@@ -186,22 +187,26 @@ export default function PlanModal({
                       key={`boss-difficulty-${i}-${j}`}
                       mr={2}
                       isDisabled={
-                        !selectedDiffi.has(type as BOSS_TYPE) &&
-                        selectedDiffi.size >= BOSS_MAXIMUN_SELECTABLE
+                        !currentPlan.difficulty.has(type as BOSS_TYPE) &&
+                        currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
                       }
                       isChecked={
-                        selectedDiffi.get(type as BOSS_TYPE) == difficulty
+                        currentPlan.difficulty.get(type as BOSS_TYPE) ==
+                        difficulty
                       }
                       onChange={(event) => {
-                        const temp = new Map(selectedDiffi);
+                        const newDifficulty = new Map(currentPlan.difficulty);
                         if (event.target.checked)
-                          temp.set(
+                          newDifficulty.set(
                             type as BOSS_TYPE,
                             difficulty as BOSS_DIFFICULTY
                           );
-                        else temp.delete(type as BOSS_TYPE);
+                        else newDifficulty.delete(type as BOSS_TYPE);
 
-                        setSelectedDiffi(temp);
+                        setCurrentPlan((prevPlan) => ({
+                          ...prevPlan,
+                          difficulty: newDifficulty,
+                        }));
                       }}
                     >
                       <Center>
