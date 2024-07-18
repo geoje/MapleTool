@@ -15,11 +15,10 @@ import {
   ModalHeader,
   ModalOverlay,
   SimpleGrid,
-  Stack,
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../../reducer/hooks";
 import { spliceUserBossPlan } from "../../../reducer/userSlice";
@@ -28,6 +27,11 @@ import {
   BOSS_DIFFICULTY,
   COLOR,
 } from "../../../service/user/crystal/bossConstants";
+
+interface BossSelect {
+  name: string;
+  difficulty: string;
+}
 
 export default function PlanModal({
   isOpen,
@@ -40,24 +44,29 @@ export default function PlanModal({
 }) {
   const dispatch = useAppDispatch();
   const bossPlan = useAppSelector((state) => state.user.bossPlan);
+  const nameRef = useRef(null);
 
-  const [name, setName] = useState(
-    bossPlanIndex > 0 && bossPlanIndex < bossPlan.length
-      ? bossPlan[bossPlanIndex].name
-      : ""
-  );
+  const [selected, setSelected] = useState<BossSelect[]>([]);
+
+  const saveData = () => {};
+
+  useEffect(() => {
+    console.log(nameRef);
+  }, [bossPlanIndex]);
 
   return (
-    <Modal size="xl" isOpen={isOpen} onClose={onClose}>
+    <Modal
+      size="xl"
+      isOpen={isOpen}
+      onClose={() => {
+        saveData();
+        onClose();
+      }}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader pr={24}>
-          <Editable
-            placeholder="캐릭터 이름"
-            opacity={name.length ? 1 : 0.4}
-            onChange={setName}
-            value={name}
-          >
+          <Editable ref={nameRef} placeholder="클릭하여 캐릭터 이름 입력">
             <EditablePreview />
             <EditableInput />
           </Editable>
@@ -70,15 +79,25 @@ export default function PlanModal({
         <ModalCloseButton />
         <ModalBody pb={4}>
           <SimpleGrid gridTemplateColumns="max-content 1fr" gap={2}>
-            {Object.entries(BOSS).map(([_, boss]) => (
-              <>
+            {Object.entries(BOSS).map(([_, boss], i) => (
+              <Fragment key={"boss-" + i}>
                 <Flex gap={2}>
                   <Image src={boss.icon} />
                   <Text>{boss.name}</Text>
                 </Flex>
-                <Flex gap={2}>
-                  {Object.entries(boss.prices).map(([difficulty, price]) => (
-                    <Checkbox>
+                <Flex gap={4} pl={2}>
+                  {Object.entries(boss.prices).map(([difficulty, _], j) => (
+                    <Checkbox
+                      key={`boss-difficulty-${i}-${j}`}
+                      sx={{
+                        label: {
+                          marginLeft: 0,
+                        },
+                      }}
+                      onChange={(event) => {
+                        console.log(event.target.value);
+                      }}
+                    >
                       <Center>
                         <Badge
                           color={COLOR[difficulty as BOSS_DIFFICULTY]?.text}
@@ -95,7 +114,7 @@ export default function PlanModal({
                     </Checkbox>
                   ))}
                 </Flex>
-              </>
+              </Fragment>
             ))}
           </SimpleGrid>
         </ModalBody>
@@ -120,4 +139,8 @@ function ModalDeleteButton({ onClick }: { onClick?: () => void }) {
       />
     </Tooltip>
   );
+}
+
+function numberWithCommas(x: number): string {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
