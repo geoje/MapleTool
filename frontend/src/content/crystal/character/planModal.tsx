@@ -25,7 +25,11 @@ import {
 import { Fragment, useEffect, useRef, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../../reducer/hooks";
-import { spliceUserBossPlan } from "../../../reducer/userSlice";
+import {
+  addUserBossPlan,
+  setUserBossPlan,
+  spliceUserBossPlan,
+} from "../../../reducer/userSlice";
 import {
   BOSS,
   BOSS_DIFFICULTY,
@@ -48,28 +52,54 @@ export default function PlanModal({
   const bossPlan = useAppSelector((state) => state.user.bossPlan);
   const nameRef = useRef<HTMLInputElement>(null);
 
-  const [selected, setSelected] = useState<Map<BOSS_TYPE, BOSS_DIFFICULTY>>(
-    new Map<BOSS_TYPE, BOSS_DIFFICULTY>()
+  const [selectedDiffi, setSelectedDiffi] = useState<
+    Map<BOSS_TYPE, BOSS_DIFFICULTY>
+  >(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
+  const [selectedParty, setSelectedParty] = useState<Map<BOSS_TYPE, number>>(
+    new Map<BOSS_TYPE, number>()
   );
 
   const saveData = () => {
     const plan: BossPlan = {
-      name: nameRef.current?.value ?? "",
+      name: (nameRef.current?.value ?? "").trim(),
       boss: [],
     };
-    Object.entries(BOSS).forEach(([type, boss]) => {
-      if (selected.has(type as BOSS_TYPE)) {
+    Object.entries(BOSS).forEach(([type, _]) => {
+      if (selectedDiffi.has(type as BOSS_TYPE)) {
         plan.boss.push({
           type: type as BOSS_TYPE,
-          difficulty: selected.get(type as BOSS_TYPE)!,
-          partyMembers: 1,
+          difficulty: selectedDiffi.get(type as BOSS_TYPE)!,
+          partyMembers: selectedParty.get(type as BOSS_TYPE) ?? 1,
         });
       }
     });
+
+    if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
+      if (!plan.name.length || !plan.boss.length) return;
+      dispatch(addUserBossPlan(plan));
+    } else dispatch(setUserBossPlan({ index: bossPlanIndex, value: plan }));
   };
 
   useEffect(() => {
-    setSelected(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
+    if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
+      setSelectedDiffi(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
+      setSelectedParty(new Map<BOSS_TYPE, number>());
+      return;
+    }
+
+    const difficulty = new Map<BOSS_TYPE, BOSS_DIFFICULTY>();
+    const party = new Map<BOSS_TYPE, number>();
+    const plan = bossPlan[bossPlanIndex];
+
+    if (nameRef.current) nameRef.current.value = plan.name;
+
+    plan.boss.forEach((b) => {
+      difficulty.set(b.type, b.difficulty);
+      party.set(b.type, b.partyMembers);
+    });
+
+    setSelectedDiffi(difficulty);
+    setSelectedParty(party);
   }, [bossPlanIndex]);
 
   return (
@@ -92,6 +122,7 @@ export default function PlanModal({
         <ModalDeleteButton
           onClick={() => {
             dispatch(spliceUserBossPlan(bossPlanIndex));
+            onClose();
           }}
         />
         <ModalCloseButton />
@@ -118,8 +149,8 @@ export default function PlanModal({
                   <Image src={boss.icon} />
                   <Text
                     opacity={
-                      !selected.has(type as BOSS_TYPE) &&
-                      selected.size >= BOSS_MAXIMUN_SELECTABLE
+                      !selectedDiffi.has(type as BOSS_TYPE) &&
+                      selectedDiffi.size >= BOSS_MAXIMUN_SELECTABLE
                         ? 0.6
                         : 1
                     }
@@ -133,12 +164,14 @@ export default function PlanModal({
                       key={`boss-difficulty-${i}-${j}`}
                       mr={2}
                       isDisabled={
-                        !selected.has(type as BOSS_TYPE) &&
-                        selected.size >= BOSS_MAXIMUN_SELECTABLE
+                        !selectedDiffi.has(type as BOSS_TYPE) &&
+                        selectedDiffi.size >= BOSS_MAXIMUN_SELECTABLE
                       }
-                      isChecked={selected.get(type as BOSS_TYPE) == difficulty}
+                      isChecked={
+                        selectedDiffi.get(type as BOSS_TYPE) == difficulty
+                      }
                       onChange={(event) => {
-                        const temp = new Map(selected);
+                        const temp = new Map(selectedDiffi);
                         if (event.target.checked)
                           temp.set(
                             type as BOSS_TYPE,
@@ -146,7 +179,7 @@ export default function PlanModal({
                           );
                         else temp.delete(type as BOSS_TYPE);
 
-                        setSelected(temp);
+                        setSelectedDiffi(temp);
                       }}
                     >
                       <Center>
