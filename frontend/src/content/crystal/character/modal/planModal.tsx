@@ -225,7 +225,22 @@ export default function PlanModal({
                   ))}
                 </Flex>
                 <Center py={1} borderTopWidth={1}>
-                  <Select size="xs">
+                  <Select
+                    size="xs"
+                    value={currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1}
+                    onChange={(event) => {
+                      const value = parseInt(event.target.value);
+                      const newPartyMembers = new Map(currentPlan.partyMembers);
+
+                      if (value == 1) newPartyMembers.delete(type as BOSS_TYPE);
+                      else newPartyMembers.set(type as BOSS_TYPE, value);
+
+                      setCurrentPlan((prevPlan) => ({
+                        ...prevPlan,
+                        partyMembers: newPartyMembers,
+                      }));
+                    }}
+                  >
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
