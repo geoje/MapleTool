@@ -10,7 +10,7 @@ export default function CharacterButton({
   bossPlan,
   onClick,
 }: {
-    bossPlan: BossPlan;
+  bossPlan: BossPlan;
   onClick?: () => void;
 }) {
   return (
@@ -20,9 +20,7 @@ export default function CharacterButton({
       h="fit-content"
       variant="ghost"
       justifyContent="space-between"
-      leftIcon={
-        <Profile src={TEMP_CHARACTER_IMAGE_URL} name={bossPlan.name} />
-      }
+      leftIcon={<Profile src={TEMP_CHARACTER_IMAGE_URL} name={bossPlan.name} />}
       onClick={onClick}
     >
       <Flex gap={1} wrap="wrap">
@@ -31,7 +29,7 @@ export default function CharacterButton({
             key={`boss-${bossPlan.name}-${i}`}
             src={CrystalService.getBossIcon(boss.type)}
             difficulty={boss.difficulty}
-            partyMembers={boss.partMembers}
+            partyMembers={boss.partyMembers}
           />
         ))}
       </Flex>

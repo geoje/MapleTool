@@ -2,10 +2,13 @@ import {
   Badge,
   Center,
   Checkbox,
+  createMultiStyleConfigHelpers,
   Editable,
   EditableInput,
   EditablePreview,
+  extendTheme,
   Flex,
+  Heading,
   IconButton,
   Image,
   Modal,
@@ -14,6 +17,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Select,
   SimpleGrid,
   Text,
   Tooltip,
@@ -25,13 +29,11 @@ import { spliceUserBossPlan } from "../../../reducer/userSlice";
 import {
   BOSS,
   BOSS_DIFFICULTY,
+  BOSS_MAXIMUN_SELECTABLE,
+  BOSS_TYPE,
   COLOR,
 } from "../../../service/user/crystal/bossConstants";
-
-interface BossSelect {
-  name: string;
-  difficulty: string;
-}
+import BossPlan from "../../../dto/user/crystal/bossPlan";
 
 export default function PlanModal({
   isOpen,
@@ -44,19 +46,35 @@ export default function PlanModal({
 }) {
   const dispatch = useAppDispatch();
   const bossPlan = useAppSelector((state) => state.user.bossPlan);
-  const nameRef = useRef(null);
+  const nameRef = useRef<HTMLInputElement>(null);
 
-  const [selected, setSelected] = useState<BossSelect[]>([]);
+  const [selected, setSelected] = useState<Map<BOSS_TYPE, BOSS_DIFFICULTY>>(
+    new Map<BOSS_TYPE, BOSS_DIFFICULTY>()
+  );
 
-  const saveData = () => {};
+  const saveData = () => {
+    const plan: BossPlan = {
+      name: nameRef.current?.value ?? "",
+      boss: [],
+    };
+    Object.entries(BOSS).forEach(([type, boss]) => {
+      if (selected.has(type as BOSS_TYPE)) {
+        plan.boss.push({
+          type: type as BOSS_TYPE,
+          difficulty: selected.get(type as BOSS_TYPE)!,
+          partyMembers: 1,
+        });
+      }
+    });
+  };
 
   useEffect(() => {
-    console.log(nameRef);
+    setSelected(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
   }, [bossPlanIndex]);
 
   return (
     <Modal
-      size="xl"
+      size="2xl"
       isOpen={isOpen}
       onClose={() => {
         saveData();
@@ -66,7 +84,7 @@ export default function PlanModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader pr={24}>
-          <Editable ref={nameRef} placeholder="클릭하여 캐릭터 이름 입력">
+          <Editable ref={nameRef} placeholder="캐릭터 이름">
             <EditablePreview />
             <EditableInput />
           </Editable>
@@ -78,24 +96,57 @@ export default function PlanModal({
         />
         <ModalCloseButton />
         <ModalBody pb={4}>
-          <SimpleGrid gridTemplateColumns="max-content 1fr" gap={2}>
-            {Object.entries(BOSS).map(([_, boss], i) => (
+          <SimpleGrid gridTemplateColumns="max-content 1fr max-content">
+            <Heading size="xs" pb={2}>
+              보스
+            </Heading>
+            <Heading size="xs" pb={2}>
+              난이도
+            </Heading>
+            <Heading size="xs" pb={2}>
+              인원 수
+            </Heading>
+            {Object.entries(BOSS).map(([type, boss], i) => (
               <Fragment key={"boss-" + i}>
-                <Flex gap={2}>
+                <Flex
+                  gap={2}
+                  pr={4}
+                  py={1}
+                  borderTopWidth={1}
+                  alignItems="center"
+                >
                   <Image src={boss.icon} />
-                  <Text>{boss.name}</Text>
+                  <Text
+                    opacity={
+                      !selected.has(type as BOSS_TYPE) &&
+                      selected.size >= BOSS_MAXIMUN_SELECTABLE
+                        ? 0.6
+                        : 1
+                    }
+                  >
+                    {boss.name}
+                  </Text>
                 </Flex>
-                <Flex gap={4} pl={2}>
+                <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
                   {Object.entries(boss.prices).map(([difficulty, _], j) => (
                     <Checkbox
                       key={`boss-difficulty-${i}-${j}`}
-                      sx={{
-                        label: {
-                          marginLeft: 0,
-                        },
-                      }}
+                      mr={2}
+                      isDisabled={
+                        !selected.has(type as BOSS_TYPE) &&
+                        selected.size >= BOSS_MAXIMUN_SELECTABLE
+                      }
+                      isChecked={selected.get(type as BOSS_TYPE) == difficulty}
                       onChange={(event) => {
-                        console.log(event.target.value);
+                        const temp = new Map(selected);
+                        if (event.target.checked)
+                          temp.set(
+                            type as BOSS_TYPE,
+                            difficulty as BOSS_DIFFICULTY
+                          );
+                        else temp.delete(type as BOSS_TYPE);
+
+                        setSelected(temp);
                       }}
                     >
                       <Center>
@@ -114,6 +165,16 @@ export default function PlanModal({
                     </Checkbox>
                   ))}
                 </Flex>
+                <Center py={1} borderTopWidth={1}>
+                  <Select size="xs">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                  </Select>
+                </Center>
               </Fragment>
             ))}
           </SimpleGrid>
@@ -139,8 +200,4 @@ function ModalDeleteButton({ onClick }: { onClick?: () => void }) {
       />
     </Tooltip>
   );
-}
-
-function numberWithCommas(x: number): string {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

@@ -20,7 +20,7 @@ const userSlice = createSlice({
       JSON.parse(localStorage.getItem(KEY_GUARANTEE) ?? DEFAULT_GUARANTEE_JSON)
     ),
     bossPlan: <BossPlan[]>(
-      JSON.parse(localStorage.getItem(KEY_INVENTORY) ?? "[]")
+      JSON.parse(localStorage.getItem(KEY_BOSS_PLAN) ?? "[]")
     ),
   },
   reducers: {
