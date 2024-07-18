@@ -2,11 +2,6 @@ import {
   Badge,
   Center,
   Checkbox,
-  createMultiStyleConfigHelpers,
-  Editable,
-  EditableInput,
-  EditablePreview,
-  extendTheme,
   Flex,
   Heading,
   IconButton,
@@ -22,36 +17,40 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
-import { useAppDispatch, useAppSelector } from "../../../reducer/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../reducer/hooks";
 import {
   addUserBossPlan,
   setUserBossPlan,
   spliceUserBossPlan,
-} from "../../../reducer/userSlice";
+} from "../../../../reducer/userSlice";
 import {
   BOSS,
   BOSS_DIFFICULTY,
   BOSS_MAXIMUN_SELECTABLE,
   BOSS_TYPE,
   COLOR,
-} from "../../../service/user/crystal/bossConstants";
-import BossPlan from "../../../dto/user/crystal/bossPlan";
+} from "../../../../service/user/crystal/bossConstants";
+import BossPlan from "../../../../dto/user/crystal/bossPlan";
+import NameEditable from "./nameEditable";
 
 export default function PlanModal({
   isOpen,
   onClose,
+  onDelete,
   bossPlanIndex,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onDelete: () => void;
   bossPlanIndex: number;
 }) {
   const dispatch = useAppDispatch();
   const bossPlan = useAppSelector((state) => state.user.bossPlan);
-  const nameRef = useRef<HTMLInputElement>(null);
 
+  const [name, setName] = useState(bossPlan[bossPlanIndex].name);
+  const [imageUrl, setImageUrl] = useState(bossPlan[bossPlanIndex].image);
   const [selectedDiffi, setSelectedDiffi] = useState<
     Map<BOSS_TYPE, BOSS_DIFFICULTY>
   >(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
@@ -59,9 +58,16 @@ export default function PlanModal({
     new Map<BOSS_TYPE, number>()
   );
 
+  const clearData = () => {
+    setName("");
+    setImageUrl("");
+    setSelectedDiffi(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
+    setSelectedParty(new Map<BOSS_TYPE, number>());
+  };
   const saveData = () => {
     const plan: BossPlan = {
-      name: (nameRef.current?.value ?? "").trim(),
+      name,
+      image: imageUrl,
       boss: [],
     };
     Object.entries(BOSS).forEach(([type, _]) => {
@@ -75,15 +81,17 @@ export default function PlanModal({
     });
 
     if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
-      if (!plan.name.length || !plan.boss.length) return;
+      if (!plan.name.length && !plan.boss.length) return;
       dispatch(addUserBossPlan(plan));
+      clearData();
     } else dispatch(setUserBossPlan({ index: bossPlanIndex, value: plan }));
   };
 
   useEffect(() => {
+    console.log(bossPlanIndex);
+
     if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
-      setSelectedDiffi(new Map<BOSS_TYPE, BOSS_DIFFICULTY>());
-      setSelectedParty(new Map<BOSS_TYPE, number>());
+      clearData();
       return;
     }
 
@@ -91,7 +99,8 @@ export default function PlanModal({
     const party = new Map<BOSS_TYPE, number>();
     const plan = bossPlan[bossPlanIndex];
 
-    if (nameRef.current) nameRef.current.value = plan.name;
+    setName(plan.name);
+    setImageUrl(plan.image);
 
     plan.boss.forEach((b) => {
       difficulty.set(b.type, b.difficulty);
@@ -113,15 +122,28 @@ export default function PlanModal({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader pr={24}>
-          <Editable ref={nameRef} placeholder="캐릭터 이름">
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
+        <ModalHeader as={Flex} pr={24} gap={4} align="center">
+          <Image
+            boxSize="48px"
+            src={
+              imageUrl?.length ? imageUrl : "/union-raid/character-blank.png"
+            }
+            filter={
+              imageUrl ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"
+            }
+            style={{ imageRendering: "pixelated" }}
+          />
+          <NameEditable
+            name={name}
+            onNameChanged={setName}
+            onImageReceived={setImageUrl}
+          />
         </ModalHeader>
         <ModalDeleteButton
           onClick={() => {
-            dispatch(spliceUserBossPlan(bossPlanIndex));
+            if (bossPlanIndex >= 0 && bossPlanIndex < bossPlan.length)
+              dispatch(spliceUserBossPlan(bossPlanIndex));
+            onDelete();
             onClose();
           }}
         />

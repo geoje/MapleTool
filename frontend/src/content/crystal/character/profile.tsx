@@ -1,5 +1,7 @@
 import { Flex, Hide, Image, Show, Stack, Text } from "@chakra-ui/react";
 
+const DEFAULT_CHARACTER_IMAGE = "/union-raid/character-blank.png";
+
 export default function Profile({
   src,
   name,
@@ -13,7 +15,7 @@ export default function Profile({
         <Flex align="center" gap={2} wrap="wrap">
           <Image
             boxSize="48px"
-            src={src ?? "/union-raid/character-blank.png"}
+            src={src?.length ? src : DEFAULT_CHARACTER_IMAGE}
             filter={
               src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"
             }
@@ -26,7 +28,7 @@ export default function Profile({
         <Stack align="center" gap={2} wrap="wrap">
           <Image
             boxSize="48px"
-            src={src ?? "/union-raid/character-blank.png"}
+            src={src?.length ? src : DEFAULT_CHARACTER_IMAGE}
             filter={
               src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"
             }

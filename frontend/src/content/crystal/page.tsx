@@ -2,7 +2,7 @@ import { IconButton, Stack, useDisclosure } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
 import { FaPlusCircle } from "react-icons/fa";
 import CharacterButton from "./character/characterButton";
-import PlanModal from "./character/planModal";
+import PlanModal from "./character/modal/planModal";
 import { useState } from "react";
 import { useAppSelector } from "../../reducer/hooks";
 
@@ -41,7 +41,12 @@ export default function Crystal() {
       <Stack>
         <BoardCard order={2} title="통계"></BoardCard>
       </Stack>
-      <PlanModal isOpen={isOpen} onClose={onClose} bossPlanIndex={planIndex} />
+      <PlanModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onDelete={() => setPlanIndex(-1)}
+        bossPlanIndex={planIndex}
+      />
     </>
   );
 }

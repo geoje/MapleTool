@@ -5,6 +5,7 @@ import {
 
 export default interface BossPlan {
   name: string;
+  image: string;
   boss: {
     type: BOSS_TYPE;
     difficulty: BOSS_DIFFICULTY;

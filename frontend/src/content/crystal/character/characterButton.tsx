@@ -1,10 +1,8 @@
-import { Button, Flex, Hide, Show } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import Profile from "./profile";
 import BossSummary from "./bossSummary";
 import BossPlan from "../../../dto/user/crystal/bossPlan";
 import CrystalService from "../../../service/user/crystal/crystal";
-
-const TEMP_CHARACTER_IMAGE_URL = "/union-raid/character-blank.png";
 
 export default function CharacterButton({
   bossPlan,
@@ -20,7 +18,7 @@ export default function CharacterButton({
       h="fit-content"
       variant="ghost"
       justifyContent="space-between"
-      leftIcon={<Profile src={TEMP_CHARACTER_IMAGE_URL} name={bossPlan.name} />}
+      leftIcon={<Profile src={bossPlan.image} name={bossPlan.name} />}
       onClick={onClick}
     >
       <Flex gap={1} wrap="wrap">

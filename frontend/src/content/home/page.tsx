@@ -145,12 +145,7 @@ export default function Home() {
               pt="3px"
               pb="1px"
             />
-            <Input
-              as={EditableInput}
-              id="character-name"
-              fontSize="2xl"
-              maxLength={12}
-            />
+            <Input as={EditableInput} fontSize="2xl" maxLength={12} />
             <Spacer h={2} />
             <EditableControls
               requesting={requesting}
