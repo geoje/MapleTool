@@ -9,7 +9,7 @@ import {
   useEditableControls,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import CharacterService from "../../../../service/character/character";
 import { AxiosError } from "axios";
@@ -24,17 +24,23 @@ export default function NameEditable({
   onImageReceived: (image: string) => void;
 }) {
   const toast = useToast();
+  const [currentName, setCurrentName] = useState(name);
   const [requesting, setRequesting] = useState(false);
+
+  useEffect(() => {
+    setCurrentName(name);
+  }, [name]);
 
   // Copied from src/content/home/page.tsx:80
   function onCharacterNameSubmit() {
-    if (name.trim() == "") {
+    onNameChanged(currentName.trim());
+    if (currentName.trim() == "") {
       onImageReceived("");
       return;
     }
     setRequesting(true);
 
-    CharacterService.requestBasic(name)
+    CharacterService.requestBasic(currentName)
       .then((basic) => {
         onImageReceived(basic.character_image);
         toast({
@@ -84,8 +90,8 @@ export default function NameEditable({
       align="center"
       textAlign="center"
       placeholder="캐릭터 이름"
-      value={name}
-      onChange={onNameChanged}
+      value={currentName}
+      onChange={setCurrentName}
       onSubmit={onCharacterNameSubmit}
     >
       <EditablePreview opacity={name ? 1 : 0.4} />

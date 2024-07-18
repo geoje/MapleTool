@@ -45,12 +45,10 @@ const DEFAULT_CURRENT_PLAN = {
 export default function PlanModal({
   isOpen,
   onClose,
-  onDelete,
   bossPlanIndex,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onDelete: () => void;
   bossPlanIndex: number;
 }) {
   const dispatch = useAppDispatch();
@@ -144,7 +142,6 @@ export default function PlanModal({
           onClick={() => {
             if (bossPlanIndex >= 0 && bossPlanIndex < bossPlan.length)
               dispatch(spliceUserBossPlan(bossPlanIndex));
-            onDelete();
             onClose();
           }}
         />
