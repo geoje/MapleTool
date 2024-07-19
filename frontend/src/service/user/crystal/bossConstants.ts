@@ -210,7 +210,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.CHOSEN_SEREN]: {
     name: "선택받은 세렌",
-    icon: "/crystal/boss/darknell.png",
+    icon: "/crystal/boss/chosen-seren.png",
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 227_000_000,
       [BOSS_DIFFICULTY.HARD]: 314_000_000,
