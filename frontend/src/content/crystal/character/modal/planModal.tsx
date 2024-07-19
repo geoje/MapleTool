@@ -13,14 +13,22 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
   Select,
   Show,
   SimpleGrid,
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { Fragment, ReactElement, ReactNode, useEffect, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
+import { MdSort } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../../../reducer/hooks";
 import {
   addUserBossPlan,
@@ -118,7 +126,7 @@ export default function PlanModal({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader as={Flex} pr={24} gap={4} align="center">
+        <ModalHeader as={Flex} pr={24} gap={4} pb={0} align="center">
           <Image
             boxSize="48px"
             src={
@@ -152,6 +160,13 @@ export default function PlanModal({
         />
         <ModalCloseButton />
         <ModalBody pb={4}>
+          <Flex justify="end" pb={2}>
+            <Select size="xs">
+              <option value="">기본순</option>
+              <option value="price-asc">가격 오름차순</option>
+              <option value="price-desc">가격 내림차순</option>
+            </Select>
+          </Flex>
           <ResponsableSimpleGrid>
             <Heading size="xs" pb={2}>
               보스
@@ -249,12 +264,12 @@ export default function PlanModal({
                       }));
                     }}
                   >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                    <option value={4}>4</option>
+                    <option value={5}>5</option>
+                    <option value={6}>6</option>
                   </Select>
                 </Center>
                 <Show above="md">
