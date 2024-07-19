@@ -18,7 +18,11 @@ export default function ResultTable() {
   const [excludes, setExcludes] = useState(new Set<number>());
 
   const revenues = bossPlan.map(CrystalService.calculateRevenue);
-  const total = revenues
+  const totalCount = bossPlan
+    .map((plan) => plan.boss.length)
+    .filter((_, i) => !excludes.has(i))
+    .reduce((acc, cur) => acc + cur, 0);
+  const totalRevenue = revenues
     .filter((_, i) => !excludes.has(i))
     .reduce((acc, cur) => acc + cur, 0);
 
@@ -71,13 +75,21 @@ export default function ResultTable() {
         justify="space-between"
         align="center"
         colSpan={2}
+        gap={2}
         pt={2}
       >
-        <Image
-          src="/item-equipment/meso.png"
-          style={{ imageRendering: "pixelated" }}
-        />
-        <Text fontWeight="bold">{numberToKorean(total)}</Text>
+        <Badge
+          colorScheme={
+            totalCount ==
+            BOSS_MAXIMUN_SELECTABLE *
+              revenues.filter((_, i) => !excludes.has(i)).length
+              ? "blue"
+              : undefined
+          }
+        >
+          {totalCount}
+        </Badge>
+        <Text fontWeight="bold">{numberToKorean(totalRevenue)}</Text>
       </GridItem>
     </SimpleGrid>
   );
