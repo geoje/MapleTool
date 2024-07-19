@@ -1,25 +1,66 @@
-import { Flex, GridItem, Image, SimpleGrid, Text } from "@chakra-ui/react";
+import {
+  Badge,
+  Checkbox,
+  Flex,
+  GridItem,
+  Image,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
 import { useAppSelector } from "../../../reducer/hooks";
 import { Fragment } from "react/jsx-runtime";
 import CrystalService from "../../../service/user/crystal/crystal";
+import { useState } from "react";
+import { BOSS_MAXIMUN_SELECTABLE } from "../../../service/user/crystal/bossConstants";
 
 export default function ResultTable() {
   const bossPlan = useAppSelector((state) => state.user.bossPlan);
+  const [excludes, setExcludes] = useState(new Set<number>());
 
   const revenues = bossPlan.map(CrystalService.calculateRevenue);
-  const total = revenues.reduce((acc, cur) => acc + cur, 0);
+  const total = revenues
+    .filter((_, i) => !excludes.has(i))
+    .reduce((acc, cur) => acc + cur, 0);
 
   return (
     <SimpleGrid>
       {bossPlan.map((plan, i) => (
         <Fragment key={"result-" + i}>
-          <Flex align="center" py={1} borderBottomWidth={1}>
-            <Text fontWeight="bold">{plan.name}</Text>
+          <Flex
+            align="center"
+            opacity={excludes.has(i) ? 0.4 : 1}
+            gap={2}
+            py={1}
+            borderBottomWidth={1}
+          >
+            <Checkbox
+              fontWeight="bold"
+              isChecked={!excludes.has(i)}
+              onChange={(event) => {
+                const temp = new Set(excludes);
+                if (event.target.checked) temp.delete(i);
+                else temp.add(i);
+
+                setExcludes(temp);
+              }}
+            >
+              {plan.name}
+            </Checkbox>
+            <Badge
+              colorScheme={
+                plan.boss.length == BOSS_MAXIMUN_SELECTABLE ? "blue" : undefined
+              }
+            >
+              {plan.boss.length}
+            </Badge>
           </Flex>
-          <Flex align="center" px={4} py={1} borderBottomWidth={1}>
-            <Text fontWeight="bold">{plan.boss.length}</Text>
-          </Flex>
-          <Flex justify="end" align="center" py={1} borderBottomWidth={1}>
+          <Flex
+            justify="end"
+            align="center"
+            opacity={excludes.has(i) ? 0.4 : 1}
+            py={1}
+            borderBottomWidth={1}
+          >
             <Text>{numberToKorean(revenues[i])}</Text>
           </Flex>
         </Fragment>
@@ -28,7 +69,7 @@ export default function ResultTable() {
         as={Flex}
         justify="space-between"
         align="center"
-        colSpan={3}
+        colSpan={2}
         pt={2}
       >
         <Image

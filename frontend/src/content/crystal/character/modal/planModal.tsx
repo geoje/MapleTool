@@ -125,18 +125,21 @@ export default function PlanModal({
   const orderBasicFragments = () =>
     Object.entries(BOSS).map(([type, boss], i) => (
       <Fragment key={"boss-" + i}>
-        <Flex gap={2} pr={4} py={1} borderTopWidth={1} alignItems="center">
+        <Flex
+          gap={2}
+          pr={4}
+          py={1}
+          borderTopWidth={1}
+          alignItems="center"
+          opacity={
+            !currentPlan.difficulty.has(type as BOSS_TYPE) &&
+            currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
+              ? 0.4
+              : 1
+          }
+        >
           <Image src={boss.icon} />
-          <Text
-            opacity={
-              !currentPlan.difficulty.has(type as BOSS_TYPE) &&
-              currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
-                ? 0.6
-                : 1
-            }
-          >
-            {boss.name}
-          </Text>
+          <Text>{boss.name}</Text>
         </Flex>
         <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
           {Object.entries(boss.prices).map(([difficulty], j) => (
@@ -239,18 +242,21 @@ export default function PlanModal({
       )
       .map(({ type, difficulty, name, icon, price }, i) => (
         <Fragment key={"boss-" + i}>
-          <Flex gap={2} pr={4} py={1} borderTopWidth={1} alignItems="center">
+          <Flex
+            gap={2}
+            pr={4}
+            py={1}
+            borderTopWidth={1}
+            alignItems="center"
+            opacity={
+              !currentPlan.difficulty.has(type) &&
+              currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
+                ? 0.4
+                : 1
+            }
+          >
             <Image src={icon} />
-            <Text
-              opacity={
-                !currentPlan.difficulty.has(type) &&
-                currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
-                  ? 0.6
-                  : 1
-              }
-            >
-              {name}
-            </Text>
+            <Text>{name}</Text>
           </Flex>
           <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
             <Checkbox
