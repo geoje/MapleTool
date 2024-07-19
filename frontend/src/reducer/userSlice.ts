@@ -90,7 +90,14 @@ const userSlice = createSlice({
       state.bossPlan.splice(action.payload.index, 1, action.payload.value);
       localStorage.setItem(KEY_BOSS_PLAN, JSON.stringify(state.bossPlan));
     },
-    spliceUserBossPlan(state, action: PayloadAction<number>) {
+    insertUserBossPlan(
+      state,
+      action: PayloadAction<{ index: number; value: BossPlan }>
+    ) {
+      state.bossPlan.splice(action.payload.index, 0, action.payload.value);
+      localStorage.setItem(KEY_BOSS_PLAN, JSON.stringify(state.bossPlan));
+    },
+    deleteUserBossPlan(state, action: PayloadAction<number>) {
       state.bossPlan.splice(action.payload, 1);
       localStorage.setItem(KEY_BOSS_PLAN, JSON.stringify(state.bossPlan));
     },
@@ -110,6 +117,7 @@ export const {
 
   addUserBossPlan,
   setUserBossPlan,
-  spliceUserBossPlan,
+  insertUserBossPlan,
+  deleteUserBossPlan,
 } = userSlice.actions;
 export default userSlice.reducer;

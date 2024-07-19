@@ -24,7 +24,8 @@ import { useAppDispatch, useAppSelector } from "../../../../reducer/hooks";
 import {
   addUserBossPlan,
   setUserBossPlan,
-  spliceUserBossPlan,
+  deleteUserBossPlan,
+  insertUserBossPlan,
 } from "../../../../reducer/userSlice";
 import {
   BOSS,
@@ -77,10 +78,22 @@ export default function PlanModal({
     });
 
     if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
-      if (!plan.name.length && !plan.boss.length) return;
+      if (!plan.name.length && !plan.boss.length) return plan;
+
       dispatch(addUserBossPlan(plan));
       setCurrentPlan(DEFAULT_CURRENT_PLAN);
     } else dispatch(setUserBossPlan({ index: bossPlanIndex, value: plan }));
+
+    return plan;
+  };
+  const copyData = () => {
+    const plan: BossPlan = saveData();
+
+    if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
+      if (!plan.name.length && !plan.boss.length) return;
+
+      dispatch(addUserBossPlan(plan));
+    } else dispatch(insertUserBossPlan({ index: bossPlanIndex, value: plan }));
   };
 
   useEffect(() => {
@@ -353,11 +366,16 @@ export default function PlanModal({
           <ModalDeleteButton
             onClick={() => {
               if (bossPlanIndex >= 0 && bossPlanIndex < bossPlan.length)
-                dispatch(spliceUserBossPlan(bossPlanIndex));
+                dispatch(deleteUserBossPlan(bossPlanIndex));
               onClose();
             }}
           />
-          <ModalCopyButton onClick={() => {}} />
+          <ModalCopyButton
+            onClick={() => {
+              copyData();
+              onClose();
+            }}
+          />
         </Flex>
         <ModalCloseButton />
         <ModalBody pb={4}>
