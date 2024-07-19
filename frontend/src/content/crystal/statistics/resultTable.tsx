@@ -58,6 +58,7 @@ export default function ResultTable() {
             justify="end"
             align="center"
             opacity={excludes.has(i) ? 0.4 : 1}
+            pl={2}
             py={1}
             borderBottomWidth={1}
           >
