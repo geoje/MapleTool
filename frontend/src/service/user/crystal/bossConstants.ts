@@ -95,7 +95,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     name: "파풀라투스",
     icon: "/crystal/boss/papulatus.png",
     prices: {
-      [BOSS_DIFFICULTY.HARD]: 24_700_000,
+      [BOSS_DIFFICULTY.CHAOS]: 24_700_000,
     },
   },
   [BOSS_TYPE.PIERRE]: {
