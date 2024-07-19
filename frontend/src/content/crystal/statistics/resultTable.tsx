@@ -10,11 +10,14 @@ export default function ResultTable() {
   const total = revenues.reduce((acc, cur) => acc + cur, 0);
 
   return (
-    <SimpleGrid gridTemplateColumns="1fr 1fr">
+    <SimpleGrid>
       {bossPlan.map((plan, i) => (
         <Fragment key={"result-" + i}>
           <Flex align="center" py={1} borderBottomWidth={1}>
             <Text fontWeight="bold">{plan.name}</Text>
+          </Flex>
+          <Flex align="center" px={4} py={1} borderBottomWidth={1}>
+            <Text fontWeight="bold">{plan.boss.length}</Text>
           </Flex>
           <Flex justify="end" align="center" py={1} borderBottomWidth={1}>
             <Text>{numberToKorean(revenues[i])}</Text>
@@ -25,7 +28,7 @@ export default function ResultTable() {
         as={Flex}
         justify="space-between"
         align="center"
-        colSpan={2}
+        colSpan={3}
         pt={2}
       >
         <Image
