@@ -13,22 +13,13 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
   Select,
-  Show,
   SimpleGrid,
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { Fragment, ReactNode, useEffect, useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import { MdSort } from "react-icons/md";
+import { Fragment, useEffect, useState } from "react";
+import { FiCopy, FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../../../reducer/hooks";
 import {
   addUserBossPlan,
@@ -49,6 +40,7 @@ import CrystalService from "../../../../service/user/crystal/crystal";
 const DEFAULT_CURRENT_PLAN = {
   name: "",
   image: "",
+  order: "",
   difficulty: new Map<BOSS_TYPE, BOSS_DIFFICULTY>(),
   partyMembers: new Map<BOSS_TYPE, number>(),
 };
@@ -71,6 +63,7 @@ export default function PlanModal({
     const plan: BossPlan = {
       name: currentPlan.name,
       image: currentPlan.image,
+      order: currentPlan.order,
       boss: [],
     };
     Object.entries(BOSS).forEach(([type]) => {
@@ -108,12 +101,217 @@ export default function PlanModal({
     setCurrentPlan({
       name: plan.name,
       image: plan.image,
+      order: plan.order,
       difficulty: loadedDifficulty,
       partyMembers: loadedParty,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bossPlanIndex]);
+
+  const orderBasicFragments = () =>
+    Object.entries(BOSS).map(([type, boss], i) => (
+      <Fragment key={"boss-" + i}>
+        <Flex gap={2} pr={4} py={1} borderTopWidth={1} alignItems="center">
+          <Image src={boss.icon} />
+          <Text
+            opacity={
+              !currentPlan.difficulty.has(type as BOSS_TYPE) &&
+              currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
+                ? 0.6
+                : 1
+            }
+          >
+            {boss.name}
+          </Text>
+        </Flex>
+        <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
+          {Object.entries(boss.prices).map(([difficulty], j) => (
+            <Checkbox
+              key={`boss-difficulty-${i}-${j}`}
+              mr={2}
+              isDisabled={
+                !currentPlan.difficulty.has(type as BOSS_TYPE) &&
+                currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
+              }
+              isChecked={
+                currentPlan.difficulty.get(type as BOSS_TYPE) == difficulty
+              }
+              onChange={(event) => {
+                const newDifficulty = new Map(currentPlan.difficulty);
+                if (event.target.checked)
+                  newDifficulty.set(
+                    type as BOSS_TYPE,
+                    difficulty as BOSS_DIFFICULTY
+                  );
+                else newDifficulty.delete(type as BOSS_TYPE);
+
+                setCurrentPlan((prevPlan) => ({
+                  ...prevPlan,
+                  difficulty: newDifficulty,
+                }));
+              }}
+            >
+              <Center>
+                <Badge
+                  color={COLOR[difficulty as BOSS_DIFFICULTY]?.text}
+                  bgColor={COLOR[difficulty as BOSS_DIFFICULTY]?.back}
+                  borderColor={COLOR[difficulty as BOSS_DIFFICULTY]?.border}
+                  borderWidth={1}
+                  fontSize="xx-small"
+                >
+                  {difficulty}
+                </Badge>
+              </Center>
+            </Checkbox>
+          ))}
+        </Flex>
+        <Center py={1} borderTopWidth={1}>
+          <Select
+            size="xs"
+            value={currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1}
+            onChange={(event) => {
+              const value = parseInt(event.target.value);
+              const newPartyMembers = new Map(currentPlan.partyMembers);
+
+              if (value == 1) newPartyMembers.delete(type as BOSS_TYPE);
+              else newPartyMembers.set(type as BOSS_TYPE, value);
+
+              setCurrentPlan((prevPlan) => ({
+                ...prevPlan,
+                partyMembers: newPartyMembers,
+              }));
+            }}
+          >
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
+            <option value={6}>6</option>
+          </Select>
+        </Center>
+        <Flex
+          gap={2}
+          pl={4}
+          py={1}
+          borderTopWidth={1}
+          justify="end"
+          alignItems="center"
+          fontSize="xs"
+        >
+          {currentPlan.difficulty.has(type as BOSS_TYPE) &&
+            Math.round(
+              CrystalService.price(
+                type as BOSS_TYPE,
+                currentPlan.difficulty.get(type as BOSS_TYPE)!
+              ) / (currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1)
+            ).toLocaleString()}
+        </Flex>
+      </Fragment>
+    ));
+  const orderPriceFragments = () =>
+    Object.entries(BOSS)
+      .flatMap(([type, boss]) =>
+        Object.entries(boss.prices).map(([difficulty]) => ({
+          type: type as BOSS_TYPE,
+          difficulty: difficulty as BOSS_DIFFICULTY,
+          name: boss.name,
+          icon: boss.icon,
+          price: boss.prices[difficulty as BOSS_DIFFICULTY] ?? 0,
+        }))
+      )
+      .sort((a, b) =>
+        currentPlan.order == "price-asc" ? a.price - b.price : b.price - a.price
+      )
+      .map(({ type, difficulty, name, icon, price }, i) => (
+        <Fragment key={"boss-" + i}>
+          <Flex gap={2} pr={4} py={1} borderTopWidth={1} alignItems="center">
+            <Image src={icon} />
+            <Text
+              opacity={
+                !currentPlan.difficulty.has(type) &&
+                currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
+                  ? 0.6
+                  : 1
+              }
+            >
+              {name}
+            </Text>
+          </Flex>
+          <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
+            <Checkbox
+              key={`boss-difficulty-${i}`}
+              mr={2}
+              isDisabled={
+                !currentPlan.difficulty.has(type) &&
+                currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
+              }
+              isChecked={currentPlan.difficulty.get(type) == difficulty}
+              onChange={(event) => {
+                const newDifficulty = new Map(currentPlan.difficulty);
+                if (event.target.checked) newDifficulty.set(type, difficulty);
+                else newDifficulty.delete(type);
+
+                setCurrentPlan((prevPlan) => ({
+                  ...prevPlan,
+                  difficulty: newDifficulty,
+                }));
+              }}
+            >
+              <Center>
+                <Badge
+                  color={COLOR[difficulty]?.text}
+                  bgColor={COLOR[difficulty]?.back}
+                  borderColor={COLOR[difficulty]?.border}
+                  borderWidth={1}
+                  fontSize="xx-small"
+                >
+                  {difficulty}
+                </Badge>
+              </Center>
+            </Checkbox>
+          </Flex>
+          <Center py={1} borderTopWidth={1}>
+            <Select
+              size="xs"
+              value={currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1}
+              onChange={(event) => {
+                const value = parseInt(event.target.value);
+                const newPartyMembers = new Map(currentPlan.partyMembers);
+
+                if (value == 1) newPartyMembers.delete(type as BOSS_TYPE);
+                else newPartyMembers.set(type as BOSS_TYPE, value);
+
+                setCurrentPlan((prevPlan) => ({
+                  ...prevPlan,
+                  partyMembers: newPartyMembers,
+                }));
+              }}
+            >
+              <option value={1}>1</option>
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+              <option value={4}>4</option>
+              <option value={5}>5</option>
+              <option value={6}>6</option>
+            </Select>
+          </Center>
+          <Flex
+            gap={2}
+            pl={4}
+            py={1}
+            borderTopWidth={1}
+            justify="end"
+            alignItems="center"
+            fontSize="xs"
+          >
+            {Math.round(
+              price / (currentPlan.partyMembers.get(type) ?? 1)
+            ).toLocaleString()}
+          </Flex>
+        </Fragment>
+      ));
 
   return (
     <Modal
@@ -151,23 +349,35 @@ export default function PlanModal({
             }
           />
         </ModalHeader>
-        <ModalDeleteButton
-          onClick={() => {
-            if (bossPlanIndex >= 0 && bossPlanIndex < bossPlan.length)
-              dispatch(spliceUserBossPlan(bossPlanIndex));
-            onClose();
-          }}
-        />
+        <Flex position="absolute" top={2} right={12} gap={1}>
+          <ModalDeleteButton
+            onClick={() => {
+              if (bossPlanIndex >= 0 && bossPlanIndex < bossPlan.length)
+                dispatch(spliceUserBossPlan(bossPlanIndex));
+              onClose();
+            }}
+          />
+          <ModalCopyButton onClick={() => {}} />
+        </Flex>
         <ModalCloseButton />
         <ModalBody pb={4}>
-          <Flex justify="end" pb={2}>
-            <Select size="xs">
+          <Flex justify="end" pb={4}>
+            <Select
+              w="auto"
+              size="xs"
+              onChange={(event) =>
+                setCurrentPlan((prevPlan) => ({
+                  ...prevPlan,
+                  order: event.target.value,
+                }))
+              }
+            >
               <option value="">기본순</option>
               <option value="price-asc">가격 오름차순</option>
               <option value="price-desc">가격 내림차순</option>
             </Select>
           </Flex>
-          <ResponsableSimpleGrid>
+          <SimpleGrid gridTemplateColumns="max-content 1fr max-content max-content">
             <Heading size="xs" pb={2}>
               보스
             </Heading>
@@ -177,124 +387,13 @@ export default function PlanModal({
             <Heading size="xs" pb={2}>
               인원 수
             </Heading>
-            <Show above="md">
-              <Heading size="xs" pb={2} textAlign="end">
-                가격
-              </Heading>
-            </Show>
-            {Object.entries(BOSS).map(([type, boss], i) => (
-              <Fragment key={"boss-" + i}>
-                <Flex
-                  gap={2}
-                  pr={4}
-                  py={1}
-                  borderTopWidth={1}
-                  alignItems="center"
-                >
-                  <Image src={boss.icon} />
-                  <Text
-                    opacity={
-                      !currentPlan.difficulty.has(type as BOSS_TYPE) &&
-                      currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
-                        ? 0.6
-                        : 1
-                    }
-                  >
-                    {boss.name}
-                  </Text>
-                </Flex>
-                <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
-                  {Object.entries(boss.prices).map(([difficulty], j) => (
-                    <Checkbox
-                      key={`boss-difficulty-${i}-${j}`}
-                      mr={2}
-                      isDisabled={
-                        !currentPlan.difficulty.has(type as BOSS_TYPE) &&
-                        currentPlan.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
-                      }
-                      isChecked={
-                        currentPlan.difficulty.get(type as BOSS_TYPE) ==
-                        difficulty
-                      }
-                      onChange={(event) => {
-                        const newDifficulty = new Map(currentPlan.difficulty);
-                        if (event.target.checked)
-                          newDifficulty.set(
-                            type as BOSS_TYPE,
-                            difficulty as BOSS_DIFFICULTY
-                          );
-                        else newDifficulty.delete(type as BOSS_TYPE);
-
-                        setCurrentPlan((prevPlan) => ({
-                          ...prevPlan,
-                          difficulty: newDifficulty,
-                        }));
-                      }}
-                    >
-                      <Center>
-                        <Badge
-                          color={COLOR[difficulty as BOSS_DIFFICULTY]?.text}
-                          bgColor={COLOR[difficulty as BOSS_DIFFICULTY]?.back}
-                          borderColor={
-                            COLOR[difficulty as BOSS_DIFFICULTY]?.border
-                          }
-                          borderWidth={1}
-                          fontSize="xx-small"
-                        >
-                          {difficulty}
-                        </Badge>
-                      </Center>
-                    </Checkbox>
-                  ))}
-                </Flex>
-                <Center py={1} borderTopWidth={1}>
-                  <Select
-                    size="xs"
-                    value={currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1}
-                    onChange={(event) => {
-                      const value = parseInt(event.target.value);
-                      const newPartyMembers = new Map(currentPlan.partyMembers);
-
-                      if (value == 1) newPartyMembers.delete(type as BOSS_TYPE);
-                      else newPartyMembers.set(type as BOSS_TYPE, value);
-
-                      setCurrentPlan((prevPlan) => ({
-                        ...prevPlan,
-                        partyMembers: newPartyMembers,
-                      }));
-                    }}
-                  >
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                    <option value={6}>6</option>
-                  </Select>
-                </Center>
-                <Show above="md">
-                  <Flex
-                    gap={2}
-                    pl={4}
-                    py={1}
-                    borderTopWidth={1}
-                    justify="end"
-                    alignItems="center"
-                    fontSize="xs"
-                  >
-                    {currentPlan.difficulty.has(type as BOSS_TYPE) &&
-                      Math.round(
-                        CrystalService.price(
-                          type as BOSS_TYPE,
-                          currentPlan.difficulty.get(type as BOSS_TYPE)!
-                        ) /
-                          (currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1)
-                      ).toLocaleString()}
-                  </Flex>
-                </Show>
-              </Fragment>
-            ))}
-          </ResponsableSimpleGrid>
+            <Heading size="xs" pb={2} textAlign="end">
+              가격
+            </Heading>
+            {currentPlan.order && currentPlan.order.startsWith("price")
+              ? orderPriceFragments()
+              : orderBasicFragments()}
+          </SimpleGrid>
         </ModalBody>
       </ModalContent>
     </Modal>
@@ -303,35 +402,29 @@ export default function PlanModal({
 
 function ModalDeleteButton({ onClick }: { onClick?: () => void }) {
   return (
-    <Tooltip label="캐릭터 삭제">
+    <Tooltip label="삭제">
       <IconButton
         aria-label="delete"
         variant="ghost"
         icon={<FiTrash2 />}
         size="sm"
-        position="absolute"
         colorScheme="red"
-        top={2}
-        right={12}
         onClick={onClick}
       />
     </Tooltip>
   );
 }
 
-function ResponsableSimpleGrid({ children }: { children: ReactNode }) {
+function ModalCopyButton({ onClick }: { onClick?: () => void }) {
   return (
-    <>
-      <Show above="md">
-        <SimpleGrid gridTemplateColumns="max-content 1fr max-content max-content">
-          {children}
-        </SimpleGrid>
-      </Show>
-      <Hide above="md">
-        <SimpleGrid gridTemplateColumns="max-content 1fr max-content">
-          {children}
-        </SimpleGrid>
-      </Hide>
-    </>
+    <Tooltip label="복사">
+      <IconButton
+        aria-label="copy"
+        variant="ghost"
+        icon={<FiCopy />}
+        size="sm"
+        onClick={onClick}
+      />
+    </Tooltip>
   );
 }
