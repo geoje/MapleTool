@@ -385,7 +385,16 @@ export default function PlanModal({
         </Flex>
         <ModalCloseButton />
         <ModalBody pb={4}>
-          <Flex justify="end" pb={4}>
+          <Flex justify="end" align="center" pb={4} gap={2}>
+            <Badge
+              colorScheme={
+                currentPlan.difficulty.size == BOSS_MAXIMUN_SELECTABLE
+                  ? "blue"
+                  : undefined
+              }
+            >
+              {currentPlan.difficulty.size} / {BOSS_MAXIMUN_SELECTABLE}
+            </Badge>
             <Select
               w="auto"
               size="xs"
