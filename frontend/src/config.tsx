@@ -41,7 +41,7 @@ export const LINKS = [
     label: "보스결정",
     image: "/link/crystal.svg",
     content: <Crystal />,
-    status: <Badge colorScheme="blue">새 기능</Badge>,
+    status: <></>,
   },
 ];
 

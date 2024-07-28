@@ -106,7 +106,6 @@ export default function PlanModal({
     const loadedParty = new Map<BOSS_TYPE, number>();
     const plan = bossPlan[bossPlanIndex];
     plan.boss.forEach((b) => {
-      ``;
       loadedDifficulty.set(b.type, b.difficulty);
       loadedParty.set(b.type, b.partyMembers);
     });

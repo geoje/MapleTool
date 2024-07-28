@@ -9,7 +9,7 @@ import {
   useEditableControls,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import CharacterService from "../../../../service/character/character";
 import { AxiosError } from "axios";
@@ -26,10 +26,6 @@ export default function NameEditable({
   const toast = useToast();
   const [currentName, setCurrentName] = useState(name);
   const [requesting, setRequesting] = useState(false);
-
-  useEffect(() => {
-    setCurrentName(name);
-  }, [name]);
 
   // Copied from src/content/home/page.tsx:80
   function onCharacterNameSubmit() {
