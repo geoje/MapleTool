@@ -1,6 +1,12 @@
 nexon:
   key: ENC(ej5wNEnAUWn2hBrQwpjYqKYHZoe5betUJoXZlKbvFjsJcLZJpy5mIUACqaZhibPmcqxFT0u7L2KZXP2FRsjpD8MuWzuPa5iF8Dvw/5ubIG8L/DUaLxIUbDZv+gZRL7E0vGXOoGtRAF7PD5j3VWDNAsc4MmjyNfTR9xpZvy6elTxoE1wMHx6oj7gSRYYjo0dr)
 
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

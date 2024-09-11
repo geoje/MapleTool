@@ -1,6 +1,8 @@
-nexon:
-  url: https://open.api.nexon.com
-  key: ''
+feign:
+  client:
+    config:
+      default:
+        url: https://open.api.nexon.com
 
 spring:
   datasource:

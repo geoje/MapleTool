@@ -1,17 +1,16 @@
 package kr.ygh.maple.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.transaction.Transactional;
-import kr.ygh.maple.entity.Potential;
-import kr.ygh.maple.repository.db.PotentialRepository;
+import java.util.List;
+import kr.ygh.maple.character.entity.Potential;
+import kr.ygh.maple.character.repository.PotentialRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("잠재능력 저장소")
 @DataJpaTest
