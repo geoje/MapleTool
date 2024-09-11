@@ -1,7 +1,10 @@
 package kr.ygh.maple.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import kr.ygh.maple.dto.character.itemEquipment.PotentialDto;
-import kr.ygh.maple.entity.AdditionalPotential;
 import kr.ygh.maple.entity.Potential;
 import kr.ygh.maple.repository.db.AdditionalPotentialRepository;
 import kr.ygh.maple.repository.db.PotentialRepository;
@@ -9,11 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class PotentialService {
@@ -23,7 +21,8 @@ public class PotentialService {
 
     private final Map<String, String> partMap;
 
-    public PotentialService(PotentialRepository potentialRepository, AdditionalPotentialRepository additionalPotentialRepository) {
+    public PotentialService(PotentialRepository potentialRepository,
+                            AdditionalPotentialRepository additionalPotentialRepository) {
         this.potentialRepository = potentialRepository;
         this.additionalPotentialRepository = additionalPotentialRepository;
         this.partMap = new HashMap<>();

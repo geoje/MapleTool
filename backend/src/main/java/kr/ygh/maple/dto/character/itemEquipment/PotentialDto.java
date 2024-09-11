@@ -1,6 +1,5 @@
 package kr.ygh.maple.dto.character.itemEquipment;
 
-import kr.ygh.maple.entity.AdditionalPotential;
 import kr.ygh.maple.entity.Potential;
 
 public record PotentialDto(int position, String name, int value, double probability) {

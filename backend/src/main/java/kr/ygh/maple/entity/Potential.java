@@ -14,6 +14,7 @@ public class Potential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String type;
     private String part;
     private String grade;
     private int level;
