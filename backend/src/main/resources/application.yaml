@@ -3,23 +3,10 @@ nexon:
     url: https://open.api.nexon.com
     key: ''
 
-maplegg:
-  api:
-    url: https://maple.dakgg.io
-
 spring:
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      repositories:
-        enabled: false
-
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:mapletool
-    username: sa
-    password: password
 
   jpa:
     open-in-view: false
