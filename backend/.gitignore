@@ -36,6 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### Spring Boot ###
-src/main/resources/static/
-application-*.*
+### Docker ###
+.env

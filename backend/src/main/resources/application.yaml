@@ -1,7 +1,6 @@
 nexon:
-  api:
-    url: https://open.api.nexon.com
-    key: ''
+  url: https://open.api.nexon.com
+  key: ''
 
 spring:
   datasource:
@@ -10,5 +9,3 @@ spring:
 
   jpa:
     open-in-view: false
-    hibernate:
-      ddl-auto: update
