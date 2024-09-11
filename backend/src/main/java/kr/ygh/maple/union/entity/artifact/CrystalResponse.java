@@ -1,4 +1,4 @@
-package kr.ygh.maple.union.dto.artifact;
+package kr.ygh.maple.union.entity.artifact;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

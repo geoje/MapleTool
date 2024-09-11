@@ -1,4 +1,7 @@
 package kr.ygh.maple.character.entity;
 
-public record Ocid(String name, String ocid) {
+import org.springframework.data.redis.core.RedisHash;
+
+@RedisHash("character:ocid")
+public record Ocid(String ocid) {
 }

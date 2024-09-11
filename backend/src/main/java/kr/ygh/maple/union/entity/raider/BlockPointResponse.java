@@ -1,9 +1,9 @@
-package kr.ygh.maple.character.dto.ocid;
+package kr.ygh.maple.union.entity.raider;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record OcidResponse(String ocid) {
+public record BlockPointResponse(long x, long y) {
 }

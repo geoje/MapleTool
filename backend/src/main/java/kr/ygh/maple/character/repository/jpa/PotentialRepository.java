@@ -1,4 +1,4 @@
-package kr.ygh.maple.character.repository;
+package kr.ygh.maple.character.repository.jpa;
 
 import java.util.List;
 import kr.ygh.maple.character.entity.Potential;

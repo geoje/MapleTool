@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import kr.ygh.maple.character.dto.itemEquipment.PotentialResponse;
 import kr.ygh.maple.character.entity.Potential;
-import kr.ygh.maple.character.repository.PotentialRepository;
-import kr.ygh.maple.repository.db.AdditionalPotentialRepository;
+import kr.ygh.maple.character.entity.PotentialResponse;
+import kr.ygh.maple.character.repository.jpa.PotentialRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,14 +16,11 @@ import reactor.core.publisher.Mono;
 public class PotentialService {
 
     private final PotentialRepository potentialRepository;
-    private final AdditionalPotentialRepository additionalPotentialRepository;
 
     private final Map<String, String> partMap;
 
-    public PotentialService(PotentialRepository potentialRepository,
-                            AdditionalPotentialRepository additionalPotentialRepository) {
+    public PotentialService(PotentialRepository potentialRepository) {
         this.potentialRepository = potentialRepository;
-        this.additionalPotentialRepository = additionalPotentialRepository;
         this.partMap = new HashMap<>();
 
         List.of("샤이닝로드", "소울슈터", "데스페라도", "에너지소드", "한손검", "한손도끼", "한손둔기", "단검",
@@ -58,21 +54,5 @@ public class PotentialService {
                 .map(potentials -> potentials.stream().map(PotentialResponse::from).toList())
                 .onErrorResume(NullPointerException.class, ex -> Mono.error(
                         new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 아이템은 잠재능력이 존재하지 않습니다.")));
-    }
-
-    public Mono<List<PotentialResponse>> additionalPotential(String part, String grade, int level) {
-        final String convertedPart = partMap.getOrDefault(part, part);
-
-        CompletableFuture<Integer> existLevelFuture = CompletableFuture
-                .supplyAsync(() -> additionalPotentialRepository
-                        .findMaxLevelLessOrEqualThan(convertedPart, level));
-        CompletableFuture<List<AdditionalPotential>> potentialsFuture = existLevelFuture
-                .thenApplyAsync(existLevel -> additionalPotentialRepository
-                        .findAllByPartAndGradeAndLevel(convertedPart, grade, existLevel));
-
-        return Mono.fromFuture(potentialsFuture)
-                .map(potentials -> potentials.stream().map(PotentialResponse::from).toList())
-                .onErrorResume(NullPointerException.class, ex -> Mono.error(
-                        new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 아이템은 에디셔널 잠재능력이 존재하지 않습니다.")));
     }
 }

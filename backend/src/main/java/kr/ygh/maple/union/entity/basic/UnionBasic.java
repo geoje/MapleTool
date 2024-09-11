@@ -1,10 +1,10 @@
-package kr.ygh.maple.union.dto.artifact;
+package kr.ygh.maple.union.entity.basic;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record UnionArtifact(String date, EffectResponse[] union_artifact_effect,
-                            CrystalResponse[] union_artifact_crystal, long union_artifact_remain_ap) {
+public record UnionBasic(String date, long union_level, String union_grade, long union_artifact_level,
+                         long union_artifact_exp, long union_artifact_point) {
 }
