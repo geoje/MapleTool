@@ -5,7 +5,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://db/maple
-    username: ENC(i53x9WtYiEKdqJEDvnDsi//V+v0p/DpZ2kkRoQHu6IpOSAocS/ZnV8TefRy4jIwL)
+    username: root
     password: ENC(82LhaVLTV7bx76p7M18ES5ceqOWYR8ACDxHfoZEqfgXINYjTOJJBwG00dK6F5Mfx)
 
   jpa:

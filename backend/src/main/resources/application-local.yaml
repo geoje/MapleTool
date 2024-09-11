@@ -5,8 +5,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost/maple
-    username: ENC(E2nEwnsONS8RxOb2lghqn21+hRYntM9DLKfLGyGNV0vineoU7JaHHdDUKHnSltyN)
-    password: ENC(C4/9FfrVecykUvOIurUuZULe+WH490Ny8hn1AQsRUFs7+LWgQ57Cid2JQZzgHbwf)
+    username: root
+    password: root
 
   jpa:
     generate-ddl: true
