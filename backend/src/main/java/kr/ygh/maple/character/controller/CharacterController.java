@@ -1,6 +1,6 @@
 package kr.ygh.maple.character.controller;
 
-import kr.ygh.maple.character.entity.Basic;
+import kr.ygh.maple.character.dto.basic.BasicResponse;
 import kr.ygh.maple.character.service.CharacterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ public class CharacterController {
     private final CharacterService characterService;
 
     @GetMapping("basic")
-    public Basic basic(@RequestParam String name) {
-        return characterService.readBasic(name);
+    public BasicResponse basic(@RequestParam String name) {
+        return characterService.readBasic(name).data();
     }
 }

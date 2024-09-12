@@ -31,12 +31,12 @@ class PotentialRepositoryTest {
 
         // when & then
         for (Potential potential : potentials) {
-            if (potential.getPosition() != position) {
-                position = potential.getPosition();
+            if (potential.position() != position) {
+                position = potential.position();
                 assertThat(sumOfProbability).isBetween(1 - offset, 1 + offset);
                 sumOfProbability = 0;
             }
-            sumOfProbability += potential.getProbability();
+            sumOfProbability += potential.probability();
         }
         assertThat(sumOfProbability).isBetween(1 - offset, 1 + offset);
     }

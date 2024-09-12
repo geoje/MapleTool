@@ -1,4 +1,4 @@
-package kr.ygh.maple.union.entity.raider;
+package kr.ygh.maple.union.dto.raider;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

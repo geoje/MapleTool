@@ -1,8 +1,8 @@
 package kr.ygh.maple.character.service;
 
 import feign.Headers;
-import kr.ygh.maple.character.entity.Basic;
-import kr.ygh.maple.character.entity.Ocid;
+import kr.ygh.maple.character.dto.basic.BasicResponse;
+import kr.ygh.maple.character.dto.ocid.OcidResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface CharacterClient {
 
     @GetMapping("/maplestory/v1/id")
-    Ocid getOcid(@RequestParam String characterName);
+    OcidResponse getOcid(@RequestParam String characterName);
 
     @GetMapping("/maplestory/v1/character/basic")
-    Basic getBasic(@RequestParam String ocid);
+    BasicResponse getBasic(@RequestParam String ocid);
 }

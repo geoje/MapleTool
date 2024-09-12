@@ -1,12 +1,9 @@
 package kr.ygh.maple.character.entity;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import kr.ygh.maple.character.dto.basic.BasicResponse;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record Basic(String date, String character_name, String world_name, String character_gender,
-                    String character_class, String character_class_level, long character_level,
-                    long character_exp, String character_exp_rate, String character_guild_name,
-                    String character_image) {
+@RedisHash("character:basic")
+public record Basic(@Id String name, BasicResponse data) {
 }
