@@ -1,8 +1,6 @@
-feign:
-  client:
-    config:
-      default:
-        url: https://open.api.nexon.com
+nexon:
+  url: https://open.api.nexon.com
+  key: ''
 
 spring:
   datasource:
@@ -11,3 +9,7 @@ spring:
 
   jpa:
     open-in-view: false
+
+jasypt:
+  encryptor:
+    password: ${JASYPT_PASSWORD}

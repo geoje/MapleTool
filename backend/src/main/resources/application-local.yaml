@@ -1,11 +1,5 @@
 nexon:
-  key: ENC(ej5wNEnAUWn2hBrQwpjYqKYHZoe5betUJoXZlKbvFjsJcLZJpy5mIUACqaZhibPmcqxFT0u7L2KZXP2FRsjpD8MuWzuPa5iF8Dvw/5ubIG8L/DUaLxIUbDZv+gZRL7E0vGXOoGtRAF7PD5j3VWDNAsc4MmjyNfTR9xpZvy6elTxoE1wMHx6oj7gSRYYjo0dr)
-
-feign:
-  client:
-    config:
-      default:
-        loggerLevel: full
+  key: ENC(RJAKS7b4h9z/mmOPxs7dsjg1rt72bNgIDC+9habI4RxwZ9ck+Ymwrr9mrsCL6dQEBzbYTW6nU0O83qkruIzoTLnoqA8W9N79QoL/YjNlMbNxA8EZkPJVy5EMr4+kqZHT0Flp19nZ0KKsfLhEnw7IFgcV5reAA54XGUFGXDUJ4McKSbizLm1z8um6PG7yTb7y)
 
 spring:
   datasource:
@@ -18,3 +12,14 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: full
+
+logging:
+  level:
+    kr.ygh: debug
