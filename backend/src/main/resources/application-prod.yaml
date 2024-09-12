@@ -9,6 +9,10 @@ spring:
     hibernate:
       ddl-auto: validate
 
+  data:
+    redis:
+      host: redis
+
   cloud:
     openfeign:
       client:
