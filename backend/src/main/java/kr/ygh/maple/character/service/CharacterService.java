@@ -4,7 +4,7 @@ import kr.ygh.maple.character.entity.Basic;
 import kr.ygh.maple.character.entity.Ocid;
 import kr.ygh.maple.character.repository.redis.CharacterBasicRepository;
 import kr.ygh.maple.character.repository.redis.CharacterOcidRepository;
-import kr.ygh.maple.feign.NexonClient;
+import kr.ygh.maple.common.feign.NexonClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package kr.ygh.maple.feign;
+package kr.ygh.maple.common.feign;
 
 import kr.ygh.maple.character.dto.ocid.OcidResponse;
 import org.springframework.cloud.openfeign.FeignClient;

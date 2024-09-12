@@ -1,7 +1,7 @@
 package kr.ygh.maple.union.service;
 
 import kr.ygh.maple.character.service.CharacterService;
-import kr.ygh.maple.feign.NexonClient;
+import kr.ygh.maple.common.feign.NexonClient;
 import kr.ygh.maple.union.entity.Basic;
 import kr.ygh.maple.union.repository.redis.UnionBasicRepository;
 import lombok.RequiredArgsConstructor;
