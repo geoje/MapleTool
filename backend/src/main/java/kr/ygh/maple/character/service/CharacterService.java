@@ -2,8 +2,9 @@ package kr.ygh.maple.character.service;
 
 import kr.ygh.maple.character.entity.Basic;
 import kr.ygh.maple.character.entity.Ocid;
-import kr.ygh.maple.character.repository.redis.BasicRepository;
-import kr.ygh.maple.character.repository.redis.OcidRepository;
+import kr.ygh.maple.character.repository.redis.CharacterBasicRepository;
+import kr.ygh.maple.character.repository.redis.CharacterOcidRepository;
+import kr.ygh.maple.feign.NexonClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,15 +12,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CharacterService {
 
-    private final CharacterClient characterClient;
+    private final NexonClient nexonClient;
 
-    private final OcidRepository ocidRepository;
-    private final BasicRepository basicRepository;
+    private final CharacterOcidRepository ocidRepository;
+    private final CharacterBasicRepository basicRepository;
 
     public Ocid readOcid(String name) {
         return ocidRepository.findById(name)
                 .orElseGet(() -> ocidRepository.save(
-                        new Ocid(name, characterClient.getOcid(name))
+                        new Ocid(name, nexonClient.getOcid(name))
                 ));
     }
 
@@ -27,7 +28,7 @@ public class CharacterService {
         String ocid = readOcid(name).data().ocid();
         return basicRepository.findById(name)
                 .orElseGet(() -> basicRepository.save(
-                        new Basic(name, characterClient.getBasic(ocid))
+                        new Basic(name, nexonClient.getCharacterBasic(ocid))
                 ));
     }
 }

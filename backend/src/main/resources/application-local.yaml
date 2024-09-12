@@ -1,6 +1,3 @@
-nexon:
-  key: ENC(RJAKS7b4h9z/mmOPxs7dsjg1rt72bNgIDC+9habI4RxwZ9ck+Ymwrr9mrsCL6dQEBzbYTW6nU0O83qkruIzoTLnoqA8W9N79QoL/YjNlMbNxA8EZkPJVy5EMr4+kqZHT0Flp19nZ0KKsfLhEnw7IFgcV5reAA54XGUFGXDUJ4McKSbizLm1z8um6PG7yTb7y)
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,8 +14,12 @@ spring:
     openfeign:
       client:
         config:
-          default:
-            loggerLevel: full
+          nexon:
+            url: https://open.api.nexon.com/maplestory/v1
+            logger-level: full
+            default-request-headers:
+              x-nxopen-api-key:
+                - ENC(GKf854Z4Hg+gfvkGA4PuoAzMLGliGyDw5hRNItAIH1YWBv8umSbEO+noyoURAcg8lGhPkAN44tZWxKV7ishLMASRHVC8zeShcG254k2qgBs6P5wL75AnGD2YPX38R2UY3HGZk/W1Rn4c6jLw98CDdAhSq17YWK34qPoxvASnGjXmDqxqWZ6DIB9kFyj8B872)
 
 logging:
   level:
