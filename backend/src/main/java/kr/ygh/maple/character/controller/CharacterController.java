@@ -16,7 +16,7 @@ public class CharacterController {
     private final CharacterService characterService;
 
     @GetMapping("basic")
-    public Basic basic(@RequestParam String name) {
+    public Basic basic(@RequestParam("name") String name) {
         return characterService.getBasic(name);
     }
 }
