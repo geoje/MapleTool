@@ -13,8 +13,8 @@ public interface NexonClient {
     Ocid getOcid(@RequestParam("character_name") String characterName);
 
     @GetMapping("/character/basic")
-    Basic getCharacterBasic(@RequestParam String ocid);
+    Basic getCharacterBasic(@RequestParam("ocid") String ocid);
 
     @GetMapping("/user/union")
-    kr.ygh.maple.union.dto.basic.Basic getUnionBasic(@RequestParam String ocid);
+    kr.ygh.maple.union.dto.basic.Basic getUnionBasic(@RequestParam("ocid") String ocid);
 }
