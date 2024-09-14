@@ -1,10 +1,9 @@
-package kr.ygh.maple.union.dto.basic;
+package kr.ygh.maple.union.dto.raider;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record BasicResponse(String date, long union_level, String union_grade, long union_artifact_level,
-                            long union_artifact_exp, long union_artifact_point) {
+public record Stat(String stat_field_id, String stat_field_effect) {
 }

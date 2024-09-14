@@ -1,10 +1,10 @@
-package kr.ygh.maple.union.dto.raider;
+package kr.ygh.maple.character.dto.itemEquipment;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record PresetResponse(String[] union_raider_stat, String[] union_occupied_stat,
-                             StatResponse[] union_inner_stat, BlockResponse[] union_block) {
+public record Title(String title_name, String title_icon, String title_description,
+                    String date_expire, String date_option_expire) {
 }

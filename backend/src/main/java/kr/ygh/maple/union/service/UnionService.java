@@ -2,8 +2,8 @@ package kr.ygh.maple.union.service;
 
 import kr.ygh.maple.character.service.CharacterService;
 import kr.ygh.maple.common.feign.NexonClient;
-import kr.ygh.maple.union.entity.Basic;
-import kr.ygh.maple.union.repository.redis.UnionBasicRepository;
+import kr.ygh.maple.union.dto.basic.Basic;
+import kr.ygh.maple.union.repository.UnionBasicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,7 @@ public class UnionService {
     private final UnionBasicRepository basicRepository;
 
     public Basic readBasic(String name) {
-        String ocid = characterService.readOcid(name).data().ocid();
-        return basicRepository.findById(name)
-                .orElseGet(() -> basicRepository.save(
-                        new Basic(name, nexonClient.getUnionBasic(ocid))
-                ));
+        String ocid = characterService.getOcid(name).ocid();
+        return basicRepository.computeIfAbsent(name, () -> nexonClient.getUnionBasic(ocid));
     }
 }

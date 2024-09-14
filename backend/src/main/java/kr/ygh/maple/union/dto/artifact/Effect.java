@@ -5,7 +5,5 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record CrystalResponse(String name, String validity_flag, String date_expire, long level,
-                              String crystal_option_name_1, String crystal_option_name_2,
-                              String crystal_option_name_3) {
+public record Effect(String name, long level) {
 }

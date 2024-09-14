@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import kr.ygh.maple.character.dto.itemEquipment.PotentialResponse;
 import kr.ygh.maple.character.entity.Potential;
-import kr.ygh.maple.character.repository.jpa.PotentialRepository;
+import kr.ygh.maple.character.repository.PotentialRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

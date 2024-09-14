@@ -1,6 +1,7 @@
 package kr.ygh.maple.common.feign;
 
-import kr.ygh.maple.character.dto.ocid.OcidResponse;
+import kr.ygh.maple.character.dto.basic.Basic;
+import kr.ygh.maple.character.dto.ocid.Ocid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface NexonClient {
 
     @GetMapping("/id")
-    OcidResponse getOcid(@RequestParam("character_name") String characterName);
+    Ocid getOcid(@RequestParam("character_name") String characterName);
 
     @GetMapping("/character/basic")
-    kr.ygh.maple.character.dto.basic.BasicResponse getCharacterBasic(@RequestParam String ocid);
+    Basic getCharacterBasic(@RequestParam String ocid);
 
     @GetMapping("/user/union")
-    kr.ygh.maple.union.dto.basic.BasicResponse getUnionBasic(@RequestParam String ocid);
+    kr.ygh.maple.union.dto.basic.Basic getUnionBasic(@RequestParam String ocid);
 }

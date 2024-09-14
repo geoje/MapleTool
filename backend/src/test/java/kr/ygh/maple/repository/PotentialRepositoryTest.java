@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import kr.ygh.maple.character.entity.Potential;
-import kr.ygh.maple.character.repository.jpa.PotentialRepository;
+import kr.ygh.maple.character.repository.PotentialRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
