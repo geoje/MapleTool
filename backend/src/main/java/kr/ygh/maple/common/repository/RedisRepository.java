@@ -22,9 +22,8 @@ public abstract class RedisRepository<V> {
 
     public V save(String name, V value) {
         HashOperations<String, String, V> ops = redisTemplate.opsForHash();
-        redisTemplate.expire(key, getExpire());
         ops.put(key, name, value);
-
+        redisTemplate.expire(key, getExpire());
         return value;
     }
 
