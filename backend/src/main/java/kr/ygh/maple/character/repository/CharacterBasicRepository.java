@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CharacterBasicRepository extends RedisRepository<Basic> {
 
-    protected CharacterBasicRepository(RedisTemplate<String, String> redisTemplate) {
+    protected CharacterBasicRepository(RedisTemplate<String, Object> redisTemplate) {
         super(redisTemplate, "character:basic");
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CharacterOcidRepository extends RedisRepository<Ocid> {
 
-    protected CharacterOcidRepository(RedisTemplate<String, String> redisTemplate) {
+    protected CharacterOcidRepository(RedisTemplate<String, Object> redisTemplate) {
         super(redisTemplate, "character:ocid");
     }
 

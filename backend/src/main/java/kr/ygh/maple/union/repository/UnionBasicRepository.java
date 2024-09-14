@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UnionBasicRepository extends RedisRepository<Basic> {
 
-    protected UnionBasicRepository(RedisTemplate<String, String> redisTemplate) {
+    protected UnionBasicRepository(RedisTemplate<String, Object> redisTemplate) {
         super(redisTemplate, "union:basic");
     }
 }

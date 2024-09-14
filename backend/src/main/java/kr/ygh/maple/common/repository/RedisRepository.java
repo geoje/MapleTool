@@ -12,7 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class RedisRepository<V> {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final String key;
 
     public Optional<V> find(String name) {
