@@ -6,6 +6,11 @@ spring:
   jpa:
     open-in-view: false
 
+  data:
+    redis:
+      repositories:
+        enabled: false
+
 jasypt:
   encryptor:
     password: ${JASYPT_PASSWORD}
