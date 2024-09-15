@@ -100,34 +100,33 @@ def main():
     skips = read_skips_on_file()
     tab = cc.chrome.open("about:blank", False)
 
-    with open(path_file, "a") as file:
-        for type, url in type_to_urls.items():
-            tab.goto(url)
-            for locator_part in locators_part:
-                for locator_grade in locators_grade:
-                    for level in levels:
-                        part = tab.find_element(locator_part).get_text()
-                        grade = tab.find_element(locator_grade).get_text()
-                        key = str([type, part, grade, level])
-                        print(key, end=" ")
+    for type, url in type_to_urls.items():
+        tab.goto(url)
+        for locator_part in locators_part:
+            for locator_grade in locators_grade:
+                for level in levels:
+                    part = tab.find_element(locator_part).get_text()
+                    grade = tab.find_element(locator_grade).get_text()
+                    key = str([type, part, grade, level])
+                    print(key, end=" ")
 
-                        if exist_data_on_db(type, part, grade, level):
-                            print("Exist in DB")
-                            continue
+                    if exist_data_on_db(type, part, grade, level):
+                        print("Exist in DB")
+                        continue
 
-                        if key in skips:
-                            print("Exist in File")
-                            continue
+                    if key in skips:
+                        print("Exist in File")
+                        continue
 
-                        data = crawl_data(tab, type, locator_part, locator_grade, level)
-                        if not data:
-                            print("Empty")
-                            file.write(key + "\n")
-                            continue
+                    data = crawl_data(tab, type, locator_part, locator_grade, level)
+                    if not data:
+                        print("Empty")
+                        write_skips_on_file(key)
+                        continue
 
-                        cursor.execute(generate_insert_query(data))
-                        connection.commit()
-                        print("Saved")
+                    cursor.execute(generate_insert_query(data))
+                    connection.commit()
+                    print("Saved")
 
     tab.close()
 
@@ -140,19 +139,20 @@ def read_skips_on_file() -> set[str]:
     if not os.path.exists(path_file):
         return []
 
-    with open(path_file, "r") as file:
+    with open(path_file, "r", encoding="utf-8") as file:
         lines = file.readlines()
         lines_set = set(line.strip() for line in lines)
         return lines_set
 
 
+def write_skips_on_file(key: str) -> None:
+    with open(path_file, "a", encoding="utf-8") as file:
+        file.write(key + "\n")
+
+
 def exist_data_on_db(type: str, part: str, grade: str, level: int) -> bool:
     cursor.execute(QUERY_SELECT, [type, part, grade, level])
     return bool(cursor.fetchone())
-
-
-def empty_data_on_file(type: str, part: str, grade: str, level: int) -> bool:
-    return False
 
 
 def crawl_data(
