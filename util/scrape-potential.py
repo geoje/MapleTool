@@ -1,3 +1,4 @@
+import os
 import re
 from time import sleep
 
@@ -5,15 +6,20 @@ import pymysql
 from clicknium import clicknium as cc, locator
 from clicknium.core.models.web.browsertab import BrowserTab
 
-RETRY_COUNT = 2
-ROUND_NUM_DIGITS = 12
-
+# db
+connection = pymysql.connect(host="localhost", user="root", password="root", db="maple")
+cursor = connection.cursor()
 TABLE_NAME = "potential"
 QUERY_SELECT = f"SELECT * FROM {TABLE_NAME} WHERE type = %s AND part = %s AND grade = %s AND level = %s"
 
-connection = pymysql.connect(host="localhost", user="root", password="root", db="maple")
-cursor = connection.cursor()
+# file
+temp_dir = os.getenv("TMPDIR") or os.getenv("TEMP") or os.getenv("TMP") or "/tmp"
+path_dir = os.path.join(temp_dir, "mapletool")
+path_file = os.path.join(path_dir, "scrape-potential.txt")
 
+# clicknium
+RETRY_COUNT = 2
+ROUND_NUM_DIGITS = 12
 type_to_urls = {
     "레드": "https://maplestory.nexon.com/Guide/OtherProbability/cube/red",
     "블랙": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
@@ -91,36 +97,62 @@ levels = [
 
 
 def main():
+    skips = read_skips_on_file()
     tab = cc.chrome.open("about:blank", False)
 
-    for type, url in type_to_urls.items():
-        tab.goto(url)
-        for locator_part in locators_part:
-            for locator_grade in locators_grade:
-                for level in levels:
-                    part = tab.find_element(locator_part).get_text()
-                    grade = tab.find_element(locator_grade).get_text()
-                    print([type, part, grade, level], end=" ")
+    with open(path_file, "a") as file:
+        for type, url in type_to_urls.items():
+            tab.goto(url)
+            for locator_part in locators_part:
+                for locator_grade in locators_grade:
+                    for level in levels:
+                        part = tab.find_element(locator_part).get_text()
+                        grade = tab.find_element(locator_grade).get_text()
+                        key = str([type, part, grade, level])
+                        print(key, end=" ")
 
-                    if exist_data_db(type, part, grade, level):
-                        print("Exist")
-                        continue
+                        if exist_data_on_db(type, part, grade, level):
+                            print("Exist in DB")
+                            continue
 
-                    data = crawl_data(tab, type, locator_part, locator_grade, level)
-                    if not data:
-                        print("Empty")
-                        continue
+                        if key in skips:
+                            print("Exist in File")
+                            continue
 
-                    cursor.execute(generate_insert_query(data))
-                    connection.commit()
-                    print("Saved")
+                        data = crawl_data(tab, type, locator_part, locator_grade, level)
+                        if not data:
+                            print("Empty")
+                            file.write(key + "\n")
+                            continue
+
+                        cursor.execute(generate_insert_query(data))
+                        connection.commit()
+                        print("Saved")
 
     tab.close()
 
 
-def exist_data_db(type: str, part: str, grade: str, level: int) -> bool:
+def read_skips_on_file() -> set[str]:
+    if not os.path.exists(path_dir):
+        os.makedirs(path_dir)
+        return []
+
+    if not os.path.exists(path_file):
+        return []
+
+    with open(path_file, "r") as file:
+        lines = file.readlines()
+        lines_set = set(line.strip() for line in lines)
+        return lines_set
+
+
+def exist_data_on_db(type: str, part: str, grade: str, level: int) -> bool:
     cursor.execute(QUERY_SELECT, [type, part, grade, level])
     return bool(cursor.fetchone())
+
+
+def empty_data_on_file(type: str, part: str, grade: str, level: int) -> bool:
+    return False
 
 
 def crawl_data(
