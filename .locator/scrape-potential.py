@@ -5,6 +5,7 @@ from time import sleep
 import pymysql
 from clicknium import clicknium as cc, locator
 from clicknium.core.models.web.browsertab import BrowserTab
+from clicknium.common.models.exceptions import ElementNotFoundError
 
 # db
 connection = pymysql.connect(host="localhost", user="root", password="root", db="maple")
@@ -118,7 +119,10 @@ def main():
                         print("Exist in File")
                         continue
 
-                    data = crawl_data(tab, type, locator_grade, locator_part, level)
+                    data = crawl_data(
+                        tab, url, type, locator_grade, locator_part, level
+                    )
+
                     if not data:
                         print("Empty")
                         write_skips_on_file(str(key))
@@ -156,11 +160,11 @@ def exist_data_on_db(key: list) -> bool:
 
 
 def crawl_data(
-    tab: BrowserTab, type: str, locator_grade, locator_part, level: int
+    tab: BrowserTab, url: str, type: str, locator_grade, locator_part, level: int
 ) -> list:
     grade = tab.find_element(locator_grade).get_text()
     part = tab.find_element(locator_part).get_text()
-    click_locator(tab, locator_grade, locator_part, level)
+    click_locator(tab, url, locator_grade, locator_part, level)
 
     for i in range(RETRY_COUNT):
         if tab.is_existing(locator.nexon.maplestory.option.level, timeout=1) and (
@@ -213,14 +217,23 @@ def generate_insert_query(data_list: list) -> str:
     return f"INSERT INTO {TABLE_NAME} ({columns}) VALUES {values};"
 
 
-def click_locator(tab: BrowserTab, locator_grade, locator_part, level: int) -> None:
-    tab.find_element(locator.nexon.maplestory.grade.select).click()
-    tab.find_element(locator_grade).click()
-    tab.find_element(locator.nexon.maplestory.part.select).click()
-    tab.find_element(locator_part).click()
-    tab.find_element(locator.nexon.maplestory.level.input).set_text(str(level))
-    tab.find_element(locator.nexon.maplestory.search.button).click()
-    sleep(1)
+def click_locator(
+    tab: BrowserTab, url: str, locator_grade, locator_part, level: int
+) -> None:
+    for _ in range(RETRY_COUNT):
+        try:
+            tab.find_element(locator.nexon.maplestory.grade.select).click()
+            tab.find_element(locator_grade).click()
+            tab.find_element(locator.nexon.maplestory.part.select).click()
+            tab.find_element(locator_part).click()
+            tab.find_element(locator.nexon.maplestory.level.input).set_text(str(level))
+            tab.find_element(locator.nexon.maplestory.search.button).click()
+            sleep(1)
+            if tab.url.startswith(url):
+                return
+            tab.goto(url)
+        except:
+            tab.goto(url)
 
 
 # Return: (name, value)
