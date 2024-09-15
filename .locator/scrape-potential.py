@@ -10,7 +10,7 @@ from clicknium.core.models.web.browsertab import BrowserTab
 connection = pymysql.connect(host="localhost", user="root", password="root", db="maple")
 cursor = connection.cursor()
 TABLE_NAME = "potential"
-QUERY_SELECT = f"SELECT * FROM {TABLE_NAME} WHERE type = %s AND part = %s AND grade = %s AND level = %s"
+QUERY_SELECT = f"SELECT * FROM {TABLE_NAME} WHERE type = %s AND grade = %s AND part = %s AND level = %s"
 
 # file
 temp_dir = os.getenv("TMPDIR") or os.getenv("TEMP") or os.getenv("TMP") or "/tmp"
@@ -29,6 +29,12 @@ type_to_urls = {
     "명장": "https://maplestory.nexon.com/Guide/OtherProbability/cube/artisan",
     "수에": "https://maplestory.nexon.com/Guide/OtherProbability/cube/strangeAddi",
 }
+locators_grade = [
+    locator.nexon.maplestory.grade.rare,
+    locator.nexon.maplestory.grade.epic,
+    locator.nexon.maplestory.grade.unique,
+    locator.nexon.maplestory.grade.legendary,
+]
 locators_part = [
     locator.nexon.maplestory.part.weapon,
     locator.nexon.maplestory.part.emblem,
@@ -50,12 +56,6 @@ locators_part = [
     locator.nexon.maplestory.part.ring,
     locator.nexon.maplestory.part.pendant,
     locator.nexon.maplestory.part.herart,
-]
-locators_grade = [
-    locator.nexon.maplestory.grade.rare,
-    locator.nexon.maplestory.grade.epic,
-    locator.nexon.maplestory.grade.unique,
-    locator.nexon.maplestory.grade.legendary,
 ]
 locators_name = [
     locator.nexon.maplestory.option.name1,
@@ -102,26 +102,26 @@ def main():
 
     for type, url in type_to_urls.items():
         tab.goto(url)
-        for locator_part in locators_part:
-            for locator_grade in locators_grade:
+        for locator_grade in locators_grade:
+            for locator_part in locators_part:
                 for level in levels:
                     part = tab.find_element(locator_part).get_text()
                     grade = tab.find_element(locator_grade).get_text()
-                    key = str([type, part, grade, level])
+                    key = [type, grade, part, level]
                     print(key, end=" ")
 
-                    if exist_data_on_db(type, part, grade, level):
+                    if exist_data_on_db(key):
                         print("Exist in DB")
                         continue
 
-                    if key in skips:
+                    if str(key) in skips:
                         print("Exist in File")
                         continue
 
-                    data = crawl_data(tab, type, locator_part, locator_grade, level)
+                    data = crawl_data(tab, type, locator_grade, locator_part, level)
                     if not data:
                         print("Empty")
-                        write_skips_on_file(key)
+                        write_skips_on_file(str(key))
                         continue
 
                     cursor.execute(generate_insert_query(data))
@@ -150,17 +150,17 @@ def write_skips_on_file(key: str) -> None:
         file.write(key + "\n")
 
 
-def exist_data_on_db(type: str, part: str, grade: str, level: int) -> bool:
-    cursor.execute(QUERY_SELECT, [type, part, grade, level])
+def exist_data_on_db(key: list) -> bool:
+    cursor.execute(QUERY_SELECT, key)
     return bool(cursor.fetchone())
 
 
 def crawl_data(
-    tab: BrowserTab, type: str, locator_part, locator_grade, level: int
+    tab: BrowserTab, type: str, locator_grade, locator_part, level: int
 ) -> list:
-    part = tab.find_element(locator_part).get_text()
     grade = tab.find_element(locator_grade).get_text()
-    click_locator(tab, locator_part, locator_grade, level)
+    part = tab.find_element(locator_part).get_text()
+    click_locator(tab, locator_grade, locator_part, level)
 
     for i in range(RETRY_COUNT):
         if tab.is_existing(locator.nexon.maplestory.option.level, timeout=1) and (
@@ -179,20 +179,20 @@ def crawl_data(
     for i in range(len(name_grid)):
         for j in range(len(name_grid[i])):
             name, value = extract_value_from_name(name_grid[i][j].get_text())
-            p = round(
+            probability = round(
                 float(probability_grid[i][j].get_text().rstrip("%")) / 100,
                 ROUND_NUM_DIGITS,
             )
             data.append(
                 {
                     "type": type,
-                    "part": part,
                     "grade": grade,
+                    "part": part,
                     "level": level,
                     "position": i,
                     "name": name,
                     "param": value,
-                    "probability": p,
+                    "probability": probability,
                 }
             )
 
@@ -213,7 +213,7 @@ def generate_insert_query(data_list: list) -> str:
     return f"INSERT INTO {TABLE_NAME} ({columns}) VALUES {values};"
 
 
-def click_locator(tab: BrowserTab, locator_part, locator_grade, level: int) -> None:
+def click_locator(tab: BrowserTab, locator_grade, locator_part, level: int) -> None:
     tab.find_element(locator.nexon.maplestory.grade.select).click()
     tab.find_element(locator_grade).click()
     tab.find_element(locator.nexon.maplestory.part.select).click()
