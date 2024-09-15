@@ -5,7 +5,6 @@ from time import sleep
 import pymysql
 from clicknium import clicknium as cc, locator
 from clicknium.core.models.web.browsertab import BrowserTab
-from clicknium.common.models.exceptions import ElementNotFoundError
 
 # db
 connection = pymysql.connect(host="localhost", user="root", password="root", db="maple")

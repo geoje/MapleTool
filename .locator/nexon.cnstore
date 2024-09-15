@@ -2306,7 +2306,7 @@
 													},
 													"sInfo": {
 														"value": "검색",
-														"excluded": true
+														"excluded": false
 													},
 													"tableRow": {
 														"value": "-1",
@@ -2327,11 +2327,19 @@
 														"operator": "equals",
 														"excluded": true
 													}
-												}
+												},
+												"childControls": [],
+												"excluded": false
 											}
-										]
+										],
+										"excluded": false
 									}
-								]
+								],
+								"parameters": {
+									"excluded": true,
+									"operator": "equals",
+									"value": ""
+								}
 							}
 						}
 					]
