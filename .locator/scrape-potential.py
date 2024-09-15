@@ -112,11 +112,11 @@ def main():
                     print(key, end=" ")
 
                     if exist_data_on_db(key):
-                        print("Exist in DB")
+                        print("DB")
                         continue
 
                     if str(key) in skips:
-                        print("Exist in File")
+                        print("File")
                         continue
 
                     data = crawl_data(
@@ -130,7 +130,7 @@ def main():
 
                     cursor.execute(generate_insert_query(data))
                     connection.commit()
-                    print("Saved")
+                    print("Saved " + str(len(data)))
 
     tab.close()
 
