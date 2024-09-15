@@ -2239,7 +2239,7 @@
 						{
 							"id": "9f3c3790-3ed7-41b1-b0cd-e349915b30d2",
 							"name": "button",
-							"filePath": "480e0027-f747-43f8-bbae-7486341d267b.jpg",
+							"filePath": "8ac9436d-2a92-4244-8a82-2a90aa8f2b88.jpg",
 							"content": {
 								"automationType": "Chrome",
 								"processName": {
@@ -2261,7 +2261,7 @@
 												"value": "확률형아이템 | 가이드 | 메이플스토리"
 											},
 											"url": {
-												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black#a",
+												"value": "https://maplestory.nexon.com/Guide/OtherProbability/cube/red",
 												"excluded": true
 											},
 											"className": {
@@ -2280,8 +2280,7 @@
 														"excluded": true
 													},
 													"ancestorId": {
-														"value": "CubeSearchGroupArea",
-														"excluded": true
+														"value": "CubeSearchGroupArea"
 													},
 													"ancestorClass": {
 														"value": "search_box",

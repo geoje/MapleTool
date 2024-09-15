@@ -1,6 +1,8 @@
 package kr.ygh.maple.character.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
@@ -10,7 +12,7 @@ import jakarta.persistence.Table;
         @Index(name = "idx_type_part_grade_level", columnList = "type, part, grade, level")
 })
 public record Potential(
-        @Id long id,
+        @Id @GeneratedValue(strategy = GenerationType.IDENTITY) long id,
         String type, String part, String grade, int level,
         int position, String name, int param, double probability) {
 }
