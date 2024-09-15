@@ -224,11 +224,12 @@
 														"excluded": true
 													},
 													"cssSelector": {
-														"value": "body>div>div>div>div>div>div>div>ul>li>a"
+														"value": "body>div>div>div>div>div>div>div>ul>li>a",
+														"excluded": true
 													},
 													"sInfo": {
 														"value": "레어",
-														"excluded": true
+														"excluded": false
 													},
 													"tableRow": {
 														"value": "-1",
@@ -244,13 +245,22 @@
 													},
 													"controlMetaType": "Web",
 													"index": {
-														"value": "1"
+														"value": "1",
+														"excluded": true
 													}
-												}
+												},
+												"childControls": [],
+												"excluded": false
 											}
-										]
+										],
+										"excluded": false
 									}
-								]
+								],
+								"parameters": {
+									"excluded": true,
+									"operator": "equals",
+									"value": ""
+								}
 							}
 						},
 						{
