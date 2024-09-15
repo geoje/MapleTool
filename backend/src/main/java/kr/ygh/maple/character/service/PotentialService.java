@@ -24,10 +24,10 @@ public class PotentialService {
         Integer level = potentialRepository.findMaxLevelLessOrEqualThan(
                 part, potentialRequest.level()
         );
-        List<Potential> potentials = potentialRepository.findByTypeAndPartAndGradeAndLevel(
+        List<Potential> potentials = potentialRepository.findByTypeAndGradeAndPartAndLevel(
                 potentialRequest.type(), part, potentialRequest.grade(), level
         );
-        
+
         return potentials.stream().map(PotentialResponse::from).toList();
     }
 }

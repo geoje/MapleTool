@@ -9,10 +9,10 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(indexes = {
-        @Index(name = "idx_type_part_grade_level", columnList = "type, part, grade, level")
+        @Index(name = "idx_type_grade_part_level", columnList = "type, grade, part, level")
 })
 public record Potential(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY) long id,
-        String type, String part, String grade, int level,
+        String type, String grade, String part, int level,
         int position, String name, int param, double probability) {
 }
