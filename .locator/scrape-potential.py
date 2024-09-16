@@ -21,7 +21,7 @@ path_file = os.path.join(path_dir, "scrape-potential.txt")
 RETRY_COUNT = 2
 ROUND_NUM_DIGITS = 12
 type_to_urls = {
-    "레드": "https://maplestory.nexon.com/Guide/OtherProbability/cube/red",
+    # "레드": "https://maplestory.nexon.com/Guide/OtherProbability/cube/red",
     "블랙": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
     "에디": "https://maplestory.nexon.com/Guide/OtherProbability/cube/addi",
     "수상": "https://maplestory.nexon.com/Guide/OtherProbability/cube/strange",
@@ -236,6 +236,7 @@ def click_locator(
 ) -> None:
     for _ in range(RETRY_COUNT):
         try:
+            tab.scroll(0, -400)
             tab.find_element(locator.nexon.maplestory.grade.select).click()
             tab.find_element(locator_grade).click()
             tab.find_element(locator.nexon.maplestory.part.select).click()
