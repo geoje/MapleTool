@@ -11,6 +11,13 @@ spring:
       repositories:
         enabled: false
 
+  cloud:
+    openfeign:
+      client:
+        config:
+          nexon:
+            url: https://open.api.nexon.com/maplestory/v1
+
 jasypt:
   encryptor:
     password: ${JASYPT_PASSWORD}

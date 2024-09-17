@@ -18,7 +18,6 @@ spring:
       client:
         config:
           nexon:
-            url: https://open.api.nexon.com/maplestory/v1
             logger-level: none
             default-request-headers:
               x-nxopen-api-key:
