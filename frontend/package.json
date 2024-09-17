@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "start http://localhost:5173 && vite",
     "build": "tsc && vite build",
-    "deploy": "git checkout main && git pull && git merge develop && git push && git checkout develop",
+    "deploy": "git checkout main && git pull && git merge dev && git push && git checkout dev",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
