@@ -3,6 +3,6 @@ package kr.ygh.maple.common.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public record NameRequest(
-        @NotBlank(message = "이름은 공백일 수 없습니다.") String name
+        @NotBlank(message = "필수 입력 값 입니다.") String name
 ) {
 }

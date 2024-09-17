@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public record PotentialRequest(
-        @NotBlank(message = "타입은 공백일 수 없습니다.") String type,
-        @NotBlank(message = "등급은 공백일 수 없습니다.") String grade,
-        @NotBlank(message = "분류은 공백일 수 없습니다.") String part,
-        @NotNull(message = "레벨은 필수 입력 값 입니다.")
-        @PositiveOrZero(message = "레벨은 음수일 수 없습니다.") Integer level) {
+        @NotBlank(message = "필수 입력 값 입니다.") String type,
+        @NotBlank(message = "필수 입력 값 입니다.") String grade,
+        @NotBlank(message = "필수 입력 값 입니다.") String part,
+        @NotNull(message = "필수 입력 값 입니다.")
+        @PositiveOrZero(message = "0 또는 양수를 입력해 주세요.") Integer level) {
 }
