@@ -1,5 +1,7 @@
 package kr.ygh.maple.common.exception;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {
@@ -30,11 +34,19 @@ public class GlobalExceptionHandler {
         return detail;
     }
 
+    @ExceptionHandler(FeignException.class)
+    public ProblemDetail handleFeign(FeignException ex) {
+        try {
+            objectMapper.readvalue
+            ex.contentUTF8()
+        }
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ProblemDetail handle(Exception ex) {
         log.error(ex.getMessage(), ex);
-        
+
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "서버에 문제가 발생하였습니다."
