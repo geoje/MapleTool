@@ -2,47 +2,45 @@ package kr.ygh.maple.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import kr.ygh.maple.character.entity.Potential;
 import kr.ygh.maple.character.repository.PotentialRepository;
-import org.junit.jupiter.api.Disabled;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
 
-@DisplayName("잠재능력 저장소")
 @DataJpaTest
-@Transactional
+@Sql(value = "/data/potential.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class PotentialRepositoryTest {
 
     @Autowired
     PotentialRepository potentialRepository;
 
     @Test
-    @DisplayName("모든 경우의 수에 각 라인 확률 합이 1과 오차 0.000015사이 이다.")
+    @DisplayName("모든 경우의 수에 각 위치 확률 합의 오차가 범위 이하이다.")
     void validateProbabilitiesSum() {
         // given
-        final List<Potential> potentials = potentialRepository.findAll();
-        final double offset = 0.000015;
-        int position = -1;
-        double sumOfProbability = 1;
+        double offset = 0.000012;
 
-        // when & then
-        for (Potential potential : potentials) {
-            if (potential.position() != position) {
-                position = potential.position();
-                assertThat(sumOfProbability).isBetween(1 - offset, 1 + offset);
-                sumOfProbability = 0;
-            }
-            sumOfProbability += potential.probability();
-        }
-        assertThat(sumOfProbability).isBetween(1 - offset, 1 + offset);
+        // when
+        List<Potential> potentials = potentialRepository.findAll();
+        Map<PotentialKey, Double> potentialsByKey = potentials.stream().collect(Collectors.groupingBy(
+                PotentialKey::new,
+                Collectors.summingDouble(Potential::getProbability)
+        ));
+
+        // then
+        assertThat(potentialsByKey).hasValueSatisfying(
+                new Condition<>(v -> Math.abs(1 - v) <= offset, "isNotOverOffset")
+        );
     }
 
     @Test
-    @Disabled
     @DisplayName("입력한 레벨 보다 낮은 것 중 가장 근처 레벨을 조회 한다.")
     void findMaxLevelLessOrEqualThan() {
         // given
@@ -50,9 +48,22 @@ class PotentialRepositoryTest {
         int level = 200;
 
         // when
-        final int maxLevel = potentialRepository.findMaxLevelLessOrEqualThan(part, level);
+        final int maxLevel = potentialRepository.findMaxLevel(part, level).orElse(0);
 
         // then
         assertThat(maxLevel).isEqualTo(120);
+    }
+
+    private record PotentialKey(String type, String grade, String part, int level, int position) {
+
+        public PotentialKey(Potential potential) {
+            this(
+                    potential.getType(),
+                    potential.getGrade(),
+                    potential.getPart(),
+                    potential.getLevel(),
+                    potential.getPosition()
+            );
+        }
     }
 }

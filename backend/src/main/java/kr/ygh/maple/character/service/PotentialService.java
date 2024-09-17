@@ -21,13 +21,11 @@ public class PotentialService {
     public List<PotentialResponse> getPotential(PotentialRequest potentialRequest) {
         final String part = potentialPartMapper.map(potentialRequest.part()).orElseThrow();
 
-        Integer level = potentialRepository.findMaxLevelLessOrEqualThan(
-                part, potentialRequest.level()
-        );
+        Integer level = potentialRepository.findMaxLevel(part, potentialRequest.level()).orElse(0);
         List<Potential> potentials = potentialRepository.findByTypeAndGradeAndPartAndLevel(
                 potentialRequest.type(), part, potentialRequest.grade(), level
         );
 
-        return potentials.stream().map(PotentialResponse::from).toList();
+        return potentials.stream().map(PotentialResponse::new).toList();
     }
 }
