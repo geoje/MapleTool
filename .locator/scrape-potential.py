@@ -21,9 +21,9 @@ path_file = os.path.join(path_dir, "scrape-potential.txt")
 RETRY_COUNT = 2
 ROUND_NUM_DIGITS = 12
 type_to_urls = {
-    "레드": "https://maplestory.nexon.com/Guide/OtherProbability/cube/red",
-    "블랙": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
-    "에디": "https://maplestory.nexon.com/Guide/OtherProbability/cube/addi",
+    # "레드": "https://maplestory.nexon.com/Guide/OtherProbability/cube/red",
+    # "블랙": "https://maplestory.nexon.com/Guide/OtherProbability/cube/black",
+    # "에디": "https://maplestory.nexon.com/Guide/OtherProbability/cube/addi",
     "수상": "https://maplestory.nexon.com/Guide/OtherProbability/cube/strange",
     "장인": "https://maplestory.nexon.com/Guide/OtherProbability/cube/master",
     "명장": "https://maplestory.nexon.com/Guide/OtherProbability/cube/artisan",
@@ -35,14 +35,10 @@ locators_grade = [
     locator.nexon.maplestory.grade.unique,
     locator.nexon.maplestory.grade.legendary,
 ]
-type_to_locators_grade = {
-    "수상": [locator.nexon.maplestory.grade.rare, locator.nexon.maplestory.grade.epic],
-    "장인": [
-        locator.nexon.maplestory.grade.rare,
-        locator.nexon.maplestory.grade.epic,
-        locator.nexon.maplestory.grade.unique,
-    ],
-    "수에": [locator.nexon.maplestory.grade.rare, locator.nexon.maplestory.grade.epic],
+type_to_grade = {
+    "수상": ["레어", "에픽"],
+    "장인": ["레어", "에픽", "유니크"],
+    "수에": ["레어", "에픽"],
 }
 locators_part = [
     locator.nexon.maplestory.part.weapon,
@@ -112,16 +108,13 @@ def main():
     for type, url in type_to_urls.items():
         tab.goto(url)
         for locator_grade in locators_grade:
-            if (
-                type in type_to_locators_grade
-                and not locator_grade in type_to_locators_grade[type]
-            ):
+            grade = tab.find_element(locator_grade).get_text()
+            if type in type_to_grade and not grade in type_to_grade[type]:
                 continue
 
             for locator_part in locators_part:
+                part = tab.find_element(locator_part).get_text()
                 for level in levels:
-                    part = tab.find_element(locator_part).get_text()
-                    grade = tab.find_element(locator_grade).get_text()
                     key = [type, grade, part, level]
                     print(key, end=" ")
 
