@@ -35,11 +35,6 @@ locators_grade = [
     locator.nexon.maplestory.grade.unique,
     locator.nexon.maplestory.grade.legendary,
 ]
-type_to_grade = {
-    "수상": ["레어", "에픽"],
-    "장인": ["레어", "에픽", "유니크"],
-    "수에": ["레어", "에픽"],
-}
 locators_part = [
     locator.nexon.maplestory.part.weapon,
     locator.nexon.maplestory.part.emblem,
@@ -108,9 +103,9 @@ def main():
     for type, url in type_to_urls.items():
         tab.goto(url)
         for locator_grade in locators_grade:
-            grade = tab.find_element(locator_grade).get_text()
-            if type in type_to_grade and not grade in type_to_grade[type]:
+            if not tab.is_existing(locator_grade):
                 continue
+            grade = tab.find_element(locator_grade).get_text()
 
             for locator_part in locators_part:
                 part = tab.find_element(locator_part).get_text()
