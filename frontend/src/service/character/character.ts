@@ -24,7 +24,7 @@ export default abstract class CharacterService {
   ): Promise<PotentialProbability[]> {
     return axios
       .get(
-        `/api/character/item-equipment/potential?part=${part}&grade=${grade}&level=${level}`
+        `/api/character/item-equipment/potential?type=블랙&part=${part}&grade=${grade}&level=${level}`
       )
       .then((res) => res.data);
   }
@@ -35,7 +35,7 @@ export default abstract class CharacterService {
   ): Promise<PotentialProbability[]> {
     return axios
       .get(
-        `/api/character/item-equipment/additional-potential?part=${part}&grade=${grade}&level=${level}`
+        `/api/character/item-equipment/potential?type=에디&part=${part}&grade=${grade}&level=${level}`
       )
       .then((res) => res.data);
   }
