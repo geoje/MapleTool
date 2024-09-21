@@ -23,5 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# Crawled data
+# Crawled datata
 /tools/*.json
