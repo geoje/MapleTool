@@ -23,7 +23,7 @@ public class PotentialService {
 
         Integer level = potentialRepository.findMaxLevel(part, potentialRequest.level()).orElse(0);
         List<Potential> potentials = potentialRepository.findByTypeAndGradeAndPartAndLevel(
-                potentialRequest.type(), part, potentialRequest.grade(), level
+                potentialRequest.type(), potentialRequest.grade(), part, level
         );
 
         return potentials.stream().map(PotentialResponse::new).toList();
