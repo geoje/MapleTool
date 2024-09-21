@@ -23,11 +23,11 @@ jobs:
           cache: "npm"
 
       - name: Install modules
-        working-directory: frontend
+        working-directory: ./frontend
         run: npm ci
 
       - name: Build
-        working-directory: frontend
+        working-directory: ./frontend
         run: npm run build
 
       - name: Copy docker compose
