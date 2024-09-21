@@ -24,6 +24,6 @@ public class UnionController {
 
     @GetMapping("test")
     public String test() {
-        return "tetetete";
+        return "haha";
     }
 }
