@@ -28,7 +28,7 @@ public class PotentialPartMapper {
         ).forEach(part -> partMap.put(part, "보조무기(포스실드, 소울링 제외)"));
     }
 
-    public Optional<String> map(String part) {
-        return Optional.of(partMap.get(part));
+    public String map(String part) {
+        return Optional.ofNullable(partMap.get(part)).orElse(part);
     }
 }
