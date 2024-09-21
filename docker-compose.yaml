@@ -1,3 +1,8 @@
+networks:
+  default:
+    external: true
+    name: npm
+
 volumes:
   redis:
   db:
