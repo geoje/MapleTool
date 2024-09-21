@@ -31,22 +31,13 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      - name: Copy docker compose
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          source: docker-compose.yaml
-          target: ~/${{ github.event.repository.name }}
-
       - name: Copy dist
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: frontend/dist/
+          source: docker-compose.yaml, frontend/dist/
           target: ~/${{ github.event.repository.name }}
 
       # - name: Restart docker compose

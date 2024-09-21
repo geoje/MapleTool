@@ -51,22 +51,13 @@ jobs:
             echo "JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}" > .env
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
 
-      - name: Copy docker compose
+      - name: Copy jar
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: docker-compose.yaml
-          target: ~/${{ github.event.repository.name }}
-
-      - name: Copy bootJar
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          source: backend/build/libs/${{ github.event.repository.name }}.jar
+          source: docker-compose.yaml, backend/build/libs/
           target: ~/${{ github.event.repository.name }}
 
       - name: Restart docker compose
