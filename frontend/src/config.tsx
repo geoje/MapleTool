@@ -13,7 +13,7 @@ export const LINKS = [
     label: "잠재능력",
     image: "/link/cube.svg",
     content: <Potential />,
-    status: <></>,
+    status: <Badge colorScheme="yellow">개선중</Badge>,
   },
   {
     name: "starforce",
