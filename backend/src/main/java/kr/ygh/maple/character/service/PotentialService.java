@@ -1,8 +1,8 @@
 package kr.ygh.maple.character.service;
 
 import java.util.List;
-import kr.ygh.maple.character.dto.itemEquipment.PotentialRequest;
-import kr.ygh.maple.character.dto.itemEquipment.PotentialResponse;
+import kr.ygh.maple.character.dto.itemEquipment.potential.PotentialRequest;
+import kr.ygh.maple.character.dto.itemEquipment.potential.PotentialResponse;
 import kr.ygh.maple.character.entity.Potential;
 import kr.ygh.maple.character.repository.PotentialRepository;
 import org.springframework.stereotype.Service;
@@ -11,19 +11,19 @@ import org.springframework.stereotype.Service;
 public class PotentialService {
 
     private final PotentialRepository potentialRepository;
-    private final PotentialPartMapper potentialPartMapper;
 
     public PotentialService(PotentialRepository potentialRepository) {
         this.potentialRepository = potentialRepository;
-        this.potentialPartMapper = new PotentialPartMapper();
     }
 
     public List<PotentialResponse> getPotential(PotentialRequest potentialRequest) {
-        final String part = potentialPartMapper.map(potentialRequest.part());
-
+        String part = potentialRequest.part().getGroup();
         Integer level = potentialRepository.findMaxLevel(part, potentialRequest.level()).orElse(0);
         List<Potential> potentials = potentialRepository.findByTypeAndGradeAndPartAndLevel(
-                potentialRequest.type(), potentialRequest.grade(), part, level
+                potentialRequest.type().getValue(),
+                potentialRequest.grade().getValue(),
+                part,
+                level
         );
 
         return potentials.stream().map(PotentialResponse::new).toList();
