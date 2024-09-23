@@ -1,4 +1,4 @@
-package kr.ygh.maple.character.dto.itemEquipment.potential;
+package kr.ygh.maple.character.dto.itemEquipment;
 
 import kr.ygh.maple.character.entity.Potential;
 
