@@ -10,7 +10,7 @@ import { Select, components } from "chakra-react-select";
 import {
   EFFECT_NAMES,
   MAX_APPLIED_EFFECT_LEVEL,
-} from "../../service/union/artifact/artifactConstants";
+} from "../../../service/union/artifact/artifactConstants";
 
 export default function SelectEffect({
   effectLevels,

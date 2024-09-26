@@ -1,17 +1,17 @@
 import { Flex, Stack, useToast } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
-import ImportItem from "./importItem";
+import ImportItem from "./import/importItem";
 import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import CharacterService from "../../service/character/character";
 import { useEffect, useState } from "react";
 import { setCharacterItemEquipment } from "../../stores/characterSlice";
 import { AxiosError } from "axios";
 import SelectPreset from "./import/selectPreset";
-import SelectItem from "./selectItem";
+import SelectItem from "./select/selectItem";
 import DeleteButton from "./select/deleteButton";
 import { spliceUserInventory } from "../../stores/userSlice";
-import ResetPotential from "./resetPotential";
-import Guarantee from "./guarantee";
+import RollPotential from "./roll/rollPotential";
+import Guarantee from "./guarantee/guarantee";
 
 export default function Potential() {
   const toast = useToast();
@@ -130,10 +130,10 @@ export default function Potential() {
         </BoardCard>
         <Flex gap={4} wrap={"wrap"} align="start">
           <BoardCard order={4} title="잠재능력 재설정">
-            <ResetPotential type="normal" itemIndex={selectedIndex} />
+            <RollPotential type="normal" itemIndex={selectedIndex} />
           </BoardCard>
           <BoardCard order={5} title="에디셔널 재설정">
-            <ResetPotential type="additional" itemIndex={selectedIndex} />
+            <RollPotential type="additional" itemIndex={selectedIndex} />
           </BoardCard>
         </Flex>
       </Stack>

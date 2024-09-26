@@ -2,12 +2,12 @@ import { Button, Divider, Flex, Grid, GridItem, Stack } from "@chakra-ui/react";
 import {
   CharacterItemEquipment,
   CharacterItemEquipmentDetail,
-} from "../../types/character/characterItemEquipment";
-import ItemEquipmentService from "../../service/character/itemEquipment/itemEquipment";
-import ItemButton from "./import/itemButton";
-import { useAppDispatch } from "../../stores/hooks";
-import { pushUserInventory } from "../../stores/userSlice";
-import { SLOT_GRID } from "../../service/character/itemEquipment/itemEquipmentConst";
+} from "../../../types/character/characterItemEquipment";
+import ItemEquipmentService from "../../../service/character/itemEquipment/itemEquipment";
+import ItemButton from "./itemButton";
+import { useAppDispatch } from "../../../stores/hooks";
+import { pushUserInventory } from "../../../stores/userSlice";
+import { SLOT_GRID } from "../../../service/character/itemEquipment/itemEquipmentConst";
 import { useEffect, useState } from "react";
 
 export default function ImportItem({

@@ -10,7 +10,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaDiamond } from "react-icons/fa6";
-import { MAX_CRYSTAL_LEVEL } from "../../service/union/artifact/artifactConstants";
+import { MAX_CRYSTAL_LEVEL } from "../../../service/union/artifact/artifactConstants";
 import { useState } from "react";
 
 const CRYSTAL_URL_FORMAT = "/union-artifact/opened/{name}.webp";

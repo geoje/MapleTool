@@ -6,8 +6,8 @@ import {
 } from "@chakra-ui/react";
 import { FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { useAppSelector } from "../../stores/hooks";
-import ItemButton from "./import/itemButton";
+import { useAppSelector } from "../../../stores/hooks";
+import ItemButton from "../import/itemButton";
 
 export default function SelectItem({
   deleteModeOn,

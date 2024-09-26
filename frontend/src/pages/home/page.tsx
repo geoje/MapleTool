@@ -19,8 +19,8 @@ import {
   setCharacterBasic,
   setCharacterItemEquipment,
 } from "../../stores/characterSlice";
-import { AlertHello, AlertUsage } from "./alert";
-import EditableControls from "./editableControls";
+import { AlertHello, AlertUsage } from "./alert/alert";
+import EditableControls from "./character/editableControls";
 import {
   setUnionArtifact,
   setUnionBasic,

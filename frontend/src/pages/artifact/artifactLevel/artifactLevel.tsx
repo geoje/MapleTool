@@ -8,7 +8,7 @@ import {
 import {
   MAX_ARTIFACT_LEVEL,
   MIN_ARTIFACT_LEVEL,
-} from "../../service/union/artifact/artifactConstants";
+} from "../../../service/union/artifact/artifactConstants";
 
 export default function ArtifactLevel({
   value,

@@ -10,10 +10,10 @@ import {
   ADDITIONAL_GUARANTEE_BOUND,
   GUARANTEE_BOUND,
   KOR_NAME,
-} from "../../service/character/itemEquipment/potentialConst";
-import { useAppDispatch, useAppSelector } from "../../stores/hooks";
-import { setUserGuarantee } from "../../stores/userSlice";
-import PotentialService from "../../service/character/itemEquipment/potential";
+} from "../../../service/character/itemEquipment/potentialConst";
+import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
+import { setUserGuarantee } from "../../../stores/userSlice";
+import PotentialService from "../../../service/character/itemEquipment/potential";
 
 export default function Guarantee() {
   const dispatch = useAppDispatch();

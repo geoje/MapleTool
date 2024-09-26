@@ -9,30 +9,30 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useAppSelector } from "../../stores/hooks";
+import { useAppSelector } from "../../../stores/hooks";
 import { useDispatch } from "react-redux";
 import {
   addUserSpent,
   setUserGuarantee,
   setUserInventoryAdditionalPotentials,
   setUserInventoryPotentials,
-} from "../../stores/userSlice";
+} from "../../../stores/userSlice";
 import { useEffect, useState } from "react";
 import { FaPlay, FaStop } from "react-icons/fa";
 import {
   ADDITIONAL_GUARANTEE_BOUND,
   GUARANTEE_BOUND,
   KOR_NAME,
-} from "../../service/character/itemEquipment/potentialConst";
-import PotentialService from "../../service/character/itemEquipment/potential";
-import OptionsButton from "./reset/optionsButton";
-import TriggerModal from "./reset/triggerModal";
-import PotentialSummantion from "../../types/character/itemEquipment/potentialSummation";
+} from "../../../service/character/itemEquipment/potentialConst";
+import PotentialService from "../../../service/character/itemEquipment/potential";
+import OptionsButton from "./optionsButton";
+import TriggerModal from "./triggerModal";
+import PotentialSummantion from "../../../types/character/itemEquipment/potentialSummation";
 
 const DEFAULT_OPTIONS = ["", "", ""];
 const RESET_DELAY = 100;
 
-export default function ResetPotential({
+export default function RollPotential({
   type,
   itemIndex,
 }: {

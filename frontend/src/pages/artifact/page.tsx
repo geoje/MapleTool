@@ -1,14 +1,14 @@
 import { Badge, Stack, useToast } from "@chakra-ui/react";
 import ArtifactService from "../../service/union/artifact/artifact";
 import { useEffect, useState } from "react";
-import ArtifactLevel from "./artifactLevel";
-import EffectLevel from "./effectLevel";
-import SelectEffect from "./selectEffect";
+import ArtifactLevel from "./artifactLevel/artifactLevel";
+import EffectLevel from "./effectLevel/effectLevel";
+import SelectEffect from "./select/selectEffect";
 import {
   EFFECT_NAMES,
   MIN_ARTIFACT_LEVEL,
 } from "../../service/union/artifact/artifactConstants";
-import ResultGrid from "./result";
+import ResultGrid from "./result/result";
 import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import UnionService from "../../service/union/union";
 import { setUnionBasic } from "../../stores/unionSlice";
