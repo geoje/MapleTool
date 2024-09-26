@@ -13,14 +13,12 @@ import { useEffect, useState } from "react";
 export default function ImportItem({
   characterItemEquipment,
   preset,
-  setPreset,
 }: {
   characterItemEquipment?: CharacterItemEquipment;
   preset: number;
-  setPreset: (preset: number) => void;
 }) {
   const dispatch = useAppDispatch();
-  const [items, setItems] = useState<CharacterItemEquipmentDetail[]>([]);
+  const [, setItems] = useState<CharacterItemEquipmentDetail[]>([]);
 
   useEffect(() => {
     setItems([]);
