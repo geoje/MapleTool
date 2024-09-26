@@ -1,4 +1,4 @@
-import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
+import { CharacterItemEquipmentDetail } from "../../../types/character/characterItemEquipment";
 import { MAX_STARFORCE_COUNTS } from "./itemEquipmentConst";
 
 export default abstract class StarfoceService {

@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import PotentialService from "../../../service/character/itemEquipment/potential";
 import { useEffect, useState } from "react";
-import PotentialSummantion from "../../../dto/character/itemEquipment/potentialSummation";
+import PotentialSummantion from "../../../types/character/itemEquipment/potentialSummation";
 import { MAX_POTENTIAL_COUNT } from "../../../service/character/itemEquipment/potentialConst";
 import { MdInfo } from "react-icons/md";
 

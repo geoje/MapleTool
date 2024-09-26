@@ -20,13 +20,13 @@ import {
 } from "@chakra-ui/react";
 import { Fragment, useEffect, useState } from "react";
 import { FiCopy, FiTrash2 } from "react-icons/fi";
-import { useAppDispatch, useAppSelector } from "../../../../reducer/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../stores/hooks";
 import {
   addUserBossPlan,
   setUserBossPlan,
   deleteUserBossPlan,
   insertUserBossPlan,
-} from "../../../../reducer/userSlice";
+} from "../../../../stores/userSlice";
 import {
   BOSS,
   BOSS_DIFFICULTY,
@@ -34,7 +34,7 @@ import {
   BOSS_TYPE,
   COLOR,
 } from "../../../../service/user/crystal/bossConstants";
-import BossPlan from "../../../../dto/user/crystal/bossPlan";
+import BossPlan from "../../../../types/user/crystal/bossPlan";
 import NameEditable from "./nameEditable";
 import CrystalService from "../../../../service/user/crystal/crystal";
 

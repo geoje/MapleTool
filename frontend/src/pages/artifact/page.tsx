@@ -9,9 +9,9 @@ import {
   MIN_ARTIFACT_LEVEL,
 } from "../../service/union/artifact/artifactConstants";
 import ResultGrid from "./result";
-import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
+import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import UnionService from "../../service/union/union";
-import { setUnionBasic } from "../../reducer/unionSlice";
+import { setUnionBasic } from "../../stores/unionSlice";
 import { AxiosError } from "axios";
 import BoardCard from "../../components/boardCard";
 

@@ -7,7 +7,7 @@ import {
   SimpleGrid,
   Text,
 } from "@chakra-ui/react";
-import { useAppSelector } from "../../../reducer/hooks";
+import { useAppSelector } from "../../../stores/hooks";
 import { Fragment } from "react/jsx-runtime";
 import CrystalService from "../../../service/user/crystal/crystal";
 import { useState } from "react";

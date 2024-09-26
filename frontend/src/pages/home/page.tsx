@@ -13,19 +13,19 @@ import {
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
-import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
+import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import CharacterService from "../../service/character/character";
 import {
   setCharacterBasic,
   setCharacterItemEquipment,
-} from "../../reducer/characterSlice";
+} from "../../stores/characterSlice";
 import { AlertHello, AlertUsage } from "./alert";
 import EditableControls from "./editableControls";
 import {
   setUnionArtifact,
   setUnionBasic,
   setUnionRaider,
-} from "../../reducer/unionSlice";
+} from "../../stores/unionSlice";
 
 export default function Home() {
   const toast = useToast();

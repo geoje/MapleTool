@@ -10,7 +10,7 @@ import {
 import { FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
 import { TOOLTIP_COLORS } from "../../../service/character/itemEquipment/itemEquipmentConst";
-import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
+import { CharacterItemEquipmentDetail } from "../../../types/character/characterItemEquipment";
 import {
   IMAGE_COLOR,
   KOR_NAME,

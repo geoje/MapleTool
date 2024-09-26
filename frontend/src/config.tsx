@@ -1,9 +1,9 @@
 import { Badge, ThemeComponentProps, extendTheme } from "@chakra-ui/react";
-import Potential from "./content/potential/page";
-import Starforce from "./content/starforce/page";
-import Raider from "./content/raider/page";
-import Artifact from "./content/artifact/page";
-import Crystal from "./content/crystal/page";
+import Potential from "./pages/potential/page";
+import Starforce from "./pages/starforce/page";
+import Raider from "./pages/raider/page";
+import Artifact from "./pages/artifact/page";
+import Crystal from "./pages/crystal/page";
 
 export const KEY_COLLAPSED = "sidebar-collapsed";
 

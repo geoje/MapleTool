@@ -1,7 +1,7 @@
 import {
   CharacterItemEquipment,
   CharacterItemEquipmentDetail,
-} from "../../../dto/character/characterItemEquipment";
+} from "../../../types/character/characterItemEquipment";
 import { SLOT_GRID } from "./itemEquipmentConst";
 
 export default abstract class ItemEquipmentService {

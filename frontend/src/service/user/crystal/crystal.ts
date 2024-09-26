@@ -1,4 +1,4 @@
-import BossPlan from "../../../dto/user/crystal/bossPlan";
+import BossPlan from "../../../types/user/crystal/bossPlan";
 import { BOSS, BOSS_DIFFICULTY, BOSS_TYPE } from "./bossConstants";
 
 export default abstract class CrystalService {

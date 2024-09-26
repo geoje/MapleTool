@@ -1,7 +1,7 @@
 import { Button, Flex, useDisclosure } from "@chakra-ui/react";
 import Profile from "./profile";
 import BossSummary from "./bossSummary";
-import BossPlan from "../../../dto/user/crystal/bossPlan";
+import BossPlan from "../../../types/user/crystal/bossPlan";
 import CrystalService from "../../../service/user/crystal/crystal";
 import PlanModal from "./modal/planModal";
 

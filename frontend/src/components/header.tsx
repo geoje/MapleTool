@@ -16,11 +16,11 @@ import { Link, useLocation } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
 import { LINKS } from "../config";
 import MobileDrawer from "./mobileDrawer";
-import { useAppSelector } from "../reducer/hooks";
+import { useAppSelector } from "../stores/hooks";
 import { useEffect } from "react";
 import { AnimatedCounter } from "react-animated-counter";
 import { useDispatch } from "react-redux";
-import { clearUserSpent } from "../reducer/userSlice";
+import { clearUserSpent } from "../stores/userSlice";
 
 export default function Header() {
   return (

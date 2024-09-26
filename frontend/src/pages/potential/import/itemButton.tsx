@@ -1,6 +1,6 @@
 import { IconButton, Image, Tooltip } from "@chakra-ui/react";
 import ItemToolTip from "./itemToolTip";
-import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
+import { CharacterItemEquipmentDetail } from "../../../types/character/characterItemEquipment";
 import { BORDER_COLOR } from "../../../service/character/itemEquipment/potentialConst";
 import PotentialService from "../../../service/character/itemEquipment/potential";
 

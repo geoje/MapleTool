@@ -1,7 +1,7 @@
 import axios from "axios";
-import { CharacterBasic } from "../../dto/character/characterBasic";
-import { CharacterItemEquipment } from "../../dto/character/characterItemEquipment";
-import PotentialProbability from "../../dto/character/itemEquipment/potentialProbability";
+import { CharacterBasic } from "../../types/character/characterBasic";
+import { CharacterItemEquipment } from "../../types/character/characterItemEquipment";
+import PotentialProbability from "../../types/character/itemEquipment/potentialProbability";
 
 const KEY_BASIC = "character-basic";
 const KEY_ITEM_EQUIPMENT = "character-item-equipment";

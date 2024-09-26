@@ -5,9 +5,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import Sidebar from "./components/sidebar";
 import Header from "./components/header";
-import Home from "./content/home/page";
+import Home from "./pages/home/page";
 import { LINKS, theme } from "./config";
-import { store } from "./reducer/store";
+import { store } from "./stores/store";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

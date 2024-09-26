@@ -3,7 +3,7 @@ import BoardCard from "../../components/boardCard";
 import { FaPlusCircle } from "react-icons/fa";
 import CharacterButton from "./character/characterButton";
 import PlanModal from "./character/modal/planModal";
-import { useAppSelector } from "../../reducer/hooks";
+import { useAppSelector } from "../../stores/hooks";
 import ResultTable from "./statistics/resultTable";
 
 export default function Crystal() {

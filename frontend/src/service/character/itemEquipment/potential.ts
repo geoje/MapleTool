@@ -1,6 +1,6 @@
-import { CharacterItemEquipmentDetail } from "../../../dto/character/characterItemEquipment";
-import PotentialProbability from "../../../dto/character/itemEquipment/potentialProbability";
-import PotentialSummantion from "../../../dto/character/itemEquipment/potentialSummation";
+import { CharacterItemEquipmentDetail } from "../../../types/character/characterItemEquipment";
+import PotentialProbability from "../../../types/character/itemEquipment/potentialProbability";
+import PotentialSummantion from "../../../types/character/itemEquipment/potentialSummation";
 import CharacterService from "../character";
 import {
   KOR_NAME,

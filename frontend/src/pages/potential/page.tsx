@@ -1,17 +1,19 @@
 import { Flex, Stack, useToast } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
-import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
+import ImportItem from "./importItem";
+import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import CharacterService from "../../service/character/character";
 import { useEffect, useState } from "react";
-import { setCharacterItemEquipment } from "../../reducer/characterSlice";
+import { setCharacterItemEquipment } from "../../stores/characterSlice";
 import { AxiosError } from "axios";
-import SelectPreset from "../potential/import/selectPreset";
-import ImportItem from "../potential/importItem";
-import DeleteButton from "../potential/select/deleteButton";
-import SelectItem from "../potential/selectItem";
-import { spliceUserInventory } from "../../reducer/userSlice";
+import SelectPreset from "./import/selectPreset";
+import SelectItem from "./selectItem";
+import DeleteButton from "./select/deleteButton";
+import { spliceUserInventory } from "../../stores/userSlice";
+import ResetPotential from "./resetPotential";
+import Guarantee from "./guarantee";
 
-export default function Starforce() {
+export default function Potential() {
   const toast = useToast();
   const dispatch = useAppDispatch();
   const characterBasic = useAppSelector((state) => state.character.basic);
@@ -121,6 +123,19 @@ export default function Starforce() {
             }}
           />
         </BoardCard>
+      </Stack>
+      <Stack gap={4}>
+        <BoardCard order={3} title="등급 상승 보장">
+          <Guarantee />
+        </BoardCard>
+        <Flex gap={4} wrap={"wrap"} align="start">
+          <BoardCard order={4} title="잠재능력 재설정">
+            <ResetPotential type="normal" itemIndex={selectedIndex} />
+          </BoardCard>
+          <BoardCard order={5} title="에디셔널 재설정">
+            <ResetPotential type="additional" itemIndex={selectedIndex} />
+          </BoardCard>
+        </Flex>
       </Stack>
     </>
   );

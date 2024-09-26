@@ -1,4 +1,4 @@
-import PotentialProbability from "../../../dto/character/itemEquipment/potentialProbability";
+import PotentialProbability from "../../../types/character/itemEquipment/potentialProbability";
 import PotentialService from "./potential";
 import sampleJson from "./potential.sample.json";
 

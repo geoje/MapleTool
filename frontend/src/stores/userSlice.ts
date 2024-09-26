@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CharacterItemEquipmentDetail } from "../dto/character/characterItemEquipment";
-import BossPlan from "../dto/user/crystal/bossPlan";
+import { CharacterItemEquipmentDetail } from "../types/character/characterItemEquipment";
+import BossPlan from "../types/user/crystal/bossPlan";
 
 const KEY_INVENTORY = "user:inventory";
 const KEY_SPENT = "user:spent";

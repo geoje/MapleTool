@@ -11,8 +11,8 @@ import {
   GUARANTEE_BOUND,
   KOR_NAME,
 } from "../../service/character/itemEquipment/potentialConst";
-import { useAppDispatch, useAppSelector } from "../../reducer/hooks";
-import { setUserGuarantee } from "../../reducer/userSlice";
+import { useAppDispatch, useAppSelector } from "../../stores/hooks";
+import { setUserGuarantee } from "../../stores/userSlice";
 import PotentialService from "../../service/character/itemEquipment/potential";
 
 export default function Guarantee() {

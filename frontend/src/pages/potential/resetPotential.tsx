@@ -9,14 +9,14 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useAppSelector } from "../../reducer/hooks";
+import { useAppSelector } from "../../stores/hooks";
 import { useDispatch } from "react-redux";
 import {
   addUserSpent,
   setUserGuarantee,
   setUserInventoryAdditionalPotentials,
   setUserInventoryPotentials,
-} from "../../reducer/userSlice";
+} from "../../stores/userSlice";
 import { useEffect, useState } from "react";
 import { FaPlay, FaStop } from "react-icons/fa";
 import {
@@ -27,7 +27,7 @@ import {
 import PotentialService from "../../service/character/itemEquipment/potential";
 import OptionsButton from "./reset/optionsButton";
 import TriggerModal from "./reset/triggerModal";
-import PotentialSummantion from "../../dto/character/itemEquipment/potentialSummation";
+import PotentialSummantion from "../../types/character/itemEquipment/potentialSummation";
 
 const DEFAULT_OPTIONS = ["", "", ""];
 const RESET_DELAY = 100;

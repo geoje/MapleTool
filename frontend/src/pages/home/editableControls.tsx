@@ -6,7 +6,7 @@ import {
   useEditableControls,
 } from "@chakra-ui/react";
 import { CgCheckO, CgCloseR, CgRename, CgTrash } from "react-icons/cg";
-import { useAppSelector } from "../../reducer/hooks";
+import { useAppSelector } from "../../stores/hooks";
 
 export default function EditableControls({
   requesting,
