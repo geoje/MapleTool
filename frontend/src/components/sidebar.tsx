@@ -14,7 +14,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { LINKS } from "../config";
+import { links } from "../constants/links";
 
 const KEY_COLLAPSED = "sidebar-collapsed";
 
@@ -93,7 +93,7 @@ export function ExpandedSidebar({
           {closeButton}
         </Flex>
         <Divider my={2} />
-        {LINKS.map((link) => (
+        {links.map((link) => (
           <Button
             as={Link}
             to={"/" + link.name}
@@ -158,7 +158,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: React.MouseEventHandler }) {
           />
         </Tooltip>
         <Divider my={2} />
-        {LINKS.map((link) => (
+        {links.map((link) => (
           <Tooltip key={link.name} label={link.label} placement="right">
             <IconButton
               aria-label={link.name}

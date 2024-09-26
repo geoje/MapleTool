@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import { LINKS } from "../config";
+import { links } from "../constants/links";
 import MobileDrawer from "./mobileDrawer";
 import { useAppSelector } from "../stores/hooks";
 import { useEffect } from "react";
@@ -39,7 +39,7 @@ function Desktop() {
   const { pathname } = useLocation();
   const characterBasic = useAppSelector((state) => state.character.basic);
 
-  const title = LINKS.find((link) =>
+  const title = links.find((link) =>
     pathname.startsWith("/" + link.name)
   )?.label;
 
@@ -90,7 +90,7 @@ function Mobile() {
       <Heading size="md">
         {pathname == "/"
           ? "홈"
-          : LINKS.find((link) => pathname.startsWith("/" + link.name))?.label}
+          : links.find((link) => pathname.startsWith("/" + link.name))?.label}
       </Heading>
       <Spacer />
       <SpentButton />
