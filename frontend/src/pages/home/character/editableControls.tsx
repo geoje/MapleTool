@@ -9,9 +9,11 @@ import { CgCheckO, CgCloseR, CgRename, CgTrash } from "react-icons/cg";
 
 export default function EditableControls({
   isLoading,
+  existName,
   onCharacterDelete,
 }: {
   isLoading?: boolean;
+  existName?: boolean;
   onCharacterDelete?: () => void;
 }) {
   const {
@@ -61,7 +63,7 @@ export default function EditableControls({
           {...getEditButtonProps()}
         />
       </Tooltip>
-      {false && (
+      {existName && (
         <Tooltip label="삭제">
           <IconButton
             aria-label="delete"

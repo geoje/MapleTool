@@ -1,7 +1,7 @@
 import { Alert } from "@chakra-ui/react";
 import { MdCheckCircle, MdInfo } from "react-icons/md";
 
-export function AlertHello() {
+export function HelloAlert() {
   return (
     <Alert status="info" variant="left-accent" gap={2}>
       <MdInfo />
@@ -10,7 +10,7 @@ export function AlertHello() {
   );
 }
 
-export function AlertUsage() {
+export function UsageAlert() {
   return (
     <Alert status="success" variant="left-accent" gap={2}>
       <MdCheckCircle />

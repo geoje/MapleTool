@@ -10,6 +10,9 @@ export const theme = extendTheme({
       "html, body": {
         backgroundColor: props.colorMode == "dark" ? "gray.900" : "gray.50",
       },
+      img: {
+        imageRendering: "pixelated",
+      },
     }),
   },
 });
