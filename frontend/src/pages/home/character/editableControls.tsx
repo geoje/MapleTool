@@ -6,17 +6,14 @@ import {
   useEditableControls,
 } from "@chakra-ui/react";
 import { CgCheckO, CgCloseR, CgRename, CgTrash } from "react-icons/cg";
-import { useAppSelector } from "../../../stores/hooks";
 
 export default function EditableControls({
-  requesting,
+  isLoading,
   onCharacterDelete,
 }: {
-  requesting: boolean;
-  onCharacterDelete: () => void;
+  isLoading?: boolean;
+  onCharacterDelete?: () => void;
 }) {
-  const characterBasic = useAppSelector((state) => state.character.basic);
-
   const {
     isEditing,
     getSubmitButtonProps,
@@ -24,29 +21,35 @@ export default function EditableControls({
     getEditButtonProps,
   } = useEditableControls();
 
-  return requesting ? (
-    <Spinner mt={2} size="lg" />
-  ) : isEditing ? (
-    <ButtonGroup justifyContent="center">
-      <IconButton
-        aria-label="submit"
-        icon={<CgCheckO />}
-        variant="ghost"
-        colorScheme="green"
-        size="lg"
-        {...getSubmitButtonProps()}
-      />
+  if (isLoading) {
+    return <Spinner mt={2} size="lg" />;
+  }
 
-      <IconButton
-        aria-label="cancel"
-        icon={<CgCloseR />}
-        variant="ghost"
-        colorScheme="red"
-        size="lg"
-        {...getCancelButtonProps()}
-      />
-    </ButtonGroup>
-  ) : (
+  if (isEditing) {
+    return (
+      <ButtonGroup justifyContent="center">
+        <IconButton
+          aria-label="submit"
+          icon={<CgCheckO />}
+          variant="ghost"
+          colorScheme="green"
+          size="lg"
+          {...getSubmitButtonProps()}
+        />
+
+        <IconButton
+          aria-label="cancel"
+          icon={<CgCloseR />}
+          variant="ghost"
+          colorScheme="red"
+          size="lg"
+          {...getCancelButtonProps()}
+        />
+      </ButtonGroup>
+    );
+  }
+
+  return (
     <ButtonGroup justifyContent="center">
       <Tooltip label="변경">
         <IconButton
@@ -58,7 +61,7 @@ export default function EditableControls({
           {...getEditButtonProps()}
         />
       </Tooltip>
-      {characterBasic?.character_name && (
+      {false && (
         <Tooltip label="삭제">
           <IconButton
             aria-label="delete"

@@ -7,20 +7,14 @@ import {
   Image,
   Show,
   Spacer,
-  Tooltip,
   useColorMode,
-  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
 import { links } from "../constants/links";
 import MobileDrawer from "./mobileDrawer";
-import { useAppSelector } from "../stores/hooks";
 import { useEffect } from "react";
-import { AnimatedCounter } from "react-animated-counter";
-import { useDispatch } from "react-redux";
-import { clearUserSpent } from "../stores/userSlice";
 
 export default function Header() {
   return (
@@ -37,7 +31,6 @@ export default function Header() {
 
 function Desktop() {
   const { pathname } = useLocation();
-  const characterBasic = useAppSelector((state) => state.character.basic);
 
   const title = links.find((link) =>
     pathname.startsWith("/" + link.name)
@@ -55,16 +48,13 @@ function Desktop() {
         {title ?? "홈"}
       </Heading>
       <Spacer />
-      <SpentButton />
       {pathname == "/" || (
         <Button
           as={Link}
           to="/"
           variant="ghost"
-          leftIcon={<ProfileImage src={characterBasic?.character_image} />}
-        >
-          {characterBasic?.character_name}
-        </Button>
+          leftIcon={<ProfileImage />}
+        ></Button>
       )}
     </Flex>
   );
@@ -75,8 +65,6 @@ function Mobile() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
-
-  const characterBasic = useAppSelector((state) => state.character.basic);
 
   return (
     <Flex p={2} bgColor={dark ? "gray.800" : "white"} align="center">
@@ -93,7 +81,6 @@ function Mobile() {
           : links.find((link) => pathname.startsWith("/" + link.name))?.label}
       </Heading>
       <Spacer />
-      <SpentButton />
       {pathname == "/" || (
         <IconButton
           aria-label="profile"
@@ -101,41 +88,11 @@ function Mobile() {
           to="/"
           variant="ghost"
           size="lg"
-          icon={<ProfileImage src={characterBasic?.character_image} />}
+          icon={<ProfileImage />}
         />
       )}
       <MobileDrawer isOpen={isOpen} onClose={onClose} />
     </Flex>
-  );
-}
-
-function SpentButton() {
-  const dispatch = useDispatch();
-  const spent = useAppSelector((state) => state.user.spent);
-  const color = useColorModeValue("black", "white");
-
-  return (
-    <Tooltip label="사용한 메소 (클릭 시 초기화)">
-      <Button
-        variant="ghost"
-        leftIcon={
-          <Image
-            src="/item-equipment/meso.png"
-            style={{ imageRendering: "pixelated" }}
-          />
-        }
-        onClick={() => dispatch(clearUserSpent())}
-      >
-        <AnimatedCounter
-          includeDecimals={false}
-          incrementColor={color}
-          includeCommas
-          fontSize="12px"
-          color={color}
-          value={spent}
-        />
-      </Button>
-    </Tooltip>
   );
 }
 

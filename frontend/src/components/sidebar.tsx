@@ -16,22 +16,13 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { links } from "../constants/links";
 
-const KEY_COLLAPSED = "sidebar-collapsed";
-
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(
-    localStorage.getItem(KEY_COLLAPSED) != null
-  );
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Show above="md">
       {collapsed ? (
-        <CollapsedSidebar
-          onExpand={() => {
-            setCollapsed(false);
-            localStorage.removeItem(KEY_COLLAPSED);
-          }}
-        />
+        <CollapsedSidebar onExpand={() => setCollapsed(false)} />
       ) : (
         <ExpandedSidebar
           width="256px"
@@ -40,10 +31,7 @@ export default function Sidebar() {
               aria-label="expand"
               variant="ghost"
               icon={<IoIosArrowBack />}
-              onClick={() => {
-                setCollapsed(true);
-                localStorage.setItem(KEY_COLLAPSED, "true");
-              }}
+              onClick={() => setCollapsed(true)}
             />
           }
         />
@@ -106,8 +94,6 @@ export function ExpandedSidebar({
             onClick={onClose}
           >
             {link.label}
-            <Spacer />
-            {link.status}
           </Button>
         ))}
         <Divider my={2} />

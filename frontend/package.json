@@ -15,10 +15,6 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@reduxjs/toolkit": "^2.2.7",
-    "@tanstack/query-sync-storage-persister": "^5.56.2",
-    "@tanstack/react-query": "^5.56.2",
-    "@tanstack/react-query-persist-client": "^5.56.2",
-    "axios": "^1.7.7",
     "chakra-react-select": "^4.9.2",
     "framer-motion": "^11.7.0",
     "react": "^18.3.1",
@@ -30,7 +26,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
-    "@tanstack/eslint-plugin-query": "^5.57.2",
     "@types/react": "^18.3.9",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
