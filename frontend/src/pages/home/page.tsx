@@ -26,11 +26,13 @@ import {
   setUnionBasic,
   setUnionRaider,
 } from "../../stores/unionSlice";
-import { useBasic } from "../../apis/character/basic";
 
 export default function Home() {
   const toast = useToast();
-  const { data, error, isLoading } = useBasic();
+  const dispatch = useAppDispatch();
+  const characterBasic = useAppSelector((state) => state.character.basic);
+
+  const [requesting, setRequesting] = useState(false);
 
   const clearData = () => {
     dispatch(setCharacterItemEquipment());
