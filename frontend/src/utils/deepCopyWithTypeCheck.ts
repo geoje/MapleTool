@@ -1,7 +1,8 @@
 export default function deepCopyWithTypeCheck<T>(source: T, target: any): T {
   if (
-    typeof source !== typeof target ||
-    Array.isArray(source) !== Array.isArray(target)
+    typeof source !== "undefined" &&
+    (typeof source !== typeof target ||
+      Array.isArray(source) !== Array.isArray(target))
   ) {
     return source;
   }

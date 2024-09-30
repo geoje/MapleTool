@@ -1,4 +1,4 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import User from "../types/user/user";
 import { createTransform } from "redux-persist";
 import deepCopyWithTypeCheck from "../utils/deepCopyWithTypeCheck";
