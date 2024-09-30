@@ -13,16 +13,11 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
-    setName: (state, action: PayloadAction<string>) => {
-      state.name = action.payload;
-    },
     clearName: (state) => {
       state.name = "";
     },
-
-    addHistory: (state, action: PayloadAction<string>) => {
-      console.log(current(state));
-
+    setNameAndAddHistory: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
       const index = state.history.indexOf(action.payload);
       if (index == -1) state.history.push(action.payload);
     },
@@ -33,7 +28,7 @@ const slice = createSlice({
   },
 });
 
-export const { setName, clearName, addHistory, deleteHistory } = slice.actions;
+export const { setNameAndAddHistory, clearName, deleteHistory } = slice.actions;
 export const userReducer = slice.reducer;
 export const userTransform = createTransform(
   null,

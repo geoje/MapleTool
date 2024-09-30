@@ -53,7 +53,7 @@ export default function EditableControls({
 
   return (
     <ButtonGroup justifyContent="center">
-      <Tooltip label="변경">
+      <Tooltip label="변경" placement="left">
         <IconButton
           aria-label="edit"
           icon={<CgRename />}
@@ -64,7 +64,7 @@ export default function EditableControls({
         />
       </Tooltip>
       {existName && (
-        <Tooltip label="삭제">
+        <Tooltip label="삭제" placement="right">
           <IconButton
             aria-label="delete"
             icon={<CgTrash />}

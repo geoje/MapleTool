@@ -1,4 +1,4 @@
-import { Flex, Hide, Show, Stack } from "@chakra-ui/react";
+import { Flex, Hide, Show } from "@chakra-ui/react";
 import { useAppSelector } from "../../../stores/hooks";
 import HistoryButton from "./historyButton";
 

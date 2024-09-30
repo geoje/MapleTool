@@ -10,14 +10,21 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import EditableControls from "./editableControls";
-import { addHistory, clearName, setName } from "../../../stores/userSlice";
+import {
+  clearName,
+  deleteHistory,
+  setNameAndAddHistory,
+} from "../../../stores/userSlice";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import HistoryButtons from "./historyButtons";
 
 export default function RegistCard() {
   const dispatch = useAppDispatch();
-  const name = useAppSelector((state) => state.user.name);
-  const [curName, setCurName] = useState(name ?? "");
+  const userName = useAppSelector((state) => state.user.name);
+  const [inputName, setInputName] = useState(userName ?? "");
+
+  useEffect(() => setInputName(userName), [userName, setInputName]);
 
   return (
     <Card w={336}>
@@ -27,7 +34,7 @@ export default function RegistCard() {
             width={2 * 96}
             src={"/union-raid/character-blank.png"}
             filter={
-              name ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"
+              userName ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"
             }
           />
         </Flex>
@@ -35,25 +42,31 @@ export default function RegistCard() {
           textAlign="center"
           fontSize="2xl"
           placeholder="닉네임"
-          pt={2}
-          value={curName}
-          onChange={setCurName}
+          py={2}
+          value={inputName}
+          onChange={(changedName) =>
+            setInputName(changedName.replaceAll(" ", ""))
+          }
           onSubmit={(name) => {
-            dispatch(setName(name));
-            dispatch(addHistory(name));
+            if (!name.length) return;
+            dispatch(setNameAndAddHistory(name));
           }}
         >
-          <EditablePreview opacity={name ? 1 : 0.4} pt="3px" pb="1px" />
+          <EditablePreview opacity={userName ? 1 : 0.4} pt="3px" pb="1px" />
           <Input as={EditableInput} fontSize="2xl" maxLength={12} />
           <Spacer h={2} />
           <EditableControls
             isLoading={false}
-            existName={name ? name.length > 0 : false}
+            existName={userName ? userName.length > 0 : false}
             onCharacterDelete={() => {
-              if (name) dispatch(clearName());
+              if (!userName || !userName.length) return;
+              dispatch(clearName());
+              dispatch(deleteHistory(userName));
+              setInputName("");
             }}
           />
         </Editable>
+        <HistoryButtons />
       </CardBody>
     </Card>
   );
