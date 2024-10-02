@@ -1,16 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createTransform, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import User from "../types/user/user";
-import { createTransform } from "redux-persist";
 import deepCopyWithTypeCheck from "../utils/deepCopyWithTypeCheck";
 
-const name = "user";
+export const userKey = "user";
+
 const initialState: User = {
   name: "",
   history: [],
 };
 
 const slice = createSlice({
-  name,
+  name: userKey,
   initialState,
   reducers: {
     clearName: (state) => {
@@ -28,10 +30,13 @@ const slice = createSlice({
   },
 });
 
-export const { setNameAndAddHistory, clearName, deleteHistory } = slice.actions;
-export const userReducer = slice.reducer;
-export const userTransform = createTransform(
+const transform = createTransform(
   null,
   (state) => deepCopyWithTypeCheck(initialState, state),
-  { whitelist: [name] }
+  { whitelist: [userKey] }
 );
+export const userReducer = persistReducer<ReturnType<typeof slice.reducer>>(
+  { key: userKey, storage, transforms: [transform] },
+  slice.reducer
+);
+export const { clearName, setNameAndAddHistory, deleteHistory } = slice.actions;

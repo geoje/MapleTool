@@ -8,7 +8,6 @@ import {
   Image,
   Input,
   Spacer,
-  Text,
 } from "@chakra-ui/react";
 import EditableControls from "./editableControls";
 import {
@@ -19,17 +18,17 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { useEffect, useState } from "react";
 import HistoryButtons from "./historyButtons";
-import { useGetCharacterBasicQuery } from "../../../stores/characterSlice";
+import { useBasicQuery } from "../../../stores/characterApi";
 
 export default function RegistCard() {
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
   const [inputName, setInputName] = useState(userName ?? "");
-  const { data, error, isFetching } = useGetCharacterBasicQuery(userName);
+  const { data, error, isFetching } = useBasicQuery(userName, {
+    skip: !userName,
+  });
 
   useEffect(() => setInputName(userName), [userName, setInputName]);
-  useEffect(() => console.error(error), [error]);
-  useEffect(() => console.error(isFetching), [isFetching]);
 
   return (
     <Card w={336}>
