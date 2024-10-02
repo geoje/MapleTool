@@ -3,9 +3,11 @@ import { persistReducer } from "redux-persist";
 import { persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { userReducer, userTransform } from "./userSlice";
+import { apiMiddleware, apiReducer, apiReducerPath } from "./characterSlice";
 
 const reducers = combineReducers({
   user: userReducer,
+  [apiReducerPath]: apiReducer,
 });
 
 const persistConfig = {
@@ -23,7 +25,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).concat(apiMiddleware),
 });
 export const persistor = persistStore(store);
 

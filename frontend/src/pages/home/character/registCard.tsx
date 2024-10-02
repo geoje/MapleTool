@@ -8,6 +8,7 @@ import {
   Image,
   Input,
   Spacer,
+  Text,
 } from "@chakra-ui/react";
 import EditableControls from "./editableControls";
 import {
@@ -18,13 +19,17 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { useEffect, useState } from "react";
 import HistoryButtons from "./historyButtons";
+import { useGetCharacterBasicQuery } from "../../../stores/characterSlice";
 
 export default function RegistCard() {
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
   const [inputName, setInputName] = useState(userName ?? "");
+  const { data, error, isFetching } = useGetCharacterBasicQuery(userName);
 
   useEffect(() => setInputName(userName), [userName, setInputName]);
+  useEffect(() => console.error(error), [error]);
+  useEffect(() => console.error(isFetching), [isFetching]);
 
   return (
     <Card w={336}>
@@ -32,7 +37,7 @@ export default function RegistCard() {
         <Flex justify="center">
           <Image
             width={2 * 96}
-            src={"/union-raid/character-blank.png"}
+            src={data?.character_image ?? "/union-raid/character-blank.png"}
             filter={
               userName ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"
             }

@@ -15,4 +15,8 @@ const api = createApi({
   }),
 });
 
+export const { useGetCharacterBasicQuery, useGetCharacterItemEquipmentQuery } =
+  api;
+export const apiReducerPath = api.reducerPath;
+export const apiMiddleware = api.middleware;
 export const apiReducer = api.reducer;
