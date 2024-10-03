@@ -19,16 +19,34 @@ import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { useEffect, useState } from "react";
 import HistoryButtons from "./historyButtons";
 import { useBasicQuery } from "../../../stores/characterApi";
+import { useSuccessToast, useWarningToast } from "../../../hooks/useToast";
 
 export default function RegistCard() {
+  const toastSuccess = useSuccessToast();
+  const toastWarning = useWarningToast();
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
-  const [inputName, setInputName] = useState(userName ?? "");
-  const { data, error, isFetching } = useBasicQuery(userName, {
+  const { data, error, isFetching, refetch } = useBasicQuery(userName, {
     skip: !userName,
+    refetchOnMountOrArgChange: true,
   });
 
-  useEffect(() => setInputName(userName), [userName, setInputName]);
+  const [inputName, setInputName] = useState(userName ?? "");
+
+  useEffect(() => {
+    setInputName(userName);
+    console.log("userName updated");
+  }, [userName]);
+
+  useEffect(() => {
+    if (isFetching) return;
+
+    toastSuccess({
+      title: "캐릭터 기본 정보 갱신됨",
+      description: data?.character_name,
+    });
+    console.log("data, isFetching updated");
+  }, [data, isFetching]);
 
   return (
     <Card w={336}>
@@ -60,9 +78,10 @@ export default function RegistCard() {
           <Input as={EditableInput} fontSize="2xl" maxLength={12} />
           <Spacer h={2} />
           <EditableControls
-            isLoading={false}
+            isLoading={isFetching}
             existName={userName ? userName.length > 0 : false}
-            onCharacterDelete={() => {
+            onRefetchClick={refetch}
+            onDeleteClick={() => {
               if (!userName || !userName.length) return;
               dispatch(clearName());
               dispatch(deleteHistory(userName));
@@ -70,6 +89,7 @@ export default function RegistCard() {
             }}
           />
         </Editable>
+        <Spacer h={2} />
         <HistoryButtons />
       </CardBody>
     </Card>

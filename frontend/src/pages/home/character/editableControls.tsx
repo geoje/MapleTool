@@ -5,16 +5,18 @@ import {
   Tooltip,
   useEditableControls,
 } from "@chakra-ui/react";
-import { CgCheckO, CgCloseR, CgRename, CgTrash } from "react-icons/cg";
+import { CgCheckO, CgCloseR, CgRedo, CgRename, CgTrash } from "react-icons/cg";
 
 export default function EditableControls({
   isLoading,
   existName,
-  onCharacterDelete,
+  onRefetchClick,
+  onDeleteClick,
 }: {
   isLoading?: boolean;
   existName?: boolean;
-  onCharacterDelete?: () => void;
+  onRefetchClick?: () => void;
+  onDeleteClick?: () => void;
 }) {
   const {
     isEditing,
@@ -24,7 +26,7 @@ export default function EditableControls({
   } = useEditableControls();
 
   if (isLoading) {
-    return <Spinner mt={2} size="lg" />;
+    return <Spinner mt={2} />;
   }
 
   if (isEditing) {
@@ -35,7 +37,6 @@ export default function EditableControls({
           icon={<CgCheckO />}
           variant="ghost"
           colorScheme="green"
-          size="lg"
           {...getSubmitButtonProps()}
         />
 
@@ -44,7 +45,6 @@ export default function EditableControls({
           icon={<CgCloseR />}
           variant="ghost"
           colorScheme="red"
-          size="lg"
           {...getCancelButtonProps()}
         />
       </ButtonGroup>
@@ -53,27 +53,34 @@ export default function EditableControls({
 
   return (
     <ButtonGroup justifyContent="center">
-      <Tooltip label="변경" placement="left">
+      <Tooltip label="변경" placement="top">
         <IconButton
           aria-label="edit"
           icon={<CgRename />}
           variant="ghost"
-          colorScheme="gray"
-          size="lg"
           {...getEditButtonProps()}
         />
       </Tooltip>
       {existName && (
-        <Tooltip label="삭제" placement="right">
-          <IconButton
-            aria-label="delete"
-            icon={<CgTrash />}
-            variant="ghost"
-            colorScheme="red"
-            size="lg"
-            onClick={onCharacterDelete}
-          />
-        </Tooltip>
+        <>
+          <Tooltip label="갱신" placement="top">
+            <IconButton
+              aria-label="refetch"
+              icon={<CgRedo />}
+              variant="ghost"
+              onClick={onRefetchClick}
+            />
+          </Tooltip>
+          <Tooltip label="삭제" placement="top">
+            <IconButton
+              aria-label="delete"
+              icon={<CgTrash />}
+              variant="ghost"
+              colorScheme="red"
+              onClick={onDeleteClick}
+            />
+          </Tooltip>
+        </>
       )}
     </ButtonGroup>
   );
