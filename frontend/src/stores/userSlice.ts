@@ -18,6 +18,9 @@ const slice = createSlice({
     clearName: (state) => {
       state.name = "";
     },
+    setName: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
+    },
     setNameAndAddHistory: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
       const index = state.history.indexOf(action.payload);
@@ -39,4 +42,5 @@ export const userReducer = persistReducer<ReturnType<typeof slice.reducer>>(
   { key: userKey, storage, transforms: [transform] },
   slice.reducer
 );
-export const { clearName, setNameAndAddHistory, deleteHistory } = slice.actions;
+export const { clearName, setName, setNameAndAddHistory, deleteHistory } =
+  slice.actions;

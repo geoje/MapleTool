@@ -1,11 +1,11 @@
 import { Card, CardBody } from "@chakra-ui/react";
-import CharacterButtons from "./characterButtons";
+import NameInput from "./nameInput";
 
-export default function RegistCard() {
+export default function RegisterCard() {
   return (
     <Card>
       <CardBody>
-        <CharacterButtons />
+        <NameInput />
       </CardBody>
     </Card>
   );
