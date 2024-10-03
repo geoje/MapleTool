@@ -1,12 +1,12 @@
 import {
+  Box,
   Button,
   Flex,
-  IconButton,
+  Icon,
   Image,
   Spinner,
   Text,
-  Tooltip,
-  useBoolean,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { CgClose } from "react-icons/cg";
@@ -23,12 +23,13 @@ import { GetWorldIcon } from "../../../utils/getWorldIcon";
 import { GetJobIcon } from "../../../utils/getJobIcon";
 
 export default function CharacterButton({ name }: { name: string }) {
+  const isDark = useColorMode().colorMode == "dark";
   const toastSuccess = useSuccessToast();
+
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
   const selected = userName == name;
   const { data, isFetching, refetch } = useBasicQuery(name, { skip: !name });
-  const [hover, { on, off }] = useBoolean(false);
 
   useEffect(() => {
     if (!selected || !name) return;
@@ -49,8 +50,6 @@ export default function CharacterButton({ name }: { name: string }) {
       height="auto"
       flexDir="column"
       variant={name && selected ? undefined : "ghost"}
-      onMouseEnter={on}
-      onMouseLeave={off}
       onClick={() => {
         if (selected) {
           dispatch(setName(""));
@@ -59,24 +58,28 @@ export default function CharacterButton({ name }: { name: string }) {
         dispatch(setNameAndAddHistory(name));
       }}
     >
+      {selected && (
+        <Box
+          position="absolute"
+          top={-2}
+          right={-2}
+          transform="auto"
+          background={isDark ? "whiteAlpha.200" : "blackAlpha.200"}
+          transition="background 0.2s"
+          p={1}
+          borderRadius="100%"
+          onClick={() => dispatch(deleteHistory(name))}
+          _hover={{ background: isDark ? "whiteAlpha.400" : "blackAlpha.400" }}
+        >
+          <Icon as={CgClose} />
+        </Box>
+      )}
       <Flex gap={1} align="center">
         <Image src={GetJobIcon(data?.character_class)} />
         <Text fontSize="xs" opacity={0.6}>
           {data?.character_class ?? "직업"}
         </Text>
         <Text fontSize="xs">Lv.{data?.character_level ?? 0}</Text>
-        {hover && (
-          <Tooltip label="삭제" placement="top">
-            <IconButton
-              aria-label="delete"
-              position="absolute"
-              right={1}
-              size="xs"
-              icon={<CgClose />}
-              onClick={() => dispatch(deleteHistory(name))}
-            />
-          </Tooltip>
-        )}
       </Flex>
       <Image
         src={data?.character_image ?? characterBlank}
