@@ -1,4 +1,4 @@
-export default function deepCopyWithTypeCheck<T>(source: T, target: any): T {
+export function deepCopyWithTypeCheck<T>(source: T, target: any): T {
   if (
     typeof source !== "undefined" &&
     (typeof source !== typeof target ||

@@ -1,7 +1,7 @@
-import { worlds } from "../constants/worlds";
 import blank from "../assets/world/blank.png";
+import { worlds } from "../constants/worlds";
 
-export default function GetWorldIconFromLabel(label?: string) {
+export function GetWorldIcon(label?: string) {
   if (!label) return blank;
   return worlds.find((world) => world.label == label)?.icon ?? blank;
 }

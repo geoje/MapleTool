@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createTransform, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import User from "../types/user/user";
-import deepCopyWithTypeCheck from "../utils/deepCopyWithTypeCheck";
+import { deepCopyWithTypeCheck } from "../utils/deepCopyWithTypeCheck";
 
 export const userKey = "user";
 

@@ -1,11 +1,26 @@
-import { Button, Flex, Image, Spinner, Text } from "@chakra-ui/react";
-import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
-import { setName, setNameAndAddHistory } from "../../../stores/userSlice";
+import {
+  Button,
+  Flex,
+  IconButton,
+  Image,
+  Spinner,
+  Text,
+  Tooltip,
+  useBoolean,
+} from "@chakra-ui/react";
 import { useEffect } from "react";
+import { CgClose } from "react-icons/cg";
+import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
+import {
+  deleteHistory,
+  setName,
+  setNameAndAddHistory,
+} from "../../../stores/userSlice";
 import { useBasicQuery } from "../../../stores/characterApi";
 import { useSuccessToast } from "../../../hooks/useToast";
-import GetWorldIconFromLabel from "../../../utils/getWorldIconFromLabel";
 import characterBlank from "../../../assets/union/raid/character-blank.png";
+import { GetWorldIcon } from "../../../utils/getWorldIcon";
+import { GetJobIcon } from "../../../utils/getJobIcon";
 
 export default function CharacterButton({ name }: { name: string }) {
   const toastSuccess = useSuccessToast();
@@ -13,6 +28,7 @@ export default function CharacterButton({ name }: { name: string }) {
   const userName = useAppSelector((state) => state.user.name);
   const selected = userName == name;
   const { data, isFetching, refetch } = useBasicQuery(name, { skip: !name });
+  const [hover, { on, off }] = useBoolean(false);
 
   useEffect(() => {
     if (!selected || !name) return;
@@ -28,11 +44,13 @@ export default function CharacterButton({ name }: { name: string }) {
   return (
     <Button
       p={2}
+      w={40}
       size="xs"
-      w={44}
       height="auto"
       flexDir="column"
       variant={name && selected ? undefined : "ghost"}
+      onMouseEnter={on}
+      onMouseLeave={off}
       onClick={() => {
         if (selected) {
           dispatch(setName(""));
@@ -41,14 +59,24 @@ export default function CharacterButton({ name }: { name: string }) {
         dispatch(setNameAndAddHistory(name));
       }}
     >
-      <Flex gap={1}>
-        <Image src={GetWorldIconFromLabel(data?.world_name)} />
-        <Text fontSize="xs" fontWeight="bold">
-          {data?.character_name ?? "캐릭터명"}
-        </Text>
+      <Flex gap={1} align="center">
+        <Image src={GetJobIcon(data?.character_class)} />
         <Text fontSize="xs" opacity={0.6}>
           {data?.character_class ?? "직업"}
         </Text>
+        <Text fontSize="xs">Lv.{data?.character_level ?? 0}</Text>
+        {hover && (
+          <Tooltip label="삭제" placement="top">
+            <IconButton
+              aria-label="delete"
+              position="absolute"
+              right={1}
+              size="xs"
+              icon={<CgClose />}
+              onClick={() => dispatch(deleteHistory(name))}
+            />
+          </Tooltip>
+        )}
       </Flex>
       <Image
         src={data?.character_image ?? characterBlank}
@@ -58,9 +86,15 @@ export default function CharacterButton({ name }: { name: string }) {
             : "opacity(0.2) drop-shadow(0 0 0 #000000);"
         }
       />
-      <Flex gap={1}>
-        <Text fontSize="xs">Lv.{data?.character_level ?? 0}</Text>
-        {isFetching && <Spinner size="xs" />}
+      <Flex pt={2} gap={1} align="center">
+        {isFetching ? (
+          <Spinner w="14px" size="xs" />
+        ) : (
+          <Image src={GetWorldIcon(data?.world_name)} />
+        )}
+        <Text fontSize="xs" fontWeight="bold">
+          {data?.character_name ?? "캐릭터명"}
+        </Text>
       </Flex>
     </Button>
   );
