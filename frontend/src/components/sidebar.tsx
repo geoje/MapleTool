@@ -89,7 +89,7 @@ export function ExpandedSidebar({
             justifyContent="start"
             variant={pathname.startsWith("/" + link.name) ? "solid" : "ghost"}
             leftIcon={
-              <Image boxSize="24px" src={link.image} objectFit="cover" />
+              <Image boxSize="24px" src={link.icon} objectFit="cover" />
             }
             onClick={onClose}
           >
@@ -151,7 +151,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: React.MouseEventHandler }) {
               as={Link}
               to={"/" + link.name}
               variant={pathname.startsWith("/" + link.name) ? "solid" : "ghost"}
-              icon={<Image boxSize="24px" src={link.image} objectFit="cover" />}
+              icon={<Image boxSize="24px" src={link.icon} objectFit="cover" />}
             />
           </Tooltip>
         ))}

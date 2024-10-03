@@ -12,17 +12,17 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./stores/store";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  // <React.StrictMode>
-  <BrowserRouter>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ChakraProvider theme={theme}>
-          <App />
-        </ChakraProvider>
-      </PersistGate>
-    </Provider>
-  </BrowserRouter>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <BrowserRouter>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <ChakraProvider theme={theme}>
+            <App />
+          </ChakraProvider>
+        </PersistGate>
+      </Provider>
+    </BrowserRouter>
+  </React.StrictMode>
 );
 
 function App() {
