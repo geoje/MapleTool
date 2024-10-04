@@ -81,14 +81,11 @@ export default function CharacterButton({ name }: { name: string }) {
         </Text>
         <Text fontSize="xs">Lv.{data?.character_level ?? 0}</Text>
       </Flex>
-      <Image
-        src={data?.character_image ?? characterBlank}
-        filter={
-          data?.character_image
-            ? undefined
-            : "opacity(0.2) drop-shadow(0 0 0 #000000);"
-        }
-      />
+      {data?.character_image ? (
+        <Image src={data.character_image} fallback={<BlankCharacterImage />} />
+      ) : (
+        <BlankCharacterImage />
+      )}
       <Flex pt={2} gap={1} align="center">
         {isFetching ? (
           <Spinner w="14px" size="xs" />
@@ -100,5 +97,14 @@ export default function CharacterButton({ name }: { name: string }) {
         </Text>
       </Flex>
     </Button>
+  );
+}
+
+function BlankCharacterImage() {
+  return (
+    <Image
+      src={characterBlank}
+      filter="opacity(0.2) drop-shadow(0 0 0 #000000);"
+    />
   );
 }
