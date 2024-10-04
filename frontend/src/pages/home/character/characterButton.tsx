@@ -9,7 +9,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { CgMathEqual, CgClose } from "react-icons/cg";
+import { LuGripVertical, LuX } from "react-icons/lu";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import {
   deleteHistory,
@@ -60,31 +60,11 @@ export default function CharacterButton({ name }: { name: string }) {
     >
       {selected && (
         <>
-          <Box
-            position="absolute"
-            top={-2}
-            right={-2}
-            transform="auto"
-            background={isDark ? "whiteAlpha.200" : "blackAlpha.200"}
-            transition="background 0.2s"
-            p={1}
-            borderRadius="100%"
+          <DeleteButton
+            isDark={isDark}
             onClick={() => dispatch(deleteHistory(name))}
-            _hover={{
-              background: isDark ? "whiteAlpha.400" : "blackAlpha.400",
-            }}
-          >
-            <Icon as={CgClose} />
-          </Box>
-          <Box
-            position="absolute"
-            px={1}
-            left={0}
-            color={"gray.500"}
-            cursor="grab"
-          >
-            <Icon as={CgMathEqual} w={4} h={4} />
-          </Box>
+          />
+          <Handle />
         </>
       )}
       <Flex gap={1} align="center">
@@ -110,6 +90,48 @@ export default function CharacterButton({ name }: { name: string }) {
         </Text>
       </Flex>
     </Button>
+  );
+}
+
+function DeleteButton({
+  isDark,
+  onClick,
+}: {
+  isDark: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Box
+      position="absolute"
+      top={-2}
+      right={-2}
+      transform="auto"
+      background={isDark ? "whiteAlpha.200" : "blackAlpha.200"}
+      transition="background 0.2s"
+      p={1}
+      borderRadius="100%"
+      onClick={onClick}
+      _hover={{
+        background: isDark ? "whiteAlpha.400" : "blackAlpha.400",
+      }}
+    >
+      <Icon as={LuX} />
+    </Box>
+  );
+}
+
+function Handle() {
+  return (
+    <Box
+      position="absolute"
+      h={4}
+      px={1}
+      left={0}
+      color={"gray.500"}
+      cursor="grab"
+    >
+      <Icon as={LuGripVertical} w={4} h={4} />
+    </Box>
   );
 }
 
