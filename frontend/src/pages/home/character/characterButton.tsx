@@ -9,7 +9,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { CgClose } from "react-icons/cg";
+import { CgMathEqual, CgClose } from "react-icons/cg";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import {
   deleteHistory,
@@ -59,20 +59,33 @@ export default function CharacterButton({ name }: { name: string }) {
       }}
     >
       {selected && (
-        <Box
-          position="absolute"
-          top={-2}
-          right={-2}
-          transform="auto"
-          background={isDark ? "whiteAlpha.200" : "blackAlpha.200"}
-          transition="background 0.2s"
-          p={1}
-          borderRadius="100%"
-          onClick={() => dispatch(deleteHistory(name))}
-          _hover={{ background: isDark ? "whiteAlpha.400" : "blackAlpha.400" }}
-        >
-          <Icon as={CgClose} />
-        </Box>
+        <>
+          <Box
+            position="absolute"
+            top={-2}
+            right={-2}
+            transform="auto"
+            background={isDark ? "whiteAlpha.200" : "blackAlpha.200"}
+            transition="background 0.2s"
+            p={1}
+            borderRadius="100%"
+            onClick={() => dispatch(deleteHistory(name))}
+            _hover={{
+              background: isDark ? "whiteAlpha.400" : "blackAlpha.400",
+            }}
+          >
+            <Icon as={CgClose} />
+          </Box>
+          <Box
+            position="absolute"
+            px={1}
+            left={0}
+            color={"gray.500"}
+            cursor="grab"
+          >
+            <Icon as={CgMathEqual} w={4} h={4} />
+          </Box>
+        </>
       )}
       <Flex gap={1} align="center">
         <Image src={GetJobIcon(data?.character_class)} />
