@@ -1,8 +1,8 @@
-import { Stack } from "@chakra-ui/react";
+import { Card, CardBody, Stack } from "@chakra-ui/react";
 import { HelloAlert, UsageAlert } from "./alert/alert";
-import RegistCard from "./character/registCard";
 import { useAppSelector } from "../../stores/hooks";
-import RegisterCard from "./register/registerCard";
+import NameInput from "./register/nameInput";
+import CharacterButtons from "./character/characterButtons";
 
 export default function Home() {
   const userName = useAppSelector((state) => state.user.name);
@@ -10,8 +10,16 @@ export default function Home() {
   return (
     <Stack width="100%" align="center">
       {userName ? <UsageAlert /> : <HelloAlert />}
-      <RegisterCard />
-      <RegistCard />
+      <Card>
+        <CardBody>
+          <NameInput />
+        </CardBody>
+      </Card>
+      <Card>
+        <CardBody>
+          <CharacterButtons />
+        </CardBody>
+      </Card>
     </Stack>
   );
 }
