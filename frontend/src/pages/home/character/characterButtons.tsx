@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
-import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
+import { useAppDispatch } from "../../../stores/hooks";
 import {
+  Active,
   DndContext,
   closestCenter,
   MouseSensor,
@@ -13,18 +14,21 @@ import {
   defaultDropAnimationSideEffects,
 } from "@dnd-kit/core";
 import CharacterButton from "./characterButton";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { moveHistory } from "../../../stores/userSlice";
 
-export default function CharacterButtons() {
+export default function CharacterButtons({ history }: { history: string[] }) {
   const dispatch = useAppDispatch();
-  const history = useAppSelector((state) => state.user.history);
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [active, setActive] = useState<Active | null>(null);
+  const activeName = useMemo(
+    () => history.find((name) => name === active?.id),
+    [active, history]
+  );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
-    setActiveId(event.active.id.toString());
+    setActive(event.active);
   }, []);
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -35,12 +39,12 @@ export default function CharacterButtons() {
         moveHistory({ from: active.id as string, to: over.id as string })
       );
 
-      setActiveId(null);
+      setActive(null);
     },
     [dispatch]
   );
   const handleDragCancel = useCallback(() => {
-    setActiveId(null);
+    setActive(null);
   }, []);
 
   return (
@@ -70,7 +74,7 @@ export default function CharacterButtons() {
           }),
         }}
       >
-        {activeId ? <CharacterButton name={activeId} readOnly /> : null}
+        {activeName ? <CharacterButton name={activeName} readOnly /> : null}
       </DragOverlay>
     </DndContext>
   );

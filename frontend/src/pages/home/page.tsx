@@ -6,6 +6,7 @@ import CharacterButtons from "./character/characterButtons";
 
 export default function Home() {
   const userName = useAppSelector((state) => state.user.name);
+  const history = useAppSelector((state) => state.user.history);
 
   return (
     <Stack width="100%" align="center">
@@ -17,7 +18,7 @@ export default function Home() {
       </Card>
       <Card>
         <CardBody>
-          <CharacterButtons />
+          <CharacterButtons history={history} />
         </CardBody>
       </Card>
     </Stack>
