@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { useAppDispatch } from "../../../stores/hooks";
+import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import {
   Active,
   DndContext,
@@ -18,8 +18,9 @@ import { useCallback, useMemo, useState } from "react";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { moveHistory } from "../../../stores/userSlice";
 
-export default function CharacterButtons({ history }: { history: string[] }) {
+export default function CharacterButtons() {
   const dispatch = useAppDispatch();
+  const history = useAppSelector((state) => state.user.history);
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
   const [active, setActive] = useState<Active | null>(null);
   const activeName = useMemo(
@@ -33,7 +34,10 @@ export default function CharacterButtons({ history }: { history: string[] }) {
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
-      if (!over || active.id == over.id) return;
+      if (!over || active.id == over.id) {
+        setActive(null);
+        return;
+      }
 
       dispatch(
         moveHistory({ from: active.id as string, to: over.id as string })
@@ -56,10 +60,10 @@ export default function CharacterButtons({ history }: { history: string[] }) {
       onDragCancel={handleDragCancel}
     >
       <SortableContext items={history} strategy={rectSortingStrategy}>
-        <Flex gap={2}>
+        <Flex gap={2} wrap="wrap">
           {!history.length && <CharacterButton name="" />}
-          {history.map((name, i) => (
-            <CharacterButton key={"name-" + i} name={name} />
+          {history.map((name) => (
+            <CharacterButton key={"cha-btn-" + name} name={name} />
           ))}
         </Flex>
       </SortableContext>

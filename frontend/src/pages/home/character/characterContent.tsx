@@ -10,7 +10,7 @@ export default function CharacterContent({
   fallbackName,
 }: {
   isFetching: boolean;
-  data: CharacterBasic | undefined;
+  data?: CharacterBasic;
   fallbackName?: string;
 }) {
   return (
