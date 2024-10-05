@@ -70,7 +70,7 @@ export default function CharacterButtons() {
           }),
         }}
       >
-        {activeId ? <CharacterButton name={activeId} /> : null}
+        {activeId ? <CharacterButton name={activeId} readOnly /> : null}
       </DragOverlay>
     </DndContext>
   );

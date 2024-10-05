@@ -14,14 +14,20 @@ import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import CharacterContent from "./characterContent";
 
-export default function CharacterButton({ name }: { name: string }) {
+export default function CharacterButton({
+  name,
+  readOnly,
+}: {
+  name: string;
+  readOnly?: boolean;
+}) {
   const isDark = useColorMode().colorMode == "dark";
   const toastSuccess = useSuccessToast();
   const toastWarning = useWarningToast();
 
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
-  const selected = userName == name;
+  const selected = !readOnly && userName == name;
   const { data, error, isFetching, refetch } = useBasicQuery(name, {
     skip: !name,
   });
@@ -103,6 +109,10 @@ export default function CharacterButton({ name }: { name: string }) {
             isDark={isDark}
             onClick={() => dispatch(deleteHistory(name))}
           />
+        </>
+      )}
+      {(readOnly || (name && selected)) && (
+        <>
           <Handle
             attributes={attributes}
             listeners={listeners}
