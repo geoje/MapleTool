@@ -7,9 +7,11 @@ import characterBlank from "../../../assets/union/raid/character-blank.png";
 export default function CharacterContent({
   isFetching,
   data,
+  fallbackName,
 }: {
   isFetching: boolean;
   data: CharacterBasic | undefined;
+  fallbackName?: string;
 }) {
   return (
     <>
@@ -32,7 +34,7 @@ export default function CharacterContent({
           <Image src={GetWorldIcon(data?.world_name)} />
         )}
         <Text fontSize="xs" fontWeight="bold">
-          {data?.character_name ?? "캐릭터명"}
+          {data?.character_name ?? (fallbackName ? fallbackName : "캐릭터명")}
         </Text>
       </Flex>
     </>

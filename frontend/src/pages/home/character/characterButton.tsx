@@ -8,7 +8,7 @@ import {
   setNameAndAddHistory,
 } from "../../../stores/userSlice";
 import { useBasicQuery } from "../../../stores/characterApi";
-import { useSuccessToast } from "../../../hooks/useToast";
+import { useSuccessToast, useWarningToast } from "../../../hooks/useToast";
 import { useSortable } from "@dnd-kit/sortable";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
@@ -17,11 +17,14 @@ import CharacterContent from "./characterContent";
 export default function CharacterButton({ name }: { name: string }) {
   const isDark = useColorMode().colorMode == "dark";
   const toastSuccess = useSuccessToast();
+  const toastWarning = useWarningToast();
 
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
   const selected = userName == name;
-  const { data, isFetching, refetch } = useBasicQuery(name, { skip: !name });
+  const { data, error, isFetching, refetch } = useBasicQuery(name, {
+    skip: !name,
+  });
 
   const {
     attributes,
@@ -55,10 +58,19 @@ export default function CharacterButton({ name }: { name: string }) {
 
   useEffect(() => {
     if (!selected || !name) return;
+
     refetch().then((res) => {
+      if (error) {
+        toastWarning({
+          title: "캐릭터 기본 정보 갱신 실패",
+          description: JSON.stringify(error),
+        });
+        return res;
+      }
+
       toastSuccess({
         title: "캐릭터 기본 정보 갱신됨",
-        description: res.data?.character_name,
+        description: name,
       });
       return res;
     });
@@ -78,7 +90,7 @@ export default function CharacterButton({ name }: { name: string }) {
       transition={transition}
       onClick={onClick}
     >
-      {selected && (
+      {name && selected && (
         <>
           <DeleteButton
             isDark={isDark}
@@ -91,7 +103,11 @@ export default function CharacterButton({ name }: { name: string }) {
           />
         </>
       )}
-      <CharacterContent isFetching={isFetching} data={data} />
+      <CharacterContent
+        isFetching={isFetching}
+        data={data}
+        fallbackName={name}
+      />
     </Button>
   );
 }

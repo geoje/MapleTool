@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { useAppSelector } from "../../../stores/hooks";
+import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import {
   DndContext,
   closestCenter,
@@ -15,8 +15,10 @@ import {
 import CharacterButton from "./characterButton";
 import { useCallback, useState } from "react";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { moveHistory } from "../../../stores/userSlice";
 
 export default function CharacterButtons() {
+  const dispatch = useAppDispatch();
   const history = useAppSelector((state) => state.user.history);
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -26,8 +28,9 @@ export default function CharacterButtons() {
   }, []);
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
+    if (!over || active.id == over.id) return;
 
-    console.log(active.id, over!.id);
+    dispatch(moveHistory({ from: active.id as string, to: over.id as string }));
 
     setActiveId(null);
   }, []);
