@@ -1,16 +1,69 @@
 import { Flex } from "@chakra-ui/react";
 import { useAppSelector } from "../../../stores/hooks";
+import {
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  DragOverlay,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragEndEvent,
+  defaultDropAnimationSideEffects,
+} from "@dnd-kit/core";
 import CharacterButton from "./characterButton";
+import { useCallback, useState } from "react";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 
 export default function CharacterButtons() {
   const history = useAppSelector((state) => state.user.history);
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setActiveId(event.active.id.toString());
+  }, []);
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+
+    console.log(active.id, over!.id);
+
+    setActiveId(null);
+  }, []);
+  const handleDragCancel = useCallback(() => {
+    setActiveId(null);
+  }, []);
 
   return (
-    <Flex gap={2}>
-      {!history.length && <CharacterButton name="" />}
-      {history.map((name, i) => (
-        <CharacterButton key={"name-" + i} name={name} />
-      ))}
-    </Flex>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragCancel={handleDragCancel}
+    >
+      <SortableContext items={history} strategy={rectSortingStrategy}>
+        <Flex gap={2}>
+          {!history.length && <CharacterButton name="" />}
+          {history.map((name, i) => (
+            <CharacterButton key={"name-" + i} name={name} />
+          ))}
+        </Flex>
+      </SortableContext>
+      <DragOverlay
+        dropAnimation={{
+          sideEffects: defaultDropAnimationSideEffects({
+            styles: {
+              active: {
+                opacity: "0.4",
+              },
+            },
+          }),
+        }}
+      >
+        {activeId ? <CharacterButton name={activeId} /> : null}
+      </DragOverlay>
+    </DndContext>
   );
 }

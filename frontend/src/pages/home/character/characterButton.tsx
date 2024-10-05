@@ -1,14 +1,5 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Image,
-  Spinner,
-  Text,
-  useColorMode,
-} from "@chakra-ui/react";
-import { useEffect } from "react";
+import { Box, Button, Icon, useColorMode } from "@chakra-ui/react";
+import { forwardRef, useEffect } from "react";
 import { LuGripVertical, LuX } from "react-icons/lu";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import {
@@ -18,9 +9,10 @@ import {
 } from "../../../stores/userSlice";
 import { useBasicQuery } from "../../../stores/characterApi";
 import { useSuccessToast } from "../../../hooks/useToast";
-import characterBlank from "../../../assets/union/raid/character-blank.png";
-import { GetWorldIcon } from "../../../utils/getWorldIcon";
-import { GetJobIcon } from "../../../utils/getJobIcon";
+import { useSortable } from "@dnd-kit/sortable";
+import { DraggableAttributes } from "@dnd-kit/core";
+import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import CharacterContent from "./characterContent";
 
 export default function CharacterButton({ name }: { name: string }) {
   const isDark = useColorMode().colorMode == "dark";
@@ -30,6 +22,36 @@ export default function CharacterButton({ name }: { name: string }) {
   const userName = useAppSelector((state) => state.user.name);
   const selected = userName == name;
   const { data, isFetching, refetch } = useBasicQuery(name, { skip: !name });
+
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: name });
+
+  const onClick = () => {
+    if (selected) {
+      dispatch(setName(""));
+      return;
+    }
+    dispatch(setNameAndAddHistory(name));
+  };
+
+  const transformToString = ({
+    x,
+    y,
+    scaleX,
+    scaleY,
+  }: {
+    x: number;
+    y: number;
+    scaleX: number;
+    scaleY: number;
+  }) => `translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY})`;
 
   useEffect(() => {
     if (!selected || !name) return;
@@ -44,19 +66,17 @@ export default function CharacterButton({ name }: { name: string }) {
 
   return (
     <Button
+      ref={setNodeRef}
       p={2}
       w={40}
       size="xs"
       height="auto"
       flexDir="column"
       variant={name && selected ? undefined : "ghost"}
-      onClick={() => {
-        if (selected) {
-          dispatch(setName(""));
-          return;
-        }
-        dispatch(setNameAndAddHistory(name));
-      }}
+      opacity={isDragging ? 0.4 : undefined}
+      transform={transform ? transformToString(transform) : undefined}
+      transition={transition}
+      onClick={onClick}
     >
       {selected && (
         <>
@@ -64,31 +84,14 @@ export default function CharacterButton({ name }: { name: string }) {
             isDark={isDark}
             onClick={() => dispatch(deleteHistory(name))}
           />
-          <Handle />
+          <Handle
+            attributes={attributes}
+            listeners={listeners}
+            ref={setActivatorNodeRef}
+          />
         </>
       )}
-      <Flex gap={1} align="center">
-        <Image src={GetJobIcon(data?.character_class)} />
-        <Text fontSize="xs" opacity={0.6}>
-          {data?.character_class ?? "직업"}
-        </Text>
-        <Text fontSize="xs">Lv.{data?.character_level ?? 0}</Text>
-      </Flex>
-      {data?.character_image ? (
-        <Image src={data.character_image} fallback={<BlankCharacterImage />} />
-      ) : (
-        <BlankCharacterImage />
-      )}
-      <Flex pt={2} gap={1} align="center">
-        {isFetching ? (
-          <Spinner w="14px" size="xs" />
-        ) : (
-          <Image src={GetWorldIcon(data?.world_name)} />
-        )}
-        <Text fontSize="xs" fontWeight="bold">
-          {data?.character_name ?? "캐릭터명"}
-        </Text>
-      </Flex>
+      <CharacterContent isFetching={isFetching} data={data} />
     </Button>
   );
 }
@@ -120,26 +123,26 @@ function DeleteButton({
   );
 }
 
-function Handle() {
+const Handle = forwardRef<
+  HTMLDivElement,
+  {
+    attributes: DraggableAttributes;
+    listeners: SyntheticListenerMap | undefined;
+  }
+>(({ attributes, listeners }, ref) => {
   return (
     <Box
+      ref={ref}
       position="absolute"
       h={4}
       px={1}
       left={0}
       color={"gray.500"}
       cursor="grab"
+      {...attributes}
+      {...listeners}
     >
       <Icon as={LuGripVertical} w={4} h={4} />
     </Box>
   );
-}
-
-function BlankCharacterImage() {
-  return (
-    <Image
-      src={characterBlank}
-      filter="opacity(0.2) drop-shadow(0 0 0 #000000);"
-    />
-  );
-}
+});
