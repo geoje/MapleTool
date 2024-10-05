@@ -3,7 +3,6 @@ import {
   Checkbox,
   Flex,
   GridItem,
-  Image,
   SimpleGrid,
   Text,
 } from "@chakra-ui/react";

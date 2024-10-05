@@ -26,14 +26,19 @@ export default function CharacterButtons() {
   const handleDragStart = useCallback((event: DragStartEvent) => {
     setActiveId(event.active.id.toString());
   }, []);
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id == over.id) return;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id == over.id) return;
 
-    dispatch(moveHistory({ from: active.id as string, to: over.id as string }));
+      dispatch(
+        moveHistory({ from: active.id as string, to: over.id as string })
+      );
 
-    setActiveId(null);
-  }, []);
+      setActiveId(null);
+    },
+    [dispatch]
+  );
   const handleDragCancel = useCallback(() => {
     setActiveId(null);
   }, []);

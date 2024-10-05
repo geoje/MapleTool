@@ -22,8 +22,6 @@ export default function ImportItem({
 
   useEffect(() => {
     setItems([]);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preset]);
 
   return (

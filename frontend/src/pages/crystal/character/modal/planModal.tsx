@@ -4,7 +4,6 @@ import {
   Checkbox,
   Flex,
   Heading,
-  Hide,
   IconButton,
   Image,
   Modal,

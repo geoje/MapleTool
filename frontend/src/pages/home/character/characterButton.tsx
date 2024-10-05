@@ -1,4 +1,4 @@
-import { Box, Button, Icon, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Icon, Text, useColorMode } from "@chakra-ui/react";
 import { forwardRef, useEffect } from "react";
 import { LuGripVertical, LuX } from "react-icons/lu";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
@@ -63,7 +63,12 @@ export default function CharacterButton({ name }: { name: string }) {
       if (error) {
         toastWarning({
           title: "캐릭터 기본 정보 갱신 실패",
-          description: JSON.stringify(error),
+          description: (
+            <>
+              <Text>{name}</Text>
+              <Text>{JSON.stringify(error)}</Text>
+            </>
+          ),
         });
         return res;
       }
@@ -74,6 +79,8 @@ export default function CharacterButton({ name }: { name: string }) {
       });
       return res;
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
   return (
