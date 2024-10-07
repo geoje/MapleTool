@@ -4,8 +4,11 @@ import Header from "./components/header";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/home/page";
 import { links } from "./constants/links";
+import { useHandleErrorToast } from "./hooks/useHandleErrorToast";
 
 export default function App() {
+  useHandleErrorToast();
+
   return (
     <Flex>
       <Sidebar />

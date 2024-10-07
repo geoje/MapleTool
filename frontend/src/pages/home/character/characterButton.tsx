@@ -66,18 +66,7 @@ export default function CharacterButton({
     if (!selected || !name) return;
 
     refetch().then((res) => {
-      if (error) {
-        toastWarning({
-          title: "캐릭터 기본 정보 갱신 실패",
-          description: (
-            <>
-              <Text>{name}</Text>
-              <Text>{JSON.stringify(error)}</Text>
-            </>
-          ),
-        });
-        return res;
-      }
+      if (!res.isSuccess) return;
 
       toastSuccess({
         title: "캐릭터 기본 정보 갱신됨",

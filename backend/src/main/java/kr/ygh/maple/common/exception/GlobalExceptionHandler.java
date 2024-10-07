@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ProblemDetail handleNoEndpoint(NoHandlerFoundException ex) {
+    public ProblemDetail handleNoEndpoint() {
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
                 "잘못된 요청입니다."
