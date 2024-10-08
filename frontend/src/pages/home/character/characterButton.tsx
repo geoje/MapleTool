@@ -88,7 +88,7 @@ export default function CharacterButton({
       variant={name && selected ? undefined : "ghost"}
       opacity={isDragging ? 0.4 : undefined}
       transform={transform ? transformToString(transform) : undefined}
-      transition={transition}
+      transition={transition ?? "transform 0ms linear"}
       onClick={onClick}
     >
       {name && selected && (

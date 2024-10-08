@@ -60,7 +60,7 @@ export default function CharacterButtons() {
       onDragCancel={handleDragCancel}
     >
       <SortableContext items={history} strategy={rectSortingStrategy}>
-        <Flex gap={2} wrap="wrap">
+        <Flex gap={2} justify="center" wrap="wrap">
           {!history.length && <CharacterButton name="" />}
           {history.map((name) => (
             <CharacterButton key={"cha-btn-" + name} name={name} />
