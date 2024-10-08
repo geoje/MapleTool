@@ -9,13 +9,11 @@ export const useHandleErrorToast = () => {
 
   useEffect(() => {
     if (!error) return;
-    console.log(error);
-
     toastWarning({
-      title: error.detail ?? "서버 요청에 실패하였습니다.",
-      description: error.fields ? (
+      title: error.data?.detail ?? "서버 요청에 실패하였습니다.",
+      description: error.data?.fields ? (
         <UnorderedList>
-          {Object.entries(error.fields).map(([key, value]) => (
+          {Object.entries(error.data.fields).map(([key, value]) => (
             <ListItem key={key}>
               {key} : {value}
             </ListItem>

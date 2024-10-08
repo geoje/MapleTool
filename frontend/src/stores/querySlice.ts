@@ -1,15 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import ProblemDetail from "../types/query/problemDetail";
+import QueryError from "../types/query/queryError";
 
 export const queryKey = "query";
 
-const initialState: { error?: ProblemDetail } = {};
+const initialState: { error?: QueryError } = {};
 
 const querySlice = createSlice({
   name: queryKey,
   initialState,
   reducers: {
-    setError: (state, action: PayloadAction<ProblemDetail>) => {
+    setError: (state, action: PayloadAction<QueryError>) => {
       state.error = action.payload;
     },
     clearError: (state) => {

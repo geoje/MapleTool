@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Text, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Icon, useColorMode } from "@chakra-ui/react";
 import { forwardRef, useEffect } from "react";
 import { LuGripVertical, LuX } from "react-icons/lu";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
@@ -8,7 +8,7 @@ import {
   setNameAndAddHistory,
 } from "../../../stores/userSlice";
 import { useBasicQuery } from "../../../stores/characterApi";
-import { useSuccessToast, useWarningToast } from "../../../hooks/useToast";
+import { useSuccessToast } from "../../../hooks/useToast";
 import { useSortable } from "@dnd-kit/sortable";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
@@ -23,12 +23,11 @@ export default function CharacterButton({
 }) {
   const isDark = useColorMode().colorMode == "dark";
   const toastSuccess = useSuccessToast();
-  const toastWarning = useWarningToast();
 
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
   const selected = !readOnly && userName == name;
-  const { data, error, isFetching, refetch } = useBasicQuery(name, {
+  const { data, isFetching, refetch } = useBasicQuery(name, {
     skip: !name,
   });
 
