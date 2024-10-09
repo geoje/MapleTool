@@ -6,18 +6,14 @@
 - 캐릭터 장비의 **잠재능력** 또는 **스타포스** 를 게임 내와 같은 확률로 재설정 및 강화를 해볼 수 있습니다.
 - 캐릭터 별 보스 스케쥴을 선택 해 주간 수익을 통계낼 수 있습니다.
 
-## ⚙️ 아키텍처
-
-![](https://raw.githubusercontent.com/geoje/MapleTool/develop/screenshot/architecture.svg)
-
-## 🎲 기능 - 아이템 잠재능력
+## 🎲 잠재능력
 
 ![](https://raw.githubusercontent.com/geoje/MapleTool/develop/screenshot/potential.png)
 
-## 🔮 기능 - 유니온 아티팩트
+## 🔮 아티팩트
 
 ![](https://raw.githubusercontent.com/geoje/MapleTool/develop/screenshot/union-artifact.png)
 
-## 💎 기능 - 결정석
+## 💎 결정석
 
 ![](https://raw.githubusercontent.com/geoje/MapleTool/develop/screenshot/crystal.gif)
