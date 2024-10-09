@@ -138,7 +138,7 @@ export default function PlanModal({
           }
         >
           <Image src={boss.icon} />
-          <Text>{boss.name}</Text>
+          <Text display={["none", "none", "block"]}>{boss.name}</Text>
         </Flex>
         <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
           {Object.entries(boss.prices).map(([difficulty], j) => (
@@ -255,7 +255,7 @@ export default function PlanModal({
             }
           >
             <Image src={icon} />
-            <Text>{name}</Text>
+            <Text display={["none", "none", "block"]}>{name}</Text>
           </Flex>
           <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
             <Checkbox
