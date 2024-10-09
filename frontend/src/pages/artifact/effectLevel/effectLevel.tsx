@@ -17,7 +17,7 @@ export default function EffectLevel({
   useEffect(() => {
     setEffectIndex(0);
     setEffectLevels(calcEffectLevels(artifactLevel)[0]);
-  }, [artifactLevel]);
+  }, [artifactLevel, setEffectIndex, setEffectLevels]);
 
   return (
     <Stack>

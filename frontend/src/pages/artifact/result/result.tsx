@@ -5,9 +5,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  useBreakpointValue,
   useColorMode,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { FaDiamond } from "react-icons/fa6";
 import { useState } from "react";
@@ -69,52 +67,27 @@ function Crystal({
   hoverEffect: string;
   setHoverEffect: (value: string) => void;
 }) {
-  const levelIconSize = useBreakpointValue({ base: 12, md: 16 });
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
+  const palette50 = dark ? ".900" : ".50";
+  const palette100 = dark ? ".800" : ".100";
+  const palette200 = dark ? ".700" : ".200";
+  const palette500 = dark ? ".400" : ".500";
 
-  const buttonBackgroundColor = useColorModeValue("gray.100", "whiteAlpha.200");
-  const buttonHoverBackgroundColor = useColorModeValue(
-    "gray.300",
-    "whiteAlpha.400"
-  );
+  const isMaxLevel = level == MAX_CRYSTAL_LEVEL;
+  const colorScheme = isMaxLevel ? "purple" : "blue";
 
   return (
-    <Stack
-      p={[2, 2, 4]}
-      borderRadius={8}
-      bgColor={dark ? "gray.800" : "gray.50"}
-      justify="end"
-    >
+    <Stack p={[2, 2, 4]} borderRadius={8} bgColor={colorScheme + palette50}>
       <Flex justify="center" pt={2} gap={1}>
         {new Array(level).fill(0).map((_, i) => (
-          <Text
-            key={"diamond-" + i}
-            color={
-              dark
-                ? level < MAX_CRYSTAL_LEVEL
-                  ? "blue.400"
-                  : "purple.400"
-                : level < MAX_CRYSTAL_LEVEL
-                ? "blue.600"
-                : "purple.600"
-            }
-          >
-            <FaDiamond size={levelIconSize} />
+          <Text key={"diamond-" + i} color={colorScheme + palette500}>
+            <FaDiamond size={12} />
           </Text>
         ))}
       </Flex>
       <Flex justify="center">
-        <Image
-          src={icon}
-          filter={
-            level
-              ? level < MAX_CRYSTAL_LEVEL
-                ? undefined
-                : "hue-rotate(50deg)"
-              : "grayscale(1)"
-          }
-        />
+        <Image src={icon} />
       </Flex>
       {effects.map((effect, i) => (
         <Button
@@ -122,11 +95,9 @@ function Crystal({
           size="xs"
           backgroundColor={
             effect &&
-            (hoverEffect == effect
-              ? buttonHoverBackgroundColor
-              : buttonBackgroundColor)
+            colorScheme + (hoverEffect == effect ? palette200 : palette100)
           }
-          _hover={{ backgroundColor: buttonHoverBackgroundColor }}
+          _hover={{ backgroundColor: colorScheme + palette200 }}
           onMouseEnter={() => setHoverEffect(effect)}
           onMouseLeave={() => setHoverEffect("")}
         >

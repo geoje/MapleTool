@@ -4,5 +4,5 @@ export default interface ProblemDetail {
   status?: number;
   detail?: string;
   instance?: string;
-  fields?: Object;
+  fields?: object;
 }

@@ -31,7 +31,7 @@ export default function SelectEffect({
       effectLevels.length
     );
     setEffectNames(newEffectNames);
-  }, [effectLevels]);
+  }, [effectLevels, effectNames, setEffectNames]);
 
   return (
     <Stack>
