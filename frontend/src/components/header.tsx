@@ -35,7 +35,7 @@ export default function Header() {
 function Desktop() {
   const { pathname } = useLocation();
   const name = useAppSelector((state) => state.user.name);
-  const { data } = useBasicQuery(name);
+  const { data } = useBasicQuery(name, { skip: !name });
 
   const title = LINKS.find((link) =>
     pathname.startsWith("/" + link.name)
@@ -70,7 +70,7 @@ function Desktop() {
 function Mobile() {
   const { pathname } = useLocation();
   const name = useAppSelector((state) => state.user.name);
-  const { data } = useBasicQuery(name);
+  const { data } = useBasicQuery(name, { skip: !name });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();

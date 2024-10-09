@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistStore } from "redux-persist";
 import { userKey, userReducer } from "./userSlice";
 import { characterApi, characterReducer } from "./characterApi";
-import globalQueryErrorMiddleware from "../middleware/globalQueryErrorMiddleware";
+import globalQueryErrorMiddleware from "../middlewares/globalQueryErrorMiddleware";
 import { queryKey, queryReducer } from "./querySlice";
 import { unionApi, unionReducer } from "./unionApi";
 
