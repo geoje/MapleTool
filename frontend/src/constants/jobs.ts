@@ -7,7 +7,7 @@ import warrior from "../assets/union/raid/job/warrior.png";
 import wizard from "../assets/union/raid/job/wizard.png";
 import xenon from "../assets/union/raid/job/xenon.png";
 
-const data = {
+const DATA = {
   warrior: [
     "검사",
     "파이터",
@@ -106,13 +106,13 @@ const data = {
   blank: ["초보자", "노블레스", "시티즌"],
 };
 
-export const jobs: { name: string; icon: string }[] = [
-  ...data.warrior.map((name) => ({ name, icon: warrior })),
-  ...data.wizard.map((name) => ({ name, icon: wizard })),
-  ...data.archer.map((name) => ({ name, icon: archer })),
-  ...data.thief.map((name) => ({ name, icon: thief })),
-  ...data.pirate.map((name) => ({ name, icon: pirate })),
-  ...data.xenon.map((name) => ({ name, icon: xenon })),
-  ...data.maplem.map((name) => ({ name, icon: maplem })),
-  ...data.blank.map((name) => ({ name, icon: blank })),
+export const JOBS: { name: string; icon: string }[] = [
+  ...DATA.warrior.map((name) => ({ name, icon: warrior })),
+  ...DATA.wizard.map((name) => ({ name, icon: wizard })),
+  ...DATA.archer.map((name) => ({ name, icon: archer })),
+  ...DATA.thief.map((name) => ({ name, icon: thief })),
+  ...DATA.pirate.map((name) => ({ name, icon: pirate })),
+  ...DATA.xenon.map((name) => ({ name, icon: xenon })),
+  ...DATA.maplem.map((name) => ({ name, icon: maplem })),
+  ...DATA.blank.map((name) => ({ name, icon: blank })),
 ];

@@ -13,7 +13,7 @@ import scania from "../assets/world/scania.png";
 import union from "../assets/world/union.png";
 import zenith from "../assets/world/zenith.png";
 
-export const worlds: { name: string; label: string; icon: string }[] = [
+export const WORLDS: { name: string; label: string; icon: string }[] = [
   {
     name: "arcane",
     label: "아케인",
