@@ -15,6 +15,9 @@ import { MdMenu } from "react-icons/md";
 import { LINKS } from "../constants/links";
 import MobileDrawer from "./mobileDrawer";
 import { useEffect } from "react";
+import { useAppSelector } from "../stores/hooks";
+import { useBasicQuery } from "../stores/characterApi";
+import characterBlank from "../assets/union/raid/character-blank.png";
 
 export default function Header() {
   return (
@@ -31,6 +34,8 @@ export default function Header() {
 
 function Desktop() {
   const { pathname } = useLocation();
+  const name = useAppSelector((state) => state.user.name);
+  const { data } = useBasicQuery(name);
 
   const title = LINKS.find((link) =>
     pathname.startsWith("/" + link.name)
@@ -53,8 +58,10 @@ function Desktop() {
           as={Link}
           to="/"
           variant="ghost"
-          leftIcon={<ProfileImage />}
-        ></Button>
+          leftIcon={<ProfileImage src={data?.character_image} />}
+        >
+          {data?.character_name}
+        </Button>
       )}
     </Flex>
   );
@@ -62,6 +69,9 @@ function Desktop() {
 
 function Mobile() {
   const { pathname } = useLocation();
+  const name = useAppSelector((state) => state.user.name);
+  const { data } = useBasicQuery(name);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
@@ -88,7 +98,7 @@ function Mobile() {
           to="/"
           variant="ghost"
           size="lg"
-          icon={<ProfileImage />}
+          icon={<ProfileImage src={data?.character_image} />}
         />
       )}
       <MobileDrawer isOpen={isOpen} onClose={onClose} />
@@ -100,7 +110,7 @@ function ProfileImage({ src }: { src?: string }) {
   return (
     <Image
       boxSize="32px"
-      src={src ?? "/union-raid/character-blank.png"}
+      src={src ?? characterBlank}
       filter={src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"}
       style={{ imageRendering: "pixelated" }}
     />

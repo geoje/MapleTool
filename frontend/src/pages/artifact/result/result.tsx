@@ -11,21 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { FaDiamond } from "react-icons/fa6";
 import { useState } from "react";
-import { effectNames, MAX_CRYSTAL_LEVEL } from "../../../constants/artifact";
+import { EFFECT_NAMES, MAX_CRYSTAL_LEVEL } from "../../../constants/artifact";
 import { crystalEffectIndexes, crystals } from "../../../utils/artifact";
-
-const CRYSTAL_URL_FORMAT = "/union-artifact/opened/{name}.webp";
-const CRYSTAL_IMAGES_URL = [
-  "orange-mushroom",
-  "slime",
-  "horny-mushroom",
-  "stump",
-  "golem",
-  "balrog",
-  "zaqqum",
-  "pinkbean",
-  "papulatus",
-].map((v) => CRYSTAL_URL_FORMAT.replace("{name}", v));
+import { getArtifactIcon } from "../../../utils/icon";
 
 export default function ResultGrid({
   artifactLevel,
@@ -46,7 +34,7 @@ export default function ResultGrid({
     indexes.map((oneAddedEffectNameIndex) => {
       const fullEffectName = effectNames[oneAddedEffectNameIndex - 1];
       return (
-        effectNames.find((effectName) => effectName.full == fullEffectName)
+        EFFECT_NAMES.find((effectName) => effectName.full == fullEffectName)
           ?.abbreviate ?? ""
       );
     })
@@ -54,12 +42,12 @@ export default function ResultGrid({
 
   return (
     <SimpleGrid columns={3} gap={3}>
-      {new Array(CRYSTAL_IMAGES_URL.length).fill(0).map((_, i) => (
+      {levels.map((level, i) => (
         <Crystal
           key={"crystal-" + i}
-          level={levels[i] ?? 0}
+          level={level}
           effects={effectNamesByButton[i] ?? ["", "", ""]}
-          imgUrl={CRYSTAL_IMAGES_URL[i]}
+          icon={getArtifactIcon(i, level)}
           hoverEffect={hoverEffect}
           setHoverEffect={setHoverEffect}
         />
@@ -71,13 +59,13 @@ export default function ResultGrid({
 function Crystal({
   level,
   effects,
-  imgUrl,
+  icon,
   hoverEffect,
   setHoverEffect,
 }: {
   level: number;
   effects: string[];
-  imgUrl: string;
+  icon: string;
   hoverEffect: string;
   setHoverEffect: (value: string) => void;
 }) {
@@ -118,7 +106,7 @@ function Crystal({
       </Flex>
       <Flex justify="center">
         <Image
-          src={imgUrl}
+          src={icon}
           filter={
             level
               ? level < MAX_CRYSTAL_LEVEL

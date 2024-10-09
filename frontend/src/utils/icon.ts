@@ -1,5 +1,8 @@
 import blank from "../assets/union/raid/job/blank.png";
-import { ICONS as ARTIFACT_ICONS } from "../constants/artifact";
+import {
+  ICONS as ARTIFACT_ICONS,
+  MAX_CRYSTAL_LEVEL,
+} from "../constants/artifact";
 import { JOBS } from "../constants/jobs";
 import { WORLDS } from "../constants/worlds";
 
@@ -13,8 +16,8 @@ export function getWorldIcon(label?: string) {
   return WORLDS.find((world) => world.label == label)?.icon ?? blank;
 }
 
-export function getArtifactIcon(index?: number, max?: boolean) {
-  return max
+export function getArtifactIcon(index?: number, level?: number) {
+  return level == MAX_CRYSTAL_LEVEL
     ? ARTIFACT_ICONS[index ?? 0].purple
     : ARTIFACT_ICONS[index ?? 0].blue;
 }

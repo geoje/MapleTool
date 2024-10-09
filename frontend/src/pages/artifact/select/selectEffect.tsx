@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Select, components } from "chakra-react-select";
 import {
-  effectNames,
+  EFFECT_NAMES,
   MAX_APPLIED_EFFECT_LEVEL,
 } from "../../../constants/artifact";
 import { useEffect } from "react";
@@ -23,9 +23,9 @@ export default function SelectEffect({
   setEffectNames: (values: string[]) => void;
 }) {
   useEffect(() => {
-    const unusedEffectNames = effectNames
-      .filter(({ full }) => !effectNames.some((existName) => existName == full))
-      .map(({ full }) => full);
+    const unusedEffectNames = EFFECT_NAMES.filter(
+      ({ full }) => !effectNames.some((existName) => existName == full)
+    ).map(({ full }) => full);
     const newEffectNames = [...effectNames, ...unusedEffectNames].slice(
       0,
       effectLevels.length
@@ -82,7 +82,7 @@ function EffectSelector({
     <Box flex={1}>
       <Select
         size="sm"
-        options={effectNames.map(({ full }) => ({
+        options={EFFECT_NAMES.map(({ full }) => ({
           label: full,
           value: String(effectNames.includes(full) ? true : false),
         }))}
