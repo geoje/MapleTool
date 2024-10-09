@@ -20,22 +20,23 @@ import {
 import { Fragment, useEffect, useState } from "react";
 import { FiCopy, FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../../../stores/hooks";
-import {
-  addUserBossPlan,
-  setUserBossPlan,
-  deleteUserBossPlan,
-  insertUserBossPlan,
-} from "../../../../stores/userSlice";
+import NameEditable from "./nameEditable";
 import {
   BOSS,
   BOSS_DIFFICULTY,
   BOSS_MAXIMUN_SELECTABLE,
   BOSS_TYPE,
   COLOR,
-} from "../../../../service/user/crystal/bossConstants";
-import BossPlan from "../../../../types/user/crystal/bossPlan";
-import NameEditable from "./nameEditable";
-import CrystalService from "../../../../service/user/crystal/crystal";
+} from "../../../../constants/boss";
+import BossPlan from "../../../../types/user/bossPlan";
+import {
+  addBossPlan,
+  deleteBossPlan,
+  insertBossPlan,
+  setBossPlan,
+} from "../../../../stores/userSlice";
+import { getPrice } from "../../../../utils/boss";
+import characterBlank from "../../../../assets/union/raid/character-blank.png";
 
 const DEFAULT_CURRENT_PLAN = {
   name: "",
@@ -79,9 +80,9 @@ export default function PlanModal({
     if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
       if (!plan.name.length && !plan.boss.length) return plan;
 
-      dispatch(addUserBossPlan(plan));
+      dispatch(addBossPlan(plan));
       setCurrentPlan(DEFAULT_CURRENT_PLAN);
-    } else dispatch(setUserBossPlan({ index: bossPlanIndex, value: plan }));
+    } else dispatch(setBossPlan({ index: bossPlanIndex, value: plan }));
 
     return plan;
   };
@@ -91,8 +92,8 @@ export default function PlanModal({
     if (bossPlanIndex < 0 || bossPlanIndex >= bossPlan.length) {
       if (!plan.name.length && !plan.boss.length) return;
 
-      dispatch(addUserBossPlan(plan));
-    } else dispatch(insertUserBossPlan({ index: bossPlanIndex, value: plan }));
+      dispatch(addBossPlan(plan));
+    } else dispatch(insertBossPlan({ index: bossPlanIndex, value: plan }));
   };
 
   useEffect(() => {
@@ -216,7 +217,7 @@ export default function PlanModal({
         >
           {currentPlan.difficulty.has(type as BOSS_TYPE) &&
             Math.round(
-              CrystalService.price(
+              getPrice(
                 type as BOSS_TYPE,
                 currentPlan.difficulty.get(type as BOSS_TYPE)!
               ) / (currentPlan.partyMembers.get(type as BOSS_TYPE) ?? 1)
@@ -344,11 +345,7 @@ export default function PlanModal({
         <ModalHeader as={Flex} pr={24} gap={4} pb={0} align="center">
           <Image
             boxSize="48px"
-            src={
-              currentPlan.image.length
-                ? currentPlan.image
-                : "/union-raid/character-blank.png"
-            }
+            src={currentPlan.image.length ? currentPlan.image : characterBlank}
             filter={
               currentPlan.image.length
                 ? undefined
@@ -370,7 +367,7 @@ export default function PlanModal({
           <ModalDeleteButton
             onClick={() => {
               if (bossPlanIndex >= 0 && bossPlanIndex < bossPlan.length)
-                dispatch(deleteUserBossPlan(bossPlanIndex));
+                dispatch(deleteBossPlan(bossPlanIndex));
               onClose();
             }}
           />

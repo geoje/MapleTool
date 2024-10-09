@@ -1,9 +1,9 @@
 import { Button, Flex, useDisclosure } from "@chakra-ui/react";
 import Profile from "./profile";
 import BossSummary from "./bossSummary";
-import BossPlan from "../../../types/user/crystal/bossPlan";
-import CrystalService from "../../../service/user/crystal/crystal";
 import PlanModal from "./modal/planModal";
+import BossPlan from "../../../types/user/bossPlan";
+import { getBossIcon } from "../../../utils/boss";
 
 export default function CharacterButton({
   bossPlan,
@@ -29,7 +29,7 @@ export default function CharacterButton({
           {bossPlan.boss.map((boss, i) => (
             <BossSummary
               key={`boss-${bossPlan.name}-${i}`}
-              src={CrystalService.getBossIcon(boss.type)}
+              src={getBossIcon(boss.type)}
               difficulty={boss.difficulty}
               partyMembers={boss.partyMembers}
             />

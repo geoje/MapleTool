@@ -7,12 +7,11 @@ import {
   Input,
   Spinner,
   useEditableControls,
-  useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect } from "react";
 import { FiEdit } from "react-icons/fi";
-import CharacterService from "../../../../service/character/character";
-import { AxiosError } from "axios";
+import { useBasicQuery } from "../../../../stores/characterApi";
+import { useSuccessToast } from "../../../../hooks/useToast";
 
 export default function NameEditable({
   name,
@@ -23,46 +22,25 @@ export default function NameEditable({
   onNameChanged: (name: string) => void;
   onImageReceived: (image: string) => void;
 }) {
-  const toast = useToast();
-  const [currentName, setCurrentName] = useState(name);
-  const [requesting, setRequesting] = useState(false);
+  const toastSuccess = useSuccessToast();
+  const { data, isFetching, isSuccess } = useBasicQuery(name, {
+    skip: !name,
+  });
 
-  // Copied from src/content/home/page.tsx:80
-  function onCharacterNameSubmit() {
-    onNameChanged(currentName.trim());
-    if (currentName.trim() == "") {
-      onImageReceived("");
-      return;
-    }
-    setRequesting(true);
+  useEffect(() => {
+    if (!isSuccess || !data) return;
 
-    CharacterService.requestBasic(currentName)
-      .then((basic) => {
-        onImageReceived(basic.character_image);
-        toast({
-          position: "top-right",
-          status: "success",
-          title: "캐릭터 이미지 등록됨",
-          description: basic.character_name,
-          isClosable: true,
-        });
-      })
-      .catch((reason: AxiosError) => {
-        toast({
-          position: "top-right",
-          status: "error",
-          title: `캐릭터 이미지 등록 실패 (${reason.message})`,
-          description: Object(reason.response?.data).message,
-          isClosable: true,
-        });
-      })
-      .finally(() => setRequesting(false));
-  }
+    onImageReceived(data?.character_image);
+    toastSuccess({
+      title: "이미지 등록됨",
+      description: name,
+    });
+  }, [isSuccess]);
 
   function EditableControls() {
     const { isEditing, getEditButtonProps } = useEditableControls();
 
-    return requesting ? (
+    return isFetching ? (
       <Spinner mt={2} size="xs" />
     ) : isEditing ? (
       <></>
@@ -85,10 +63,9 @@ export default function NameEditable({
       gap={2}
       align="center"
       textAlign="center"
-      placeholder="캐릭터 이름"
-      value={currentName}
-      onChange={setCurrentName}
-      onSubmit={onCharacterNameSubmit}
+      placeholder="캐릭터명"
+      defaultValue={name}
+      onSubmit={onNameChanged}
     >
       <EditablePreview opacity={name ? 1 : 0.4} />
       <Input as={EditableInput} />

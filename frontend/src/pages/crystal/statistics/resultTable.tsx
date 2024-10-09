@@ -8,15 +8,15 @@ import {
 } from "@chakra-ui/react";
 import { useAppSelector } from "../../../stores/hooks";
 import { Fragment } from "react/jsx-runtime";
-import CrystalService from "../../../service/user/crystal/crystal";
 import { useState } from "react";
-import { BOSS_MAXIMUN_SELECTABLE } from "../../../service/user/crystal/bossConstants";
+import { calculateRevenue } from "../../../utils/boss";
+import { BOSS_MAXIMUN_SELECTABLE } from "../../../constants/boss";
 
 export default function ResultTable() {
   const bossPlan = useAppSelector((state) => state.user.bossPlan);
   const [excludes, setExcludes] = useState(new Set<number>());
 
-  const revenues = bossPlan.map(CrystalService.calculateRevenue);
+  const revenues = bossPlan.map(calculateRevenue);
   const totalCount = bossPlan
     .map((plan) => plan.boss.length)
     .filter((_, i) => !excludes.has(i))

@@ -2,6 +2,7 @@ import crystal from "../assets/link/crystal.svg";
 import cube from "../assets/link/cube.svg";
 import artifact from "../assets/link/artifact.svg";
 import Artifact from "../pages/artifact/page";
+import Crystal from "../pages/crystal/page";
 
 export const LINKS: {
   name: string;
@@ -25,6 +26,6 @@ export const LINKS: {
     name: "crystal",
     label: "보스결정",
     icon: crystal,
-    element: <></>,
+    element: <Crystal />,
   },
 ];
