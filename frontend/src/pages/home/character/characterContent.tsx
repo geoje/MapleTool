@@ -1,5 +1,5 @@
 import { Flex, Image, Spinner, Text } from "@chakra-ui/react";
-import { CharacterBasic } from "../../../types/character/characterBasic";
+import { Basic } from "../../../types/character/basic";
 import { GetJobIcon } from "../../../utils/getJobIcon";
 import { GetWorldIcon } from "../../../utils/getWorldIcon";
 import characterBlank from "../../../assets/union/raid/character-blank.png";
@@ -10,7 +10,7 @@ export default function CharacterContent({
   fallbackName,
 }: {
   isFetching: boolean;
-  data?: CharacterBasic;
+  data?: Basic;
   fallbackName?: string;
 }) {
   return (

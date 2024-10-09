@@ -1,4 +1,4 @@
-export interface CharacterBasic {
+export interface Basic {
   date: string;
   character_name: string;
   world_name: string;

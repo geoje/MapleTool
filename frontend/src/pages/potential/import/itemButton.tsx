@@ -1,6 +1,6 @@
 import { IconButton, Image, Tooltip } from "@chakra-ui/react";
 import ItemToolTip from "./itemToolTip";
-import { CharacterItemEquipmentDetail } from "../../../types/character/characterItemEquipment";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
 import { BORDER_COLOR } from "../../../service/character/itemEquipment/potentialConst";
 import PotentialService from "../../../service/character/itemEquipment/potential";
 
@@ -10,7 +10,7 @@ export default function ItemButton({
   colorScheme,
   onClick,
 }: {
-  item?: CharacterItemEquipmentDetail;
+  item?: ItemEquipmentDetail;
   appear?: boolean;
   colorScheme?: string;
   onClick?: () => void;

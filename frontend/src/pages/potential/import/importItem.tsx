@@ -1,8 +1,8 @@
 import { Button, Divider, Flex, Grid, GridItem, Stack } from "@chakra-ui/react";
 import {
-  CharacterItemEquipment,
-  CharacterItemEquipmentDetail,
-} from "../../../types/character/characterItemEquipment";
+  ItemEquipment,
+  ItemEquipmentDetail,
+} from "../../../types/character/itemEquipment";
 import ItemEquipmentService from "../../../service/character/itemEquipment/itemEquipment";
 import ItemButton from "./itemButton";
 import { useAppDispatch } from "../../../stores/hooks";
@@ -14,11 +14,11 @@ export default function ImportItem({
   characterItemEquipment,
   preset,
 }: {
-  characterItemEquipment?: CharacterItemEquipment;
+  characterItemEquipment?: ItemEquipment;
   preset: number;
 }) {
   const dispatch = useAppDispatch();
-  const [, setItems] = useState<CharacterItemEquipmentDetail[]>([]);
+  const [, setItems] = useState<ItemEquipmentDetail[]>([]);
 
   useEffect(() => {
     setItems([]);
@@ -63,9 +63,9 @@ function ItemGrid({
   preset,
   onitemButtonClick,
 }: {
-  characterItemEquipment: CharacterItemEquipment;
+  characterItemEquipment: ItemEquipment;
   preset: number;
-  onitemButtonClick: (item: CharacterItemEquipmentDetail) => void;
+  onitemButtonClick: (item: ItemEquipmentDetail) => void;
 }) {
   const defaultItemGrid = ItemEquipmentService.itemGrid(
     characterItemEquipment,

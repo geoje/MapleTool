@@ -1,21 +1,21 @@
-export interface CharacterItemEquipment {
+export interface ItemEquipment {
   date: string;
   character_gender: string;
   character_class: string;
   preset_no: number;
-  item_equipment: CharacterItemEquipmentDetail[];
-  item_equipment_preset1: CharacterItemEquipmentDetail[];
-  item_equipment_preset2: CharacterItemEquipmentDetail[];
-  item_equipment_preset3: CharacterItemEquipmentDetail[];
-  item_equipment_preset_1: CharacterItemEquipmentDetail[];
-  item_equipment_preset_2: CharacterItemEquipmentDetail[];
-  item_equipment_preset_3: CharacterItemEquipmentDetail[];
-  title: CharacterItemEquipmentTitle;
-  dragon_equipment: CharacterItemEquipmentDetail[];
-  mechanic_equipment: CharacterItemEquipmentDetail[];
+  item_equipment: ItemEquipmentDetail[];
+  item_equipment_preset1: ItemEquipmentDetail[];
+  item_equipment_preset2: ItemEquipmentDetail[];
+  item_equipment_preset3: ItemEquipmentDetail[];
+  item_equipment_preset_1: ItemEquipmentDetail[];
+  item_equipment_preset_2: ItemEquipmentDetail[];
+  item_equipment_preset_3: ItemEquipmentDetail[];
+  title: ItemEquipmentTitle;
+  dragon_equipment: ItemEquipmentDetail[];
+  mechanic_equipment: ItemEquipmentDetail[];
 }
 
-export interface CharacterItemEquipmentDetail {
+export interface ItemEquipmentDetail {
   item_equipment_part: string;
   item_equipment_slot: string;
   item_name: string;
@@ -24,8 +24,8 @@ export interface CharacterItemEquipmentDetail {
   item_shape_name: string;
   item_shape_icon: string;
   item_gender: string;
-  item_total_option: CharacterItemEquipmentOption;
-  item_base_option: CharacterItemEquipmentOption;
+  item_total_option: ItemEquipmentOption;
+  item_base_option: ItemEquipmentOption;
   potential_option_grade: string;
   additional_potential_option_grade: string;
   potential_option_1: string;
@@ -35,8 +35,8 @@ export interface CharacterItemEquipmentDetail {
   additional_potential_option_2: string;
   additional_potential_option_3: string;
   equipment_level_increase: number;
-  item_exceptional_option: CharacterItemEquipmentOption;
-  item_add_option: CharacterItemEquipmentOption;
+  item_exceptional_option: ItemEquipmentOption;
+  item_add_option: ItemEquipmentOption;
   growth_exp: number;
   growth_level: number;
   scroll_upgrade: string;
@@ -46,15 +46,15 @@ export interface CharacterItemEquipmentDetail {
   scroll_upgradeable_count: string;
   soul_name: string;
   soul_option: string;
-  item_etc_option: CharacterItemEquipmentOption;
+  item_etc_option: ItemEquipmentOption;
   starforce: string;
   starforce_scroll_flag: string;
-  item_starforce_option: CharacterItemEquipmentOption;
+  item_starforce_option: ItemEquipmentOption;
   special_ring_level: number;
   date_expire: string;
 }
 
-export interface CharacterItemEquipmentOption {
+export interface ItemEquipmentOption {
   str: string;
   dex: string;
   intellect: string;
@@ -77,7 +77,7 @@ export interface CharacterItemEquipmentOption {
   base_equipment_level: number;
 }
 
-export interface CharacterItemEquipmentTitle {
+export interface ItemEquipmentTitle {
   title_name: string;
   title_icon: string;
   title_description: string;

@@ -1,4 +1,4 @@
-export interface UnionBasic {
+export interface Basic {
   date: string;
   union_level: number;
   union_grade: string;

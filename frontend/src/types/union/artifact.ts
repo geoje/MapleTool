@@ -1,10 +1,10 @@
-export interface UnionArtifact {
+export interface Artifact {
   date: string;
-  union_artifact_effect: UnionArtifactEffect[];
-  union_artifact_crystal: UnionArtifactCrystal[];
+  union_artifact_effect: ArtifactEffect[];
+  union_artifact_crystal: ArtifactCrystal[];
 }
 
-export interface UnionArtifactCrystal {
+export interface ArtifactCrystal {
   name: string;
   validity_flag: string;
   date_expire: string;
@@ -14,7 +14,7 @@ export interface UnionArtifactCrystal {
   crystal_option_name3: string;
 }
 
-export interface UnionArtifactEffect {
+export interface ArtifactEffect {
   name: string;
   level: number;
 }

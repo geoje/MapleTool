@@ -10,7 +10,7 @@ import {
 import { FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
 import { TOOLTIP_COLORS } from "../../../service/character/itemEquipment/itemEquipmentConst";
-import { CharacterItemEquipmentDetail } from "../../../types/character/characterItemEquipment";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
 import {
   IMAGE_COLOR,
   KOR_NAME,
@@ -19,11 +19,7 @@ import {
 import PotentialService from "../../../service/character/itemEquipment/potential";
 import StarfoceService from "../../../service/character/itemEquipment/startfoce";
 
-export default function ItemToolTip({
-  item,
-}: {
-  item: CharacterItemEquipmentDetail;
-}) {
+export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
   const potentialIndex = PotentialService.getMaxPotentialIndex(item);
 
   return (
@@ -167,7 +163,7 @@ function ImageAndReqLevel({
   );
 }
 
-function Options({ item }: { item: CharacterItemEquipmentDetail }) {
+function Options({ item }: { item: ItemEquipmentDetail }) {
   return (
     <>
       <Text fontSize="xs">장비분류 : {item.item_equipment_part}</Text>
@@ -418,7 +414,7 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
   );
 }
 
-function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
+function Potential({ item }: { item: ItemEquipmentDetail }) {
   const gradeIndex = KOR_NAME.indexOf(item.potential_option_grade);
   if (gradeIndex == -1) return <></>;
 
@@ -448,7 +444,7 @@ function Potential({ item }: { item: CharacterItemEquipmentDetail }) {
     </>
   );
 }
-function AddPotential({ item }: { item: CharacterItemEquipmentDetail }) {
+function AddPotential({ item }: { item: ItemEquipmentDetail }) {
   const gradeIndex = KOR_NAME.indexOf(item.additional_potential_option_grade);
   if (gradeIndex == -1) return <></>;
 

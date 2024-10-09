@@ -11,8 +11,6 @@ import {
 import ResultGrid from "./result/result";
 import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import UnionService from "../../service/union/union";
-import { setUnionBasic } from "../../stores/unionSlice";
-import { AxiosError } from "axios";
 import BoardCard from "../../components/boardCard";
 
 export default function Artifact() {

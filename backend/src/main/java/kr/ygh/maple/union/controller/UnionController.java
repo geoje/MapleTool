@@ -21,9 +21,4 @@ public class UnionController {
     public Basic basic(@ModelAttribute @Valid NameRequest nameRequest) {
         return unionService.readBasic(nameRequest.name());
     }
-
-    @GetMapping("test")
-    public String test() {
-        return "haha";
-    }
 }

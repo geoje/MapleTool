@@ -4,11 +4,13 @@ import { userKey, userReducer } from "./userSlice";
 import { characterApi, characterReducer } from "./characterApi";
 import globalQueryErrorMiddleware from "../middleware/globalQueryErrorMiddleware";
 import { queryKey, queryReducer } from "./querySlice";
+import { unionApi, unionReducer } from "./unionApi";
 
 const reducer = combineReducers({
   [userKey]: userReducer,
   [queryKey]: queryReducer,
   [characterApi.reducerPath]: characterReducer,
+  [unionApi.reducerPath]: unionReducer,
 });
 
 export const store = configureStore({
