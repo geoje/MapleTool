@@ -8,34 +8,30 @@ import {
 import {
   MAX_ARTIFACT_LEVEL,
   MIN_ARTIFACT_LEVEL,
-} from "../../../service/union/artifact/artifactConstants";
+} from "../../../constants/artifact";
 
 export default function ArtifactLevel({
-  value,
-  onChange,
+  artifactLevel,
+  setArtifactlevel,
 }: {
-  value: number;
-  onChange: (value: number) => void;
+  artifactLevel: number;
+  setArtifactlevel: (value: number) => void;
 }) {
   const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
     useNumberInput({
       step: 1,
       min: MIN_ARTIFACT_LEVEL,
       max: MAX_ARTIFACT_LEVEL,
-      value,
-      onChange: (_, value) => onChange(value),
+      value: artifactLevel,
+      onChange: (_, value) => setArtifactlevel(value),
     });
-
-  const inc = getIncrementButtonProps();
-  const dec = getDecrementButtonProps();
-  const input = getInputProps();
 
   return (
     <HStack maxW={48}>
-      <Button {...dec}>-</Button>
-      <Input size="lg" {...input} />
+      <Button {...getDecrementButtonProps()}>-</Button>
+      <Input size="lg" {...getInputProps()} />
       <Tooltip label="꾹 누를 수도 있어요">
-        <Button {...inc}>+</Button>
+        <Button {...getIncrementButtonProps()}>+</Button>
       </Tooltip>
     </HStack>
   );

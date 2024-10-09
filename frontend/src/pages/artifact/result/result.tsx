@@ -10,8 +10,9 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaDiamond } from "react-icons/fa6";
-import { MAX_CRYSTAL_LEVEL } from "../../../service/union/artifact/artifactConstants";
 import { useState } from "react";
+import { effectNames, MAX_CRYSTAL_LEVEL } from "../../../constants/artifact";
+import { crystalEffectIndexes, crystals } from "../../../utils/artifact";
 
 const CRYSTAL_URL_FORMAT = "/union-artifact/opened/{name}.webp";
 const CRYSTAL_IMAGES_URL = [
@@ -27,13 +28,29 @@ const CRYSTAL_IMAGES_URL = [
 ].map((v) => CRYSTAL_URL_FORMAT.replace("{name}", v));
 
 export default function ResultGrid({
-  levels,
+  artifactLevel,
+  effectIndex,
   effectNames,
 }: {
-  levels: number[];
-  effectNames: string[][];
+  artifactLevel: number;
+  effectIndex: number;
+  effectNames: string[];
 }) {
   const [hoverEffect, setHoverEffect] = useState("");
+
+  const levels = crystals(artifactLevel).map((crystal) => crystal.level);
+  const effectNamesByButton: string[][] = crystalEffectIndexes(
+    artifactLevel,
+    effectIndex
+  ).map((indexes) =>
+    indexes.map((oneAddedEffectNameIndex) => {
+      const fullEffectName = effectNames[oneAddedEffectNameIndex - 1];
+      return (
+        effectNames.find((effectName) => effectName.full == fullEffectName)
+          ?.abbreviate ?? ""
+      );
+    })
+  );
 
   return (
     <SimpleGrid columns={3} gap={3}>
@@ -41,7 +58,7 @@ export default function ResultGrid({
         <Crystal
           key={"crystal-" + i}
           level={levels[i] ?? 0}
-          effects={effectNames[i] ?? ["", "", ""]}
+          effects={effectNamesByButton[i] ?? ["", "", ""]}
           imgUrl={CRYSTAL_IMAGES_URL[i]}
           hoverEffect={hoverEffect}
           setHoverEffect={setHoverEffect}

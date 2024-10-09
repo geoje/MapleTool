@@ -1,7 +1,7 @@
 import { Flex, Image, Spinner, Text } from "@chakra-ui/react";
 import { Basic } from "../../../types/character/basic";
-import { GetJobIcon } from "../../../utils/getJobIcon";
-import { GetWorldIcon } from "../../../utils/getWorldIcon";
+import { getJobIcon } from "../../../utils/icon";
+import { getWorldIcon } from "../../../utils/icon";
 import characterBlank from "../../../assets/union/raid/character-blank.png";
 
 export default function CharacterContent({
@@ -16,7 +16,7 @@ export default function CharacterContent({
   return (
     <>
       <Flex gap={1} align="center">
-        <Image src={GetJobIcon(data?.character_class)} />
+        <Image src={getJobIcon(data?.character_class)} />
         <Text fontSize="xs" opacity={0.6}>
           {data?.character_class ?? "직업"}
         </Text>
@@ -31,7 +31,7 @@ export default function CharacterContent({
         {isFetching ? (
           <Spinner w="14px" size="xs" />
         ) : (
-          <Image src={GetWorldIcon(data?.world_name)} />
+          <Image src={getWorldIcon(data?.world_name)} />
         )}
         <Text fontSize="xs" fontWeight="bold">
           {data?.character_name ?? (fallbackName ? fallbackName : "캐릭터명")}

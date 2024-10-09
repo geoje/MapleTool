@@ -3,7 +3,7 @@ import Sidebar from "./components/sidebar";
 import Header from "./components/header";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/home/page";
-import { links } from "./constants/links";
+import { LINKS } from "./constants/links";
 import { useHandleErrorToast } from "./hooks/useHandleErrorToast";
 
 export default function App() {
@@ -17,7 +17,7 @@ export default function App() {
         <Flex p={4} gap={4} wrap="wrap">
           <Routes>
             <Route path="/" element={<Home />} />
-            {links.map((link) => (
+            {LINKS.map((link) => (
               <Route
                 key={link.name}
                 path={"/" + link.name}

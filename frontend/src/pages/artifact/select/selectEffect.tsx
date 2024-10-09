@@ -8,27 +8,45 @@ import {
 } from "@chakra-ui/react";
 import { Select, components } from "chakra-react-select";
 import {
-  EFFECT_NAMES,
+  effectNames,
   MAX_APPLIED_EFFECT_LEVEL,
-} from "../../../service/union/artifact/artifactConstants";
+} from "../../../constants/artifact";
+import { useEffect } from "react";
 
 export default function SelectEffect({
   effectLevels,
-  currentEffectNames,
-  onChange,
+  effectNames,
+  setEffectNames,
 }: {
   effectLevels: number[];
-  currentEffectNames: string[];
-  onChange: (effectName: string, index: number) => void;
+  effectNames: string[];
+  setEffectNames: (values: string[]) => void;
 }) {
+  useEffect(() => {
+    const unusedEffectNames = effectNames
+      .filter(({ full }) => !effectNames.some((existName) => existName == full))
+      .map(({ full }) => full);
+    const newEffectNames = [...effectNames, ...unusedEffectNames].slice(
+      0,
+      effectLevels.length
+    );
+    setEffectNames(newEffectNames);
+  }, [effectLevels]);
+
   return (
     <Stack>
       {effectLevels.map((effectLevel, i) => (
         <Flex key={"effect-selector-" + i} align="center" gap={2}>
           <EffectSelector
-            effectName={currentEffectNames[i]}
-            currentEffectNames={currentEffectNames}
-            onChange={(effectName) => onChange(effectName, i)}
+            effectName={effectNames[i]}
+            effectNames={effectNames}
+            onNameSelected={(effectName) => {
+              const symmetryIndex = effectNames.indexOf(effectName);
+              const temp = [...effectNames];
+              temp[i] = effectName;
+              if (symmetryIndex != -1) temp[symmetryIndex] = effectNames[i];
+              setEffectNames(temp);
+            }}
           />
           <Badge
             colorScheme={
@@ -45,12 +63,12 @@ export default function SelectEffect({
 
 function EffectSelector({
   effectName,
-  currentEffectNames,
-  onChange,
+  effectNames,
+  onNameSelected,
 }: {
   effectName: string;
-  currentEffectNames: string[];
-  onChange: (effectName: string) => void;
+  effectNames: string[];
+  onNameSelected: (effectName: string) => void;
 }) {
   const { colorMode } = useColorMode();
   const dark = colorMode === "dark";
@@ -63,18 +81,20 @@ function EffectSelector({
   return (
     <Box flex={1}>
       <Select
-        options={EFFECT_NAMES.map(({ full }) => ({
+        size="sm"
+        options={effectNames.map(({ full }) => ({
           label: full,
-          value: String(currentEffectNames.includes(full) ? true : false),
+          value: String(effectNames.includes(full) ? true : false),
         }))}
         value={{ label: effectName, value: String(true) }}
-        onChange={(selected) => selected && onChange(selected.label)}
+        onChange={(selected) => selected && onNameSelected(selected.label)}
         components={{
-          Option: (props) => <components.Option {...props}></components.Option>,
+          Option: (props) => <components.Option {...props} />,
         }}
         styles={{
           option: (base, props) => ({
             ...base,
+            fontSize: "var(--chakra-fontSizes-sm)",
             cursor: "pointer",
             color: dark ? "white" : "black",
             backgroundColor: props.isSelected

@@ -1,23 +1,34 @@
 import { Badge, Flex, Radio, Stack } from "@chakra-ui/react";
-import ArtifactService from "../../../service/union/artifact/artifact";
-import { MAX_APPLIED_EFFECT_LEVEL } from "../../../service/union/artifact/artifactConstants";
+import { MAX_APPLIED_EFFECT_LEVEL } from "../../../constants/artifact";
+import { calcEffectLevels } from "../../../utils/artifact";
+import { useEffect } from "react";
 
 export default function EffectLevel({
   artifactLevel,
   effectIndex,
-  onChange,
+  setEffectIndex,
+  setEffectLevels,
 }: {
   artifactLevel: number;
   effectIndex: number;
-  onChange: (index: number, effectLevels: number[]) => void;
+  setEffectIndex: (value: number) => void;
+  setEffectLevels: (values: number[]) => void;
 }) {
+  useEffect(() => {
+    setEffectIndex(0);
+    setEffectLevels(calcEffectLevels(artifactLevel)[0]);
+  }, [artifactLevel]);
+
   return (
     <Stack>
-      {ArtifactService.effectLevels(artifactLevel).map((effectLevels, i) => (
+      {calcEffectLevels(artifactLevel).map((effectLevels, i) => (
         <Radio
           key={"effect-button-" + i}
           isChecked={i == effectIndex}
-          onChange={() => onChange(i, effectLevels)}
+          onChange={() => {
+            setEffectIndex(i);
+            setEffectLevels(effectLevels);
+          }}
         >
           <Flex gap={1}>
             {effectLevels.map((effectLevel, j) => (

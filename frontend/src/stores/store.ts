@@ -19,8 +19,9 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     })
+      .concat(globalQueryErrorMiddleware)
       .concat(characterApi.middleware)
-      .concat(globalQueryErrorMiddleware),
+      .concat(unionApi.middleware),
 });
 
 export const persistor = persistStore(store);

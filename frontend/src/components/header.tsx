@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import { links } from "../constants/links";
+import { LINKS } from "../constants/links";
 import MobileDrawer from "./mobileDrawer";
 import { useEffect } from "react";
 
@@ -32,7 +32,7 @@ export default function Header() {
 function Desktop() {
   const { pathname } = useLocation();
 
-  const title = links.find((link) =>
+  const title = LINKS.find((link) =>
     pathname.startsWith("/" + link.name)
   )?.label;
 
@@ -78,7 +78,7 @@ function Mobile() {
       <Heading size="md">
         {pathname == "/"
           ? "홈"
-          : links.find((link) => pathname.startsWith("/" + link.name))?.label}
+          : LINKS.find((link) => pathname.startsWith("/" + link.name))?.label}
       </Heading>
       <Spacer />
       {pathname == "/" || (

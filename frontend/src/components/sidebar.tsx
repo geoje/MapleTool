@@ -14,15 +14,24 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { links } from "../constants/links";
+import { LINKS } from "../constants/links";
+
+const KEY_COLLAPSED = "sidebar-collapsed";
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    localStorage.getItem(KEY_COLLAPSED) != null
+  );
 
   return (
     <Show above="md">
       {collapsed ? (
-        <CollapsedSidebar onExpand={() => setCollapsed(false)} />
+        <CollapsedSidebar
+          onExpand={() => {
+            setCollapsed(false);
+            localStorage.removeItem(KEY_COLLAPSED);
+          }}
+        />
       ) : (
         <ExpandedSidebar
           width="256px"
@@ -31,7 +40,10 @@ export default function Sidebar() {
               aria-label="expand"
               variant="ghost"
               icon={<IoIosArrowBack />}
-              onClick={() => setCollapsed(true)}
+              onClick={() => {
+                setCollapsed(true);
+                localStorage.setItem(KEY_COLLAPSED, "true");
+              }}
             />
           }
         />
@@ -81,7 +93,7 @@ export function ExpandedSidebar({
           {closeButton}
         </Flex>
         <Divider my={2} />
-        {links.map((link) => (
+        {LINKS.map((link) => (
           <Button
             as={Link}
             to={"/" + link.name}
@@ -144,7 +156,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: React.MouseEventHandler }) {
           />
         </Tooltip>
         <Divider my={2} />
-        {links.map((link) => (
+        {LINKS.map((link) => (
           <Tooltip key={link.name} label={link.label} placement="right">
             <IconButton
               aria-label={link.name}
