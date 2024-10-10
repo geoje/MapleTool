@@ -89,12 +89,14 @@ export const COLOR: Partial<Record<BOSS_DIFFICULTY, ColorSet>> = {
 
 interface Boss {
   name: string;
+  abbreviate: string;
   icon: string;
   prices: Partial<Record<BOSS_DIFFICULTY, number>>;
 }
 export const BOSS: Record<BOSS_TYPE, Boss> = {
   [BOSS_TYPE.ZZAKUM]: {
     name: "자쿰",
+    abbreviate: "자쿰",
     icon: zzakum,
     prices: {
       [BOSS_DIFFICULTY.CHAOS]: 8_980_000,
@@ -102,6 +104,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.MAGNUS]: {
     name: "매그너스",
+    abbreviate: "매그",
     icon: magnus,
     prices: {
       [BOSS_DIFFICULTY.HARD]: 10_700_000,
@@ -109,6 +112,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.HILLA]: {
     name: "힐라",
+    abbreviate: "힐라",
     icon: hilla,
     prices: {
       [BOSS_DIFFICULTY.HARD]: 6_390_000,
@@ -116,6 +120,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.PAPULATUS]: {
     name: "파풀라투스",
+    abbreviate: "파풀",
     icon: papulatus,
     prices: {
       [BOSS_DIFFICULTY.CHAOS]: 24_700_000,
@@ -123,6 +128,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.PIERRE]: {
     name: "피에르",
+    abbreviate: "피에르",
     icon: pierre,
     prices: {
       [BOSS_DIFFICULTY.CHAOS]: 9_080_000,
@@ -130,6 +136,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.VON_BON]: {
     name: "반반",
+    abbreviate: "반반",
     icon: vonBon,
     prices: {
       [BOSS_DIFFICULTY.CHAOS]: 9_060_000,
@@ -137,6 +144,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.CRIMSON_QUEEN]: {
     name: "블러디퀸",
+    abbreviate: "블퀸",
     icon: crimsonQueen,
     prices: {
       [BOSS_DIFFICULTY.CHAOS]: 9_040_000,
@@ -144,6 +152,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.VELLUM]: {
     name: "벨룸",
+    abbreviate: "벨룸",
     icon: vellum,
     prices: {
       [BOSS_DIFFICULTY.CHAOS]: 11_600_000,
@@ -151,6 +160,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.PINK_BEAN]: {
     name: "핑크빈",
+    abbreviate: "핑크빈",
     icon: pinkBean,
     prices: {
       [BOSS_DIFFICULTY.CHAOS]: 7_310_000,
@@ -158,6 +168,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.CYGNUS]: {
     name: "시그너스",
+    abbreviate: "시그",
     icon: cygnus,
     prices: {
       [BOSS_DIFFICULTY.EASY]: 5_060_000,
@@ -166,6 +177,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.LOTUS]: {
     name: "스우",
+    abbreviate: "스우",
     icon: lotus,
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 31_400_000,
@@ -175,6 +187,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.DAMIEN]: {
     name: "데미안",
+    abbreviate: "데미안",
     icon: damien,
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 32_900_000,
@@ -183,6 +196,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.GUARDIAN_ANGEL_SLIME]: {
     name: "가디언 엔젤 슬라임",
+    abbreviate: "가엔슬",
     icon: guardianAngelSlime,
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 47_800_000,
@@ -191,6 +205,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.LUCID]: {
     name: "루시드",
+    abbreviate: "루시드",
     icon: lucid,
     prices: {
       [BOSS_DIFFICULTY.EASY]: 49_000_000,
@@ -200,6 +215,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.WILL]: {
     name: "윌",
+    abbreviate: "윌",
     icon: will,
     prices: {
       [BOSS_DIFFICULTY.EASY]: 53_100_000,
@@ -209,6 +225,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.GLOOM]: {
     name: "더스크",
+    abbreviate: "더스크",
     icon: gloom,
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 72_400_000,
@@ -217,6 +234,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.VERUS_HILLA]: {
     name: "진 힐라",
+    abbreviate: "진힐라",
     icon: verusHilla,
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 153_000_000,
@@ -225,6 +243,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.DARKNELL]: {
     name: "듄켈",
+    abbreviate: "듄켈",
     icon: darknell,
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 78_100_000,
@@ -233,6 +252,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.CHOSEN_SEREN]: {
     name: "선택받은 세렌",
+    abbreviate: "세렌",
     icon: chosenSeren,
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 227_000_000,
@@ -242,6 +262,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.KALOS_THE_GUARDIAN]: {
     name: "감시자 칼로스",
+    abbreviate: "칼로스",
     icon: kalosTheGuardian,
     prices: {
       [BOSS_DIFFICULTY.EASY]: 265_000_000,
@@ -252,6 +273,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.KALING]: {
     name: "카링",
+    abbreviate: "카링",
     icon: kaling,
     prices: {
       [BOSS_DIFFICULTY.EASY]: 293_000_000,
@@ -262,6 +284,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   },
   [BOSS_TYPE.LIMBO]: {
     name: "림보",
+    abbreviate: "림보",
     icon: limbo,
     prices: {
       [BOSS_DIFFICULTY.NORMAL]: 600_000_000,

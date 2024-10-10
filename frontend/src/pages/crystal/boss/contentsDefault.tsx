@@ -40,7 +40,7 @@ export default function ContentsDefault({ selected }: { selected: number }) {
         }
       >
         <Image src={boss.icon} />
-        <Text display={["none", "none", "block"]}>{boss.name}</Text>
+        <Text display={["none", "none", "block"]}>{boss.abbreviate}</Text>
       </Flex>
       <Flex gap={2} py={1} borderTopWidth={1} wrap="wrap">
         {Object.entries(boss.prices).map(([difficulty], j) => (

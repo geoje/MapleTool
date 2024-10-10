@@ -1,17 +1,22 @@
-import { Button, SimpleGrid } from "@chakra-ui/react";
-import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
+import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { useAppSelector } from "../../../stores/hooks";
 import ContentsDefault from "./contentsDefault";
 import ContentOrder from "./contentOrder";
 import OrderButton from "./orderButton";
 
 export default function Boss({ selected }: { selected: number }) {
-  const dispatch = useAppDispatch();
   const bossPlans = useAppSelector((state) => state.user.bossPlans);
   const bossPlan =
     selected >= 0 && selected < bossPlans.length ? bossPlans[selected] : null;
 
   if (!bossPlan) {
-    return <></>;
+    return (
+      <Flex justify="center">
+        <Text size="md" opacity={0.6}>
+          캐릭터를 먼저 선택해주세요.
+        </Text>
+      </Flex>
+    );
   }
 
   return (

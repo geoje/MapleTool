@@ -14,6 +14,8 @@ export default function Crystal() {
         <BoardCard order={1} title="캐릭터 등록">
           <CharacterButtons selected={selected} setSelected={setSelected} />
         </BoardCard>
+      </Stack>
+      <Stack w={["100%", "100%", "auto"]}>
         <BoardCard order={2} title="보스 선택">
           <Boss selected={selected} />
         </BoardCard>
