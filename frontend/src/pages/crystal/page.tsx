@@ -4,6 +4,7 @@ import ResultTable from "./statistics/resultTable";
 import { useState } from "react";
 import CharacterButtons from "./character/characterButtons";
 import Boss from "./boss/boss";
+import PreparedButtons from "./boss/preparedButtons";
 
 export default function Crystal() {
   const [selected, setSelected] = useState(-1);
@@ -16,7 +17,11 @@ export default function Crystal() {
         </BoardCard>
       </Stack>
       <Stack w={["100%", "100%", "auto"]}>
-        <BoardCard order={2} title="보스 선택">
+        <BoardCard
+          order={2}
+          title="보스 선택"
+          right={<PreparedButtons selected={selected} />}
+        >
           <Boss selected={selected} />
         </BoardCard>
       </Stack>

@@ -163,6 +163,7 @@ export const {
   newBossPlan,
   deleteBossPlan,
   setBossOrder,
+  setBossItems,
   putBossItem,
   removeBossItem,
 } = slice.actions;
