@@ -1,6 +1,7 @@
-import { Box, Button, Icon, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Icon, Spinner, useColorMode } from "@chakra-ui/react";
 import { forwardRef, useEffect } from "react";
 import { LuGripVertical, LuX } from "react-icons/lu";
+import { FaCheck, FaExclamation, FaTimes } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import {
   deleteHistory,
@@ -8,7 +9,6 @@ import {
   setNameAndAddHistory,
 } from "../../../stores/userSlice";
 import { useBasicQuery } from "../../../stores/characterApi";
-import { useSuccessToast } from "../../../hooks/useToast";
 import { useSortable } from "@dnd-kit/sortable";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
@@ -22,14 +22,15 @@ export default function CharacterButton({
   readOnly?: boolean;
 }) {
   const isDark = useColorMode().colorMode == "dark";
-  const toastSuccess = useSuccessToast();
-
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
   const selected = !readOnly && userName == name;
-  const { data, isFetching, refetch } = useBasicQuery(name, {
-    skip: !name,
-  });
+  const { data, isFetching, isSuccess, isError, refetch } = useBasicQuery(
+    name,
+    {
+      skip: !name,
+    }
+  );
 
   const {
     attributes,
@@ -64,15 +65,7 @@ export default function CharacterButton({
   useEffect(() => {
     if (!selected || !name) return;
 
-    refetch().then((res) => {
-      if (!res.isSuccess) return;
-
-      toastSuccess({
-        title: "캐릭터 기본 정보 갱신됨",
-        description: name,
-      });
-      return res;
-    });
+    refetch();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
@@ -109,9 +102,23 @@ export default function CharacterButton({
         </>
       )}
       <CharacterContent
-        isFetching={isFetching}
         data={data}
         fallbackName={name}
+        statusElement={
+          isFetching ? (
+            <Spinner size="xs" />
+          ) : data ? (
+            isSuccess ? (
+              <Icon as={FaCheck} color="green.500" />
+            ) : (
+              <Icon as={FaExclamation} color="orange.500" />
+            )
+          ) : isError ? (
+            <Icon as={FaTimes} color="red.500" />
+          ) : (
+            <></>
+          )
+        }
       />
     </Button>
   );

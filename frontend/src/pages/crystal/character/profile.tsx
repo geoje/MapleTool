@@ -24,7 +24,7 @@ export default function Profile({
           filter={src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"}
           style={{ imageRendering: "pixelated" }}
         />
-        <Stack>
+        <Stack align="center" gap={1}>
           <Text fontSize="small">{name}</Text>
           {loading && <Spinner size="xs" />}
         </Stack>
