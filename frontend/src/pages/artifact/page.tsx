@@ -1,5 +1,5 @@
-import { Badge, Stack } from "@chakra-ui/react";
-import { useState } from "react";
+import { Badge, Spinner, Stack } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import ArtifactLevel from "./artifactLevel/artifactLevel";
 import EffectLevel from "./effectLevel/effectLevel";
 import SelectEffect from "./select/selectEffect";
@@ -11,7 +11,10 @@ import { useBasicQuery } from "../../stores/unionApi";
 
 export default function Artifact() {
   const name = useAppSelector((state) => state.user.name);
-  const { data } = useBasicQuery(name, { skip: !name });
+  const { data, isFetching } = useBasicQuery(name, {
+    skip: !name,
+    refetchOnMountOrArgChange: true,
+  });
 
   const [artifactLevel, setArtifactLevel] = useState(
     data?.union_artifact_level ?? 1
@@ -20,10 +23,20 @@ export default function Artifact() {
   const [effectLevels, setEffectLevels] = useState<number[]>([]);
   const [effectNames, setEffectNames] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (!data) return;
+
+    setArtifactLevel(data?.union_artifact_level ?? 1);
+  }, [data, setArtifactLevel]);
+
   return (
     <>
       <Stack w={["100%", "100%", "auto"]}>
-        <BoardCard order={1} title="아티팩트 레벨">
+        <BoardCard
+          order={1}
+          title="아티팩트 레벨"
+          right={isFetching && <Spinner size="sm" />}
+        >
           <ArtifactLevel
             artifactLevel={artifactLevel}
             setArtifactlevel={setArtifactLevel}
