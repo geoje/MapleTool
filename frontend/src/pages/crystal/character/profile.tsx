@@ -19,7 +19,7 @@ export default function Profile({
       >
         <Image
           boxSize="48px"
-          src={src?.length ? src : DEFAULT_CHARACTER_IMAGE}
+          src={src ?? DEFAULT_CHARACTER_IMAGE}
           filter={src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"}
           style={{ imageRendering: "pixelated" }}
         />
@@ -33,7 +33,7 @@ export default function Profile({
       >
         <Image
           boxSize="48px"
-          src={src?.length ? src : DEFAULT_CHARACTER_IMAGE}
+          src={src ?? DEFAULT_CHARACTER_IMAGE}
           filter={src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"}
           style={{ imageRendering: "pixelated" }}
         />

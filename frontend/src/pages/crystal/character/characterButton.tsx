@@ -1,18 +1,20 @@
-import { Button, Flex, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import Profile from "./profile";
 import BossSummary from "./bossSummary";
-import PlanModal from "./modal/planModal";
 import BossPlan from "../../../types/user/bossPlan";
 import { getBossIcon } from "../../../utils/boss";
+import { useBasicQuery } from "../../../stores/characterApi";
 
 export default function CharacterButton({
   bossPlan,
-  bossPlanIndex,
+  selected,
+  onClick,
 }: {
   bossPlan: BossPlan;
-  bossPlanIndex: number;
+  selected: boolean;
+  onClick: () => void;
 }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data } = useBasicQuery(bossPlan.name, { skip: !bossPlan.name });
 
   return (
     <>
@@ -20,10 +22,10 @@ export default function CharacterButton({
         py={2}
         gap={2}
         h="fit-content"
-        variant="ghost"
+        variant={selected ? undefined : "ghost"}
         justifyContent="space-between"
-        leftIcon={<Profile src={bossPlan.image} name={bossPlan.name} />}
-        onClick={onOpen}
+        leftIcon={<Profile src={data?.character_image} name={bossPlan.name} />}
+        onClick={onClick}
       >
         <Flex gap={1} wrap="wrap">
           {bossPlan.boss.map((boss, i) => (
@@ -36,11 +38,6 @@ export default function CharacterButton({
           ))}
         </Flex>
       </Button>
-      <PlanModal
-        isOpen={isOpen}
-        onClose={onClose}
-        bossPlanIndex={bossPlanIndex}
-      />
     </>
   );
 }

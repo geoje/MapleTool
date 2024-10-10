@@ -129,10 +129,12 @@ function DeleteButton({
       position="absolute"
       top={-2}
       right={-2}
+      w={5}
+      h={5}
+      p={1}
       transform="auto"
       background={isDark ? "whiteAlpha.200" : "blackAlpha.200"}
       transition="background 0.2s"
-      p={1}
       borderRadius="100%"
       onClick={onClick}
       _hover={{

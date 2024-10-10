@@ -20,12 +20,12 @@ import { moveHistory } from "../../../stores/userSlice";
 
 export default function CharacterButtons() {
   const dispatch = useAppDispatch();
-  const history = useAppSelector((state) => state.user.history);
+  const histories = useAppSelector((state) => state.user.histories);
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
   const [active, setActive] = useState<Active | null>(null);
   const activeName = useMemo(
-    () => history.find((name) => name === active?.id),
-    [active, history]
+    () => histories.find((name) => name === active?.id),
+    [active, histories]
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -59,10 +59,10 @@ export default function CharacterButtons() {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <SortableContext items={history} strategy={rectSortingStrategy}>
+      <SortableContext items={histories} strategy={rectSortingStrategy}>
         <Flex gap={2} justify="center" wrap="wrap">
-          {!history.length && <CharacterButton name="" />}
-          {history.map((name) => (
+          {!histories.length && <CharacterButton name="" />}
+          {histories.map((name) => (
             <CharacterButton key={"cha-btn-" + name} name={name} />
           ))}
         </Flex>
