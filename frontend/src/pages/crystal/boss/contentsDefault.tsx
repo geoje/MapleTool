@@ -17,10 +17,12 @@ import {
 import { Fragment } from "react/jsx-runtime";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { getPrice } from "../../../utils/boss";
+import { removeBossItem, setBossItem } from "../../../stores/userSlice";
 
-export default function ContentsDefault() {
+export default function ContentsDefault({ selected }: { selected: number }) {
   const dispatch = useAppDispatch();
   const bossPlans = useAppSelector((state) => state.user.bossPlans);
+  const bossPlan = bossPlans[selected];
 
   return Object.entries(BOSS).map(([type, boss], i) => (
     <Fragment key={"boss-" + i}>
@@ -31,10 +33,10 @@ export default function ContentsDefault() {
         borderTopWidth={1}
         alignItems="center"
         opacity={
-          !planItem.difficulty.has(type as BOSS_TYPE) &&
-          planItem.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
-            ? 0.4
-            : 1
+          bossPlan.boss.length < BOSS_MAXIMUN_SELECTABLE ||
+          bossPlan.boss.find((plan) => plan.type == (type as BOSS_TYPE))
+            ? 1
+            : 0.4
         }
       >
         <Image src={boss.icon} />
@@ -46,23 +48,37 @@ export default function ContentsDefault() {
             key={`boss-difficulty-${i}-${j}`}
             mr={2}
             isDisabled={
-              !planItem.difficulty.has(type as BOSS_TYPE) &&
-              planItem.difficulty.size >= BOSS_MAXIMUN_SELECTABLE
+              !(
+                bossPlan.boss.length < BOSS_MAXIMUN_SELECTABLE ||
+                bossPlan.boss.find((plan) => plan.type == (type as BOSS_TYPE))
+              )
             }
-            isChecked={planItem.difficulty.get(type as BOSS_TYPE) == difficulty}
+            isChecked={
+              bossPlan.boss.findIndex(
+                (plan) =>
+                  plan.type == (type as BOSS_TYPE) &&
+                  plan.difficulty == difficulty
+              ) != -1
+            }
             onChange={(event) => {
-              const newDifficulty = new Map(planItem.difficulty);
-              if (event.target.checked)
-                newDifficulty.set(
-                  type as BOSS_TYPE,
-                  difficulty as BOSS_DIFFICULTY
+              if (event.target.checked) {
+                dispatch(
+                  setBossItem({
+                    index: selected,
+                    type: type as BOSS_TYPE,
+                    difficulty: difficulty as BOSS_DIFFICULTY,
+                  })
                 );
-              else newDifficulty.delete(type as BOSS_TYPE);
+                return;
+              }
 
-              setPlanItem((prevPlan) => ({
-                ...prevPlan,
-                difficulty: newDifficulty,
-              }));
+              dispatch(
+                removeBossItem({
+                  index: selected,
+                  type: type as BOSS_TYPE,
+                  difficulty: difficulty as BOSS_DIFFICULTY,
+                })
+              );
             }}
           >
             <Center>
@@ -82,18 +98,19 @@ export default function ContentsDefault() {
       <Center py={1} borderTopWidth={1}>
         <Select
           size="xs"
-          value={planItem.partyMembers.get(type as BOSS_TYPE) ?? 1}
+          value={
+            bossPlan.boss.find((plan) => plan.type == (type as BOSS_TYPE))
+              ?.partyMembers ?? 1
+          }
           onChange={(event) => {
-            const value = parseInt(event.target.value);
-            const newPartyMembers = new Map(planItem.partyMembers);
-
-            if (value == 1) newPartyMembers.delete(type as BOSS_TYPE);
-            else newPartyMembers.set(type as BOSS_TYPE, value);
-
-            setPlanItem((prevPlan) => ({
-              ...prevPlan,
-              partyMembers: newPartyMembers,
-            }));
+            const partyMembers = parseInt(event.target.value);
+            dispatch(
+              setBossItem({
+                index: selected,
+                type: type as BOSS_TYPE,
+                partyMembers,
+              })
+            );
           }}
         >
           <option value={1}>1</option>
@@ -113,13 +130,16 @@ export default function ContentsDefault() {
         alignItems="center"
         fontSize="xs"
       >
-        {planItem.difficulty.has(type as BOSS_TYPE) &&
-          Math.round(
-            getPrice(
-              type as BOSS_TYPE,
-              planItem.difficulty.get(type as BOSS_TYPE)!
-            ) / (planItem.partyMembers.get(type as BOSS_TYPE) ?? 1)
-          ).toLocaleString()}
+        {(() => {
+          const boss = bossPlan.boss.find(
+            (plan) => plan.type == (type as BOSS_TYPE)
+          );
+          if (!boss) return;
+
+          return Math.round(
+            getPrice(boss.type, boss.difficulty) / boss.partyMembers
+          ).toLocaleString();
+        })()}
       </Flex>
     </Fragment>
   ));

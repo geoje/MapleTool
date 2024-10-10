@@ -66,13 +66,13 @@ const slice = createSlice({
 
       state.bossPlans[action.payload.index].order = action.payload.order;
     },
-    addBossItem(
+    setBossItem(
       state,
       action: PayloadAction<{
         index: number;
         type: BOSS_TYPE;
-        difficulty: BOSS_DIFFICULTY;
-        partyMembers: number;
+        difficulty?: BOSS_DIFFICULTY;
+        partyMembers?: number;
       }>
     ) {
       if (
@@ -83,16 +83,22 @@ const slice = createSlice({
 
       const plan = state.bossPlans[action.payload.index];
       const itemIndex = plan.boss.findIndex(
-        (boss) =>
-          boss.type == action.payload.type &&
-          boss.difficulty == action.payload.difficulty
+        (boss) => boss.type == action.payload.type
       );
-      if (itemIndex >= 0) return;
+      if (itemIndex >= 0) {
+        if (action.payload.difficulty)
+          plan.boss[itemIndex].difficulty = action.payload.difficulty;
+        if (action.payload.partyMembers)
+          plan.boss[itemIndex].partyMembers = action.payload.partyMembers;
+        return;
+      }
+
+      if (!action.payload.difficulty) return;
 
       plan.boss.push({
         type: action.payload.type,
         difficulty: action.payload.difficulty,
-        partyMembers: action.payload.partyMembers,
+        partyMembers: action.payload.partyMembers ?? 1,
       });
     },
     removeBossItem(
@@ -140,6 +146,6 @@ export const {
   newBossPlan,
   deleteBossPlan,
   setBossOrder,
-  addBossItem,
+  setBossItem,
   removeBossItem,
 } = slice.actions;
