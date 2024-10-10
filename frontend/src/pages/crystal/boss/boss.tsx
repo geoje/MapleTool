@@ -13,7 +13,7 @@ export default function Boss({ selected }: { selected: number }) {
     return (
       <Flex justify="center">
         <Text size="md" opacity={0.6}>
-          캐릭터를 먼저 선택해주세요.
+          캐릭터를 선택해주세요.
         </Text>
       </Flex>
     );

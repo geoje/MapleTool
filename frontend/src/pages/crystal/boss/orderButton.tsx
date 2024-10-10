@@ -1,10 +1,10 @@
 import { Button } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import {
-  LiaSortDownSolid,
-  LiaSortSolid,
-  LiaSortUpSolid,
-} from "react-icons/lia";
+  TiArrowUnsorted,
+  TiArrowSortedUp,
+  TiArrowSortedDown,
+} from "react-icons/ti";
 import { setBossOrder } from "../../../stores/userSlice";
 
 export default function OrderButton({ selected }: { selected: number }) {
@@ -21,11 +21,11 @@ export default function OrderButton({ selected }: { selected: number }) {
       variant="ghost"
       rightIcon={
         bossPlan.order == "price-asc" ? (
-          <LiaSortUpSolid />
+          <TiArrowSortedUp />
         ) : bossPlan.order == "price-desc" ? (
-          <LiaSortDownSolid />
+          <TiArrowSortedDown />
         ) : (
-          <LiaSortSolid />
+          <TiArrowUnsorted />
         )
       }
       onClick={() =>

@@ -17,7 +17,7 @@ import {
 import { Fragment } from "react/jsx-runtime";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { getPrice } from "../../../utils/boss";
-import { removeBossItem, setBossItem } from "../../../stores/userSlice";
+import { removeBossItem, putBossItem } from "../../../stores/userSlice";
 
 export default function ContentsDefault({ selected }: { selected: number }) {
   const dispatch = useAppDispatch();
@@ -63,7 +63,7 @@ export default function ContentsDefault({ selected }: { selected: number }) {
             onChange={(event) => {
               if (event.target.checked) {
                 dispatch(
-                  setBossItem({
+                  putBossItem({
                     index: selected,
                     type: type as BOSS_TYPE,
                     difficulty: difficulty as BOSS_DIFFICULTY,
@@ -105,7 +105,7 @@ export default function ContentsDefault({ selected }: { selected: number }) {
           onChange={(event) => {
             const partyMembers = parseInt(event.target.value);
             dispatch(
-              setBossItem({
+              putBossItem({
                 index: selected,
                 type: type as BOSS_TYPE,
                 partyMembers,

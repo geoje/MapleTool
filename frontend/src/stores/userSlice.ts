@@ -66,7 +66,24 @@ const slice = createSlice({
 
       state.bossPlans[action.payload.index].order = action.payload.order;
     },
-    setBossItem(
+    setBossItems(
+      state,
+      action: PayloadAction<{
+        index: number;
+        boss: {
+          type: BOSS_TYPE;
+          difficulty: BOSS_DIFFICULTY;
+        }[];
+      }>
+    ) {
+      state.bossPlans[action.payload.index].boss = action.payload.boss.map(
+        (item) => ({
+          ...item,
+          partyMembers: 1,
+        })
+      );
+    },
+    putBossItem(
       state,
       action: PayloadAction<{
         index: number;
@@ -146,6 +163,6 @@ export const {
   newBossPlan,
   deleteBossPlan,
   setBossOrder,
-  setBossItem,
+  putBossItem,
   removeBossItem,
 } = slice.actions;
