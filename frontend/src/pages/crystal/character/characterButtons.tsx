@@ -1,8 +1,7 @@
 import { Stack } from "@chakra-ui/react";
-import NameInput from "./nameInput";
 import CharacterButton from "./characterButton";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Active,
   closestCenter,
@@ -49,7 +48,7 @@ export default function CharacterButtons({
 
       setActive(null);
     },
-    [dispatch]
+    [bossPlans, dispatch, setSelected]
   );
   const handleDragCancel = useCallback(() => {
     setActive(null);
