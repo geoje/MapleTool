@@ -13,6 +13,7 @@ export default function Artifact() {
   const name = useAppSelector((state) => state.user.name);
   const { data, isFetching } = useBasicQuery(name, {
     skip: !name,
+    refetchOnMountOrArgChange: true,
   });
 
   const [artifactLevel, setArtifactLevel] = useState(

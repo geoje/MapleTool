@@ -114,11 +114,13 @@ const slice = createSlice({
 
       if (!action.payload.difficulty) return;
 
+      const types = Object.values(BOSS_TYPE);
       plan.boss.push({
         type: action.payload.type,
         difficulty: action.payload.difficulty,
         partyMembers: action.payload.partyMembers ?? 1,
       });
+      plan.boss.sort((a, b) => types.indexOf(a.type) - types.indexOf(b.type));
     },
     removeBossItem(
       state,
