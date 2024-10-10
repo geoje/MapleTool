@@ -13,11 +13,11 @@ import { calculateRevenue } from "../../../utils/boss";
 import { BOSS_MAXIMUN_SELECTABLE } from "../../../constants/boss";
 
 export default function ResultTable() {
-  const bossPlan = useAppSelector((state) => state.user.bossPlan);
+  const bossPlans = useAppSelector((state) => state.user.bossPlans);
   const [excludes, setExcludes] = useState(new Set<number>());
 
-  const revenues = bossPlan.map(calculateRevenue);
-  const totalCount = bossPlan
+  const revenues = bossPlans.map(calculateRevenue);
+  const totalCount = bossPlans
     .map((plan) => plan.boss.length)
     .filter((_, i) => !excludes.has(i))
     .reduce((acc, cur) => acc + cur, 0);
@@ -27,7 +27,7 @@ export default function ResultTable() {
 
   return (
     <SimpleGrid>
-      {bossPlan.map((plan, i) => (
+      {bossPlans.map((plan, i) => (
         <Fragment key={"result-" + i}>
           <Flex
             align="center"

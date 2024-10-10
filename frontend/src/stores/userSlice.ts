@@ -3,7 +3,7 @@ import { createTransform, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import User from "../types/user/user";
 import { deepCopyWithTypeCheck } from "../utils/deepCopyWithTypeCheck";
-import BossPlan from "../types/user/bossPlan";
+import { BOSS_DIFFICULTY, BOSS_TYPE } from "../constants/boss";
 
 export const userKey = "user";
 
@@ -48,23 +48,76 @@ const slice = createSlice({
     },
 
     // bossPlan
-    addBossPlan(state, action: PayloadAction<BossPlan>) {
-      state.bossPlans.push(action.payload);
-    },
-    setBossPlan(
-      state,
-      action: PayloadAction<{ index: number; value: BossPlan }>
-    ) {
-      state.bossPlans.splice(action.payload.index, 1, action.payload.value);
-    },
-    insertBossPlan(
-      state,
-      action: PayloadAction<{ index: number; value: BossPlan }>
-    ) {
-      state.bossPlans.splice(action.payload.index, 0, action.payload.value);
+    newBossPlan(state, action: PayloadAction<string>) {
+      state.bossPlans.push({ name: action.payload, order: "", boss: [] });
     },
     deleteBossPlan(state, action: PayloadAction<number>) {
       state.bossPlans.splice(action.payload, 1);
+    },
+    setBossOrder(
+      state,
+      action: PayloadAction<{ index: number; order: string }>
+    ) {
+      if (
+        action.payload.index < 0 ||
+        action.payload.index >= state.bossPlans.length
+      )
+        return;
+
+      state.bossPlans[action.payload.index].order = action.payload.order;
+    },
+    addBossItem(
+      state,
+      action: PayloadAction<{
+        index: number;
+        type: BOSS_TYPE;
+        difficulty: BOSS_DIFFICULTY;
+        partyMembers: number;
+      }>
+    ) {
+      if (
+        action.payload.index < 0 ||
+        action.payload.index >= state.bossPlans.length
+      )
+        return;
+
+      const plan = state.bossPlans[action.payload.index];
+      const itemIndex = plan.boss.findIndex(
+        (boss) =>
+          boss.type == action.payload.type &&
+          boss.difficulty == action.payload.difficulty
+      );
+      if (itemIndex >= 0) return;
+
+      plan.boss.push({
+        type: action.payload.type,
+        difficulty: action.payload.difficulty,
+        partyMembers: action.payload.partyMembers,
+      });
+    },
+    removeBossItem(
+      state,
+      action: PayloadAction<{
+        index: number;
+        type: BOSS_TYPE;
+        difficulty: BOSS_DIFFICULTY;
+      }>
+    ) {
+      if (
+        action.payload.index < 0 ||
+        action.payload.index >= state.bossPlans.length
+      )
+        return;
+
+      const plan = state.bossPlans[action.payload.index];
+      const itemIndex = plan.boss.findIndex(
+        (boss) =>
+          boss.type == action.payload.type &&
+          boss.difficulty == action.payload.difficulty
+      );
+      if (itemIndex < 0) return;
+
+      plan.boss.splice(itemIndex, 1);
     },
   },
 });
@@ -84,8 +137,9 @@ export const {
   setNameAndAddHistory,
   moveHistory,
   deleteHistory,
-  addBossPlan,
-  setBossPlan,
-  insertBossPlan,
+  newBossPlan,
   deleteBossPlan,
+  setBossOrder,
+  addBossItem,
+  removeBossItem,
 } = slice.actions;

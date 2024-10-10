@@ -20,7 +20,7 @@ export default function CharacterButtons({
           key={"character-" + i}
           bossPlan={plan}
           selected={selected == i}
-          onClick={() => setSelected(i)}
+          onClick={() => setSelected(selected == i ? -1 : i)}
         />
       ))}
     </Stack>

@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react";
 import { CgSearch } from "react-icons/cg";
 import { useAppDispatch } from "../../../stores/hooks";
-import { addBossPlan } from "../../../stores/userSlice";
+import { newBossPlan } from "../../../stores/userSlice";
 import { useState } from "react";
 
 export default function NameInput() {
@@ -14,7 +14,7 @@ export default function NameInput() {
   const [name, setName] = useState("");
 
   const handleSearching = () => {
-    dispatch(addBossPlan({ name, image: "", order: "", boss: [] }));
+    dispatch(newBossPlan(name));
     setName("");
   };
 
