@@ -5,6 +5,7 @@ import CharacterButton from "./character/characterButton";
 import PlanModal from "./character/modal/planModal";
 import { useAppSelector } from "../../stores/hooks";
 import ResultTable from "./statistics/resultTable";
+import NameInput from "./register/nameInput";
 
 export default function Crystal() {
   const bossPlan = useAppSelector((state) => state.user.bossPlan);
@@ -14,6 +15,9 @@ export default function Crystal() {
     <>
       <Stack>
         <BoardCard order={1} title="캐릭터 등록">
+          <NameInput />
+        </BoardCard>
+        <BoardCard order={2} title="캐릭터 선택">
           <Stack divider={<Divider />}>
             {bossPlan.map((plan, i) => (
               <CharacterButton
@@ -31,9 +35,10 @@ export default function Crystal() {
             />
           </Stack>
         </BoardCard>
+        <BoardCard order={3} title="보스 선택"></BoardCard>
       </Stack>
       <Stack>
-        <BoardCard order={2} title="통계">
+        <BoardCard order={4} title="통계">
           <ResultTable />
         </BoardCard>
       </Stack>
