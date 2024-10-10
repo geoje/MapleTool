@@ -14,7 +14,7 @@ export default function App() {
       <Sidebar />
       <Stack flex={1} gap={0}>
         <Header />
-        <Flex p={4} gap={4} wrap="wrap">
+        <Flex px={[0, 0, 4]} py={4} gap={4} wrap="wrap">
           <Routes>
             <Route path="/" element={<Home />} />
             {LINKS.map((link) => (

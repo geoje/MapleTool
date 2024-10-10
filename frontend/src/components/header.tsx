@@ -2,10 +2,8 @@ import {
   Button,
   Flex,
   Heading,
-  Hide,
   IconButton,
   Image,
-  Show,
   Spacer,
   useColorMode,
   useDisclosure,
@@ -22,12 +20,8 @@ import characterBlank from "../assets/union/raid/character-blank.png";
 export default function Header() {
   return (
     <>
-      <Show above="md">
-        <Desktop />
-      </Show>
-      <Hide above="md">
-        <Mobile />
-      </Hide>
+      <Desktop />
+      <Mobile />
     </>
   );
 }
@@ -48,7 +42,7 @@ function Desktop() {
   }, [pathname]);
 
   return (
-    <Flex p={2} align="center">
+    <Flex display={["none", "none", "flex"]} p={2} align="center">
       <Heading size="md" p={2}>
         {title ?? "홈"}
       </Heading>
@@ -77,7 +71,12 @@ function Mobile() {
   const dark = colorMode === "dark";
 
   return (
-    <Flex p={2} bgColor={dark ? "gray.800" : "white"} align="center">
+    <Flex
+      display={["flex", "flex", "none"]}
+      p={2}
+      bgColor={dark ? "gray.800" : "white"}
+      align="center"
+    >
       <IconButton
         aria-label="drawer"
         icon={<MdMenu />}

@@ -1,20 +1,17 @@
-import { Card, CardBody, Stack } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import NameInput from "./register/nameInput";
 import CharacterButtons from "./character/characterButtons";
+import BoardCard from "../../components/boardCard";
 
 export default function Home() {
   return (
     <Stack width="100%" align="center">
-      <Card>
-        <CardBody>
-          <NameInput />
-        </CardBody>
-      </Card>
-      <Card>
-        <CardBody>
-          <CharacterButtons />
-        </CardBody>
-      </Card>
+      <BoardCard>
+        <NameInput />
+      </BoardCard>
+      <BoardCard>
+        <CharacterButtons />
+      </BoardCard>
     </Stack>
   );
 }

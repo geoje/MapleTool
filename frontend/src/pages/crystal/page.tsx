@@ -13,7 +13,7 @@ export default function Crystal() {
 
   return (
     <>
-      <Stack>
+      <Stack w="100%">
         <BoardCard order={1} title="캐릭터 등록">
           <NameInput />
         </BoardCard>
@@ -37,7 +37,7 @@ export default function Crystal() {
         </BoardCard>
         <BoardCard order={3} title="보스 선택"></BoardCard>
       </Stack>
-      <Stack>
+      <Stack w="100%">
         <BoardCard order={4} title="통계">
           <ResultTable />
         </BoardCard>

@@ -1,4 +1,11 @@
-import { Card, CardBody, Flex, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Flex,
+  Heading,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import {
   TbSquareRoundedNumber0Filled,
   TbSquareRoundedNumber1Filled,
@@ -32,23 +39,39 @@ export default function BoardCard({
   right,
   children,
 }: {
-  order: number;
-  title: string;
+  order?: number;
+  title?: string;
   right?: React.ReactNode;
   children?: React.ReactNode;
 }) {
-  return (
-    <Card width={["100%", "100%", "auto"]}>
-      <CardBody>
+  const bgColor = useColorModeValue("white", "gray.800");
+
+  const body = (
+    <>
+      {title && order && (
         <Flex pb={5} gap={2}>
-          {NumberIcons[order]}
+          {NumberIcons[order ?? 0]}
           <Heading size="sm" mr="auto">
             {title}
           </Heading>
           {right}
         </Flex>
-        {children}
-      </CardBody>
+      )}
+      {children}
+    </>
+  );
+
+  return (
+    <Card
+      width={["100%", "100%", "auto"]}
+      background={bgColor}
+      borderRadius={[0, 0, "var(--card-radius)"]}
+      boxShadow={["", "", "var(--card-shadow)"]}
+    >
+      <CardBody display={["none", "none", "block"]}>{body}</CardBody>
+      <Box display={["block", "block", "none"]} p={4}>
+        {body}
+      </Box>
     </Card>
   );
 }
