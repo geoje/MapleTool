@@ -28,7 +28,7 @@ export default function CharacterButton({
   const { data, isFetching, isSuccess, isError, refetch } = useBasicQuery(
     name,
     {
-      skip: !name,
+      skip: readOnly || !name,
     }
   );
 
