@@ -31,7 +31,9 @@ export default function SelectEffect({
       effectLevels.length
     );
     setEffectNames(newEffectNames);
-  }, [effectLevels, effectNames, setEffectNames]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [effectLevels]);
 
   return (
     <Stack>
