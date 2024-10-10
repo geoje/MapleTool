@@ -15,7 +15,7 @@ export default function Profile({
       <Flex
         display={["none", "none", "flex"]}
         align="center"
-        gap={2}
+        gap={1}
         wrap="wrap"
       >
         <Image
@@ -32,7 +32,7 @@ export default function Profile({
       <Stack
         display={["flex", "flex", "none"]}
         align="center"
-        gap={2}
+        gap={0}
         wrap="wrap"
       >
         <Image
@@ -42,6 +42,7 @@ export default function Profile({
           style={{ imageRendering: "pixelated" }}
         />
         <Text fontSize="small">{name}</Text>
+        {loading && <Spinner size="xs" />}
       </Stack>
     </>
   );

@@ -21,6 +21,7 @@ import { moveHistory } from "../../../stores/userSlice";
 export default function CharacterButtons() {
   const dispatch = useAppDispatch();
   const histories = useAppSelector((state) => state.user.histories);
+
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
   const [active, setActive] = useState<Active | null>(null);
   const activeName = useMemo(

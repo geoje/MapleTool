@@ -5,6 +5,7 @@ import { useState } from "react";
 import CharacterButtons from "./character/characterButtons";
 import Boss from "./boss/boss";
 import PreparedButtons from "./boss/preparedButtons";
+import NameInput from "./character/nameInput";
 
 export default function Crystal() {
   const [selected, setSelected] = useState(-1);
@@ -13,6 +14,7 @@ export default function Crystal() {
     <>
       <Stack w={["100%", "100%", "auto"]}>
         <BoardCard order={1} title="캐릭터 등록">
+          <NameInput />
           <CharacterButtons selected={selected} setSelected={setSelected} />
         </BoardCard>
       </Stack>

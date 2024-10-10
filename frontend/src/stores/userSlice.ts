@@ -49,7 +49,21 @@ const slice = createSlice({
 
     // bossPlan
     newBossPlan(state, action: PayloadAction<string>) {
+      if (state.bossPlans.find((plan) => plan.name == action.payload)) return;
+
       state.bossPlans.push({ name: action.payload, order: "", boss: [] });
+    },
+    moveBossPlan(state, action: PayloadAction<{ from: string; to: string }>) {
+      const idxFrom = state.bossPlans.findIndex(
+        (plan) => plan.name == action.payload.from
+      );
+      const idxTo = state.bossPlans.findIndex(
+        (plan) => plan.name == action.payload.to
+      );
+      if (idxFrom == -1 || idxTo == -1) return;
+
+      const [value] = state.bossPlans.splice(idxFrom, 1);
+      state.bossPlans.splice(idxTo, 0, value);
     },
     deleteBossPlan(state, action: PayloadAction<number>) {
       state.bossPlans.splice(action.payload, 1);
@@ -58,12 +72,6 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ index: number; order: string }>
     ) {
-      if (
-        action.payload.index < 0 ||
-        action.payload.index >= state.bossPlans.length
-      )
-        return;
-
       state.bossPlans[action.payload.index].order = action.payload.order;
     },
     setBossItems(
@@ -92,12 +100,6 @@ const slice = createSlice({
         partyMembers?: number;
       }>
     ) {
-      if (
-        action.payload.index < 0 ||
-        action.payload.index >= state.bossPlans.length
-      )
-        return;
-
       const plan = state.bossPlans[action.payload.index];
       const itemIndex = plan.boss.findIndex(
         (boss) => boss.type == action.payload.type
@@ -126,12 +128,6 @@ const slice = createSlice({
         difficulty: BOSS_DIFFICULTY;
       }>
     ) {
-      if (
-        action.payload.index < 0 ||
-        action.payload.index >= state.bossPlans.length
-      )
-        return;
-
       const plan = state.bossPlans[action.payload.index];
       const itemIndex = plan.boss.findIndex(
         (boss) =>
@@ -161,6 +157,7 @@ export const {
   moveHistory,
   deleteHistory,
   newBossPlan,
+  moveBossPlan,
   deleteBossPlan,
   setBossOrder,
   setBossItems,
