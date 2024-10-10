@@ -14,7 +14,9 @@ export default function CharacterButton({
   selected: boolean;
   onClick: () => void;
 }) {
-  const { data } = useBasicQuery(bossPlan.name, { skip: !bossPlan.name });
+  const { data, isFetching } = useBasicQuery(bossPlan.name, {
+    skip: !bossPlan.name,
+  });
 
   return (
     <>
@@ -24,7 +26,13 @@ export default function CharacterButton({
         h="fit-content"
         variant={selected ? undefined : "ghost"}
         justifyContent="space-between"
-        leftIcon={<Profile src={data?.character_image} name={bossPlan.name} />}
+        leftIcon={
+          <Profile
+            src={data?.character_image}
+            name={bossPlan.name}
+            loading={isFetching}
+          />
+        }
         onClick={onClick}
       >
         <Flex gap={1} wrap="wrap">

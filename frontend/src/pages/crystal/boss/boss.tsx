@@ -26,7 +26,10 @@ export default function Boss({ selected }: { selected: number }) {
       <HeadButton>파티원</HeadButton>
       <OrderButton selected={selected} />
       {bossPlan.order && bossPlan.order.startsWith("price") ? (
-        <ContentOrder descending={bossPlan.order.includes("desc")} />
+        <ContentOrder
+          selected={selected}
+          descending={bossPlan.order.includes("desc")}
+        />
       ) : (
         <ContentsDefault selected={selected} />
       )}

@@ -1,5 +1,5 @@
 import { Divider, Stack } from "@chakra-ui/react";
-import NameInput from "../register/nameInput";
+import NameInput from "./nameInput";
 import CharacterButton from "./characterButton";
 import { useAppSelector } from "../../../stores/hooks";
 

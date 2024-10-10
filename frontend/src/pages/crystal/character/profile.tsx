@@ -1,13 +1,14 @@
-import { Flex, Image, Stack, Text } from "@chakra-ui/react";
-
-const DEFAULT_CHARACTER_IMAGE = "/union-raid/character-blank.png";
+import { Flex, Image, Spinner, Stack, Text } from "@chakra-ui/react";
+import characterBlank from "../../../assets/union/raid/character-blank.png";
 
 export default function Profile({
   src,
   name,
+  loading,
 }: {
   src?: string;
   name?: string;
+  loading?: boolean;
 }) {
   return (
     <>
@@ -19,11 +20,14 @@ export default function Profile({
       >
         <Image
           boxSize="48px"
-          src={src ?? DEFAULT_CHARACTER_IMAGE}
+          src={src ?? characterBlank}
           filter={src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"}
           style={{ imageRendering: "pixelated" }}
         />
-        <Text fontSize="small">{name}</Text>
+        <Stack>
+          <Text fontSize="small">{name}</Text>
+          {loading && <Spinner size="xs" />}
+        </Stack>
       </Flex>
       <Stack
         display={["flex", "flex", "none"]}
@@ -33,7 +37,7 @@ export default function Profile({
       >
         <Image
           boxSize="48px"
-          src={src ?? DEFAULT_CHARACTER_IMAGE}
+          src={src ?? characterBlank}
           filter={src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"}
           style={{ imageRendering: "pixelated" }}
         />

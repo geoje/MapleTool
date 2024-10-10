@@ -12,7 +12,7 @@ export default function PreparedButtons({ selected }: { selected: number }) {
   if (selected < 0) return <></>;
 
   return (
-    <Flex gap={1}>
+    <Flex gap={2}>
       <Tooltip placement="top" label="스우 데미안 돌이">
         <Button
           size="xs"
