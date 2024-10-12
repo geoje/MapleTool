@@ -15,7 +15,7 @@ export default function MobileDrawer({
   onClose: () => void;
 }) {
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} placement="left">
+    <Drawer placement="left" isOpen={isOpen} onClose={onClose}>
       <DrawerOverlay />
       <DrawerContent>
         <ExpandedSidebar

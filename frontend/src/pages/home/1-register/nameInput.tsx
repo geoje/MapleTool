@@ -21,6 +21,7 @@ export default function NameInput() {
   return (
     <InputGroup>
       <Input
+        type="search"
         pr="2.5rem"
         variant="filled"
         placeholder="캐릭터명을 입력하세요."

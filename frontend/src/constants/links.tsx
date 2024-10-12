@@ -1,9 +1,9 @@
+import enhance from "../assets/link/enhance.svg";
 import crystal from "../assets/link/crystal.svg";
-import cube from "../assets/link/cube.svg";
 import artifact from "../assets/link/artifact.svg";
 import Artifact from "../pages/artifact/page";
 import Crystal from "../pages/crystal/page";
-import Potential from "../pages/potential/page";
+import Enhance from "../pages/enhance/page";
 
 export const LINKS: {
   name: string;
@@ -13,11 +13,11 @@ export const LINKS: {
   element: JSX.Element;
 }[] = [
   {
-    name: "potential",
-    label: "잠재능력",
-    description: "메이플 큐브 계산기",
-    icon: cube,
-    element: <Potential />,
+    name: "enhance",
+    label: "강화",
+    description: "메이플 아이템 강화 시뮬레이터",
+    icon: enhance,
+    element: <Enhance />,
   },
   {
     name: "union-artifact",

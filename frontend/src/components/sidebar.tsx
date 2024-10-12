@@ -34,7 +34,7 @@ export default function Sidebar() {
         />
       ) : (
         <ExpandedSidebar
-          width="256px"
+          width="var(--chakra-sizes-2xs)"
           closeButton={
             <IconButton
               aria-label="expand"
