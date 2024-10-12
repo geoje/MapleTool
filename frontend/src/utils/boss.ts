@@ -9,8 +9,18 @@ export function getBossIcon(bossType: BOSS_TYPE): string {
 }
 export function calculateRevenue(bossPlan: BossPlan) {
   return bossPlan.boss
-    .map(({ type, difficulty, partyMembers }) =>
+    .map(({ type, difficulty, members: partyMembers }) =>
       Math.round(getPrice(type, difficulty) / partyMembers)
     )
     .reduce((acc, cur) => acc + cur, 0);
+}
+export function getMaxMembers(
+  bossType: BOSS_TYPE,
+  difficulty?: BOSS_DIFFICULTY
+) {
+  return bossType == BOSS_TYPE.LOTUS && difficulty == BOSS_DIFFICULTY.EXTREME
+    ? 2
+    : bossType == BOSS_TYPE.LIMBO
+    ? 3
+    : 6;
 }

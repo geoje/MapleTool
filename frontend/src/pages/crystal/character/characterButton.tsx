@@ -88,7 +88,7 @@ export default function CharacterButton({
               key={`boss-${bossPlan.name}-${i}`}
               src={getBossIcon(boss.type)}
               difficulty={boss.difficulty}
-              partyMembers={boss.partyMembers}
+              partyMembers={boss.members}
             />
           ))}
         </Flex>

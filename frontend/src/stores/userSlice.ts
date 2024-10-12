@@ -87,7 +87,7 @@ const slice = createSlice({
       state.bossPlans[action.payload.index].boss = action.payload.boss.map(
         (item) => ({
           ...item,
-          partyMembers: 1,
+          members: 1,
         })
       );
     },
@@ -97,7 +97,7 @@ const slice = createSlice({
         index: number;
         type: BOSS_TYPE;
         difficulty?: BOSS_DIFFICULTY;
-        partyMembers?: number;
+        members?: number;
       }>
     ) {
       const plan = state.bossPlans[action.payload.index];
@@ -107,8 +107,8 @@ const slice = createSlice({
       if (itemIndex >= 0) {
         if (action.payload.difficulty)
           plan.boss[itemIndex].difficulty = action.payload.difficulty;
-        if (action.payload.partyMembers)
-          plan.boss[itemIndex].partyMembers = action.payload.partyMembers;
+        if (action.payload.members)
+          plan.boss[itemIndex].members = action.payload.members;
         return;
       }
 
@@ -118,7 +118,7 @@ const slice = createSlice({
       plan.boss.push({
         type: action.payload.type,
         difficulty: action.payload.difficulty,
-        partyMembers: action.payload.partyMembers ?? 1,
+        members: action.payload.members ?? 1,
       });
       plan.boss.sort((a, b) => types.indexOf(a.type) - types.indexOf(b.type));
     },
@@ -127,14 +127,11 @@ const slice = createSlice({
       action: PayloadAction<{
         index: number;
         type: BOSS_TYPE;
-        difficulty: BOSS_DIFFICULTY;
       }>
     ) {
       const plan = state.bossPlans[action.payload.index];
       const itemIndex = plan.boss.findIndex(
-        (boss) =>
-          boss.type == action.payload.type &&
-          boss.difficulty == action.payload.difficulty
+        (boss) => boss.type == action.payload.type
       );
       if (itemIndex < 0) return;
 

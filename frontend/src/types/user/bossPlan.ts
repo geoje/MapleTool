@@ -6,6 +6,6 @@ export default interface BossPlan {
   boss: {
     type: BOSS_TYPE;
     difficulty: BOSS_DIFFICULTY;
-    partyMembers: number;
+    members: number;
   }[];
 }

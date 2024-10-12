@@ -52,7 +52,7 @@ export enum BOSS_DIFFICULTY {
   CHAOS = "CHAOS",
   EXTREME = "EXTREME",
 }
-export const BOSS_MAXIMUN_SELECTABLE = 12;
+export const MAX_BOSS_SELECTABLE = 12;
 
 interface ColorSet {
   text: string;

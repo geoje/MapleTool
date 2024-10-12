@@ -10,7 +10,7 @@ import { useAppSelector } from "../../../stores/hooks";
 import { Fragment } from "react/jsx-runtime";
 import { useState } from "react";
 import { calculateRevenue } from "../../../utils/boss";
-import { BOSS_MAXIMUN_SELECTABLE } from "../../../constants/boss";
+import { MAX_BOSS_SELECTABLE } from "../../../constants/boss";
 
 export default function ResultTable() {
   const bossPlans = useAppSelector((state) => state.user.bossPlans);
@@ -51,7 +51,7 @@ export default function ResultTable() {
             </Checkbox>
             <Badge
               colorScheme={
-                plan.boss.length == BOSS_MAXIMUN_SELECTABLE ? "blue" : undefined
+                plan.boss.length == MAX_BOSS_SELECTABLE ? "blue" : undefined
               }
             >
               {plan.boss.length}
@@ -80,7 +80,7 @@ export default function ResultTable() {
         <Badge
           colorScheme={
             totalCount ==
-            BOSS_MAXIMUN_SELECTABLE *
+            MAX_BOSS_SELECTABLE *
               revenues.filter((_, i) => !excludes.has(i)).length
               ? "blue"
               : undefined

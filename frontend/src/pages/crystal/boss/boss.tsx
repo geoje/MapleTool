@@ -1,8 +1,8 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { useAppSelector } from "../../../stores/hooks";
-import ContentsDefault from "./contentsDefault";
-import ContentOrder from "./contentOrder";
+import DefaultTable from "./defaultTable";
 import OrderButton from "./orderButton";
+import OrderTable from "./orderTable";
 
 export default function Boss({ selected }: { selected: number }) {
   const bossPlans = useAppSelector((state) => state.user.bossPlans);
@@ -26,12 +26,12 @@ export default function Boss({ selected }: { selected: number }) {
       <HeadButton>파티원</HeadButton>
       <OrderButton selected={selected} />
       {bossPlan.order && bossPlan.order.startsWith("price") ? (
-        <ContentOrder
+        <OrderTable
           selected={selected}
           descending={bossPlan.order.includes("desc")}
         />
       ) : (
-        <ContentsDefault selected={selected} />
+        <DefaultTable selected={selected} />
       )}
     </SimpleGrid>
   );
