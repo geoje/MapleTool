@@ -4,7 +4,7 @@ import maplem from "../assets/union/raid/job/maplem.png";
 import pirate from "../assets/union/raid/job/pirate.png";
 import thief from "../assets/union/raid/job/thief.png";
 import warrior from "../assets/union/raid/job/warrior.png";
-import wizard from "../assets/union/raid/job/wizard.png";
+import mage from "../assets/union/raid/job/mage.png";
 import xenon from "../assets/union/raid/job/xenon.png";
 
 const DATA = {
@@ -29,7 +29,7 @@ const DATA = {
     "제로",
     "아델",
   ],
-  wizard: [
+  mage: [
     "매지션",
     "위자드(불,독)",
     "위자드(썬,콜)",
@@ -108,7 +108,7 @@ const DATA = {
 
 export const JOBS: { name: string; icon: string }[] = [
   ...DATA.warrior.map((name) => ({ name, icon: warrior })),
-  ...DATA.wizard.map((name) => ({ name, icon: wizard })),
+  ...DATA.mage.map((name) => ({ name, icon: mage })),
   ...DATA.archer.map((name) => ({ name, icon: archer })),
   ...DATA.thief.map((name) => ({ name, icon: thief })),
   ...DATA.pirate.map((name) => ({ name, icon: pirate })),
