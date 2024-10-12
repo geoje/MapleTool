@@ -11,6 +11,7 @@ import { Fragment } from "react/jsx-runtime";
 import { useState } from "react";
 import { calculateRevenue } from "../../../utils/boss";
 import { MAX_BOSS_SELECTABLE } from "../../../constants/boss";
+import { formatNumber } from "../../../utils/formatter";
 
 export default function ResultTable() {
   const bossPlans = useAppSelector((state) => state.user.bossPlans);
@@ -65,7 +66,7 @@ export default function ResultTable() {
             py={1}
             borderBottomWidth={1}
           >
-            <Text>{numberToKorean(revenues[i])}</Text>
+            <Text>{formatNumber(revenues[i])}</Text>
           </Flex>
         </Fragment>
       ))}
@@ -88,33 +89,8 @@ export default function ResultTable() {
         >
           {totalCount}
         </Badge>
-        <Text fontWeight="bold">{numberToKorean(totalRevenue)}</Text>
+        <Text fontWeight="bold">{formatNumber(totalRevenue)}</Text>
       </GridItem>
     </SimpleGrid>
   );
-}
-
-function numberToKorean(num: number): string {
-  if (num === 0) return "0";
-
-  const units = ["억", "만", ""];
-  const parts = [];
-
-  parts.push(Math.floor(num / 100000000));
-  num %= 100000000;
-
-  parts.push(Math.floor(num / 10000));
-  num %= 10000;
-
-  parts.push(num);
-
-  const result = parts
-    .map((part, index) => {
-      if (part === 0) return "";
-      return `${part}${units[index]}`;
-    })
-    .filter((part) => part !== "")
-    .join(" ");
-
-  return result;
 }
