@@ -1,8 +1,8 @@
 export enum SET_TYPE {
   ROOTABIS, // 루타비스
   ABSOLABS, // 앱솔랩스
-  ARCANESHADE, // 아케인셰이드
-  ETERNEL, // 에테르넬
+  ARCAMEUMBRA, // 아케인셰이드
+  ETERNAL, // 에테르넬
   BOSS, // 보스
   DAWN, // 여명
   BLACK, // 칠흑
@@ -25,12 +25,12 @@ export const SET_INFOS: Record<SET_TYPE, Info> = {
     abbreviate: "앱솔",
     icon: "",
   },
-  [SET_TYPE.ARCANESHADE]: {
+  [SET_TYPE.ARCAMEUMBRA]: {
     name: "아케인셰이드",
     abbreviate: "아케인",
     icon: "",
   },
-  [SET_TYPE.ETERNEL]: {
+  [SET_TYPE.ETERNAL]: {
     name: "에테르넬",
     abbreviate: "에테",
     icon: "",
