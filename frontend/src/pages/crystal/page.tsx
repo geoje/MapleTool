@@ -1,11 +1,11 @@
 import { Stack } from "@chakra-ui/react";
 import BoardCard from "../../components/boardCard";
-import ResultTable from "./statistics/resultTable";
+import ResultTable from "./3-statistics/resultTable";
 import { useState } from "react";
-import CharacterButtons from "./character/characterButtons";
-import Boss from "./boss/boss";
-import PreparedButtons from "./boss/preparedButtons";
-import NameInput from "./character/nameInput";
+import CharacterButtons from "./1-character/characterButtons";
+import Boss from "./2-boss/boss";
+import PreparedButtons from "./2-boss/preparedButtons";
+import NameInput from "./1-character/nameInput";
 
 export default function Crystal() {
   const [selected, setSelected] = useState(-1);

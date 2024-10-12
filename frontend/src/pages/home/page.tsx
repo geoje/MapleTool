@@ -1,6 +1,6 @@
 import { Stack } from "@chakra-ui/react";
-import NameInput from "./register/nameInput";
-import CharacterButtons from "./character/characterButtons";
+import NameInput from "./1-register/nameInput";
+import CharacterButtons from "./2-character/characterButtons";
 import BoardCard from "../../components/boardCard";
 
 export default function Home() {

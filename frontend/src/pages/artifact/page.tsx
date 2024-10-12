@@ -1,9 +1,9 @@
 import { Badge, Spinner, Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import ArtifactLevel from "./artifactLevel/artifactLevel";
-import EffectLevel from "./effectLevel/effectLevel";
-import SelectEffect from "./select/selectEffect";
-import ResultGrid from "./result/result";
+import ArtifactLevel from "./1-artifactLevel/artifactLevel";
+import EffectLevel from "./2-effectLevel/effectLevel";
+import SelectEffect from "./3-select/selectEffect";
+import ResultGrid from "./4-result/result";
 import BoardCard from "../../components/boardCard";
 import { remainPoint } from "../../utils/artifact";
 import { useAppSelector } from "../../stores/hooks";
