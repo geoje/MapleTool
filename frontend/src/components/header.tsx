@@ -109,9 +109,19 @@ function ProfileImage({ src }: { src?: string }) {
   return (
     <Image
       boxSize="32px"
-      src={src ?? characterBlank}
-      filter={src ? undefined : "opacity(0.2) drop-shadow(0 0 0 #000000);"}
+      src={src}
+      fallback={<BlankCharacterImage />}
       style={{ imageRendering: "pixelated" }}
+    />
+  );
+}
+
+function BlankCharacterImage() {
+  return (
+    <Image
+      boxSize="32px"
+      src={characterBlank}
+      filter="opacity(0.2) drop-shadow(0 0 0 #000000);"
     />
   );
 }
