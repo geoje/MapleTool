@@ -1,6 +1,6 @@
 export enum SET_TYPE {
   ROOTABIS, // 루타비스
-  ABSOLUTE, // 앱솔랩스
+  ABSOLABS, // 앱솔랩스
   ARCANESHADE, // 아케인셰이드
   ETERNEL, // 에테르넬
   BOSS, // 보스
@@ -20,7 +20,7 @@ export const SET_INFOS: Record<SET_TYPE, Info> = {
     abbreviate: "루타",
     icon: "",
   },
-  [SET_TYPE.ABSOLUTE]: {
+  [SET_TYPE.ABSOLABS]: {
     name: "앱솔랩스",
     abbreviate: "앱솔",
     icon: "",

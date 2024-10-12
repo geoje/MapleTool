@@ -1,11 +1,11 @@
-import archer from "../assets/union/raid/job/archer.png";
 import blank from "../assets/union/raid/job/blank.png";
-import maplem from "../assets/union/raid/job/maplem.png";
-import pirate from "../assets/union/raid/job/pirate.png";
-import thief from "../assets/union/raid/job/thief.png";
 import warrior from "../assets/union/raid/job/warrior.png";
-import mage from "../assets/union/raid/job/mage.png";
+import magician from "../assets/union/raid/job/magician.png";
+import bowman from "../assets/union/raid/job/bowman.png";
+import thief from "../assets/union/raid/job/thief.png";
+import pirate from "../assets/union/raid/job/pirate.png";
 import xenon from "../assets/union/raid/job/xenon.png";
+import maplem from "../assets/union/raid/job/maplem.png";
 
 const DATA = {
   warrior: [
@@ -29,7 +29,7 @@ const DATA = {
     "제로",
     "아델",
   ],
-  mage: [
+  magician: [
     "매지션",
     "위자드(불,독)",
     "위자드(썬,콜)",
@@ -48,7 +48,7 @@ const DATA = {
     "일리움",
     "라라",
   ],
-  archer: [
+  bowman: [
     "아처",
     "헌터",
     "사수",
@@ -108,8 +108,8 @@ const DATA = {
 
 export const JOBS: { name: string; icon: string }[] = [
   ...DATA.warrior.map((name) => ({ name, icon: warrior })),
-  ...DATA.mage.map((name) => ({ name, icon: mage })),
-  ...DATA.archer.map((name) => ({ name, icon: archer })),
+  ...DATA.magician.map((name) => ({ name, icon: magician })),
+  ...DATA.bowman.map((name) => ({ name, icon: bowman })),
   ...DATA.thief.map((name) => ({ name, icon: thief })),
   ...DATA.pirate.map((name) => ({ name, icon: pirate })),
   ...DATA.xenon.map((name) => ({ name, icon: xenon })),
