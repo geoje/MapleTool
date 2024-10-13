@@ -7,7 +7,6 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { getMaxMembers } from "../../../utils/boss";
 import { removeBossItem, putBossItem } from "../../../stores/userSlice";
-import { useMemo } from "react";
 import Row from "./row";
 
 export default function OrderTable({
@@ -21,19 +20,15 @@ export default function OrderTable({
   const bossPlans = useAppSelector((state) => state.user.bossPlans);
   const bossPlan = bossPlans[selected];
 
-  const unsortedBossInfos = useMemo(
-    () =>
-      Object.entries(BOSS).flatMap(([type, boss]) =>
-        Object.entries(boss.prices).map(([difficulty, price]) => ({
-          type: type as BOSS_TYPE,
-          name: boss.name,
-          abbreviate: boss.abbreviate,
-          icon: boss.icon,
-          difficulty: difficulty as BOSS_DIFFICULTY,
-          price,
-        }))
-      ),
-    [BOSS]
+  const unsortedBossInfos = Object.entries(BOSS).flatMap(([type, boss]) =>
+    Object.entries(boss.prices).map(([difficulty, price]) => ({
+      type: type as BOSS_TYPE,
+      name: boss.name,
+      abbreviate: boss.abbreviate,
+      icon: boss.icon,
+      difficulty: difficulty as BOSS_DIFFICULTY,
+      price,
+    }))
   );
   const bossInfos = unsortedBossInfos.sort((a, b) =>
     descending ? b.price - a.price : a.price - b.price
