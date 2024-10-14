@@ -27,7 +27,7 @@ export default function CharacterButton({
 }) {
   const dispatch = useAppDispatch();
   const { data, isFetching } = useBasicQuery(bossPlan.name, {
-    skip: readOnly || !bossPlan.name,
+    skip: !bossPlan.name,
   });
 
   const {
