@@ -134,8 +134,8 @@ function ImageAndReqLevel({
   return (
     <Flex width="100%" align="stretch" p={2}>
       <Flex
-        w="42px"
-        h="42px"
+        minW="42px"
+        minH="42px"
         justify="center"
         align="center"
         borderRadius={2}

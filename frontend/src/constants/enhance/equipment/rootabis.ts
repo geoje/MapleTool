@@ -1,17 +1,39 @@
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
 import { EMPTY_OPTION } from "../equipment";
+
 import WARRIOR_HAT from "../../../assets/equipment/rootabis/warrior/armor/hat.webp";
 import WARRIOR_TOP from "../../../assets/equipment/rootabis/warrior/armor/top.webp";
 import WARRIOR_BOTTOM from "../../../assets/equipment/rootabis/warrior/armor/bottom.webp";
+import ONE_HANDED_SWORD from "../../../assets/equipment/rootabis/warrior/weapon/one-handed-sword.webp";
+import ONE_HANDED_AXE from "../../../assets/equipment/rootabis/warrior/weapon/one-handed-axe.webp";
+import ONE_HANDED_BLUNT from "../../../assets/equipment/rootabis/warrior/weapon/one-handed-blunt.webp";
+import TWO_HANDED_SWORD from "../../../assets/equipment/rootabis/warrior/weapon/two-handed-sword.webp";
+import TWO_HANDED_AXE from "../../../assets/equipment/rootabis/warrior/weapon/two-handed-axe.webp";
+import TWO_HANDED_BLUNT from "../../../assets/equipment/rootabis/warrior/weapon/two-handed-blunt.webp";
+import SPEAR from "../../../assets/equipment/rootabis/warrior/weapon/spear.webp";
+import POLEARM from "../../../assets/equipment/rootabis/warrior/weapon/polearm.webp";
+import DESPERADO from "../../../assets/equipment/rootabis/warrior/weapon/desperado.webp";
+import KATANA from "../../../assets/equipment/rootabis/warrior/weapon/katana.webp";
+import ARM_CANNON from "../../../assets/equipment/rootabis/warrior/weapon/arm-cannon.webp";
+import BLADECASTER from "../../../assets/equipment/rootabis/warrior/weapon/bladecaster.webp";
+
 import MAGICIAN_HAT from "../../../assets/equipment/rootabis/magician/armor/hat.webp";
 import MAGICIAN_TOP from "../../../assets/equipment/rootabis/magician/armor/top.webp";
 import MAGICIAN_BOTTOM from "../../../assets/equipment/rootabis/magician/armor/bottom.webp";
+import WAND from "../../../assets/equipment/rootabis/magician/weapon/wand.webp";
+import STAFF from "../../../assets/equipment/rootabis/magician/weapon/staff.webp";
+import SHINING_ROD from "../../../assets/equipment/rootabis/magician/weapon/shining-rod.webp";
+import PSY_LIMITER from "../../../assets/equipment/rootabis/magician/weapon/psy-limiter.webp";
+import LUCENT_GAUNTLET from "../../../assets/equipment/rootabis/magician/weapon/lucent-gauntlet.webp";
+
 import BOWMAN_HAT from "../../../assets/equipment/rootabis/bowman/armor/hat.webp";
 import BOWMAN_TOP from "../../../assets/equipment/rootabis/bowman/armor/top.webp";
 import BOWMAN_BOTTOM from "../../../assets/equipment/rootabis/bowman/armor/bottom.webp";
+
 import THIEF_HAT from "../../../assets/equipment/rootabis/thief/armor/hat.webp";
 import THIEF_TOP from "../../../assets/equipment/rootabis/thief/armor/top.webp";
 import THIEF_BOTTOM from "../../../assets/equipment/rootabis/thief/armor/bottom.webp";
+
 import PIRATE_HAT from "../../../assets/equipment/rootabis/pirate/armor/hat.webp";
 import PIRATE_TOP from "../../../assets/equipment/rootabis/pirate/armor/top.webp";
 import PIRATE_BOTTOM from "../../../assets/equipment/rootabis/pirate/armor/bottom.webp";
@@ -68,6 +90,198 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
         ignore_monster_armor: "5%",
       },
     },
+    {
+      item_equipment_part: "한손검",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 미스틸테인",
+      item_icon: ONE_HANDED_SWORD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "171",
+        boss_damage: "30%",
+        ignore_monster_armor: "5%",
+      },
+    },
+    {
+      item_equipment_part: "한손도끼",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 트윈클리버",
+      item_icon: ONE_HANDED_AXE,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "164",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "한손둔기",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 골디언해머",
+      item_icon: ONE_HANDED_BLUNT,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "164",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "두손검",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 페니텐시아",
+      item_icon: TWO_HANDED_SWORD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "171",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "두손도끼",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 배틀클리버",
+      item_icon: TWO_HANDED_AXE,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "171",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "두손둔기",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 라이트닝어",
+      item_icon: TWO_HANDED_BLUNT,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "171",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "창",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 브류나크",
+      item_icon: SPEAR,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "171",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "폴암",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 문글레이브",
+      item_icon: POLEARM,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "153",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "데스페라도",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 데스브링어",
+      item_icon: DESPERADO,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        max_hp: "2000",
+        attack_power: "171",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "건틀렛 리볼버",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 빅 마운틴",
+      item_icon: ARM_CANNON,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "128",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "튜너",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 포기브니스",
+      item_icon: BLADECASTER,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "171",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "카타나",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 황도 마사무네",
+      item_icon: KATANA,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        attack_power: "164",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
   ],
   MAGICIAN: [
     {
@@ -118,6 +332,91 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
         magic_power: "2",
         armor: "120",
         ignore_monster_armor: "5%",
+      },
+    },
+    {
+      item_equipment_part: "완드",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 마나테이커",
+      item_icon: WAND,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        int: "40",
+        luk: "40",
+        attack_power: "119",
+        magic_power: "201",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "스태프",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 마나크라운",
+      item_icon: STAFF,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        int: "40",
+        luk: "40",
+        attack_power: "126",
+        magic_power: "204",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "샤이닝 로드",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 마나크래들",
+      item_icon: SHINING_ROD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        int: "40",
+        luk: "40",
+        attack_power: "119",
+        magic_power: "201",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "ESP 리미터",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 ESP리미터",
+      item_icon: PSY_LIMITER,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        int: "40",
+        luk: "40",
+        attack_power: "119",
+        magic_power: "201",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "매직 건틀렛",
+      item_equipment_slot: "무기",
+      item_name: "파프니르 매직 건틀렛",
+      item_icon: LUCENT_GAUNTLET,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        int: "40",
+        luk: "40",
+        attack_power: "119",
+        magic_power: "201",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
       },
     },
   ],

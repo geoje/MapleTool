@@ -25,14 +25,21 @@ export default function SlotButton({
       label={<ItemToolTip item={item} />}
     >
       <IconButton
-        aria-label="item"
+        aria-label="slot"
+        w="40px"
         borderWidth={1}
         borderColor={
           potentialIndex != -1 && !transparent
             ? BORDER_COLOR[potentialIndex]
             : undefined
         }
-        icon={<Image src={item?.item_icon} opacity={transparent ? 0.1 : 1} />}
+        icon={
+          <Image
+            src={item?.item_icon}
+            opacity={transparent ? 0.1 : 1}
+            maxW="none"
+          />
+        }
         onClick={onClick}
       />
     </Tooltip>
