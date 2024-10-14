@@ -5,7 +5,7 @@ import { getCharacterEquipmentGrid } from "../../../utils/equipment";
 import SlotButton from "../common/slotButton";
 import { SLOT_GRID } from "../../../constants/enhance/equipment";
 
-export default function PresetTable({ preset }: { preset: number }) {
+export default function CharacterEquipTable({ preset }: { preset: number }) {
   const name = useAppSelector((state) => state.user.name);
   const { data } = useItemEquipmentQuery(name, { skip: !name });
 

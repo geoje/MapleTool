@@ -7,8 +7,8 @@ import {
   Stack,
   Tooltip,
 } from "@chakra-ui/react";
-import PresetTable from "./presetTable";
-import PreparedTable from "./preparedTable";
+import CharacterEquipTable from "./characterEquipTable";
+import PreparedEquipTable from "./preparedEquipTable";
 
 export default function GetEquipment({
   preset,
@@ -36,9 +36,9 @@ export default function GetEquipment({
       </Flex>
 
       {typeof preset == "number" ? (
-        <PresetTable preset={preset} />
+        <CharacterEquipTable preset={preset} />
       ) : (
-        <PreparedTable />
+        <PreparedEquipTable preset={preset} />
       )}
     </Stack>
   );

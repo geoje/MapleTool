@@ -4,9 +4,6 @@ export interface ItemEquipment {
   character_class: string;
   preset_no: number;
   item_equipment: ItemEquipmentDetail[];
-  item_equipment_preset1: ItemEquipmentDetail[];
-  item_equipment_preset2: ItemEquipmentDetail[];
-  item_equipment_preset3: ItemEquipmentDetail[];
   item_equipment_preset_1: ItemEquipmentDetail[];
   item_equipment_preset_2: ItemEquipmentDetail[];
   item_equipment_preset_3: ItemEquipmentDetail[];
