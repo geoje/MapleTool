@@ -2,6 +2,7 @@ import { IconButton, Image, Tooltip } from "@chakra-ui/react";
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
 import { getMaxPotentialIndex } from "../../../utils/potential";
 import { BORDER_COLOR } from "../../../constants/enhance/potential";
+import ItemToolTip from "./itemTooltip";
 
 export default function SlotButton({
   item,
@@ -21,7 +22,7 @@ export default function SlotButton({
       w={64}
       p={0}
       borderRadius={4}
-      //   label={<EquipmentToolTip item={item} />}
+      label={<ItemToolTip item={item} />}
     >
       <IconButton
         aria-label="item"

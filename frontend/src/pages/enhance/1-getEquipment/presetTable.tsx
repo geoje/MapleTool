@@ -2,7 +2,7 @@ import { SimpleGrid } from "@chakra-ui/react";
 import { useItemEquipmentQuery } from "../../../stores/characterApi";
 import { useAppSelector } from "../../../stores/hooks";
 import { getCharacterEquipmentGrid } from "../../../utils/equipment";
-import SlotButton from "./slotButton";
+import SlotButton from "../common/slotButton";
 import { SLOT_GRID } from "../../../constants/enhance/equipment";
 
 export default function PresetTable({ preset }: { preset: number }) {
