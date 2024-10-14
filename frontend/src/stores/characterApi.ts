@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Basic } from "../types/character/basic";
 import { ItemEquipment } from "../types/character/itemEquipment";
-import { persistReducer } from "redux-persist";
+import { persistReducer, REHYDRATE } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const key = "character";
@@ -17,6 +17,14 @@ export const characterApi = createApi({
       query: (name) => `/item-equipment?name=${name}`,
     }),
   }),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extractRehydrationInfo(action, { reducerPath }): any {
+    if (action.type === REHYDRATE) {
+      if (action.key == reducerPath) {
+        return action.payload;
+      }
+    }
+  },
 });
 
 export const characterReducer = persistReducer<

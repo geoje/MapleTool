@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Basic } from "../types/union/basic";
-import { persistReducer } from "redux-persist";
+import { persistReducer, REHYDRATE } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const key = "union";
@@ -13,6 +13,14 @@ export const unionApi = createApi({
       query: (name) => `/basic?name=${name}`,
     }),
   }),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extractRehydrationInfo(action, { reducerPath }): any {
+    if (action.type === REHYDRATE) {
+      if (action.key == reducerPath) {
+        return action.payload;
+      }
+    }
+  },
 });
 
 export const unionReducer = persistReducer<ReturnType<typeof unionApi.reducer>>(
