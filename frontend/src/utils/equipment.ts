@@ -1,4 +1,4 @@
-import { SLOT_GRID } from "../constants/enhance/equipment";
+import { EMPTY_DETAIL, SLOT_GRID } from "../constants/enhance/equipment";
 import { ROOTABIS } from "../constants/enhance/equipment/rootabis";
 import { SET_TYPE } from "../constants/enhance/set";
 import { ItemEquipment } from "../types/character/itemEquipment";
@@ -27,5 +27,11 @@ export function getCharacterEquipmentGrid(
 
 export function getPreparedEquipmentGrid(preset: SET_TYPE) {
   const items = preset == SET_TYPE.ROOTABIS ? ROOTABIS : {};
-  return Object.entries(items).map(([_, row]) => row);
+  return Object.entries(items).map(([_, row]) =>
+    row.map((item) => ({
+      ...EMPTY_DETAIL,
+      ...item,
+      item_total_option: item.item_base_option,
+    }))
+  );
 }
