@@ -1,23 +1,23 @@
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
 import { EMPTY_OPTION } from "../equipment";
 import WARRIOR_HAT from "../../../assets/equipment/rootabis/warrior/armor/hat.webp";
-import MAGICIAN_HAT from "../../../assets/equipment/rootabis/magician/armor/hat.webp";
-import BOWMAN_HAT from "../../../assets/equipment/rootabis/bowman/armor/hat.webp";
-import THIEF_HAT from "../../../assets/equipment/rootabis/thief/armor/hat.webp";
-import PIRATE_HAT from "../../../assets/equipment/rootabis/pirate/armor/hat.webp";
 import WARRIOR_TOP from "../../../assets/equipment/rootabis/warrior/armor/top.webp";
-import MAGICIAN_TOP from "../../../assets/equipment/rootabis/magician/armor/top.webp";
-import BOWMAN_TOP from "../../../assets/equipment/rootabis/bowman/armor/top.webp";
-import THIEF_TOP from "../../../assets/equipment/rootabis/thief/armor/top.webp";
-import PIRATE_TOP from "../../../assets/equipment/rootabis/pirate/armor/top.webp";
 import WARRIOR_BOTTOM from "../../../assets/equipment/rootabis/warrior/armor/bottom.webp";
+import MAGICIAN_HAT from "../../../assets/equipment/rootabis/magician/armor/hat.webp";
+import MAGICIAN_TOP from "../../../assets/equipment/rootabis/magician/armor/top.webp";
 import MAGICIAN_BOTTOM from "../../../assets/equipment/rootabis/magician/armor/bottom.webp";
+import BOWMAN_HAT from "../../../assets/equipment/rootabis/bowman/armor/hat.webp";
+import BOWMAN_TOP from "../../../assets/equipment/rootabis/bowman/armor/top.webp";
 import BOWMAN_BOTTOM from "../../../assets/equipment/rootabis/bowman/armor/bottom.webp";
+import THIEF_HAT from "../../../assets/equipment/rootabis/thief/armor/hat.webp";
+import THIEF_TOP from "../../../assets/equipment/rootabis/thief/armor/top.webp";
 import THIEF_BOTTOM from "../../../assets/equipment/rootabis/thief/armor/bottom.webp";
+import PIRATE_HAT from "../../../assets/equipment/rootabis/pirate/armor/hat.webp";
+import PIRATE_TOP from "../../../assets/equipment/rootabis/pirate/armor/top.webp";
 import PIRATE_BOTTOM from "../../../assets/equipment/rootabis/pirate/armor/bottom.webp";
 
 export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
-  HAT: [
+  WARRIOR: [
     {
       item_equipment_part: "모자",
       item_equipment_slot: "모자",
@@ -37,6 +37,40 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       },
     },
     {
+      item_equipment_part: "상의",
+      item_equipment_slot: "상의",
+      item_name: "이글아이 워리어아머",
+      item_icon: WARRIOR_TOP,
+      scroll_upgradeable_count: "7",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "30",
+        dex: "30",
+        attack_power: "2",
+        armor: "210",
+        ignore_monster_armor: "5%",
+      },
+    },
+    {
+      item_equipment_part: "하의",
+      item_equipment_slot: "하의",
+      item_name: "트릭스터 워리어팬츠",
+      item_icon: WARRIOR_BOTTOM,
+      scroll_upgradeable_count: "7",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "30",
+        dex: "30",
+        attack_power: "2",
+        armor: "210",
+        ignore_monster_armor: "5%",
+      },
+    },
+  ],
+  MAGICIAN: [
+    {
       item_equipment_part: "모자",
       item_equipment_slot: "모자",
       item_name: "하이네스 던위치햇",
@@ -52,78 +86,6 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
         magic_power: "2",
         armor: "180",
         ignore_monster_armor: "10%",
-      },
-    },
-    {
-      item_equipment_part: "모자",
-      item_equipment_slot: "모자",
-      item_name: "하이네스 레인져베레",
-      item_icon: BOWMAN_HAT,
-      scroll_upgradeable_count: "11",
-      item_base_option: {
-        ...EMPTY_OPTION,
-        base_equipment_level: 150,
-        str: "40",
-        dex: "40",
-        max_hp: "360",
-        max_mp: "360",
-        attack_power: "2",
-        armor: "300",
-        ignore_monster_armor: "10%",
-      },
-    },
-    {
-      item_equipment_part: "모자",
-      item_equipment_slot: "모자",
-      item_name: "하이네스 어새신보닛",
-      item_icon: THIEF_HAT,
-      scroll_upgradeable_count: "11",
-      item_base_option: {
-        ...EMPTY_OPTION,
-        base_equipment_level: 150,
-        dex: "40",
-        luk: "40",
-        max_hp: "360",
-        max_mp: "360",
-        attack_power: "2",
-        armor: "300",
-        ignore_monster_armor: "10%",
-      },
-    },
-    {
-      item_equipment_part: "모자",
-      item_equipment_slot: "모자",
-      item_name: "하이네스 원더러햇",
-      item_icon: PIRATE_HAT,
-      scroll_upgradeable_count: "11",
-      item_base_option: {
-        ...EMPTY_OPTION,
-        base_equipment_level: 150,
-        str: "40",
-        dex: "40",
-        max_hp: "360",
-        max_mp: "360",
-        attack_power: "2",
-        armor: "300",
-        ignore_monster_armor: "10%",
-      },
-    },
-  ],
-  TOP: [
-    {
-      item_equipment_part: "상의",
-      item_equipment_slot: "상의",
-      item_name: "이글아이 워리어아머",
-      item_icon: WARRIOR_TOP,
-      scroll_upgradeable_count: "7",
-      item_base_option: {
-        ...EMPTY_OPTION,
-        base_equipment_level: 150,
-        str: "30",
-        dex: "30",
-        attack_power: "2",
-        armor: "210",
-        ignore_monster_armor: "5%",
       },
     },
     {
@@ -143,72 +105,6 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       },
     },
     {
-      item_equipment_part: "상의",
-      item_equipment_slot: "상의",
-      item_name: "이글아이 레인져후드",
-      item_icon: BOWMAN_TOP,
-      scroll_upgradeable_count: "7",
-      item_base_option: {
-        ...EMPTY_OPTION,
-        base_equipment_level: 150,
-        dex: "30",
-        str: "30",
-        attack_power: "2",
-        armor: "135",
-        ignore_monster_armor: "5%",
-      },
-    },
-    {
-      item_equipment_part: "상의",
-      item_equipment_slot: "상의",
-      item_name: "이글아이 어새신셔츠",
-      item_icon: THIEF_TOP,
-      scroll_upgradeable_count: "7",
-      item_base_option: {
-        ...EMPTY_OPTION,
-        base_equipment_level: 150,
-        luk: "30",
-        dex: "30",
-        attack_power: "2",
-        armor: "135",
-        ignore_monster_armor: "5%",
-      },
-    },
-    {
-      item_equipment_part: "상의",
-      item_equipment_slot: "상의",
-      item_name: "이글아이 원더러코트",
-      item_icon: PIRATE_TOP,
-      scroll_upgradeable_count: "7",
-      item_base_option: {
-        ...EMPTY_OPTION,
-        base_equipment_level: 150,
-        dex: "30",
-        str: "30",
-        attack_power: "2",
-        armor: "135",
-        ignore_monster_armor: "5%",
-      },
-    },
-  ],
-  BOTTOM: [
-    {
-      item_equipment_part: "하의",
-      item_equipment_slot: "하의",
-      item_name: "트릭스터 워리어팬츠",
-      item_icon: WARRIOR_BOTTOM,
-      scroll_upgradeable_count: "7",
-      item_base_option: {
-        ...EMPTY_OPTION,
-        base_equipment_level: 150,
-        str: "30",
-        dex: "30",
-        attack_power: "2",
-        armor: "210",
-        ignore_monster_armor: "5%",
-      },
-    },
-    {
       item_equipment_part: "하의",
       item_equipment_slot: "하의",
       item_name: "트릭스터 던위치팬츠",
@@ -221,6 +117,42 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
         luk: "30",
         magic_power: "2",
         armor: "120",
+        ignore_monster_armor: "5%",
+      },
+    },
+  ],
+  BOWMAN: [
+    {
+      item_equipment_part: "모자",
+      item_equipment_slot: "모자",
+      item_name: "하이네스 레인져베레",
+      item_icon: BOWMAN_HAT,
+      scroll_upgradeable_count: "11",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        max_hp: "360",
+        max_mp: "360",
+        attack_power: "2",
+        armor: "300",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "상의",
+      item_equipment_slot: "상의",
+      item_name: "이글아이 레인져후드",
+      item_icon: BOWMAN_TOP,
+      scroll_upgradeable_count: "7",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        dex: "30",
+        str: "30",
+        attack_power: "2",
+        armor: "135",
         ignore_monster_armor: "5%",
       },
     },
@@ -240,6 +172,42 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
         ignore_monster_armor: "5%",
       },
     },
+  ],
+  THIEF: [
+    {
+      item_equipment_part: "모자",
+      item_equipment_slot: "모자",
+      item_name: "하이네스 어새신보닛",
+      item_icon: THIEF_HAT,
+      scroll_upgradeable_count: "11",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        dex: "40",
+        luk: "40",
+        max_hp: "360",
+        max_mp: "360",
+        attack_power: "2",
+        armor: "300",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "상의",
+      item_equipment_slot: "상의",
+      item_name: "이글아이 어새신셔츠",
+      item_icon: THIEF_TOP,
+      scroll_upgradeable_count: "7",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        luk: "30",
+        dex: "30",
+        attack_power: "2",
+        armor: "135",
+        ignore_monster_armor: "5%",
+      },
+    },
     {
       item_equipment_part: "하의",
       item_equipment_slot: "하의",
@@ -251,6 +219,42 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
         base_equipment_level: 150,
         luk: "30",
         dex: "30",
+        attack_power: "2",
+        armor: "135",
+        ignore_monster_armor: "5%",
+      },
+    },
+  ],
+  PIRATE: [
+    {
+      item_equipment_part: "모자",
+      item_equipment_slot: "모자",
+      item_name: "하이네스 원더러햇",
+      item_icon: PIRATE_HAT,
+      scroll_upgradeable_count: "11",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        str: "40",
+        dex: "40",
+        max_hp: "360",
+        max_mp: "360",
+        attack_power: "2",
+        armor: "300",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "상의",
+      item_equipment_slot: "상의",
+      item_name: "이글아이 원더러코트",
+      item_icon: PIRATE_TOP,
+      scroll_upgradeable_count: "7",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 150,
+        dex: "30",
+        str: "30",
         attack_power: "2",
         armor: "135",
         ignore_monster_armor: "5%",
@@ -273,5 +277,4 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       },
     },
   ],
-  WEAPON: [],
 };

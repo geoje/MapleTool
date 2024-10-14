@@ -1,7 +1,14 @@
-import { EMPTY_DETAIL, SLOT_GRID } from "../constants/enhance/equipment";
+import {
+  EMPTY_DETAIL,
+  EMPTY_OPTION,
+  SLOT_GRID,
+} from "../constants/enhance/equipment";
 import { ROOTABIS } from "../constants/enhance/equipment/rootabis";
 import { SET_TYPE } from "../constants/enhance/set";
-import { ItemEquipment } from "../types/character/itemEquipment";
+import {
+  ItemEquipment,
+  ItemEquipmentDetail,
+} from "../types/character/itemEquipment";
 
 export function getCharacterEquipmentGrid(
   preset: number,
@@ -26,12 +33,24 @@ export function getCharacterEquipmentGrid(
 }
 
 export function getPreparedEquipmentGrid(preset: SET_TYPE) {
-  const items = preset == SET_TYPE.ROOTABIS ? ROOTABIS : {};
-  return Object.entries(items).map(([_, row]) =>
-    row.map((item) => ({
-      ...EMPTY_DETAIL,
-      ...item,
-      item_total_option: item.item_base_option,
-    }))
+  const itemsByClass = preset == SET_TYPE.ROOTABIS ? ROOTABIS : {};
+  const maxCols = Math.max(
+    ...Object.entries(itemsByClass).map(([_, items]) => items.length)
   );
+
+  return Array.from({ length: maxCols }, (_, colIndex) =>
+    Object.entries(itemsByClass).map(([_, items]) =>
+      items[colIndex] ? getFullDetailByPartial(items[colIndex]) : undefined
+    )
+  );
+}
+
+function getFullDetailByPartial(
+  partialDetail: Partial<ItemEquipmentDetail>
+): ItemEquipmentDetail {
+  return {
+    ...EMPTY_DETAIL,
+    ...partialDetail,
+    item_total_option: partialDetail.item_base_option ?? EMPTY_OPTION,
+  };
 }

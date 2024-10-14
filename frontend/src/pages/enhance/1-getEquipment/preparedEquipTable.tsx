@@ -7,7 +7,7 @@ export default function PreparedEquipTable({ preset }: { preset: SET_TYPE }) {
   return (
     <SimpleGrid columns={5} px={1} gap={1}>
       {getPreparedEquipmentGrid(preset).flatMap((row, i) =>
-        row.flatMap((item, j) =>
+        row.map((item, j) =>
           item ? (
             <SlotButton key={`item-${i}-${j}`} item={item} />
           ) : (
