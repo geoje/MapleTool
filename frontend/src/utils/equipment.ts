@@ -4,6 +4,7 @@ import {
   SLOT_GRID,
 } from "../constants/enhance/equipment";
 import { ABSOLABS } from "../constants/enhance/equipment/absolabs";
+import { ARCANEUMBRA } from "../constants/enhance/equipment/arcaneumbra";
 import { ROOTABIS } from "../constants/enhance/equipment/rootabis";
 import { SET_TYPE } from "../constants/enhance/set";
 import {
@@ -39,6 +40,8 @@ export function getPreparedEquipmentGrid(preset: SET_TYPE) {
       ? ROOTABIS
       : preset == SET_TYPE.ABSOLABS
       ? ABSOLABS
+      : preset == SET_TYPE.ARCANEUMBRA
+      ? ARCANEUMBRA
       : {};
   const maxCols = Math.max(
     ...Object.entries(itemsByClass).map(([_, items]) => items.length)
