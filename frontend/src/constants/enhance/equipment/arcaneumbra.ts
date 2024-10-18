@@ -7,6 +7,20 @@ import WARRIOR_SHOES from "../../../assets/equipment/arcaneumbra/warrior/armor/s
 import WARRIOR_GLOVES from "../../../assets/equipment/arcaneumbra/warrior/armor/gloves.webp";
 import WARRIOR_CAPE from "../../../assets/equipment/arcaneumbra/warrior/armor/cape.webp";
 import WARRIOR_SHOULDER from "../../../assets/equipment/arcaneumbra/warrior/armor/shoulder.webp";
+import ONE_HANDED_SWORD from "../../../assets/equipment/arcaneumbra/warrior/weapon/one-handed-sword.webp";
+import ONE_HANDED_AXE from "../../../assets/equipment/arcaneumbra/warrior/weapon/one-handed-axe.webp";
+import ONE_HANDED_BLUNT from "../../../assets/equipment/arcaneumbra/warrior/weapon/one-handed-blunt.webp";
+import TWO_HANDED_SWORD from "../../../assets/equipment/arcaneumbra/warrior/weapon/two-handed-sword.webp";
+import TWO_HANDED_AXE from "../../../assets/equipment/arcaneumbra/warrior/weapon/two-handed-axe.webp";
+import TWO_HANDED_BLUNT from "../../../assets/equipment/arcaneumbra/warrior/weapon/two-handed-blunt.webp";
+import SPEAR from "../../../assets/equipment/arcaneumbra/warrior/weapon/spear.webp";
+import POLEARM from "../../../assets/equipment/arcaneumbra/warrior/weapon/polearm.webp";
+import DESPERADO from "../../../assets/equipment/arcaneumbra/warrior/weapon/desperado.webp";
+import KATANA from "../../../assets/equipment/arcaneumbra/warrior/weapon/katana.webp";
+import ARM_CANNON from "../../../assets/equipment/arcaneumbra/warrior/weapon/arm-cannon.webp";
+import BLADECASTER from "../../../assets/equipment/arcaneumbra/warrior/weapon/bladecaster.webp";
+import LONG_SWORD from "../../../assets/equipment/arcaneumbra/warrior/weapon/long-sword.webp";
+import HEAVY_SWORD from "../../../assets/equipment/arcaneumbra/warrior/weapon/heavy-sword.webp";
 
 import MAGICIAN_HAT from "../../../assets/equipment/arcaneumbra/magician/armor/hat.webp";
 import MAGICIAN_OVERALL from "../../../assets/equipment/arcaneumbra/magician/armor/overall.webp";
@@ -14,6 +28,13 @@ import MAGICIAN_SHOES from "../../../assets/equipment/arcaneumbra/magician/armor
 import MAGICIAN_GLOVES from "../../../assets/equipment/arcaneumbra/magician/armor/gloves.webp";
 import MAGICIAN_CAPE from "../../../assets/equipment/arcaneumbra/magician/armor/cape.webp";
 import MAGICIAN_SHOULDER from "../../../assets/equipment/arcaneumbra/magician/armor/shoulder.webp";
+import WAND from "../../../assets/equipment/arcaneumbra/magician/weapon/wand.webp";
+import STAFF from "../../../assets/equipment/arcaneumbra/magician/weapon/staff.webp";
+import SHINING_ROD from "../../../assets/equipment/arcaneumbra/magician/weapon/shining-rod.webp";
+import PSY_LIMITER from "../../../assets/equipment/arcaneumbra/magician/weapon/psy-limiter.webp";
+import LUCENT_GAUNTLET from "../../../assets/equipment/arcaneumbra/magician/weapon/lucent-gauntlet.webp";
+import SCEPTER from "../../../assets/equipment/arcaneumbra/magician/weapon/scepter.webp";
+import FAN from "../../../assets/equipment/arcaneumbra/magician/weapon/fan.webp";
 
 import BOWMAN_HAT from "../../../assets/equipment/arcaneumbra/bowman/armor/hat.webp";
 import BOWMAN_OVERALL from "../../../assets/equipment/arcaneumbra/bowman/armor/overall.webp";
@@ -21,6 +42,11 @@ import BOWMAN_SHOES from "../../../assets/equipment/arcaneumbra/bowman/armor/sho
 import BOWMAN_GLOVES from "../../../assets/equipment/arcaneumbra/bowman/armor/gloves.webp";
 import BOWMAN_CAPE from "../../../assets/equipment/arcaneumbra/bowman/armor/cape.webp";
 import BOWMAN_SHOULDER from "../../../assets/equipment/arcaneumbra/bowman/armor/shoulder.webp";
+import BOW from "../../../assets/equipment/arcaneumbra/bowman/weapon/bow.webp";
+import CROSSBOW from "../../../assets/equipment/arcaneumbra/bowman/weapon/crossbow.webp";
+import DUAL_BOWGUNS from "../../../assets/equipment/arcaneumbra/bowman/weapon/dual-bowguns.webp";
+import ANCIENT_BOW from "../../../assets/equipment/arcaneumbra/bowman/weapon/ancient-bow.webp";
+import WHISPERSHOT from "../../../assets/equipment/arcaneumbra/bowman/weapon/whispershot.webp";
 
 import THIEF_HAT from "../../../assets/equipment/arcaneumbra/thief/armor/hat.webp";
 import THIEF_OVERALL from "../../../assets/equipment/arcaneumbra/thief/armor/overall.webp";
@@ -28,6 +54,13 @@ import THIEF_SHOES from "../../../assets/equipment/arcaneumbra/thief/armor/shoes
 import THIEF_GLOVES from "../../../assets/equipment/arcaneumbra/thief/armor/gloves.webp";
 import THIEF_CAPE from "../../../assets/equipment/arcaneumbra/thief/armor/cape.webp";
 import THIEF_SHOULDER from "../../../assets/equipment/arcaneumbra/thief/armor/shoulder.webp";
+import DAGGER from "../../../assets/equipment/arcaneumbra/thief/weapon/dagger.webp";
+import CLAW from "../../../assets/equipment/arcaneumbra/thief/weapon/claw.webp";
+import CANE from "../../../assets/equipment/arcaneumbra/thief/weapon/cane.webp";
+import WHIP_BLADE from "../../../assets/equipment/arcaneumbra/thief/weapon/whip-blade.webp";
+import CHAIN from "../../../assets/equipment/arcaneumbra/thief/weapon/chain.webp";
+import RITUAL_FAN from "../../../assets/equipment/arcaneumbra/thief/weapon/ritual-fan.webp";
+import CHAKRAM from "../../../assets/equipment/arcaneumbra/thief/weapon/chakram.webp";
 
 import PIRATE_HAT from "../../../assets/equipment/arcaneumbra/pirate/armor/hat.webp";
 import PIRATE_OVERALL from "../../../assets/equipment/arcaneumbra/pirate/armor/overall.webp";
@@ -35,6 +68,11 @@ import PIRATE_SHOES from "../../../assets/equipment/arcaneumbra/pirate/armor/sho
 import PIRATE_GLOVES from "../../../assets/equipment/arcaneumbra/pirate/armor/gloves.webp";
 import PIRATE_CAPE from "../../../assets/equipment/arcaneumbra/pirate/armor/cape.webp";
 import PIRATE_SHOULDER from "../../../assets/equipment/arcaneumbra/pirate/armor/shoulder.webp";
+import GUN from "../../../assets/equipment/arcaneumbra/pirate/weapon/gun.webp";
+import HAND_CANNON from "../../../assets/equipment/arcaneumbra/pirate/weapon/hand-cannon.webp";
+import KNUCKLE from "../../../assets/equipment/arcaneumbra/pirate/weapon/knuckle.webp";
+import SOUL_SHOOTER from "../../../assets/equipment/arcaneumbra/pirate/weapon/soul-shooter.webp";
+import WAR_FIST from "../../../assets/equipment/arcaneumbra/pirate/weapon/war-fist.webp";
 
 export const ARCANEUMBRA: Record<string, Partial<ItemEquipmentDetail>[]> = {
   WARRIOR: [
@@ -138,6 +176,231 @@ export const ARCANEUMBRA: Record<string, Partial<ItemEquipmentDetail>[]> = {
         armor: "300",
       },
     },
+    {
+      item_equipment_part: "한손검",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 세이버",
+      item_icon: ONE_HANDED_SWORD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "283",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "한손도끼",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 엑스",
+      item_icon: ONE_HANDED_AXE,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "283",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "한손둔기",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 해머",
+      item_icon: ONE_HANDED_BLUNT,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "283",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "두손검",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 투핸드소드",
+      item_icon: TWO_HANDED_SWORD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "295",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "두손도끼",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 투핸드엑스",
+      item_icon: TWO_HANDED_AXE,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "295",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "두손둔기",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 투핸드해머",
+      item_icon: TWO_HANDED_BLUNT,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "295",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "창",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 스피어",
+      item_icon: SPEAR,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "295",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "폴암",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 폴암",
+      item_icon: POLEARM,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "264",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "데스페라도",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 데스페라도",
+      item_icon: DESPERADO,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        max_hp: "2500",
+        attack_power: "295",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "건틀렛 리볼버",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 엘라하",
+      item_icon: ARM_CANNON,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "221",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "튜너",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 튜너",
+      item_icon: BLADECASTER,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "295",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "태도",
+      item_equipment_slot: "무기",
+      item_name: "태도",
+      item_icon: LONG_SWORD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "293",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "대검",
+      item_equipment_slot: "무기",
+      item_name: "대검",
+      item_icon: HEAVY_SWORD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "297",
+        armor: "200",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "카타나",
+      item_equipment_slot: "무기",
+      item_name: "카타나",
+      item_icon: KATANA,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "100",
+        attack_power: "283",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
   ],
   MAGICIAN: [
     {
@@ -237,6 +500,125 @@ export const ARCANEUMBRA: Record<string, Partial<ItemEquipmentDetail>[]> = {
         attack_power: "20",
         magic_power: "20",
         armor: "300",
+      },
+    },
+    {
+      item_equipment_part: "완드",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 완드",
+      item_icon: WAND,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        int: "600",
+        luk: "100",
+        attack_power: "206",
+        magic_power: "347",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "스태프",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 스태프",
+      item_icon: STAFF,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        int: "600",
+        luk: "100",
+        attack_power: "218",
+        magic_power: "353",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "샤이닝 로드",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 샤이닝로드",
+      item_icon: SHINING_ROD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        int: "600",
+        luk: "100",
+        attack_power: "206",
+        magic_power: "347",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "ESP 리미터",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 ESP 리미터",
+      item_icon: PSY_LIMITER,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        int: "600",
+        luk: "100",
+        attack_power: "206",
+        magic_power: "347",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "매직 건틀렛",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 매직 건틀렛",
+      item_icon: LUCENT_GAUNTLET,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        int: "600",
+        luk: "100",
+        attack_power: "206",
+        magic_power: "347",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "기억의 지팡이",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 스틱",
+      item_icon: SCEPTER,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        int: "600",
+        luk: "100",
+        attack_power: "206",
+        magic_power: "347",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "부채",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 부채",
+      item_icon: FAN,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        int: "600",
+        luk: "100",
+        attack_power: "206",
+        magic_power: "347",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
       },
     },
   ],
@@ -341,6 +723,86 @@ export const ARCANEUMBRA: Record<string, Partial<ItemEquipmentDetail>[]> = {
         armor: "300",
       },
     },
+    {
+      item_equipment_part: "활",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 보우",
+      item_icon: BOW,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "65",
+        attack_power: "192",
+        boss_damage: "30%",
+        ignore_monster_armor: "15%",
+      },
+    },
+    {
+      item_equipment_part: "석궁",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 크로스보우",
+      item_icon: CROSSBOW,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "85",
+        attack_power: "197",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "듀얼보우건",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 듀얼보우건",
+      item_icon: DUAL_BOWGUNS,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "65",
+        attack_power: "192",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "에이션트 보우",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 에인션트 보우",
+      item_icon: ANCIENT_BOW,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "60",
+        attack_power: "192",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "브레스 슈터",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 브레스 슈터",
+      item_icon: WHISPERSHOT,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "600",
+        dex: "60",
+        attack_power: "192",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
   ],
   THIEF: [
     {
@@ -443,6 +905,118 @@ export const ARCANEUMBRA: Record<string, Partial<ItemEquipmentDetail>[]> = {
         armor: "300",
       },
     },
+    {
+      item_equipment_part: "단검",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 대거",
+      item_icon: DAGGER,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        dex: "100",
+        luk: "100",
+        attack_power: "276",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "아대",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 가즈",
+      item_icon: CLAW,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        dex: "100",
+        luk: "100",
+        attack_power: "149",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "케인",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 케인",
+      item_icon: CANE,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        dex: "100",
+        luk: "100",
+        attack_power: "283",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "에너지소드",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 에너지체인",
+      item_icon: WHIP_BLADE,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        dex: "100",
+        luk: "100",
+        attack_power: "221",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "체인",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 체인",
+      item_icon: CHAIN,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        dex: "100",
+        luk: "100",
+        attack_power: "276",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "부채",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 초선",
+      item_icon: RITUAL_FAN,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        dex: "100",
+        luk: "100",
+        attack_power: "276",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "차크람",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 차크람",
+      item_icon: CHAKRAM,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        dex: "100",
+        luk: "100",
+        attack_power: "276",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
   ],
   PIRATE: [
     {
@@ -543,6 +1117,103 @@ export const ARCANEUMBRA: Record<string, Partial<ItemEquipmentDetail>[]> = {
         attack_power: "20",
         magic_power: "20",
         armor: "300",
+      },
+    },
+    {
+      item_equipment_part: "건",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 피스톨",
+      item_icon: GUN,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "100",
+        dex: "100",
+        attack_power: "216",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "너클",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 클로",
+      item_icon: KNUCKLE,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "100",
+        dex: "100",
+        attack_power: "221",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "핸드캐논",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 시즈건",
+      item_icon: HAND_CANNON,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "100",
+        dex: "100",
+        attack_power: "302",
+        armor: "200",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "소울 슈터",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 소울슈터",
+      item_icon: SOUL_SHOOTER,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "100",
+        dex: "100",
+        attack_power: "221",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "에너지소드",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 에너지체인",
+      item_icon: WHIP_BLADE,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "100",
+        dex: "100",
+        attack_power: "221",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
+      },
+    },
+    {
+      item_equipment_part: "무권",
+      item_equipment_slot: "무기",
+      item_name: "아케인셰이드 무권",
+      item_icon: WAR_FIST,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 200,
+        str: "100",
+        dex: "100",
+        attack_power: "221",
+        boss_damage: "30%",
+        ignore_monster_armor: "20%",
       },
     },
   ],
