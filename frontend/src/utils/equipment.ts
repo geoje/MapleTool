@@ -5,6 +5,7 @@ import {
 } from "../constants/enhance/equipment";
 import { ABSOLABS } from "../constants/enhance/equipment/absolabs";
 import { ARCANEUMBRA } from "../constants/enhance/equipment/arcaneumbra";
+import { ETERNAL } from "../constants/enhance/equipment/eternal";
 import { ROOTABIS } from "../constants/enhance/equipment/rootabis";
 import { SET_TYPE } from "../constants/enhance/set";
 import {
@@ -42,6 +43,8 @@ export function getPreparedEquipmentGrid(preset: SET_TYPE) {
       ? ABSOLABS
       : preset == SET_TYPE.ARCANEUMBRA
       ? ARCANEUMBRA
+      : preset == SET_TYPE.ETERNAL
+      ? ETERNAL
       : {};
   const maxCols = Math.max(
     ...Object.entries(itemsByClass).map(([_, items]) => items.length)
