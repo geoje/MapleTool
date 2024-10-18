@@ -3,6 +3,7 @@ import {
   EMPTY_OPTION,
   SLOT_GRID,
 } from "../constants/enhance/equipment";
+import { ABSOLABS } from "../constants/enhance/equipment/absolabs";
 import { ROOTABIS } from "../constants/enhance/equipment/rootabis";
 import { SET_TYPE } from "../constants/enhance/set";
 import {
@@ -33,7 +34,12 @@ export function getCharacterEquipmentGrid(
 }
 
 export function getPreparedEquipmentGrid(preset: SET_TYPE) {
-  const itemsByClass = preset == SET_TYPE.ROOTABIS ? ROOTABIS : {};
+  const itemsByClass =
+    preset == SET_TYPE.ROOTABIS
+      ? ROOTABIS
+      : preset == SET_TYPE.ABSOLABS
+      ? ABSOLABS
+      : {};
   const maxCols = Math.max(
     ...Object.entries(itemsByClass).map(([_, items]) => items.length)
   );
