@@ -19,6 +19,8 @@ import DESPERADO from "../../../assets/equipment/absolabs/warrior/weapon/despera
 import KATANA from "../../../assets/equipment/absolabs/warrior/weapon/katana.webp";
 import ARM_CANNON from "../../../assets/equipment/absolabs/warrior/weapon/arm-cannon.webp";
 import BLADECASTER from "../../../assets/equipment/absolabs/warrior/weapon/bladecaster.webp";
+import LONG_SWORD from "../../../assets/equipment/absolabs/warrior/weapon/long-sword.webp";
+import HEAVY_SWORD from "../../../assets/equipment/absolabs/warrior/weapon/heavy-sword.webp";
 
 import MAGICIAN_HAT from "../../../assets/equipment/absolabs/magician/armor/hat.webp";
 import MAGICIAN_OVERALL from "../../../assets/equipment/absolabs/magician/armor/overall.webp";
@@ -345,6 +347,39 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
         str: "60",
         dex: "60",
         attack_power: "205",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "태도",
+      item_equipment_slot: "무기",
+      item_name: "라즐리 8형",
+      item_icon: LONG_SWORD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 160,
+        str: "60",
+        dex: "60",
+        attack_power: "203",
+        boss_damage: "30%",
+        ignore_monster_armor: "10%",
+      },
+    },
+    {
+      item_equipment_part: "대검",
+      item_equipment_slot: "무기",
+      item_name: "라피스 8형",
+      item_icon: HEAVY_SWORD,
+      scroll_upgradeable_count: "8",
+      item_base_option: {
+        ...EMPTY_OPTION,
+        base_equipment_level: 160,
+        str: "60",
+        dex: "60",
+        attack_power: "207",
+        armor: "160",
         boss_damage: "30%",
         ignore_monster_armor: "10%",
       },
