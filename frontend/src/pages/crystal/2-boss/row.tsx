@@ -1,5 +1,6 @@
 import { Badge, Checkbox, Flex, Image, Select, Text } from "@chakra-ui/react";
 import { BOSS_DIFFICULTY, COLOR } from "../../../constants/boss";
+import { formatNumber } from "../../../utils/formatter";
 
 export default function Row({
   icon,
@@ -82,7 +83,7 @@ export default function Row({
         alignItems="center"
         fontSize="xs"
       >
-        {price}
+        {price && formatNumber(price / members)}
       </Flex>
     </>
   );
