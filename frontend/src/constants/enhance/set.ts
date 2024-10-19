@@ -3,6 +3,7 @@ import ABSOLABS from "../../assets/equipment/absolabs/warrior/armor/hat.webp";
 import ARCANEUMBRA from "../../assets/equipment/arcaneumbra/warrior/armor/hat.webp";
 import ETERNAL from "../../assets/equipment/eternal/warrior/armor/hat.webp";
 import BOSS from "../../assets/equipment/boss/condensed-power-crystal.webp";
+import DAWN from "../../assets/equipment/dawn/twilight-mark.webp";
 
 export enum SET_TYPE {
   ROOTABIS = "ROOTABIS", // 루타비스
@@ -42,7 +43,7 @@ export const SET_INFOS: Record<SET_TYPE, Info> = {
   },
   [SET_TYPE.DAWN]: {
     name: "여명의 보스",
-    icon: "",
+    icon: DAWN,
   },
   [SET_TYPE.BLACK]: {
     name: "칠흑의 보스",

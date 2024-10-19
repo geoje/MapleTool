@@ -6,6 +6,7 @@ import {
 import { ABSOLABS } from "../constants/enhance/equipment/absolabs";
 import { ARCANEUMBRA } from "../constants/enhance/equipment/arcaneumbra";
 import { BOSS_ACCESSORY } from "../constants/enhance/equipment/boss";
+import { DAWN } from "../constants/enhance/equipment/dawn";
 import { ETERNAL } from "../constants/enhance/equipment/eternal";
 import { ROOTABIS } from "../constants/enhance/equipment/rootabis";
 import { SET_TYPE } from "../constants/enhance/set";
@@ -37,10 +38,6 @@ export function getCharacterEquipmentGrid(
 }
 
 export function getPreparedEquipmentGrid(preset: SET_TYPE) {
-  if (preset == SET_TYPE.BOSS) {
-    return [BOSS_ACCESSORY.map((item) => getFullDetailByPartial(item))];
-  }
-
   const itemsByClass =
     preset == SET_TYPE.ROOTABIS
       ? ROOTABIS
@@ -51,6 +48,18 @@ export function getPreparedEquipmentGrid(preset: SET_TYPE) {
       : preset == SET_TYPE.ETERNAL
       ? ETERNAL
       : {};
+
+  if (!Object.keys(itemsByClass).length) {
+    return [
+      (preset == SET_TYPE.BOSS
+        ? BOSS_ACCESSORY
+        : preset == SET_TYPE.DAWN
+        ? DAWN
+        : []
+      ).map((item) => getFullDetailByPartial(item)),
+    ];
+  }
+
   const maxCols = Math.max(
     ...Object.entries(itemsByClass).map(([_, items]) => items.length)
   );

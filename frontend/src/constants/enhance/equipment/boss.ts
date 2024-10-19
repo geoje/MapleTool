@@ -27,6 +27,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "응축된 힘의 결정석",
     item_icon: CONDENSED_POWER_CRYSTAL,
     scroll_upgradeable_count: "5",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 110,
@@ -45,6 +46,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "아쿠아틱 레터 눈장식",
     item_icon: AQUATIC_LETTER_EYE_ACCESSORY,
     scroll_upgradeable_count: "3",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 100,
@@ -63,6 +65,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "블랙빈 마크",
     item_icon: BLACK_BEAN_MARK,
     scroll_upgradeable_count: "5",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 135,
@@ -81,6 +84,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "파풀라투스 마크",
     item_icon: PAPULATUS_MARK,
     scroll_upgradeable_count: "5",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 145,
@@ -99,6 +103,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "데아 시두스 이어링",
     item_icon: DEA_SIDUS_EARRING,
     scroll_upgradeable_count: "6",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 130,
@@ -117,6 +122,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "지옥의 불꽃 ",
     item_icon: WILL_O_THE_WISPS,
     scroll_upgradeable_count: "5",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 130,
@@ -137,6 +143,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "실버블라썸 링",
     item_icon: SILVER_BLOSSOM_RING,
     scroll_upgradeable_count: "2",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 110,
@@ -154,6 +161,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "고귀한 이피아의 반지",
     item_icon: NOBLE_IFIAS_RING,
     scroll_upgradeable_count: "2",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 120,
@@ -173,6 +181,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "가디언 엔젤 링",
     item_icon: GUARDIAN_ANGLE_RING,
     scroll_upgradeable_count: "2",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 160,
@@ -192,6 +201,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "혼테일의 목걸이",
     item_icon: HORNTAIL_NECKLACE,
     scroll_upgradeable_count: "2",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 120,
@@ -208,6 +218,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "카오스 혼테일 목걸이",
     item_icon: CHAOS_HORNTAIL_NECKLACE,
     scroll_upgradeable_count: "3",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 120,
@@ -228,6 +239,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "메커네이터 펜던트",
     item_icon: MECHANATOR_PENDANT,
     scroll_upgradeable_count: "2",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 120,
@@ -248,6 +260,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "도미네이터 펜던트",
     item_icon: DOMINATOR_PENDANT,
     scroll_upgradeable_count: "5",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 140,
@@ -268,6 +281,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "골든 클로버 벨트",
     item_icon: GOLDEN_COLVER_BELT,
     scroll_upgradeable_count: "3",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 140,
@@ -288,6 +302,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "분노한 자쿰의 벨트",
     item_icon: ENRAGED_ZAKUM_BELT,
     scroll_upgradeable_count: "3",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 150,
@@ -308,6 +323,7 @@ export const BOSS_ACCESSORY: Partial<ItemEquipmentDetail>[] = [
     item_name: "로얄 블랙메탈 숄더",
     item_icon: ROYAL_BLACK_METAL_SHOULDER,
     scroll_upgradeable_count: "1",
+    cuttable_count: "10",
     item_base_option: {
       ...EMPTY_OPTION,
       base_equipment_level: 120,
