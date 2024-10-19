@@ -65,6 +65,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "하이네스 워리어헬름",
       item_icon: WARRIOR_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -83,6 +84,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "이글아이 워리어아머",
       item_icon: WARRIOR_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -99,6 +101,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "트릭스터 워리어팬츠",
       item_icon: WARRIOR_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -115,6 +118,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 미스틸테인",
       item_icon: ONE_HANDED_SWORD,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -131,6 +135,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 트윈클리버",
       item_icon: ONE_HANDED_AXE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -147,6 +152,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 골디언해머",
       item_icon: ONE_HANDED_BLUNT,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -163,6 +169,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 페니텐시아",
       item_icon: TWO_HANDED_SWORD,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -179,6 +186,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 배틀클리버",
       item_icon: TWO_HANDED_AXE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -195,6 +203,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 라이트닝어",
       item_icon: TWO_HANDED_BLUNT,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -211,6 +220,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 브류나크",
       item_icon: SPEAR,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -227,6 +237,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 문글레이브",
       item_icon: POLEARM,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -243,6 +254,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 데스브링어",
       item_icon: DESPERADO,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -259,6 +271,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 빅 마운틴",
       item_icon: ARM_CANNON,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -275,6 +288,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 포기브니스",
       item_icon: BLADECASTER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -291,6 +305,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 황도 마사무네",
       item_icon: KATANA,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -309,6 +324,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "하이네스 던위치햇",
       item_icon: MAGICIAN_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -327,6 +343,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "이글아이 던위치로브",
       item_icon: MAGICIAN_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -343,6 +360,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "트릭스터 던위치팬츠",
       item_icon: MAGICIAN_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -359,6 +377,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 마나테이커",
       item_icon: WAND,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -376,6 +395,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 마나크라운",
       item_icon: STAFF,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -393,6 +413,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 마나크래들",
       item_icon: SHINING_ROD,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -410,6 +431,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 ESP리미터",
       item_icon: PSY_LIMITER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -427,6 +449,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 매직 건틀렛",
       item_icon: LUCENT_GAUNTLET,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -444,6 +467,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 폴라리스 스틱",
       item_icon: SCEPTER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -461,6 +485,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 황선 아이히메",
       item_icon: FAN,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -480,6 +505,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "하이네스 레인져베레",
       item_icon: BOWMAN_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -498,6 +524,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "이글아이 레인져후드",
       item_icon: BOWMAN_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -514,6 +541,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "트릭스터 레인져팬츠",
       item_icon: BOWMAN_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -530,6 +558,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 윈드체이서",
       item_icon: BOW,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -546,6 +575,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 윈드윙슈터",
       item_icon: CROSSBOW,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -562,6 +592,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 듀얼윈드윙",
       item_icon: DUAL_BOWGUNS,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -578,6 +609,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 에인션트 보우",
       item_icon: ANCIENT_BOW,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -594,6 +626,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 나이트체이서",
       item_icon: WHISPERSHOT,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -612,6 +645,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "하이네스 어새신보닛",
       item_icon: THIEF_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -630,6 +664,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "이글아이 어새신셔츠",
       item_icon: THIEF_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -646,6 +681,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "트릭스터 어새신팬츠",
       item_icon: THIEF_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -662,6 +698,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 다마스커스",
       item_icon: DAGGER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -678,6 +715,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 리스크홀더",
       item_icon: CLAW,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -694,6 +732,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 클레르시엘",
       item_icon: CANE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -710,6 +749,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 스플릿엣지",
       item_icon: WHIP_BLADE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -726,6 +766,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 체인",
       item_icon: CHAIN,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -742,6 +783,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 용선",
       item_icon: RITUAL_FAN,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -758,6 +800,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 차크람",
       item_icon: CHAKRAM,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -776,6 +819,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "하이네스 원더러햇",
       item_icon: PIRATE_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -794,6 +838,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "이글아이 원더러코트",
       item_icon: PIRATE_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -810,6 +855,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "트릭스터 원더러팬츠",
       item_icon: PIRATE_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -826,6 +872,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 첼리스카",
       item_icon: GUN,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -842,6 +889,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 펜리르탈론",
       item_icon: KNUCKLE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -858,6 +906,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 러스터캐논",
       item_icon: HAND_CANNON,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -875,6 +924,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 엔젤릭슈터",
       item_icon: SOUL_SHOOTER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -891,6 +941,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 스플릿엣지",
       item_icon: WHIP_BLADE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
@@ -907,6 +958,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "파프니르 무권",
       item_icon: WAR_FIST,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,

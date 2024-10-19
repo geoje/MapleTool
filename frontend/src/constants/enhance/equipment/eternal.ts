@@ -1,13 +1,14 @@
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
 import { EMPTY_OPTION } from "../equipment";
 
+import SHOES from "../../../assets/equipment/eternal/common/shoes.png";
+import GLOVES from "../../../assets/equipment/eternal/common/gloves.png";
+import CAPE from "../../../assets/equipment/eternal/common/cape.png";
+import SHOULDER from "../../../assets/equipment/eternal/common/shoulder.webp";
+
 import WARRIOR_HAT from "../../../assets/equipment/eternal/warrior/armor/hat.webp";
 import WARRIOR_TOP from "../../../assets/equipment/eternal/warrior/armor/top.webp";
 import WARRIOR_BOTTOM from "../../../assets/equipment/eternal/warrior/armor/bottom.webp";
-import WARRIOR_SHOES from "../../../assets/equipment/eternal/warrior/armor/shoes.png";
-import WARRIOR_GLOVES from "../../../assets/equipment/eternal/warrior/armor/gloves.png";
-import WARRIOR_CAPE from "../../../assets/equipment/eternal/warrior/armor/cape.png";
-import WARRIOR_SHOULDER from "../../../assets/equipment/eternal/warrior/armor/shoulder.webp";
 import ONE_HANDED_SWORD from "../../../assets/equipment/eternal/warrior/weapon/one-handed-sword.webp";
 import ONE_HANDED_AXE from "../../../assets/equipment/eternal/warrior/weapon/one-handed-axe.webp";
 import ONE_HANDED_BLUNT from "../../../assets/equipment/eternal/warrior/weapon/one-handed-blunt.webp";
@@ -26,10 +27,6 @@ import HEAVY_SWORD from "../../../assets/equipment/eternal/warrior/weapon/heavy-
 import MAGICIAN_HAT from "../../../assets/equipment/eternal/magician/armor/hat.webp";
 import MAGICIAN_TOP from "../../../assets/equipment/eternal/magician/armor/top.webp";
 import MAGICIAN_BOTTOM from "../../../assets/equipment/eternal/magician/armor/bottom.webp";
-import MAGICIAN_SHOES from "../../../assets/equipment/eternal/magician/armor/shoes.png";
-import MAGICIAN_GLOVES from "../../../assets/equipment/eternal/magician/armor/gloves.png";
-import MAGICIAN_CAPE from "../../../assets/equipment/eternal/magician/armor/cape.png";
-import MAGICIAN_SHOULDER from "../../../assets/equipment/eternal/magician/armor/shoulder.webp";
 import WAND from "../../../assets/equipment/eternal/magician/weapon/wand.webp";
 import STAFF from "../../../assets/equipment/eternal/magician/weapon/staff.webp";
 import SHINING_ROD from "../../../assets/equipment/eternal/magician/weapon/shining-rod.webp";
@@ -41,10 +38,6 @@ import FAN from "../../../assets/equipment/eternal/magician/weapon/fan.webp";
 import BOWMAN_HAT from "../../../assets/equipment/eternal/bowman/armor/hat.webp";
 import BOWMAN_TOP from "../../../assets/equipment/eternal/bowman/armor/top.webp";
 import BOWMAN_BOTTOM from "../../../assets/equipment/eternal/bowman/armor/bottom.webp";
-import BOWMAN_SHOES from "../../../assets/equipment/eternal/bowman/armor/shoes.png";
-import BOWMAN_GLOVES from "../../../assets/equipment/eternal/bowman/armor/gloves.png";
-import BOWMAN_CAPE from "../../../assets/equipment/eternal/bowman/armor/cape.png";
-import BOWMAN_SHOULDER from "../../../assets/equipment/eternal/bowman/armor/shoulder.webp";
 import BOW from "../../../assets/equipment/eternal/bowman/weapon/bow.webp";
 import CROSSBOW from "../../../assets/equipment/eternal/bowman/weapon/crossbow.webp";
 import DUAL_BOWGUNS from "../../../assets/equipment/eternal/bowman/weapon/dual-bowguns.webp";
@@ -54,10 +47,6 @@ import WHISPERSHOT from "../../../assets/equipment/eternal/bowman/weapon/whisper
 import THIEF_HAT from "../../../assets/equipment/eternal/thief/armor/hat.webp";
 import THIEF_TOP from "../../../assets/equipment/eternal/thief/armor/top.webp";
 import THIEF_BOTTOM from "../../../assets/equipment/eternal/thief/armor/bottom.webp";
-import THIEF_SHOES from "../../../assets/equipment/eternal/thief/armor/shoes.png";
-import THIEF_GLOVES from "../../../assets/equipment/eternal/thief/armor/gloves.png";
-import THIEF_CAPE from "../../../assets/equipment/eternal/thief/armor/cape.png";
-import THIEF_SHOULDER from "../../../assets/equipment/eternal/thief/armor/shoulder.webp";
 import DAGGER from "../../../assets/equipment/eternal/thief/weapon/dagger.webp";
 import CLAW from "../../../assets/equipment/eternal/thief/weapon/claw.webp";
 import CANE from "../../../assets/equipment/eternal/thief/weapon/cane.webp";
@@ -69,10 +58,6 @@ import CHAKRAM from "../../../assets/equipment/eternal/thief/weapon/chakram.webp
 import PIRATE_HAT from "../../../assets/equipment/eternal/pirate/armor/hat.webp";
 import PIRATE_TOP from "../../../assets/equipment/eternal/pirate/armor/top.webp";
 import PIRATE_BOTTOM from "../../../assets/equipment/eternal/pirate/armor/bottom.webp";
-import PIRATE_SHOES from "../../../assets/equipment/eternal/pirate/armor/shoes.png";
-import PIRATE_GLOVES from "../../../assets/equipment/eternal/pirate/armor/gloves.png";
-import PIRATE_CAPE from "../../../assets/equipment/eternal/pirate/armor/cape.png";
-import PIRATE_SHOULDER from "../../../assets/equipment/eternal/pirate/armor/shoulder.webp";
 import GUN from "../../../assets/equipment/eternal/pirate/weapon/gun.webp";
 import HAND_CANNON from "../../../assets/equipment/eternal/pirate/weapon/hand-cannon.webp";
 import KNUCKLE from "../../../assets/equipment/eternal/pirate/weapon/knuckle.webp";
@@ -87,6 +72,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 나이트헬름",
       item_icon: WARRIOR_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -103,6 +89,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 나이트아머",
       item_icon: WARRIOR_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -119,6 +106,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 나이트팬츠",
       item_icon: WARRIOR_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -133,8 +121,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "에테르넬 나이트슈즈",
-      item_icon: WARRIOR_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -150,8 +139,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "에테르넬 나이트글러브",
-      item_icon: WARRIOR_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -165,8 +155,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "에테르넬 나이트케이프",
-      item_icon: WARRIOR_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -183,8 +174,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "에테르넬 나이트숄더",
-      item_icon: WARRIOR_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -430,6 +422,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 메이지햇",
       item_icon: MAGICIAN_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -446,6 +439,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 메이지로브",
       item_icon: MAGICIAN_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -462,6 +456,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 메이지팬츠",
       item_icon: MAGICIAN_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -476,8 +471,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "에테르넬 메이지슈즈",
-      item_icon: MAGICIAN_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -493,8 +489,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "에테르넬 메이지글러브",
-      item_icon: MAGICIAN_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -508,8 +505,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "에테르넬 메이지케이프",
-      item_icon: MAGICIAN_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -526,8 +524,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "에테르넬 메이지숄더",
-      item_icon: MAGICIAN_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -667,6 +666,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 아처햇",
       item_icon: BOWMAN_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -683,6 +683,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 아처후드",
       item_icon: BOWMAN_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -699,6 +700,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 아처팬츠",
       item_icon: BOWMAN_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -713,8 +715,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "에테르넬 아처슈즈",
-      item_icon: BOWMAN_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -730,8 +733,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "에테르넬 아처글러브",
-      item_icon: BOWMAN_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -745,8 +749,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "에테르넬 아처케이프",
-      item_icon: BOWMAN_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -763,8 +768,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "에테르넬 아처숄더",
-      item_icon: BOWMAN_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -870,6 +876,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 시프반다나",
       item_icon: THIEF_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -886,6 +893,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 시프셔츠",
       item_icon: THIEF_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -902,6 +910,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 시프팬츠",
       item_icon: THIEF_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -916,8 +925,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "에테르넬 시프슈즈",
-      item_icon: THIEF_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -933,8 +943,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "에테르넬 시프글러브",
-      item_icon: THIEF_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -948,8 +959,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "에테르넬 시프케이프",
-      item_icon: THIEF_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -966,8 +978,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "에테르넬 시프숄더",
-      item_icon: THIEF_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -1100,6 +1113,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 파이렛햇",
       item_icon: PIRATE_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -1116,6 +1130,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 파이렛코트",
       item_icon: PIRATE_TOP,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -1132,6 +1147,7 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "에테르넬 파이렛팬츠",
       item_icon: PIRATE_BOTTOM,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -1146,8 +1162,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "에테르넬 파이렛슈즈",
-      item_icon: THIEF_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -1163,8 +1180,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "에테르넬 파이렛글러브",
-      item_icon: THIEF_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -1178,8 +1196,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "에테르넬 파이렛케이프",
-      item_icon: THIEF_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,
@@ -1196,8 +1215,9 @@ export const ETERNAL: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "에테르넬 파이렛숄더",
-      item_icon: PIRATE_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 250,

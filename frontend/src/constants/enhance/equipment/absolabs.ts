@@ -82,6 +82,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 나이트헬름",
       item_icon: WARRIOR_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -98,6 +99,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 나이트슈트",
       item_icon: WARRIOR_OVERALL,
       scroll_upgradeable_count: "12",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -113,6 +115,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 나이트슈즈",
       item_icon: WARRIOR_SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -130,6 +133,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 나이트글러브",
       item_icon: WARRIOR_GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -145,6 +149,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 나이트케이프",
       item_icon: WARRIOR_CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -163,6 +168,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 나이트숄더",
       item_icon: WARRIOR_SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -181,6 +187,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 세이버",
       item_icon: ONE_HANDED_SWORD,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -197,6 +204,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 엑스",
       item_icon: ONE_HANDED_AXE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -213,6 +221,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 비트해머",
       item_icon: ONE_HANDED_BLUNT,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -229,6 +238,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 브로드세이버",
       item_icon: TWO_HANDED_SWORD,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -245,6 +255,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 브로드엑스",
       item_icon: TWO_HANDED_AXE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -261,6 +272,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 브로드해머",
       item_icon: TWO_HANDED_BLUNT,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -277,6 +289,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 피어싱스피어",
       item_icon: SPEAR,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -293,6 +306,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 핼버드",
       item_icon: POLEARM,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -309,6 +323,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 데스페라도",
       item_icon: DESPERADO,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -325,6 +340,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 파일 갓",
       item_icon: ARM_CANNON,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -341,6 +357,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "라즐리 8형",
       item_icon: LONG_SWORD,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -357,6 +374,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "라피스 8형",
       item_icon: HEAVY_SWORD,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -374,6 +392,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 튜너",
       item_icon: BLADECASTER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -390,6 +409,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 카타나",
       item_icon: KATANA,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -408,6 +428,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 메이지헬름",
       item_icon: MAGICIAN_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -424,6 +445,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 메이지슈트",
       item_icon: MAGICIAN_OVERALL,
       scroll_upgradeable_count: "12",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -439,6 +461,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 메이지슈즈",
       item_icon: MAGICIAN_SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -456,6 +479,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 메이지글러브",
       item_icon: MAGICIAN_GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -471,6 +495,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 메이지케이프",
       item_icon: MAGICIAN_CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -489,6 +514,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 메이지숄더",
       item_icon: MAGICIAN_SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -507,6 +533,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 스펠링완드",
       item_icon: WAND,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -524,6 +551,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 스펠링스태프",
       item_icon: STAFF,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -541,6 +569,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 샤이닝로드",
       item_icon: SHINING_ROD,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -558,6 +587,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 ESP리미터",
       item_icon: PSY_LIMITER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -575,6 +605,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 매직 건틀렛",
       item_icon: LUCENT_GAUNTLET,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -592,6 +623,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 스틱",
       item_icon: SCEPTER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -609,6 +641,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 부채",
       item_icon: FAN,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -628,6 +661,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 아처헬름",
       item_icon: BOWMAN_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -644,6 +678,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 아처슈트",
       item_icon: BOWMAN_OVERALL,
       scroll_upgradeable_count: "12",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -659,6 +694,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 아처슈즈",
       item_icon: BOWMAN_SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -676,6 +712,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 아처글러브",
       item_icon: BOWMAN_GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -691,6 +728,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 아처케이프",
       item_icon: BOWMAN_CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -709,6 +747,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 아처숄더",
       item_icon: BOWMAN_SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -727,6 +766,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 슈팅보우",
       item_icon: BOW,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -743,6 +783,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 크로스보우",
       item_icon: CROSSBOW,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -759,6 +800,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 듀얼보우건",
       item_icon: DUAL_BOWGUNS,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -775,6 +817,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 에인션트 보우",
       item_icon: ANCIENT_BOW,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -791,6 +834,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 브레스 슈터",
       item_icon: WHISPERSHOT,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -809,6 +853,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 시프캡",
       item_icon: THIEF_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -825,6 +870,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 시프슈트",
       item_icon: THIEF_OVERALL,
       scroll_upgradeable_count: "12",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -840,6 +886,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 시프슈즈",
       item_icon: THIEF_SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -857,6 +904,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 시프글러브",
       item_icon: THIEF_GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -872,6 +920,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 시프케이프",
       item_icon: THIEF_CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -890,6 +939,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 시프숄더",
       item_icon: THIEF_SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -908,6 +958,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 슬래셔",
       item_icon: DAGGER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -924,6 +975,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 리벤지가즈",
       item_icon: CLAW,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -940,6 +992,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 핀쳐케인",
       item_icon: CANE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -956,6 +1009,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 에너지소드",
       item_icon: WHIP_BLADE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -972,6 +1026,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 체인",
       item_icon: CHAIN,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -988,6 +1043,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 괴선",
       item_icon: RITUAL_FAN,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1004,6 +1060,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 차크람",
       item_icon: CHAKRAM,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1022,6 +1079,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 파이렛페도라",
       item_icon: PIRATE_HAT,
       scroll_upgradeable_count: "11",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1038,6 +1096,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 파이렛슈트",
       item_icon: PIRATE_OVERALL,
       scroll_upgradeable_count: "12",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1053,6 +1112,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 파이렛슈즈",
       item_icon: PIRATE_SHOES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1070,6 +1130,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 파이렛글러브",
       item_icon: PIRATE_GLOVES,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1085,6 +1146,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 파이렛케이프",
       item_icon: PIRATE_CAPE,
       scroll_upgradeable_count: "7",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1103,6 +1165,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 파이렛숄더",
       item_icon: PIRATE_SHOULDER,
       scroll_upgradeable_count: "1",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1121,6 +1184,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 포인팅건",
       item_icon: GUN,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1137,6 +1201,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 블로우너클",
       item_icon: KNUCKLE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1153,6 +1218,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 블래스트캐논",
       item_icon: HAND_CANNON,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1170,6 +1236,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 소울슈터",
       item_icon: SOUL_SHOOTER,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1186,6 +1253,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 에너지소드",
       item_icon: WHIP_BLADE,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 160,
@@ -1202,6 +1270,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_name: "앱솔랩스 무권",
       item_icon: WAR_FIST,
       scroll_upgradeable_count: "8",
+      cuttable_count: "10",
       item_base_option: {
         ...EMPTY_OPTION,
         base_equipment_level: 150,
