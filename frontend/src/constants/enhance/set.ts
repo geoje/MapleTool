@@ -4,6 +4,8 @@ import ARCANEUMBRA from "../../assets/equipment/arcaneumbra/warrior/armor/hat.we
 import ETERNAL from "../../assets/equipment/eternal/warrior/armor/hat.webp";
 import BOSS from "../../assets/equipment/boss/condensed-power-crystal.webp";
 import DAWN from "../../assets/equipment/dawn/twilight-mark.webp";
+import PITCHED from "../../assets/equipment/pitched/berserked.webp";
+import RADIANCE from "../../assets/equipment/radiance/whispers-of-the-source.webp";
 
 export enum SET_TYPE {
   ROOTABIS = "ROOTABIS", // 루타비스
@@ -12,7 +14,7 @@ export enum SET_TYPE {
   ETERNAL = "ETERNAL", // 에테르넬
   BOSS = "BOSS", // 보스
   DAWN = "DAWN", // 여명
-  BLACK = "BLACK", // 칠흑
+  PITCHED = "PITCHED", // 칠흑
   RADIANCE = "RADIANCE", // 광휘
 }
 
@@ -45,12 +47,12 @@ export const SET_INFOS: Record<SET_TYPE, Info> = {
     name: "여명의 보스",
     icon: DAWN,
   },
-  [SET_TYPE.BLACK]: {
+  [SET_TYPE.PITCHED]: {
     name: "칠흑의 보스",
-    icon: "",
+    icon: PITCHED,
   },
   [SET_TYPE.RADIANCE]: {
     name: "광휘의 보스",
-    icon: "",
+    icon: RADIANCE,
   },
 };
