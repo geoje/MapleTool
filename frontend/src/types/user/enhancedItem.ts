@@ -1,6 +1,6 @@
 import { ItemEquipmentDetail } from "../character/itemEquipment/itemEquipment";
 
-export interface ChangeItem {
+export interface EnhancedItem {
   before: ItemEquipmentDetail;
   after: ItemEquipmentDetail;
   used: Material[];
