@@ -1,12 +1,13 @@
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
 import { EMPTY_OPTION } from "../equipment";
 
+import SHOES from "../../../assets/equipment/absolabs/common/shoes.webp";
+import GLOVES from "../../../assets/equipment/absolabs/common/gloves.webp";
+import CAPE from "../../../assets/equipment/absolabs/common/cape.webp";
+import SHOULDER from "../../../assets/equipment/absolabs/common/shoulder.webp";
+
 import WARRIOR_HAT from "../../../assets/equipment/absolabs/warrior/armor/hat.webp";
 import WARRIOR_OVERALL from "../../../assets/equipment/absolabs/warrior/armor/overall.webp";
-import WARRIOR_SHOES from "../../../assets/equipment/absolabs/warrior/armor/shoes.webp";
-import WARRIOR_GLOVES from "../../../assets/equipment/absolabs/warrior/armor/gloves.webp";
-import WARRIOR_CAPE from "../../../assets/equipment/absolabs/warrior/armor/cape.webp";
-import WARRIOR_SHOULDER from "../../../assets/equipment/absolabs/warrior/armor/shoulder.webp";
 import ONE_HANDED_SWORD from "../../../assets/equipment/absolabs/warrior/weapon/one-handed-sword.webp";
 import ONE_HANDED_AXE from "../../../assets/equipment/absolabs/warrior/weapon/one-handed-axe.webp";
 import ONE_HANDED_BLUNT from "../../../assets/equipment/absolabs/warrior/weapon/one-handed-blunt.webp";
@@ -24,10 +25,6 @@ import HEAVY_SWORD from "../../../assets/equipment/absolabs/warrior/weapon/heavy
 
 import MAGICIAN_HAT from "../../../assets/equipment/absolabs/magician/armor/hat.webp";
 import MAGICIAN_OVERALL from "../../../assets/equipment/absolabs/magician/armor/overall.webp";
-import MAGICIAN_SHOES from "../../../assets/equipment/absolabs/magician/armor/shoes.webp";
-import MAGICIAN_GLOVES from "../../../assets/equipment/absolabs/magician/armor/gloves.webp";
-import MAGICIAN_CAPE from "../../../assets/equipment/absolabs/magician/armor/cape.webp";
-import MAGICIAN_SHOULDER from "../../../assets/equipment/absolabs/magician/armor/shoulder.webp";
 import WAND from "../../../assets/equipment/absolabs/magician/weapon/wand.webp";
 import STAFF from "../../../assets/equipment/absolabs/magician/weapon/staff.webp";
 import SHINING_ROD from "../../../assets/equipment/absolabs/magician/weapon/shining-rod.webp";
@@ -38,10 +35,6 @@ import FAN from "../../../assets/equipment/absolabs/magician/weapon/fan.webp";
 
 import BOWMAN_HAT from "../../../assets/equipment/absolabs/bowman/armor/hat.webp";
 import BOWMAN_OVERALL from "../../../assets/equipment/absolabs/bowman/armor/overall.webp";
-import BOWMAN_SHOES from "../../../assets/equipment/absolabs/bowman/armor/shoes.webp";
-import BOWMAN_GLOVES from "../../../assets/equipment/absolabs/bowman/armor/gloves.webp";
-import BOWMAN_CAPE from "../../../assets/equipment/absolabs/bowman/armor/cape.webp";
-import BOWMAN_SHOULDER from "../../../assets/equipment/absolabs/bowman/armor/shoulder.webp";
 import BOW from "../../../assets/equipment/absolabs/bowman/weapon/bow.webp";
 import CROSSBOW from "../../../assets/equipment/absolabs/bowman/weapon/crossbow.webp";
 import DUAL_BOWGUNS from "../../../assets/equipment/absolabs/bowman/weapon/dual-bowguns.webp";
@@ -50,10 +43,6 @@ import WHISPERSHOT from "../../../assets/equipment/absolabs/bowman/weapon/whispe
 
 import THIEF_HAT from "../../../assets/equipment/absolabs/thief/armor/hat.webp";
 import THIEF_OVERALL from "../../../assets/equipment/absolabs/thief/armor/overall.webp";
-import THIEF_SHOES from "../../../assets/equipment/absolabs/thief/armor/shoes.webp";
-import THIEF_GLOVES from "../../../assets/equipment/absolabs/thief/armor/gloves.webp";
-import THIEF_CAPE from "../../../assets/equipment/absolabs/thief/armor/cape.webp";
-import THIEF_SHOULDER from "../../../assets/equipment/absolabs/thief/armor/shoulder.webp";
 import DAGGER from "../../../assets/equipment/absolabs/thief/weapon/dagger.webp";
 import CLAW from "../../../assets/equipment/absolabs/thief/weapon/claw.webp";
 import CANE from "../../../assets/equipment/absolabs/thief/weapon/cane.webp";
@@ -64,10 +53,6 @@ import CHAKRAM from "../../../assets/equipment/absolabs/thief/weapon/chakram.web
 
 import PIRATE_HAT from "../../../assets/equipment/absolabs/pirate/armor/hat.webp";
 import PIRATE_OVERALL from "../../../assets/equipment/absolabs/pirate/armor/overall.webp";
-import PIRATE_SHOES from "../../../assets/equipment/absolabs/pirate/armor/shoes.webp";
-import PIRATE_GLOVES from "../../../assets/equipment/absolabs/pirate/armor/gloves.webp";
-import PIRATE_CAPE from "../../../assets/equipment/absolabs/pirate/armor/cape.webp";
-import PIRATE_SHOULDER from "../../../assets/equipment/absolabs/pirate/armor/shoulder.webp";
 import GUN from "../../../assets/equipment/absolabs/pirate/weapon/gun.webp";
 import HAND_CANNON from "../../../assets/equipment/absolabs/pirate/weapon/hand-cannon.webp";
 import KNUCKLE from "../../../assets/equipment/absolabs/pirate/weapon/knuckle.webp";
@@ -113,7 +98,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "앱솔랩스 나이트슈즈",
-      item_icon: WARRIOR_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -131,7 +116,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "앱솔랩스 나이트글러브",
-      item_icon: WARRIOR_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -147,7 +132,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "앱솔랩스 나이트케이프",
-      item_icon: WARRIOR_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -166,7 +151,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "앱솔랩스 나이트숄더",
-      item_icon: WARRIOR_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
       cuttable_count: "10",
       item_base_option: {
@@ -459,7 +444,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "앱솔랩스 메이지슈즈",
-      item_icon: MAGICIAN_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -477,7 +462,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "앱솔랩스 메이지글러브",
-      item_icon: MAGICIAN_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -493,7 +478,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "앱솔랩스 메이지케이프",
-      item_icon: MAGICIAN_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -512,7 +497,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "앱솔랩스 메이지숄더",
-      item_icon: MAGICIAN_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
       cuttable_count: "10",
       item_base_option: {
@@ -692,7 +677,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "앱솔랩스 아처슈즈",
-      item_icon: BOWMAN_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -710,7 +695,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "앱솔랩스 아처글러브",
-      item_icon: BOWMAN_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -726,7 +711,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "앱솔랩스 아처케이프",
-      item_icon: BOWMAN_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -745,7 +730,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "앱솔랩스 아처숄더",
-      item_icon: BOWMAN_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
       cuttable_count: "10",
       item_base_option: {
@@ -884,7 +869,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "앱솔랩스 시프슈즈",
-      item_icon: THIEF_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -902,7 +887,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "앱솔랩스 시프글러브",
-      item_icon: THIEF_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -918,7 +903,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "앱솔랩스 시프케이프",
-      item_icon: THIEF_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -937,7 +922,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "앱솔랩스 시프숄더",
-      item_icon: THIEF_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
       cuttable_count: "10",
       item_base_option: {
@@ -1110,7 +1095,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "신발",
       item_equipment_slot: "신발",
       item_name: "앱솔랩스 파이렛슈즈",
-      item_icon: PIRATE_SHOES,
+      item_icon: SHOES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -1128,7 +1113,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "장갑",
       item_equipment_slot: "장갑",
       item_name: "앱솔랩스 파이렛글러브",
-      item_icon: PIRATE_GLOVES,
+      item_icon: GLOVES,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -1144,7 +1129,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "망토",
       item_equipment_slot: "망토",
       item_name: "앱솔랩스 파이렛케이프",
-      item_icon: PIRATE_CAPE,
+      item_icon: CAPE,
       scroll_upgradeable_count: "7",
       cuttable_count: "10",
       item_base_option: {
@@ -1163,7 +1148,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       item_equipment_part: "어깨장식",
       item_equipment_slot: "어깨장식",
       item_name: "앱솔랩스 파이렛숄더",
-      item_icon: PIRATE_SHOULDER,
+      item_icon: SHOULDER,
       scroll_upgradeable_count: "1",
       cuttable_count: "10",
       item_base_option: {
