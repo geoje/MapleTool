@@ -1,5 +1,5 @@
 import { IconButton, Image, Tooltip } from "@chakra-ui/react";
-import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 import { getMaxPotentialIndex } from "../../../utils/potential";
 import { BORDER_COLOR } from "../../../constants/enhance/potential";
 import ItemToolTip from "./itemTooltip";

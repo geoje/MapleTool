@@ -1,5 +1,5 @@
 import { KOR_NAME } from "../constants/enhance/potential";
-import { ItemEquipmentDetail } from "../types/character/itemEquipment";
+import { ItemEquipmentDetail } from "../types/character/itemEquipment/itemEquipment";
 
 export function getMaxPotentialIndex(item: ItemEquipmentDetail) {
   const gradeIndexes = [

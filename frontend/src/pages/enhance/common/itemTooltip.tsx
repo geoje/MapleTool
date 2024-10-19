@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
-import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 import { getMaxPotentialIndex } from "../../../utils/potential";
 import { getMaxStarforceCount } from "../../../utils/starforce";
 import {

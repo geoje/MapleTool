@@ -15,7 +15,7 @@ import { SET_TYPE } from "../constants/enhance/set";
 import {
   ItemEquipment,
   ItemEquipmentDetail,
-} from "../types/character/itemEquipment";
+} from "../types/character/itemEquipment/itemEquipment";
 
 export function getCharacterEquipmentGrid(
   preset: number,

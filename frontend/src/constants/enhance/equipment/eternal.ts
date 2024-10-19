@@ -1,4 +1,4 @@
-import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 import { EMPTY_OPTION } from "../equipment";
 
 import SHOES from "../../../assets/equipment/eternal/common/shoes.png";

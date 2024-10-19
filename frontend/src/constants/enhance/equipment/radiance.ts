@@ -1,4 +1,4 @@
-import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 import { EMPTY_OPTION } from "../equipment";
 
 import WHISPERS_OF_THE_SOURCE from "../../../assets/equipment/radiance/whispers-of-the-source.webp";

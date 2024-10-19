@@ -1,7 +1,7 @@
 import {
   ItemEquipmentDetail,
   ItemEquipmentOption,
-} from "../../types/character/itemEquipment";
+} from "../../types/character/itemEquipment/itemEquipment";
 
 export const SLOT_GRID = [
   ["반지4", "", "모자", "", "엠블렘"],

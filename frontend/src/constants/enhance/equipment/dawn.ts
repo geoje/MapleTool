@@ -1,4 +1,4 @@
-import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 import { EMPTY_OPTION } from "../equipment";
 
 import TWILIGHT_MARK from "../../../assets/equipment/dawn/twilight-mark.webp";

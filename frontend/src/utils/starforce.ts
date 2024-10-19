@@ -1,5 +1,5 @@
 import { MAX_STARFORCE_COUNTS } from "../constants/enhance/startforce";
-import { ItemEquipmentDetail } from "../types/character/itemEquipment";
+import { ItemEquipmentDetail } from "../types/character/itemEquipment/itemEquipment";
 
 export function getMaxStarforceCount(item: ItemEquipmentDetail) {
   if (

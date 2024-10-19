@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Basic } from "../types/character/basic";
-import { ItemEquipment } from "../types/character/itemEquipment";
+import { ItemEquipment } from "../types/character/itemEquipment/itemEquipment";
 import { persistReducer, REHYDRATE } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 

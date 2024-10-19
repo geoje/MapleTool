@@ -1,4 +1,4 @@
-import { ItemEquipmentDetail } from "../../../types/character/itemEquipment";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 import CONDENSED_POWER_CRYSTAL from "../../../assets/equipment/boss/condensed-power-crystal.webp";
 import AQUATIC_LETTER_EYE_ACCESSORY from "../../../assets/equipment/boss/aquatic-letter-eye-accessory.webp";
 import BLACK_BEAN_MARK from "../../../assets/equipment/boss/black-bean-mark.webp";
