@@ -83,6 +83,9 @@ function getFullDetailByPartial(
   return {
     ...EMPTY_DETAIL,
     ...partialDetail,
-    item_total_option: partialDetail.item_base_option ?? EMPTY_OPTION,
+    item_total_option:
+      partialDetail.item_total_option ??
+      partialDetail.item_base_option ??
+      EMPTY_OPTION,
   };
 }
