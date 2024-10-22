@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import User from "../types/user/user";
 import { deepCopyWithTypeCheck } from "../utils/deepCopyWithTypeCheck";
 import { BOSS_DIFFICULTY, BOSS_TYPE } from "../constants/boss";
+import { EnhancedItem } from "../types/user/enhancedItem";
 
 export const userKey = "user";
 
@@ -11,6 +12,7 @@ const initialState: User = {
   name: "",
   histories: [],
   bossPlans: [],
+  inventory: [],
 };
 
 const slice = createSlice({
@@ -137,6 +139,14 @@ const slice = createSlice({
 
       plan.boss.splice(itemIndex, 1);
     },
+
+    // inventory
+    addInventory(state, action: PayloadAction<EnhancedItem>) {
+      state.inventory.push(action.payload);
+    },
+    deleteInventory(state, action: PayloadAction<number>) {
+      state.inventory.splice(action.payload, 1);
+    },
   },
 });
 
@@ -153,8 +163,10 @@ export const {
   clearName,
   setName,
   setNameAndAddHistory,
+
   moveHistory,
   deleteHistory,
+
   newBossPlan,
   moveBossPlan,
   deleteBossPlan,
@@ -162,4 +174,7 @@ export const {
   setBossItems,
   putBossItem,
   removeBossItem,
+
+  addInventory,
+  deleteInventory,
 } = slice.actions;

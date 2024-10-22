@@ -7,7 +7,6 @@ export interface EnhancedItem {
 }
 
 export interface Material {
-  icon: string;
   name: string;
   value: number;
 }
