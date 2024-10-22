@@ -22,8 +22,9 @@ export default function Enhance() {
 
   const [preset, setPreset] = useState<number | SET_TYPE>(1);
   const [inventoryIndex, setEquipmentIndex] = useState(-1);
-  const { isOpen: showChanges, onToggle: onToggleShowChanges } =
-    useDisclosure();
+  const { isOpen: showChanges, onToggle: onToggleShowChanges } = useDisclosure({
+    defaultIsOpen: true,
+  });
 
   return (
     <>
