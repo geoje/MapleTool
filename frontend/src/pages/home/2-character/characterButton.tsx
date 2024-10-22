@@ -13,6 +13,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import CharacterContent from "./characterContent";
+import DeleteButton from "../../../components/deleteButton";
 
 export default function CharacterButton({
   name,
@@ -86,10 +87,7 @@ export default function CharacterButton({
     >
       {name && selected && (
         <>
-          <DeleteButton
-            isDark={isDark}
-            onClick={() => dispatch(deleteHistory(name))}
-          />
+          <DeleteButton onClick={() => dispatch(deleteHistory(name))} />
         </>
       )}
       {(readOnly || (name && selected)) && (
@@ -121,35 +119,6 @@ export default function CharacterButton({
         }
       />
     </Button>
-  );
-}
-
-function DeleteButton({
-  isDark,
-  onClick,
-}: {
-  isDark: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <Box
-      position="absolute"
-      top={-2}
-      right={-2}
-      w={5}
-      h={5}
-      p={1}
-      transform="auto"
-      background={isDark ? "whiteAlpha.200" : "blackAlpha.200"}
-      transition="background 0.2s"
-      borderRadius="100%"
-      onClick={onClick}
-      _hover={{
-        background: isDark ? "whiteAlpha.400" : "blackAlpha.400",
-      }}
-    >
-      <Icon as={LuX} />
-    </Box>
   );
 }
 

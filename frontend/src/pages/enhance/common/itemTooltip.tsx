@@ -24,7 +24,7 @@ export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
   const potentialIndex = getMaxPotentialIndex(item);
 
   return (
-    <Box>
+    <Box color="white">
       <Stack align="stretch" p={2} gap={1}>
         <Starforce
           count={parseInt(item.starforce)}

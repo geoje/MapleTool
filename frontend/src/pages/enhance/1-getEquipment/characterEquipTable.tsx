@@ -1,11 +1,13 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import { useItemEquipmentQuery } from "../../../stores/characterApi";
-import { useAppSelector } from "../../../stores/hooks";
+import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { getCharacterEquipmentGrid } from "../../../utils/equipment";
 import SlotButton from "../common/slotButton";
 import { SLOT_GRID } from "../../../constants/enhance/equipment";
+import { newInventory } from "../../../stores/userSlice";
 
 export default function CharacterEquipTable({ preset }: { preset: number }) {
+  const dispatch = useAppDispatch();
   const name = useAppSelector((state) => state.user.name);
   const { data } = useItemEquipmentQuery(name, { skip: !name });
 
@@ -24,6 +26,7 @@ export default function CharacterEquipTable({ preset }: { preset: number }) {
                 preset != 1 &&
                 JSON.stringify(item) == JSON.stringify(defaultItemGrid[i][j])
               }
+              onClick={item ? () => dispatch(newInventory(item)) : undefined}
             />
           ) : (
             <div key={`item-${i}-${j}`} />

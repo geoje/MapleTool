@@ -5,6 +5,7 @@ import User from "../types/user/user";
 import { deepCopyWithTypeCheck } from "../utils/deepCopyWithTypeCheck";
 import { BOSS_DIFFICULTY, BOSS_TYPE } from "../constants/boss";
 import { EnhancedItem } from "../types/user/enhancedItem";
+import { ItemEquipmentDetail } from "../types/character/itemEquipment/itemEquipment";
 
 export const userKey = "user";
 
@@ -141,8 +142,12 @@ const slice = createSlice({
     },
 
     // inventory
-    addInventory(state, action: PayloadAction<EnhancedItem>) {
-      state.inventory.push(action.payload);
+    newInventory(state, action: PayloadAction<ItemEquipmentDetail>) {
+      state.inventory.push({
+        before: action.payload,
+        after: action.payload,
+        used: [],
+      });
     },
     deleteInventory(state, action: PayloadAction<number>) {
       state.inventory.splice(action.payload, 1);
@@ -175,6 +180,6 @@ export const {
   putBossItem,
   removeBossItem,
 
-  addInventory,
+  newInventory,
   deleteInventory,
 } = slice.actions;

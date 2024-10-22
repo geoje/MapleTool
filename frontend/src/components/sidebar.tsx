@@ -39,7 +39,7 @@ export default function Sidebar() {
             <IconButton
               aria-label="expand"
               variant="ghost"
-              icon={<IoIosArrowBack />}
+              icon={<IoIosArrowBack size={20} />}
               onClick={() => {
                 setCollapsed(true);
                 localStorage.setItem(KEY_COLLAPSED, "true");
@@ -185,7 +185,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: React.MouseEventHandler }) {
         <IconButton
           aria-label="expand"
           variant="ghost"
-          icon={<IoIosArrowForward />}
+          icon={<IoIosArrowForward size={20} />}
           onClick={onExpand}
         />
       </VStack>
