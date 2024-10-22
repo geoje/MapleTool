@@ -76,6 +76,8 @@ export default function Enhance() {
         >
           <Changes inventoryIndex={inventoryIndex} showChanges={showChanges} />
         </BoardCard>
+      </Stack>
+      <Stack w={["100%", "100%", "auto"]}>
         <BoardCard order={6} title="실행">
           <Execute />
         </BoardCard>

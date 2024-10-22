@@ -21,7 +21,7 @@ export default function SelectEquipment({
               key={`item-${i}`}
               item={item.after}
               onClick={() => {
-                setEquipmentIndex(i);
+                setEquipmentIndex(equipmentIndex == i ? -1 : i);
               }}
             />
             {equipmentIndex == i && <DeleteButton onClick={() => {}} />}
