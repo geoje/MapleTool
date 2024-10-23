@@ -1,7 +1,8 @@
-import { Box, Center, SimpleGrid } from "@chakra-ui/react";
-import { useAppSelector } from "../../../stores/hooks";
+import { Box, Center, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import SlotButton from "../common/slotButton";
 import DeleteButton from "../../../components/deleteButton";
+import { deleteInventory } from "../../../stores/userSlice";
 
 export default function SelectEquipment({
   equipmentIndex,
@@ -10,7 +11,18 @@ export default function SelectEquipment({
   equipmentIndex: number;
   setEquipmentIndex: (value: number) => void;
 }) {
+  const dispatch = useAppDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
+
+  if (!inventory.length) {
+    return (
+      <Flex justify="center" pt="1px">
+        <Text size="md" opacity={0.6}>
+          장비를 가져와주세요.
+        </Text>
+      </Flex>
+    );
+  }
 
   return (
     <Center>
@@ -24,7 +36,14 @@ export default function SelectEquipment({
                 setEquipmentIndex(equipmentIndex == i ? -1 : i);
               }}
             />
-            {equipmentIndex == i && <DeleteButton onClick={() => {}} />}
+            {equipmentIndex == i && (
+              <DeleteButton
+                onClick={() => {
+                  setEquipmentIndex(-1);
+                  dispatch(deleteInventory(i));
+                }}
+              />
+            )}
           </Box>
         ))}
       </SimpleGrid>
