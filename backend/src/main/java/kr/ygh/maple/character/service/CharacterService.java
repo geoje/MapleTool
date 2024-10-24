@@ -1,13 +1,11 @@
 package kr.ygh.maple.character.service;
 
+import feign.Param;
 import kr.ygh.maple.character.dto.basic.Basic;
 import kr.ygh.maple.character.dto.itemEquipment.ItemEquipment;
-import kr.ygh.maple.character.dto.ocid.Ocid;
-import kr.ygh.maple.character.repository.CharacterBasicRepository;
-import kr.ygh.maple.character.repository.CharacterItemEquipmentRepository;
-import kr.ygh.maple.character.repository.CharacterOcidRepository;
 import kr.ygh.maple.common.feign.NexonClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,22 +13,15 @@ import org.springframework.stereotype.Service;
 public class CharacterService {
 
     private final NexonClient nexonClient;
+    private final OcidService ocidService;
 
-    private final CharacterOcidRepository ocidRepository;
-    private final CharacterBasicRepository basicRepository;
-    private final CharacterItemEquipmentRepository itemEquipmentRepository;
-
-    public Ocid getOcid(String name) {
-        return ocidRepository.computeIfAbsent(name, () -> nexonClient.getOcid(name));
+    @Cacheable(value = "character:basic", key = "#name")
+    public Basic getBasic(@Param("name") String name) {
+        return nexonClient.getCharacterBasic(ocidService.getOcid(name));
     }
 
-    public Basic getBasic(String name) {
-        String ocid = getOcid(name).ocid();
-        return basicRepository.computeIfAbsent(name, () -> nexonClient.getCharacterBasic(ocid));
-    }
-
-    public ItemEquipment getItemEquipment(String name) {
-        String ocid = getOcid(name).ocid();
-        return itemEquipmentRepository.computeIfAbsent(name, () -> nexonClient.getCharacterItemEquipment(ocid));
+    @Cacheable(value = "character:equipment", key = "#name")
+    public ItemEquipment getItemEquipment(@Param("name") String name) {
+        return nexonClient.getCharacterItemEquipment(ocidService.getOcid(name));
     }
 }

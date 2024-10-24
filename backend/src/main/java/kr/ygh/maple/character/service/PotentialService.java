@@ -5,6 +5,7 @@ import kr.ygh.maple.character.dto.itemEquipment.PotentialRequest;
 import kr.ygh.maple.character.dto.itemEquipment.PotentialResponse;
 import kr.ygh.maple.character.entity.Potential;
 import kr.ygh.maple.character.repository.PotentialRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +19,7 @@ public class PotentialService {
         this.potentialPartMapper = new PotentialPartMapper();
     }
 
+    @Cacheable(value = "character:potential", key = "#potentialRequest")
     public List<PotentialResponse> getPotential(PotentialRequest potentialRequest) {
         final String part = potentialPartMapper.map(potentialRequest.part());
 
