@@ -35,6 +35,6 @@ public class CharacterController {
 
     @GetMapping("item-equipment/potential")
     public List<PotentialResponse> potential(@ModelAttribute @Valid PotentialRequest potentialRequest) {
-        return potentialService.getPotential(potentialRequest);
+        return potentialService.getPotential(potentialRequest).responses();
     }
 }
