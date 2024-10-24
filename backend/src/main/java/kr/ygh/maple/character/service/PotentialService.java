@@ -24,7 +24,7 @@ public class PotentialService {
     public PotentialResponses getPotential(PotentialRequest potentialRequest) {
         final String part = potentialPartMapper.map(potentialRequest.part());
 
-        Integer level = potentialRepository.findMaxLevel(part, potentialRequest.level()).orElse(0);
+        int level = potentialRepository.findMaxLevel(part, potentialRequest.level()).orElse(0);
         List<Potential> potentials = potentialRepository.findByTypeAndGradeAndPartAndLevel(
                 potentialRequest.type(), potentialRequest.grade(), part, level
         );
