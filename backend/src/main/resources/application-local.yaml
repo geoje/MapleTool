@@ -23,6 +23,5 @@ spring:
 
 logging:
   level:
-    kr.ygh: DEBUG
     org.zalando.logbook: TRACE
     org.springframework.cache: TRACE
