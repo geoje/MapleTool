@@ -34,13 +34,10 @@ public class RedisConfig {
     }
 
     private Duration calculateTtl(Object key, @Nullable Object value) {
-        if (key.getClass() == PotentialRequest.class) {
-            return Duration.ZERO;
-        }
         if (value == null) {
             return Duration.ofMinutes(15);
         }
-        if (value.getClass() == String.class) {
+        if (value.getClass() == String.class || key.getClass() == PotentialRequest.class) {
             return getUntilNextPatch();
         }
 
