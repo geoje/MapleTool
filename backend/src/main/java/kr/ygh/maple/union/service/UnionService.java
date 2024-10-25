@@ -14,7 +14,7 @@ public class UnionService {
     private final NexonClient nexonClient;
     private final OcidService ocidService;
 
-    @Cacheable(value = "union:basic", key = "#name")
+    @Cacheable(value = "union:basic", key = "#p0")
     public Basic readBasic(String name) {
         return nexonClient.getUnionBasic(ocidService.getOcid(name));
     }
