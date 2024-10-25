@@ -20,7 +20,7 @@ public class PotentialService {
         this.potentialPartMapper = new PotentialPartMapper();
     }
 
-    @Cacheable(value = "character:potential", key = "#potentialRequest.key()")
+    @Cacheable(value = "character:potential", key = "#p0.key()")
     public PotentialResponses getPotential(PotentialRequest potentialRequest) {
         final String part = potentialPartMapper.map(potentialRequest.part());
 
