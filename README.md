@@ -1,6 +1,6 @@
 ## 🍁 Introduction
 
-This web service provides tools to conveniently untilize various systems within **Nexon**'s **MapleStory** game.
+This web service provides tools to conveniently utilize various systems within **Nexon**'s **MapleStory** game.
 
 - **Item Enhancement** allows users to simulate upgrades exactly as in the game, **experiencing** both the probabilities and costs involved.
 - **Union Raid** and **Union Artifacts** provide optimal configurations based on each character's status, helping users **acheive the highest efficiency**.
