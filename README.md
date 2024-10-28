@@ -3,7 +3,7 @@
 This web service provides tools to conveniently utilize various systems within the Korea company **Nexon**'s **MapleStory** game.
 
 - **Item Enhancement** allows users to simulate upgrades exactly as in the game, **experiencing** both the probabilities and costs involved.
-- **Union Raid** and **Union Artifacts** provide optimal configurations based on each character's status, helping users **acheive the highest efficiency**.
+- **Union Raid** and **Union Artifacts** provide optimal configurations based on each character's status, helping users **achieve the highest efficiency**.
 - **Boss income** allows users can calculate the total weekly income from bosses for their characters.
 
 ## 🏠 Home
