@@ -6,10 +6,12 @@ import ItemToolTip from "./itemTooltip";
 
 export default function SlotButton({
   item,
+  colorScheme,
   transparent,
   onClick,
 }: {
   item?: ItemEquipmentDetail;
+  colorScheme?: string;
   transparent?: boolean;
   onClick?: () => void;
 }) {
@@ -33,6 +35,7 @@ export default function SlotButton({
             ? BORDER_COLOR[potentialIndex]
             : undefined
         }
+        colorScheme={colorScheme}
         icon={
           <Image
             src={item?.item_icon}
@@ -44,6 +47,6 @@ export default function SlotButton({
       />
     </Tooltip>
   ) : (
-    <IconButton aria-label="item" borderWidth={1} />
+    <IconButton aria-label="item" colorScheme={colorScheme} borderWidth={1} />
   );
 }

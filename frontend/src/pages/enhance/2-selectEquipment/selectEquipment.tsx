@@ -31,6 +31,7 @@ export default function SelectEquipment({
           <Box key={`item-${i}`} position="relative">
             <SlotButton
               item={item.after}
+              colorScheme={equipmentIndex == i ? "blue" : undefined}
               onClick={() => {
                 setEquipmentIndex(equipmentIndex == i ? -1 : i);
               }}

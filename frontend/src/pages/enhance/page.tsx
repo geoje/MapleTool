@@ -12,6 +12,7 @@ import { useState } from "react";
 import { SET_TYPE } from "../../constants/enhance/set";
 import { useAppSelector } from "../../stores/hooks";
 import { useItemEquipmentQuery } from "../../stores/characterApi";
+import { MATERIAL_TYPE } from "../../constants/enhance/material";
 
 export default function Enhance() {
   const name = useAppSelector((state) => state.user.name);
@@ -22,6 +23,7 @@ export default function Enhance() {
 
   const [preset, setPreset] = useState<number | SET_TYPE>(1);
   const [inventoryIndex, setEquipmentIndex] = useState(-1);
+  const [materialType, setMaterialType] = useState<MATERIAL_TYPE>();
   const { isOpen: showChanges, onToggle: onToggleShowChanges } = useDisclosure({
     defaultIsOpen: true,
   });
@@ -49,10 +51,13 @@ export default function Enhance() {
           />
         </BoardCard>
         <BoardCard order={3} title="재료 선택">
-          <SelectMaterial />
+          <SelectMaterial
+            materialType={materialType}
+            setMaterialType={setMaterialType}
+          />
         </BoardCard>
         <BoardCard order={4} title="추가 설정">
-          <Config />
+          <Config materialType={materialType} />
         </BoardCard>
       </Stack>
       <Stack w={["100%", "100%", "auto"]}>
