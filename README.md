@@ -19,7 +19,14 @@ This web service provides tools to conveniently utilize various systems within t
 ## 💎 Boss Income
 ![image](https://github.com/user-attachments/assets/1d032405-ad5b-4054-9b55-d3a0eba1b14f)
 
-## ⚰️ Maple Union Tiler (~ MAR 2023)
+## ⚰️ Maple Union Tiler (NOV 2022 ~ MAR 2023)
+
+This was the first project created in this repository before **MapleTool** were developed.
+
+It was built only with **HTML, CSS, and JavaScript**, and I decided to discontinue it, as it became too difficult to maintain.
+
+After the **Nexon Open API** was released, I paused this project to rebuild it from scratch.
+
 <table>
 <tr>
   <th>Assign</th>
