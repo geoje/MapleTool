@@ -44,11 +44,13 @@ public class GlobalExceptionHandler {
 
             return ProblemDetail.forStatusAndDetail(status, nexonError.getResponseMessage());
         } catch (NoSuchElementException e) {
-            HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-            String message = "서버에서 넥슨 API 호출 중 알 수 없는 문제가 발생하였습니다.";
-            response.setStatus(status.value());
+            log.error(ex.getMessage(), ex);
 
-            return ProblemDetail.forStatusAndDetail(status, message);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ProblemDetail.forStatusAndDetail(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "서버에서 넥슨 API 호출 중 알 수 없는 문제가 발생하였습니다."
+            );
         }
     }
 
@@ -62,8 +64,8 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ProblemDetail handle(Exception ex) {
+    @ExceptionHandler(RuntimeException.class)
+    public ProblemDetail handle(RuntimeException ex) {
         log.error(ex.getMessage(), ex);
 
         return ProblemDetail.forStatusAndDetail(
