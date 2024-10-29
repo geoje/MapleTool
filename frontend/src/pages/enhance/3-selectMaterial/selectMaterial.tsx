@@ -6,14 +6,15 @@ import {
   SimpleGrid,
   Tooltip,
 } from "@chakra-ui/react";
-
-import meso from "../../../assets/item/meso.png";
+import { MATERIAL_INFOS } from "../../../constants/enhance/material";
 
 export default function SelectMaterial() {
   return (
     <Center>
       <SimpleGrid columns={5} gap={1}>
-        <MaterialButton label="수상한 큐브" icon={meso} />
+        {Object.entries(MATERIAL_INFOS).map(([type, info]) => (
+          <MaterialButton key={type} label={info.name} icon={info.icon} />
+        ))}
       </SimpleGrid>
     </Center>
   );
@@ -32,6 +33,7 @@ function MaterialButton({
     <Box position="relative">
       <Tooltip label={label} placement="top">
         <IconButton
+          w={64}
           aria-label={label}
           icon={<Image src={icon} />}
           onClick={onClick}

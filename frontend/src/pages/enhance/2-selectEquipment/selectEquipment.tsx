@@ -28,9 +28,8 @@ export default function SelectEquipment({
     <Center>
       <SimpleGrid columns={5} gap={1}>
         {inventory.map((item, i) => (
-          <Box position="relative">
+          <Box key={`item-${i}`} position="relative">
             <SlotButton
-              key={`item-${i}`}
               item={item.after}
               onClick={() => {
                 setEquipmentIndex(equipmentIndex == i ? -1 : i);
