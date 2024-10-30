@@ -19,7 +19,7 @@ export default function GetEquipment({
 }) {
   return (
     <Stack align="center" gap={1} divider={<Divider />}>
-      <Flex w="100%" gap={1} wrap="wrap">
+      <Flex gap={1}>
         {Object.entries(SET_INFOS).map(([type, info]) => (
           <Tooltip key={type} label={info.name} placement="top">
             <IconButton
