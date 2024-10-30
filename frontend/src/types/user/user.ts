@@ -1,3 +1,5 @@
+import { MATERIAL_TYPE } from "../../constants/enhance/material";
+import { POTENTIAL_GRADE } from "../../constants/enhance/potential";
 import BossPlan from "./bossPlan";
 import { EnhancedItem } from "./enhancedItem";
 
@@ -6,5 +8,7 @@ export default interface User {
   histories: string[];
   bossPlans: BossPlan[];
   inventory: EnhancedItem[];
-  guarantee: [];
+  guarantee: Partial<
+    Record<MATERIAL_TYPE, Partial<Record<POTENTIAL_GRADE, number>>>
+  >;
 }

@@ -2,6 +2,7 @@ import RARE from "../../assets/equipment/potential/rare.png";
 import EPIC from "../../assets/equipment/potential/epic.png";
 import UNIQUE from "../../assets/equipment/potential/unique.png";
 import LEGENDARY from "../../assets/equipment/potential/legendary.png";
+import { MATERIAL_TYPE } from "./material";
 
 export enum POTENTIAL_GRADE {
   RARE = "RARE",
@@ -45,5 +46,46 @@ export const POTENTIAL_INFOS: Record<POTENTIAL_GRADE, Info> = {
     imageColor: "#00cc99",
     textColor: "#ccff00",
     icon: LEGENDARY,
+  },
+};
+
+export const BOUNDS: Partial<
+  Record<MATERIAL_TYPE, Record<POTENTIAL_GRADE, number>>
+> = {
+  POTENTIAL: {
+    RARE: 10,
+    EPIC: 42,
+    UNIQUE: 107,
+    LENGENDARY: -1,
+  },
+  POTENTIAL_ADDI: {
+    RARE: 62,
+    EPIC: 152,
+    UNIQUE: 214,
+    LENGENDARY: -1,
+  },
+  RED: {
+    RARE: 25,
+    EPIC: 83,
+    UNIQUE: 500,
+    LENGENDARY: -1,
+  },
+  BLACK: {
+    RARE: 10,
+    EPIC: 42,
+    UNIQUE: 107,
+    LENGENDARY: -1,
+  },
+  ADDI: {
+    RARE: 31,
+    EPIC: 76,
+    UNIQUE: 214,
+    LENGENDARY: -1,
+  },
+  WHITE_ADDI: {
+    RARE: 31,
+    EPIC: 76,
+    UNIQUE: 214,
+    LENGENDARY: -1,
   },
 };

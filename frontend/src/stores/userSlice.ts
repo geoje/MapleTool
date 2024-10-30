@@ -5,6 +5,8 @@ import User from "../types/user/user";
 import { deepCopyWithTypeCheck } from "../utils/deepCopyWithTypeCheck";
 import { BOSS_DIFFICULTY, BOSS_TYPE } from "../constants/boss";
 import { ItemEquipmentDetail } from "../types/character/itemEquipment/itemEquipment";
+import { POTENTIAL_GRADE } from "../constants/enhance/potential";
+import { MATERIAL_TYPE } from "../constants/enhance/material";
 
 export const userKey = "user";
 
@@ -13,7 +15,7 @@ const initialState: User = {
   histories: [],
   bossPlans: [],
   inventory: [],
-  guarantee: [],
+  guarantee: {},
 };
 
 const slice = createSlice({
@@ -152,6 +154,44 @@ const slice = createSlice({
     deleteInventory(state, action: PayloadAction<number>) {
       state.inventory.splice(action.payload, 1);
     },
+
+    // guarantee
+    setGurantee(
+      state,
+      action: PayloadAction<{
+        type: MATERIAL_TYPE;
+        grade: POTENTIAL_GRADE;
+        value: number;
+      }>
+    ) {
+      if (!state.guarantee[action.payload.type]) {
+        state.guarantee[action.payload.type] = {
+          [action.payload.grade]: action.payload.value,
+        };
+        return;
+      }
+
+      state.guarantee[action.payload.type]![action.payload.grade] =
+        action.payload.value;
+    },
+    increaseGurantee(
+      state,
+      action: PayloadAction<{
+        type: MATERIAL_TYPE;
+        grade: POTENTIAL_GRADE;
+      }>
+    ) {
+      const guraanteeByType = state.guarantee[action.payload.type];
+      if (!guraanteeByType) {
+        state.guarantee[action.payload.type] = {
+          [action.payload.grade]: 1,
+        };
+        return;
+      }
+
+      guraanteeByType[action.payload.grade] =
+        (guraanteeByType[action.payload.grade] ?? 0) + 1;
+    },
   },
 });
 
@@ -182,4 +222,7 @@ export const {
 
   newInventory,
   deleteInventory,
+
+  setGurantee,
+  increaseGurantee,
 } = slice.actions;

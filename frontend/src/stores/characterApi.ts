@@ -25,6 +25,8 @@ export const characterApi = createApi({
       }
     }
   },
+  // Wonder if it's possible to keep old data on browser
+  // keepUnusedDataFor: undefined
 });
 
 export const characterReducer = persistReducer<
