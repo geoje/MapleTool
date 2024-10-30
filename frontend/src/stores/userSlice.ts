@@ -30,6 +30,8 @@ const slice = createSlice({
       state.name = action.payload;
     },
     setNameAndAddHistory: (state, action: PayloadAction<string>) => {
+      if (!action.payload.trim().length) return;
+
       state.name = action.payload;
       const index = state.histories.indexOf(action.payload);
       if (index == -1) state.histories.push(action.payload);

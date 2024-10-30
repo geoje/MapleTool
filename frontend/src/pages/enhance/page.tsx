@@ -1,5 +1,5 @@
 import { IconButton, Spinner, Stack, useDisclosure } from "@chakra-ui/react";
-import BoardCard from "../../components/boardCard";
+import BoardCard from "../../components/layout/boardCard";
 import GetEquipment from "./1-getEquipment/getEquipment";
 import SelectEquipment from "./2-selectEquipment/selectEquipment";
 import SelectMaterial from "./3-selectMaterial/selectMaterial";
@@ -7,7 +7,7 @@ import Config from "./4-config/config";
 import Changes from "./5-changes/changes";
 import Execute from "./6-execute/execute";
 import PresetButtons from "./1-getEquipment/presetButtons";
-import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { LuChevronUp, LuChevronDown } from "react-icons/lu";
 import { useState } from "react";
 import { SET_TYPE } from "../../constants/enhance/set";
 import { useAppSelector } from "../../stores/hooks";
@@ -71,9 +71,9 @@ export default function Enhance() {
               variant="ghost"
               icon={
                 showChanges ? (
-                  <IoIosArrowUp size={20} />
+                  <LuChevronUp size={20} />
                 ) : (
-                  <IoIosArrowDown size={20} />
+                  <LuChevronDown size={20} />
                 )
               }
               onClick={onToggleShowChanges}

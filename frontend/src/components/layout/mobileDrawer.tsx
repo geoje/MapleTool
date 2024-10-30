@@ -5,7 +5,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { MdClose } from "react-icons/md";
-import { ExpandedSidebar } from "./sidebar";
+import ExpandedSidebar from "./expandedSidebar";
 
 export default function MobileDrawer({
   isOpen,

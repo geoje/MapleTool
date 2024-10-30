@@ -11,7 +11,7 @@ import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { useAppDispatch } from "../../../stores/hooks";
 import { deleteBossPlan } from "../../../stores/userSlice";
-import DeleteButton from "../../../components/deleteButton";
+import DeleteButton from "../../../components/action/deleteButton";
 
 export default function CharacterButton({
   bossPlan,

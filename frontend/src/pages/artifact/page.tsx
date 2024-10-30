@@ -4,7 +4,7 @@ import ArtifactLevel from "./1-artifactLevel/artifactLevel";
 import EffectLevel from "./2-effectLevel/effectLevel";
 import SelectEffect from "./3-select/selectEffect";
 import ResultGrid from "./4-result/result";
-import BoardCard from "../../components/boardCard";
+import BoardCard from "../../components/layout/boardCard";
 import { remainPoint } from "../../services/artifact";
 import { useAppSelector } from "../../stores/hooks";
 import { useBasicQuery } from "../../stores/unionApi";

@@ -4,7 +4,7 @@ import {
   CardBody,
   Flex,
   Heading,
-  useColorModeValue,
+  useColorMode,
 } from "@chakra-ui/react";
 import {
   TbSquareRoundedNumber0Filled,
@@ -19,18 +19,17 @@ import {
   TbSquareRoundedNumber9Filled,
 } from "react-icons/tb";
 
-const ICON_SIZE = 20;
 const NumberIcons = [
-  <TbSquareRoundedNumber0Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber1Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber2Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber3Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber4Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber5Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber6Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber7Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber8Filled size={ICON_SIZE} />,
-  <TbSquareRoundedNumber9Filled size={ICON_SIZE} />,
+  <TbSquareRoundedNumber0Filled size={20} />,
+  <TbSquareRoundedNumber1Filled size={20} />,
+  <TbSquareRoundedNumber2Filled size={20} />,
+  <TbSquareRoundedNumber3Filled size={20} />,
+  <TbSquareRoundedNumber4Filled size={20} />,
+  <TbSquareRoundedNumber5Filled size={20} />,
+  <TbSquareRoundedNumber6Filled size={20} />,
+  <TbSquareRoundedNumber7Filled size={20} />,
+  <TbSquareRoundedNumber8Filled size={20} />,
+  <TbSquareRoundedNumber9Filled size={20} />,
 ];
 
 export default function BoardCard({
@@ -44,7 +43,7 @@ export default function BoardCard({
   right?: React.ReactNode;
   children?: React.ReactNode;
 }) {
-  const bgColor = useColorModeValue("white", "gray.800");
+  const dark = useColorMode().colorMode == "dark";
 
   const body = (
     <>
@@ -63,13 +62,13 @@ export default function BoardCard({
 
   return (
     <Card
-      width={["100%", "100%", "auto"]}
-      background={bgColor}
-      borderRadius={[0, 0, "var(--card-radius)"]}
-      boxShadow={["", "", "var(--card-shadow)"]}
+      width={{ base: "100%", md: "auto" }}
+      background={dark ? "gray.800" : "white"}
+      borderRadius={{ md: "var(--card-radius)" }}
+      boxShadow={{ base: "", md: "var(--card-shadow)" }}
     >
-      <CardBody display={["none", "none", "block"]}>{body}</CardBody>
-      <Box display={["block", "block", "none"]} p={4}>
+      <CardBody display={{ base: "none", md: "block" }}>{body}</CardBody>
+      <Box display={{ base: "block", md: "none" }} p={4}>
         {body}
       </Box>
     </Card>

@@ -10,12 +10,12 @@ import {
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import { LINKS } from "../constants/links";
+import { LINKS } from "../../constants/links";
 import MobileDrawer from "./mobileDrawer";
 import { useEffect } from "react";
-import { useAppSelector } from "../stores/hooks";
-import { useBasicQuery } from "../stores/characterApi";
-import characterBlank from "../assets/union/raid/character-blank.png";
+import { useAppSelector } from "../../stores/hooks";
+import { useBasicQuery } from "../../stores/characterApi";
+import characterBlank from "../../assets/union/raid/character-blank.png";
 
 export default function Header() {
   return (
@@ -42,7 +42,7 @@ function Desktop() {
   }, [pathname]);
 
   return (
-    <Flex display={["none", "none", "flex"]} p={2} align="center">
+    <Flex display={{ base: "none", md: "flex" }} p={2} align="center">
       <Heading size="md" p={2}>
         {title ?? "홈"}
       </Heading>
@@ -63,16 +63,15 @@ function Desktop() {
 
 function Mobile() {
   const { pathname } = useLocation();
+  const dark = useColorMode().colorMode == "dark";
   const name = useAppSelector((state) => state.user.name);
   const { data } = useBasicQuery(name, { skip: !name });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { colorMode } = useColorMode();
-  const dark = colorMode === "dark";
 
   return (
     <Flex
-      display={["flex", "flex", "none"]}
+      display={{ base: "flex", md: "none" }}
       p={2}
       bgColor={dark ? "gray.800" : "white"}
       align="center"
@@ -95,8 +94,8 @@ function Mobile() {
           aria-label="profile"
           as={Link}
           to="/"
-          variant="ghost"
           size="lg"
+          variant="ghost"
           icon={<ProfileImage src={data?.character_image} />}
         />
       )}
@@ -106,14 +105,7 @@ function Mobile() {
 }
 
 function ProfileImage({ src }: { src?: string }) {
-  return (
-    <Image
-      boxSize="32px"
-      src={src}
-      fallback={<BlankCharacterImage />}
-      style={{ imageRendering: "pixelated" }}
-    />
-  );
+  return <Image boxSize="32px" src={src} fallback={<BlankCharacterImage />} />;
 }
 
 function BlankCharacterImage() {

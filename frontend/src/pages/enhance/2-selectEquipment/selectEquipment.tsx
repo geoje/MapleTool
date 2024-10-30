@@ -1,7 +1,7 @@
 import { Box, Center, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import SlotButton from "../common/slotButton";
-import DeleteButton from "../../../components/deleteButton";
+import DeleteButton from "../../../components/action/deleteButton";
 import { deleteInventory } from "../../../stores/userSlice";
 
 export default function SelectEquipment({

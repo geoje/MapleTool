@@ -1,6 +1,6 @@
-import { Flex, Stack } from "@chakra-ui/react";
-import Sidebar from "./components/sidebar";
-import Header from "./components/header";
+import { Flex, Show, Stack } from "@chakra-ui/react";
+import Sidebar from "./components/layout/sidebar";
+import Header from "./components/layout/header";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/home/page";
 import { LINKS } from "./constants/links";
@@ -11,7 +11,9 @@ export default function App() {
 
   return (
     <Flex>
-      <Sidebar />
+      <Show above="md">
+        <Sidebar />
+      </Show>
       <Stack flex={1} gap={0}>
         <Header />
         <Flex px={[0, 0, 4]} py={4} gap={4} wrap="wrap">

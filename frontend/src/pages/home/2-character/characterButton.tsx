@@ -13,7 +13,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import CharacterContent from "./characterContent";
-import DeleteButton from "../../../components/deleteButton";
+import DeleteButton from "../../../components/action/deleteButton";
 
 export default function CharacterButton({
   name,

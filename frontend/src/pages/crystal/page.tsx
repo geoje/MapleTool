@@ -1,5 +1,5 @@
 import { Stack } from "@chakra-ui/react";
-import BoardCard from "../../components/boardCard";
+import BoardCard from "../../components/layout/boardCard";
 import ResultTable from "./3-statistics/resultTable";
 import { useState } from "react";
 import CharacterButtons from "./1-character/characterButtons";

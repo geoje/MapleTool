@@ -2,7 +2,7 @@ import { Box, Icon, useColorMode } from "@chakra-ui/react";
 import { LuX } from "react-icons/lu";
 
 export default function DeleteButton({ onClick }: { onClick: () => void }) {
-  const isDark = useColorMode().colorMode == "dark";
+  const dark = useColorMode().colorMode == "dark";
 
   return (
     <Box
@@ -15,12 +15,12 @@ export default function DeleteButton({ onClick }: { onClick: () => void }) {
       zIndex={1}
       cursor="pointer"
       transform="auto"
-      background={isDark ? "whiteAlpha.600" : "blackAlpha.600"}
+      background={dark ? "whiteAlpha.600" : "blackAlpha.600"}
       transition="background 0.2s"
       borderRadius="100%"
       onClick={onClick}
       _hover={{
-        background: isDark ? "whiteAlpha.800" : "blackAlpha.800",
+        background: dark ? "whiteAlpha.800" : "blackAlpha.800",
       }}
     >
       <Icon
@@ -28,7 +28,7 @@ export default function DeleteButton({ onClick }: { onClick: () => void }) {
         w={3}
         h={3}
         display="block"
-        color={isDark ? "black" : "white"}
+        color={dark ? "black" : "white"}
       />
     </Box>
   );
