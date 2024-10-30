@@ -5,7 +5,7 @@ import {
   MAX_BOSS_SELECTABLE,
 } from "../../../constants/boss";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
-import { getMaxMembers } from "../../../utils/boss";
+import { getMaxMembers } from "../../../services/boss";
 import { putBossItem, removeBossItem } from "../../../stores/userSlice";
 import Row from "./row";
 

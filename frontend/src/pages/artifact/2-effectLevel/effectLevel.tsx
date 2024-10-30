@@ -1,6 +1,6 @@
 import { Badge, Flex, Radio, Stack } from "@chakra-ui/react";
 import { MAX_APPLIED_EFFECT_LEVEL } from "../../../constants/artifact";
-import { calcEffectLevels } from "../../../utils/artifact";
+import { calcEffectLevels } from "../../../services/artifact";
 import { useEffect } from "react";
 
 export default function EffectLevel({

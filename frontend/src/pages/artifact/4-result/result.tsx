@@ -1,7 +1,7 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import { useState } from "react";
 import { EFFECT_NAMES } from "../../../constants/artifact";
-import { crystalEffectIndexes, crystals } from "../../../utils/artifact";
+import { crystalEffectIndexes, crystals } from "../../../services/artifact";
 import { getArtifactIcon } from "../../../utils/icon";
 import Crystal from "./crystal";
 

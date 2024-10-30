@@ -1,8 +1,8 @@
 import { IconButton, Image, Tooltip } from "@chakra-ui/react";
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
-import { getMaxPotentialIndex } from "../../../utils/potential";
-import { BORDER_COLOR } from "../../../constants/enhance/potential";
 import ItemToolTip from "./itemTooltip";
+import { getMaxGrade } from "../../../services/potential";
+import { POTENTIAL_INFOS } from "../../../constants/enhance/potential";
 
 export default function SlotButton({
   item,
@@ -15,7 +15,7 @@ export default function SlotButton({
   transparent?: boolean;
   onClick?: () => void;
 }) {
-  const potentialIndex = item ? getMaxPotentialIndex(item) : -1;
+  const grade = item ? getMaxGrade(item) : undefined;
 
   return item ? (
     <Tooltip
@@ -31,9 +31,7 @@ export default function SlotButton({
         w="40px"
         borderWidth={1}
         borderColor={
-          potentialIndex != -1 && !transparent
-            ? BORDER_COLOR[potentialIndex]
-            : undefined
+          grade && !transparent ? POTENTIAL_INFOS[grade].borderColor : undefined
         }
         colorScheme={colorScheme}
         icon={

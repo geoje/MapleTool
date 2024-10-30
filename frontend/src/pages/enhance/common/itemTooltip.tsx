@@ -10,18 +10,16 @@ import {
 import { FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
-import { getMaxPotentialIndex } from "../../../utils/potential";
-import { getMaxStarforceCount } from "../../../utils/starforce";
-import {
-  ICONS,
-  IMAGE_COLOR,
-  KOR_NAME,
-  TEXT_COLOR,
-} from "../../../constants/enhance/potential";
+import { getMaxStarforceCount } from "../../../services/starforce";
 import { TOOLTIP_COLORS } from "../../../constants/enhance/equipment";
+import {
+  POTENTIAL_GRADE,
+  POTENTIAL_INFOS,
+} from "../../../constants/enhance/potential";
+import { getMaxGrade, parseGrade } from "../../../services/potential";
 
 export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
-  const potentialIndex = getMaxPotentialIndex(item);
+  const grade = getMaxGrade(item);
 
   return (
     <Box color="white">
@@ -35,13 +33,13 @@ export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
           upgrade={item.scroll_upgrade}
           soulName={item.soul_name}
         />
-        <PotentialGrade potential={KOR_NAME[potentialIndex]} />
+        <PotentialGrade potentialType={grade} />
       </Stack>
 
       <Divider variant="dashed" opacity={0.2} />
       <ImageAndReqLevel
         imgUrl={item.item_icon}
-        potentialColor={IMAGE_COLOR[potentialIndex]}
+        potentialColor={grade ? POTENTIAL_INFOS[grade].imageColor : undefined}
         reqLevel={item.item_base_option.base_equipment_level}
       />
 
@@ -100,7 +98,7 @@ function ItemName({
         <Heading
           size="xs"
           textAlign="center"
-          color={TEXT_COLOR[TEXT_COLOR.length - 1]}
+          color={POTENTIAL_INFOS[POTENTIAL_GRADE.LENGENDARY].textColor}
         >
           {soulName.substring(0, soulName.indexOf(" 소울"))}
         </Heading>
@@ -112,10 +110,15 @@ function ItemName({
     </>
   );
 }
-function PotentialGrade({ potential }: { potential?: string }) {
-  return potential ? (
+
+function PotentialGrade({
+  potentialType,
+}: {
+  potentialType?: POTENTIAL_GRADE;
+}) {
+  return potentialType ? (
     <Text fontSize="xs" textAlign="center">
-      ({potential} 아이템)
+      ({POTENTIAL_INFOS[potentialType].name} 아이템)
     </Text>
   ) : (
     <></>
@@ -416,8 +419,8 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
 }
 
 function Potential({ item }: { item: ItemEquipmentDetail }) {
-  const gradeIndex = KOR_NAME.indexOf(item.potential_option_grade);
-  if (gradeIndex == -1) return <></>;
+  const grade = parseGrade(item.potential_option_grade);
+  if (!grade) return <></>;
 
   return (
     <>
@@ -425,10 +428,10 @@ function Potential({ item }: { item: ItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={ICONS[gradeIndex]}
+            src={POTENTIAL_INFOS[grade].icon}
             style={{ imageRendering: "pixelated" }}
           />
-          <Text fontSize="xs" color={TEXT_COLOR[gradeIndex]}>
+          <Text fontSize="xs" color={POTENTIAL_INFOS[grade].textColor}>
             잠재옵션
           </Text>
         </Flex>
@@ -446,8 +449,8 @@ function Potential({ item }: { item: ItemEquipmentDetail }) {
   );
 }
 function AddPotential({ item }: { item: ItemEquipmentDetail }) {
-  const gradeIndex = KOR_NAME.indexOf(item.additional_potential_option_grade);
-  if (gradeIndex == -1) return <></>;
+  const grade = parseGrade(item.additional_potential_option_grade);
+  if (!grade) return <></>;
 
   return (
     <>
@@ -455,10 +458,10 @@ function AddPotential({ item }: { item: ItemEquipmentDetail }) {
       <Stack p={2} gap={0}>
         <Flex align="center" gap={1}>
           <Image
-            src={ICONS[gradeIndex]}
+            src={POTENTIAL_INFOS[grade].icon}
             style={{ imageRendering: "pixelated" }}
           />
-          <Text fontSize="xs" color={TEXT_COLOR[gradeIndex]}>
+          <Text fontSize="xs" color={POTENTIAL_INFOS[grade].textColor}>
             에디셔널 잠재옵션
           </Text>
         </Flex>

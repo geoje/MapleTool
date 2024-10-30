@@ -5,7 +5,7 @@ import {
   BOSS_TYPE,
 } from "../../../constants/boss";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
-import { getMaxMembers } from "../../../utils/boss";
+import { getMaxMembers } from "../../../services/boss";
 import { removeBossItem, putBossItem } from "../../../stores/userSlice";
 import Row from "./row";
 

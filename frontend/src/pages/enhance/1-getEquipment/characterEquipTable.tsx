@@ -1,7 +1,7 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import { useItemEquipmentQuery } from "../../../stores/characterApi";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
-import { getCharacterEquipmentGrid } from "../../../utils/equipment";
+import { getCharacterEquipmentGrid } from "../../../services/equipment";
 import SlotButton from "../common/slotButton";
 import { SLOT_GRID } from "../../../constants/enhance/equipment";
 import { newInventory } from "../../../stores/userSlice";

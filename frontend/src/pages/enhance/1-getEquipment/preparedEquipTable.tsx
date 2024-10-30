@@ -1,6 +1,6 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import { SET_TYPE } from "../../../constants/enhance/set";
-import { getPreparedEquipmentGrid } from "../../../utils/equipment";
+import { getPreparedEquipmentGrid } from "../../../services/equipment";
 import SlotButton from "../common/slotButton";
 import { useAppDispatch } from "../../../stores/hooks";
 import { newInventory } from "../../../stores/userSlice";

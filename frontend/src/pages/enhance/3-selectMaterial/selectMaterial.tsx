@@ -16,20 +16,27 @@ export default function SelectMaterial({
   setMaterialType,
 }: {
   materialType?: MATERIAL_TYPE;
-  setMaterialType: (value: MATERIAL_TYPE) => void;
+  setMaterialType: (value?: MATERIAL_TYPE) => void;
 }) {
   return (
     <Center>
       <SimpleGrid columns={5} gap={1}>
-        {Object.entries(MATERIAL_INFOS).map(([type, info]) => (
-          <MaterialButton
-            key={type}
-            label={info.name}
-            icon={info.icon}
-            selected={materialType == (type as MATERIAL_TYPE)}
-            onClick={() => setMaterialType(type as MATERIAL_TYPE)}
-          />
-        ))}
+        {Object.entries(MATERIAL_INFOS).map(([type, info]) => {
+          const convertedType = type as MATERIAL_TYPE;
+          return (
+            <MaterialButton
+              key={type}
+              label={info.name}
+              icon={info.icon}
+              selected={materialType == convertedType}
+              onClick={() =>
+                setMaterialType(
+                  materialType == convertedType ? undefined : convertedType
+                )
+              }
+            />
+          );
+        })}
       </SimpleGrid>
     </Center>
   );

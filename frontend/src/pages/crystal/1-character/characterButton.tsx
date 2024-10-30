@@ -1,9 +1,9 @@
-import { Box, Button, Flex, Icon, useColorMode } from "@chakra-ui/react";
-import { LuGripVertical, LuX } from "react-icons/lu";
+import { Box, Button, Flex, Icon } from "@chakra-ui/react";
+import { LuGripVertical } from "react-icons/lu";
 import Profile from "./profile";
 import BossSummary from "./bossSummary";
 import BossPlan from "../../../types/user/bossPlan";
-import { getBossIcon } from "../../../utils/boss";
+import { getBossIcon } from "../../../services/boss";
 import { useBasicQuery } from "../../../stores/characterApi";
 import { forwardRef } from "react";
 import { DraggableAttributes } from "@dnd-kit/core";

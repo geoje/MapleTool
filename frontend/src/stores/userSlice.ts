@@ -4,7 +4,6 @@ import storage from "redux-persist/lib/storage";
 import User from "../types/user/user";
 import { deepCopyWithTypeCheck } from "../utils/deepCopyWithTypeCheck";
 import { BOSS_DIFFICULTY, BOSS_TYPE } from "../constants/boss";
-import { EnhancedItem } from "../types/user/enhancedItem";
 import { ItemEquipmentDetail } from "../types/character/itemEquipment/itemEquipment";
 
 export const userKey = "user";
@@ -14,6 +13,7 @@ const initialState: User = {
   histories: [],
   bossPlans: [],
   inventory: [],
+  guarantee: [],
 };
 
 const slice = createSlice({

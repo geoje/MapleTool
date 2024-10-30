@@ -9,7 +9,7 @@ import {
 import { useAppSelector } from "../../../stores/hooks";
 import { Fragment } from "react/jsx-runtime";
 import { useState } from "react";
-import { calculateRevenue } from "../../../utils/boss";
+import { calculateRevenue } from "../../../services/boss";
 import { MAX_BOSS_SELECTABLE } from "../../../constants/boss";
 import { formatNumber } from "../../../utils/formatter";
 

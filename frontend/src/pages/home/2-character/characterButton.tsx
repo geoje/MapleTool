@@ -1,6 +1,6 @@
-import { Box, Button, Icon, Spinner, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Icon, Spinner } from "@chakra-ui/react";
 import { forwardRef, useEffect } from "react";
-import { LuGripVertical, LuX } from "react-icons/lu";
+import { LuGripVertical } from "react-icons/lu";
 import { FaCheck, FaExclamation, FaTimes } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import {
@@ -22,7 +22,6 @@ export default function CharacterButton({
   name: string;
   readOnly?: boolean;
 }) {
-  const isDark = useColorMode().colorMode == "dark";
   const dispatch = useAppDispatch();
   const userName = useAppSelector((state) => state.user.name);
   const selected = !readOnly && userName == name;

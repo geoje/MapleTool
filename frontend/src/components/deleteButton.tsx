@@ -15,15 +15,21 @@ export default function DeleteButton({ onClick }: { onClick: () => void }) {
       zIndex={1}
       cursor="pointer"
       transform="auto"
-      background={isDark ? "whiteAlpha.200" : "blackAlpha.200"}
+      background={isDark ? "whiteAlpha.600" : "blackAlpha.600"}
       transition="background 0.2s"
       borderRadius="100%"
       onClick={onClick}
       _hover={{
-        background: isDark ? "whiteAlpha.400" : "blackAlpha.400",
+        background: isDark ? "whiteAlpha.800" : "blackAlpha.800",
       }}
     >
-      <Icon as={LuX} display="block" w={3} h={3} />
+      <Icon
+        as={LuX}
+        w={3}
+        h={3}
+        display="block"
+        color={isDark ? "black" : "white"}
+      />
     </Box>
   );
 }

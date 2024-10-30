@@ -6,4 +6,5 @@ export default interface User {
   histories: string[];
   bossPlans: BossPlan[];
   inventory: EnhancedItem[];
+  guarantee: [];
 }

@@ -15,7 +15,6 @@ export function calcEffectLevels(artifactLevel: number) {
     const effectCount = appliedEffectCount(artifactLevel, effectIndex);
     let effectLevels = new Array(effectCount + 1).fill(0);
 
-    // TODO: maybe duplicated with function
     for (const crystal of crystals(artifactLevel))
       for (let j = 0; j < EFFECT_COUNT_PER_CRYSTAL; j++) {
         let i = Math.min(crystal.effects.length - 1, effectIndex);
