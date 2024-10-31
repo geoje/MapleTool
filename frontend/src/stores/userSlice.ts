@@ -165,7 +165,7 @@ const slice = createSlice({
       action: PayloadAction<{
         index: number;
         addi: boolean;
-        grade?: string;
+        grade?: POTENTIAL_GRADE;
         options: string[];
       }>
     ) {

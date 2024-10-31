@@ -19,6 +19,7 @@ import {
 } from "../../../../constants/enhance/potential";
 import {
   calcRollingMaterials,
+  formatOptions,
   getOptions,
   isAddi,
   isSelectable,
@@ -96,13 +97,19 @@ export default function Potential({
       bound = POTENTIAL_CRITERIA[materialType]![grade].bound;
     }
 
-    const newPotential = nextPotential(options, data, guarantee, bound);
+    const newPotential = nextPotential(
+      data,
+      options,
+      materialType,
+      grade,
+      guarantee
+    );
     dispatch(
       setInventoryPotential({
         index: inventoryIndex,
         addi,
         grade: newPotential.grade,
-        options: newPotential.options,
+        options: formatOptions(newPotential.options),
       })
     );
     setNewGrade(undefined);
