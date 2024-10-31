@@ -20,8 +20,8 @@ public class PotentialService {
         this.potentialPartMapper = new PotentialPartMapper();
     }
 
-    @Cacheable(value = "character:potential", key = "#p0.key()")
-    public PotentialResponses getPotential(PotentialRequest potentialRequest) {
+    @Cacheable(value = "character:potentials", key = "#p0.key()")
+    public PotentialResponses getPotentials(PotentialRequest potentialRequest) {
         final String part = potentialPartMapper.map(potentialRequest.part());
 
         int level = potentialRepository.findMaxLevel(part, potentialRequest.level()).orElse(0);

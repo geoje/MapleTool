@@ -1,6 +1,6 @@
 import RequiredText from "../../../components/content/requiredText";
 import { MATERIAL_TYPE } from "../../../constants/enhance/material";
-import Potential from "./potential";
+import Potential from "./potential/potential";
 
 export default function Execute({
   inventoryIndex,

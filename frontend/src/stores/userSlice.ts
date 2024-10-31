@@ -7,6 +7,7 @@ import { BOSS_DIFFICULTY, BOSS_TYPE } from "../constants/boss";
 import { ItemEquipmentDetail } from "../types/character/itemEquipment/itemEquipment";
 import { POTENTIAL_GRADE } from "../constants/enhance/potential";
 import { MATERIAL_TYPE } from "../constants/enhance/material";
+import { Material } from "../types/user/enhancedItem";
 
 export const userKey = "user";
 
@@ -156,6 +157,19 @@ const slice = createSlice({
     deleteInventory(state, action: PayloadAction<number>) {
       state.inventory.splice(action.payload, 1);
     },
+    addMaterials(state, action: PayloadAction<Material[]>) {
+      console.log(action.payload);
+    },
+    setInventoryPotential(
+      state,
+      action: PayloadAction<{
+        index: number;
+        addi: boolean;
+        options: string[];
+      }>
+    ) {
+      console.log(action.payload);
+    },
 
     // guarantee
     setGurantee(
@@ -224,6 +238,8 @@ export const {
 
   newInventory,
   deleteInventory,
+  addMaterials,
+  setInventoryPotential,
 
   setGurantee,
   increaseGurantee,

@@ -1,4 +1,4 @@
-export default interface PotentialProbability {
+export default interface PotentialResponse {
   position: number;
   name: string;
   value: number;

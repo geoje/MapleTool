@@ -33,8 +33,8 @@ public class CharacterController {
         return characterService.getItemEquipment(nameRequest.name());
     }
 
-    @GetMapping("item-equipment/potential")
-    public List<PotentialResponse> potential(@ModelAttribute @Valid PotentialRequest potentialRequest) {
-        return potentialService.getPotential(potentialRequest).responses();
+    @GetMapping("item-equipment/potentials")
+    public List<PotentialResponse> potentials(@ModelAttribute @Valid PotentialRequest potentialRequest) {
+        return potentialService.getPotentials(potentialRequest).responses();
     }
 }

@@ -23,3 +23,9 @@ export function formatNumber(num: number): string {
 
   return result;
 }
+
+export function formatSearchParams(params: Object) {
+  return new URLSearchParams(
+    Object.entries(params).map(([key, value]) => [key, String(value)])
+  ).toString();
+}

@@ -3,6 +3,9 @@ import { Basic } from "../types/character/basic";
 import { ItemEquipment } from "../types/character/itemEquipment/itemEquipment";
 import { persistReducer, REHYDRATE } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import PotentialRequest from "../types/character/itemEquipment/potential/potentialRequest";
+import { formatSearchParams } from "../utils/formatter";
+import PotentialResponse from "../types/character/itemEquipment/potential/potentialResponse";
 
 const key = "character";
 
@@ -15,6 +18,10 @@ export const characterApi = createApi({
     }),
     itemEquipment: builder.query<ItemEquipment, string>({
       query: (name) => `/item-equipment?name=${name}`,
+    }),
+    potential: builder.query<PotentialResponse[], PotentialRequest>({
+      query: (request) =>
+        `/item-equipment/potentials?${formatSearchParams(request)}`,
     }),
   }),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,4 +39,5 @@ export const characterApi = createApi({
 export const characterReducer = persistReducer<
   ReturnType<typeof characterApi.reducer>
 >({ key, storage }, characterApi.reducer);
-export const { useBasicQuery, useItemEquipmentQuery } = characterApi;
+export const { useBasicQuery, useItemEquipmentQuery, usePotentialQuery } =
+  characterApi;
