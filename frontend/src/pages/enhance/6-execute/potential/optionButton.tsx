@@ -33,6 +33,7 @@ export default function OptionsButton({
     <Tooltip
       display={isDisabled ? "none" : undefined}
       fontSize="xs"
+      placement="top"
       label={options.map((option, i) => (
         <Text key={"option-" + i}>{option}</Text>
       ))}
@@ -80,10 +81,10 @@ export default function OptionsButton({
             backgroundColor={dark ? "gray.700" : "gray.400"}
           >
             {grade && <Image src={POTENTIAL_INFOS[grade].icon} />}
-            <Text fontSize={12}>{grade}</Text>
+            <Text fontSize={12}>{grade && POTENTIAL_INFOS[grade].name}</Text>
           </Flex>
           {[0, 1, 2].map((i) => (
-            <OptionText key={"option-" + i} text={options[0]} />
+            <OptionText key={"option-" + i} text={options[i]} />
           ))}
         </Stack>
       </Button>

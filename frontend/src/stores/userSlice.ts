@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 import { createTransform, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import User from "../types/user/user";
@@ -157,23 +157,48 @@ const slice = createSlice({
     deleteInventory(state, action: PayloadAction<number>) {
       state.inventory.splice(action.payload, 1);
     },
-    addMaterials(state, action: PayloadAction<Material[]>) {
-      console.log(action.payload);
+    addMaterials(
+      state,
+      action: PayloadAction<{ index: number; materials: Material[] }>
+    ) {
+      const used = state.inventory[action.payload.index].used;
+      for (const material of action.payload.materials) {
+        const foundUsed = used.find((u) => u.name == material.name);
+        if (foundUsed) {
+          foundUsed.value += material.value;
+          continue;
+        }
+
+        used.push(material);
+      }
     },
     setInventoryPotential(
       state,
       action: PayloadAction<{
         index: number;
         addi: boolean;
-        grade?: POTENTIAL_GRADE;
+        grade: string;
         options: string[];
       }>
     ) {
-      console.log(action.payload);
+      const item = state.inventory[action.payload.index].after;
+      if (action.payload.addi) {
+        item.additional_potential_option_grade = action.payload.grade;
+        item.additional_potential_option_1 = action.payload.options[0];
+        item.additional_potential_option_2 = action.payload.options[1];
+        item.additional_potential_option_3 = action.payload.options[2];
+        console.log(current(state.inventory[action.payload.index].after));
+        return;
+      }
+
+      item.potential_option_grade = action.payload.grade;
+      item.potential_option_1 = action.payload.options[0];
+      item.potential_option_2 = action.payload.options[1];
+      item.potential_option_3 = action.payload.options[2];
     },
 
     // guarantees
-    setGurantee(
+    setGuarantee(
       state,
       action: PayloadAction<{
         type: MATERIAL_TYPE;
@@ -190,24 +215,6 @@ const slice = createSlice({
 
       state.guarantees[action.payload.type]![action.payload.grade] =
         action.payload.value;
-    },
-    increaseGurantee(
-      state,
-      action: PayloadAction<{
-        type: MATERIAL_TYPE;
-        grade: POTENTIAL_GRADE;
-      }>
-    ) {
-      const guraanteeByType = state.guarantees[action.payload.type];
-      if (!guraanteeByType) {
-        state.guarantees[action.payload.type] = {
-          [action.payload.grade]: 1,
-        };
-        return;
-      }
-
-      guraanteeByType[action.payload.grade] =
-        (guraanteeByType[action.payload.grade] ?? 0) + 1;
     },
   },
 });
@@ -242,6 +249,5 @@ export const {
   addMaterials,
   setInventoryPotential,
 
-  setGurantee,
-  increaseGurantee,
+  setGuarantee,
 } = slice.actions;

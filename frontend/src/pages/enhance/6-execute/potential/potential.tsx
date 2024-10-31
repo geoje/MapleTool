@@ -12,10 +12,10 @@ import {
 } from "../../../../constants/enhance/material";
 import { useAppDispatch, useAppSelector } from "../../../../stores/hooks";
 import OptionsButton from "./optionButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  POTENTIAL_CRITERIA,
   POTENTIAL_GRADE,
+  POTENTIAL_INFOS,
 } from "../../../../constants/enhance/potential";
 import {
   calcRollingMaterials,
@@ -28,12 +28,14 @@ import {
 } from "../../../../services/potential";
 import {
   addMaterials,
+  setGuarantee,
   setInventoryPotential,
 } from "../../../../stores/userSlice";
 import { formatNumber } from "../../../../utils/formatter";
-import MESO from "../../../../assets/item/meso.png";
+import MESO from "../../../../assets/item/meso/coin.png";
 import { usePotentialQuery } from "../../../../stores/characterApi";
 import { useWarningToast } from "../../../../hooks/useToast";
+import PotentialResponse from "../../../../types/character/itemEquipment/potential/potentialResponse";
 
 export default function Potential({
   inventoryIndex,
@@ -49,15 +51,16 @@ export default function Potential({
   const guarantees = useAppSelector((state) => state.user.guarantees);
 
   const [newGrade, setNewGrade] = useState<POTENTIAL_GRADE>();
-  const [newOptions, setNewOptions] = useState<string[]>(["", "", ""]);
+  const [newOptions, setNewOptions] = useState<PotentialResponse[]>([]);
 
   const item = inventory[inventoryIndex].after;
   const addi = isAddi(materialType);
   const selectable = isSelectable(materialType);
   const options = getOptions(item, addi);
+
   const level = item.item_base_option.base_equipment_level;
   const grade = parseGrade(
-    addi ? item.potential_option_grade : item.additional_potential_option_grade
+    addi ? item.additional_potential_option_grade : item.potential_option_grade
   );
   const costMaterials = calcRollingMaterials(materialType, level, addi, grade);
 
@@ -67,21 +70,26 @@ export default function Potential({
     level,
   });
 
+  useEffect(() => {
+    clearNewOptions();
+  }, [inventoryIndex, materialType]);
+
   const clearNewOptions = () => {
     setNewGrade(undefined);
-    setNewOptions(["", "", ""]);
+    setNewOptions([]);
   };
   const applyOptions = () => {
     dispatch(
       setInventoryPotential({
         index: inventoryIndex,
         addi,
-        options: newOptions,
+        grade: newGrade ? POTENTIAL_INFOS[newGrade].name : "",
+        options: formatOptions(newOptions),
       })
     );
     clearNewOptions();
   };
-  const setNextPotential = () => {
+  const rollPotential = () => {
     if (!data) {
       toastWarning({
         title: "해당 아이템에 대한 잠재능력 정보가 없습니다.",
@@ -89,14 +97,10 @@ export default function Potential({
       return;
     }
 
-    dispatch(addMaterials(costMaterials));
-    let guarantee = 0;
-    let bound = 0;
-    if (grade) {
-      guarantee = guarantees[materialType]![grade] ?? 0;
-      bound = POTENTIAL_CRITERIA[materialType]![grade].bound;
-    }
-
+    const guarantee =
+      grade && guarantees[materialType]
+        ? guarantees[materialType][grade] ?? 0
+        : 0;
     const newPotential = nextPotential(
       data,
       options,
@@ -104,16 +108,19 @@ export default function Potential({
       grade,
       guarantee
     );
-    dispatch(
-      setInventoryPotential({
-        index: inventoryIndex,
-        addi,
-        grade: newPotential.grade,
-        options: formatOptions(newPotential.options),
-      })
-    );
-    setNewGrade(undefined);
-    setNewOptions(["", "", ""]);
+
+    if (grade) {
+      dispatch(
+        setGuarantee({
+          type: materialType,
+          grade,
+          value: newPotential.grade == grade ? guarantee + 1 : 0,
+        })
+      );
+    }
+    dispatch(addMaterials({ index: inventoryIndex, materials: costMaterials }));
+    setNewGrade(newPotential.grade);
+    setNewOptions(newPotential.options);
   };
 
   return (
@@ -140,7 +147,7 @@ export default function Potential({
       </Flex>
       {selectable && (
         <OptionsButton
-          title={selectable ? "BEFORE" : "RESULT"}
+          title="BEFORE"
           grade={grade}
           options={options}
           isDisabled={!options[0]}
@@ -148,9 +155,9 @@ export default function Potential({
         />
       )}
       <OptionsButton
-        title="AFTER"
+        title={selectable ? "AFTER" : "RESULT"}
         grade={newGrade}
-        options={newOptions}
+        options={formatOptions(newOptions)}
         isDisabled={!newOptions[0]}
         onClick={selectable ? applyOptions : undefined}
       />
@@ -176,7 +183,7 @@ export default function Potential({
           isDisabled={!item || (newGrade && grade != newGrade)}
           isLoading={isFetching}
           loadingText="데이터 요청중"
-          onClick={setNextPotential}
+          onClick={rollPotential}
         >
           재설정
         </Button>

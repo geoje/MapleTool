@@ -10,6 +10,7 @@ import RequiredText from "../../../components/content/requiredText";
 export default function CharacterEquipTable({ preset }: { preset: number }) {
   const dispatch = useAppDispatch();
   const name = useAppSelector((state) => state.user.name);
+  const { data } = useItemEquipmentQuery(name, { skip: !name });
 
   if (!name) {
     return (
@@ -21,8 +22,6 @@ export default function CharacterEquipTable({ preset }: { preset: number }) {
       </Flex>
     );
   }
-
-  const { data } = useItemEquipmentQuery(name, { skip: !name });
 
   const defaultItemGrid = getCharacterEquipmentGrid(1, data);
   const presetItemGrid = getCharacterEquipmentGrid(preset, data);

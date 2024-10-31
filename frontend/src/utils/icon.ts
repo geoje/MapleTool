@@ -4,8 +4,10 @@ import {
   ICONS as ARTIFACT_ICONS,
   MAX_CRYSTAL_LEVEL,
 } from "../constants/artifact";
+import { MATERIAL_INFOS } from "../constants/enhance/material";
 import { JOBS } from "../constants/jobs";
 import { WORLDS } from "../constants/worlds";
+import MESO from "../assets/item/meso/bag.png";
 
 export function getJobIcon(name?: string) {
   if (!name) return JOB_BLANK;
@@ -21,4 +23,10 @@ export function getArtifactIcon(index?: number, level?: number) {
   return level == MAX_CRYSTAL_LEVEL
     ? ARTIFACT_ICONS[index ?? 0].purple
     : ARTIFACT_ICONS[index ?? 0].blue;
+}
+
+export function getMaterialIcon(materialName: string) {
+  if (materialName == "메소") return MESO;
+  return Object.values(MATERIAL_INFOS).find(({ name }) => name == materialName)
+    ?.icon;
 }

@@ -90,14 +90,14 @@ export function isSelectable(materialType: MATERIAL_TYPE) {
 export function getOptions(item: ItemEquipmentDetail, addi: boolean) {
   return addi
     ? [
-        item.potential_option_1,
-        item.potential_option_2,
-        item.potential_option_3,
-      ]
-    : [
         item.additional_potential_option_1,
         item.additional_potential_option_2,
         item.additional_potential_option_3,
+      ]
+    : [
+        item.potential_option_1,
+        item.potential_option_2,
+        item.potential_option_3,
       ];
 }
 
@@ -112,7 +112,7 @@ export function nextPotential(
   const newOptions = nextValidOptions(probabilities, options, newGrade);
 
   return {
-    grade: grade == newGrade ? undefined : newGrade,
+    grade: newGrade,
     options: newOptions,
   };
 }
@@ -137,26 +137,26 @@ function nextValidOptions(
   options: string[],
   grade: POTENTIAL_GRADE
 ) {
-  const newOptions: PotentialResponse[] = [];
+  const newOptions: PotentialResponse[] = new Array(3);
   const gradeName = POTENTIAL_INFOS[grade].name;
   const probabilitiesByGrade = probabilities.filter(
     (p) => p.grade == gradeName
   );
   const probabilitiesByPos = groupByPosition(probabilitiesByGrade);
 
-  do {
-    probabilitiesByPos.forEach((probabilitiesAtPos) => {
-      const rand = Math.random();
-      let cumul = 0;
-      probabilitiesAtPos.forEach((p) => {
-        cumul += p.probability;
-        if (rand < cumul) {
-          newOptions.push(p);
-          return;
-        }
-      });
-    });
-  } while (!isValidOptions(options, newOptions));
+  for (let i = 0; i < newOptions.length; ) {
+    let cumul = 0;
+    const probabilitiesAtPos = probabilitiesByPos[i];
+    const rand = Math.random();
+    for (const p of probabilitiesAtPos) {
+      cumul += p.probability;
+      if (rand < cumul) {
+        newOptions[i] = p;
+        break;
+      }
+    }
+    if (isValidOptions(options, newOptions)) i++;
+  }
 
   return newOptions;
 }
@@ -177,6 +177,44 @@ function isValidOptions(
   prevOptions: string[],
   newOptions: PotentialResponse[]
 ) {
+  if (
+    newOptions.every(
+      (newOption, i) =>
+        newOption &&
+        newOption.name.replace("n", newOption.value.toString()) ==
+          prevOptions[i]
+    )
+  )
+    return false;
+
+  if (
+    newOptions.filter(
+      (newOption) => newOption && newOption.name.startsWith("<쓸만한")
+    ).length > 1
+  )
+    return false;
+
+  if (
+    newOptions.filter(
+      (newOption) => newOption && newOption.name.startsWith("피격 후")
+    ).length > 1
+  )
+    return false;
+
+  if (
+    newOptions.filter(
+      (newOption) => newOption && newOption.name.endsWith("n% 무시")
+    ).length > 2
+  )
+    return false;
+
+  if (
+    newOptions.filter(
+      (newOption) => newOption && newOption.name.endsWith("무적")
+    ).length > 2
+  )
+    return false;
+
   return true;
 }
 

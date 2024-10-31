@@ -14,7 +14,7 @@ import {
 } from "../../../constants/enhance/potential";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { MATERIAL_TYPE } from "../../../constants/enhance/material";
-import { setGurantee } from "../../../stores/userSlice";
+import { setGuarantee } from "../../../stores/userSlice";
 import React from "react";
 
 export default function Guarantee({
@@ -54,7 +54,7 @@ export default function Guarantee({
                     e.target.value,
                     bound
                   );
-                  dispatch(setGurantee({ type: materialType, grade, value }));
+                  dispatch(setGuarantee({ type: materialType, grade, value }));
                 }}
               />
               <InputRightAddon>{bound}</InputRightAddon>

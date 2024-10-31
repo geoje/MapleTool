@@ -1,7 +1,18 @@
-import { Badge, Box, Collapse, Flex, Stack } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Collapse,
+  Flex,
+  Image,
+  Stack,
+  Tooltip,
+  useColorMode,
+} from "@chakra-ui/react";
 import ItemToolTip from "../common/itemTooltip";
 import { useAppSelector } from "../../../stores/hooks";
 import RequiredText from "../../../components/content/requiredText";
+import { getMaterialIcon } from "../../../utils/icon";
+import { AnimatedCounter } from "react-animated-counter";
 
 export default function Changes({
   inventoryIndex,
@@ -10,7 +21,11 @@ export default function Changes({
   inventoryIndex: number;
   showChanges: boolean;
 }) {
+  const dark = useColorMode().colorMode == "dark";
   const inventory = useAppSelector((state) => state.user.inventory);
+  const enhancedItem = inventory[inventoryIndex];
+
+  const color = dark ? "white" : "black";
 
   if (inventoryIndex < 0 || inventoryIndex >= inventory.length) {
     return (
@@ -28,15 +43,43 @@ export default function Changes({
         <Stack>
           <Badge textAlign="center">강화 전</Badge>
           <Box borderRadius={4} bgColor="gray.900">
-            <ItemToolTip item={inventory[inventoryIndex].before} />
+            <ItemToolTip item={enhancedItem.before} />
           </Box>
         </Stack>
         <Stack>
           <Badge textAlign="center">강화 후</Badge>
           <Box borderRadius={4} bgColor="gray.900">
-            <ItemToolTip item={inventory[inventoryIndex].before} />
+            <ItemToolTip item={enhancedItem.after} />
           </Box>
         </Stack>
+      </Flex>
+      <Flex
+        pt={2}
+        gap={2}
+        justify={{ base: "center", md: "start" }}
+        wrap="wrap"
+      >
+        {enhancedItem.used.map(({ name, value }) => (
+          <Tooltip key={"material-" + name} label={name} placement="top">
+            <Badge pt={2} pb={1}>
+              <Stack>
+                <Flex h={8} justify="center" align="center">
+                  <Image src={getMaterialIcon(name)} />
+                </Flex>
+                <AnimatedCounter
+                  includeDecimals={false}
+                  includeCommas
+                  fontSize="12px"
+                  decrementColor={color}
+                  incrementColor={color}
+                  color={color}
+                  value={value}
+                  containerStyles={{ paddingBottom: "2px" }}
+                />
+              </Stack>
+            </Badge>
+          </Tooltip>
+        ))}
       </Flex>
     </Collapse>
   );

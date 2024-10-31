@@ -49,7 +49,7 @@ export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
       </Stack>
 
       <Potential item={item} />
-      <AddPotential item={item} />
+      <Potential item={item} addi />
       <Soul name={item.soul_name} option={item.soul_option} />
     </Box>
   );
@@ -418,38 +418,16 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
   );
 }
 
-function Potential({ item }: { item: ItemEquipmentDetail }) {
-  const grade = parseGrade(item.potential_option_grade);
-  if (!grade) return <></>;
-
-  return (
-    <>
-      <Divider variant="dashed" opacity={0.2} />
-      <Stack p={2} gap={0}>
-        <Flex align="center" gap={1}>
-          <Image
-            src={POTENTIAL_INFOS[grade].icon}
-            style={{ imageRendering: "pixelated" }}
-          />
-          <Text fontSize="xs" color={POTENTIAL_INFOS[grade].textColor}>
-            잠재옵션
-          </Text>
-        </Flex>
-        {[
-          item.potential_option_1,
-          item.potential_option_2,
-          item.potential_option_3,
-        ].map((option, i) => (
-          <Text key={"option-" + i} fontSize="xs">
-            {option}
-          </Text>
-        ))}
-      </Stack>
-    </>
+function Potential({
+  item,
+  addi,
+}: {
+  item: ItemEquipmentDetail;
+  addi?: boolean;
+}) {
+  const grade = parseGrade(
+    addi ? item.additional_potential_option_grade : item.potential_option_grade
   );
-}
-function AddPotential({ item }: { item: ItemEquipmentDetail }) {
-  const grade = parseGrade(item.additional_potential_option_grade);
   if (!grade) return <></>;
 
   return (
@@ -462,14 +440,21 @@ function AddPotential({ item }: { item: ItemEquipmentDetail }) {
             style={{ imageRendering: "pixelated" }}
           />
           <Text fontSize="xs" color={POTENTIAL_INFOS[grade].textColor}>
-            에디셔널 잠재옵션
+            {addi ? "에디셔널 잠재옵션" : "잠재옵션"}
           </Text>
         </Flex>
-        {[
-          item.additional_potential_option_1,
-          item.additional_potential_option_2,
-          item.additional_potential_option_3,
-        ].map((option, i) => (
+        {(addi
+          ? [
+              item.additional_potential_option_1,
+              item.additional_potential_option_2,
+              item.additional_potential_option_3,
+            ]
+          : [
+              item.potential_option_1,
+              item.potential_option_2,
+              item.potential_option_3,
+            ]
+        ).map((option, i) => (
           <Text key={"option-" + i} fontSize="xs">
             {option}
           </Text>
