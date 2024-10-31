@@ -1,6 +1,7 @@
-import { Badge, Box, Collapse, Flex, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Collapse, Flex, Stack } from "@chakra-ui/react";
 import ItemToolTip from "../common/itemTooltip";
 import { useAppSelector } from "../../../stores/hooks";
+import RequiredText from "../../../components/content/requiredText";
 
 export default function Changes({
   inventoryIndex,
@@ -15,9 +16,7 @@ export default function Changes({
     return (
       <Collapse in={showChanges} startingHeight="1px">
         <Flex justify="center" pt="1px">
-          <Text size="md" opacity={0.6}>
-            장비를 선택해주세요.
-          </Text>
+          <RequiredText>장비를 선택해주세요.</RequiredText>
         </Flex>
       </Collapse>
     );

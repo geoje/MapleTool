@@ -12,27 +12,12 @@ const useCustomToast = (options?: UseToastOptions) => {
 };
 
 export const useErrorToast = (options?: UseToastOptions) =>
-  useCustomToast({
-    status: "error",
-    ...options,
-  });
+  useCustomToast({ ...options, status: "error" });
 export const useInfoToast = (options?: UseToastOptions) =>
-  useCustomToast({
-    status: "info",
-    ...options,
-  });
+  useCustomToast({ ...options, status: "info" });
 export const useSuccessToast = (options?: UseToastOptions) =>
-  useCustomToast({
-    status: "success",
-    ...options,
-  });
+  useCustomToast({ ...options, status: "success" });
 export const useLoadingToast = (options?: UseToastOptions) =>
-  useCustomToast({
-    status: "loading",
-    ...options,
-  });
+  useCustomToast({ ...options, status: "loading" });
 export const useWarningToast = (options?: UseToastOptions) =>
-  useCustomToast({
-    status: "warning",
-    ...options,
-  });
+  useCustomToast({ ...options, status: "warning" });

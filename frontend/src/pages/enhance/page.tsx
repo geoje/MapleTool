@@ -85,7 +85,10 @@ export default function Enhance() {
       </Stack>
       <Stack w={["100%", "100%", "auto"]}>
         <BoardCard order={6} title="실행">
-          <Execute />
+          <Execute
+            inventoryIndex={inventoryIndex}
+            materialType={materialType}
+          />
         </BoardCard>
       </Stack>
     </>

@@ -1,10 +1,11 @@
-import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Flex, SimpleGrid } from "@chakra-ui/react";
 import { useItemEquipmentQuery } from "../../../stores/characterApi";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import { getCharacterEquipmentGrid } from "../../../services/equipment";
 import SlotButton from "../common/slotButton";
 import { SLOT_GRID } from "../../../constants/enhance/equipment";
 import { newInventory } from "../../../stores/userSlice";
+import RequiredText from "../../../components/content/requiredText";
 
 export default function CharacterEquipTable({ preset }: { preset: number }) {
   const dispatch = useAppDispatch();
@@ -13,10 +14,10 @@ export default function CharacterEquipTable({ preset }: { preset: number }) {
   if (!name) {
     return (
       <Flex justify="center" pt="1px">
-        <Text size="md" textAlign="center" opacity={0.6}>
+        <RequiredText>
           캐릭터를 등록하거나 <br />
           기본 장비를 이용해주세요.
-        </Text>
+        </RequiredText>
       </Flex>
     );
   }

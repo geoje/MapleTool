@@ -1,20 +1,13 @@
-import { Flex, Text } from "@chakra-ui/react";
 import { MATERIAL_TYPE } from "../../../constants/enhance/material";
 import Guarantee from "./guarantee";
+import RequiredText from "../../../components/content/requiredText";
 
 export default function Config({
   materialType,
 }: {
   materialType?: MATERIAL_TYPE;
 }) {
-  if (!materialType)
-    return (
-      <Flex justify="center" pt="1px">
-        <Text size="md" opacity={0.6}>
-          재료를 선택해주세요.
-        </Text>
-      </Flex>
-    );
+  if (!materialType) return <RequiredText>재료를 선택해주세요.</RequiredText>;
 
   if (
     [

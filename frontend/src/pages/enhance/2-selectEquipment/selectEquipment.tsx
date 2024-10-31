@@ -1,8 +1,9 @@
-import { Box, Center, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, SimpleGrid } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import SlotButton from "../common/slotButton";
 import DeleteButton from "../../../components/action/deleteButton";
 import { deleteInventory } from "../../../stores/userSlice";
+import RequiredText from "../../../components/content/requiredText";
 
 export default function SelectEquipment({
   equipmentIndex,
@@ -17,9 +18,7 @@ export default function SelectEquipment({
   if (!inventory.length) {
     return (
       <Flex justify="center" pt="1px">
-        <Text size="md" opacity={0.6}>
-          장비를 가져와주세요.
-        </Text>
+        <RequiredText>장비를 가져와주세요.</RequiredText>
       </Flex>
     );
   }
