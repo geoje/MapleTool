@@ -1,4 +1,4 @@
-import { MATERIAL_TYPE } from "../constants/enhance/material";
+import { MATERIAL_INFOS, MATERIAL_TYPE } from "../constants/enhance/material";
 import {
   POTENTIAL_CRITERIA,
   POTENTIAL_GRADE,
@@ -50,9 +50,9 @@ export function calcRollingMaterials(
     },
   ];
 
-  if (grade && cube)
+  if (cube)
     uses.push({
-      name: POTENTIAL_INFOS[grade].name,
+      name: MATERIAL_INFOS[materialType].name,
       value: 1,
     });
 

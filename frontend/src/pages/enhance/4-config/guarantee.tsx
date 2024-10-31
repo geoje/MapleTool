@@ -26,7 +26,7 @@ export default function Guarantee({
   const guarantees = useAppSelector((state) => state.user.guarantees);
 
   return (
-    <Flex gap={1}>
+    <Flex justify={{ base: "center", md: "space-between" }} gap={0.5}>
       {Object.values(POTENTIAL_GRADE).map((grade, i) => {
         const currentValue =
           (guarantees[materialType] ? guarantees[materialType][grade] : 0) ?? 0;
