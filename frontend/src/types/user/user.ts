@@ -8,7 +8,7 @@ export default interface User {
   histories: string[];
   bossPlans: BossPlan[];
   inventory: EnhancedItem[];
-  guarantee: Partial<
+  guarantees: Partial<
     Record<MATERIAL_TYPE, Partial<Record<POTENTIAL_GRADE, number>>>
   >;
 }

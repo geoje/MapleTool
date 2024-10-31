@@ -46,20 +46,23 @@ export default function OptionsButton({
         borderWidth={1}
         borderColor={grade ? POTENTIAL_INFOS[grade].borderColor : undefined}
         isDisabled={isDisabled}
+        cursor={onClick ? undefined : "default"}
         onClick={onClick}
       >
         <Flex justify="space-between" mb={1}>
           <Heading pl={1} fontSize={12}>
             {title}
           </Heading>
-          <Badge
-            px={1}
-            variant="solid"
-            colorScheme={isDisabled ? "gray" : "orange"}
-            borderRadius={4}
-          >
-            선택
-          </Badge>
+          {onClick && (
+            <Badge
+              px={1}
+              variant="solid"
+              colorScheme={isDisabled ? "gray" : "orange"}
+              borderRadius={4}
+            >
+              선택
+            </Badge>
+          )}
         </Flex>
         <Stack
           pb={1}

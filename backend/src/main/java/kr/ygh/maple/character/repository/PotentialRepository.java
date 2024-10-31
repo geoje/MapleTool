@@ -14,5 +14,5 @@ public interface PotentialRepository extends JpaRepository<Potential, Long> {
     @Query("SELECT MAX(level) FROM Potential WHERE part = :part AND level <= :level")
     Optional<Integer> findMaxLevel(@Param("part") String part, @Param("level") int level);
 
-    List<Potential> findByTypeAndGradeAndPartAndLevel(String type, String grade, String part, int level);
+    List<Potential> findByTypeAndPartAndLevel(String type, String part, int level);
 }

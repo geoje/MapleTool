@@ -110,43 +110,46 @@ export const POTENTIAL_INFOS: Record<POTENTIAL_GRADE, Info> = {
   },
 };
 
-export const BOUNDS: Partial<
-  Record<MATERIAL_TYPE, Record<POTENTIAL_GRADE, number>>
+export const POTENTIAL_CRITERIA: Partial<
+  Record<
+    MATERIAL_TYPE,
+    Record<POTENTIAL_GRADE, { bound: number; upgrade: number }>
+  >
 > = {
   POTENTIAL: {
-    RARE: 10,
-    EPIC: 42,
-    UNIQUE: 107,
-    LENGENDARY: -1,
+    RARE: { bound: 10, upgrade: 0.150000001275 },
+    EPIC: { bound: 42, upgrade: 0.035 },
+    UNIQUE: { bound: 107, upgrade: 0.014 },
+    LENGENDARY: { bound: 0, upgrade: 1 },
   },
   POTENTIAL_ADDI: {
-    RARE: 62,
-    EPIC: 152,
-    UNIQUE: 214,
-    LENGENDARY: -1,
+    RARE: { bound: 62, upgrade: 0.02381 },
+    EPIC: { bound: 152, upgrade: 0.009804 },
+    UNIQUE: { bound: 214, upgrade: 0.007 },
+    LENGENDARY: { bound: 0, upgrade: 1 },
   },
   RED: {
-    RARE: 25,
-    EPIC: 83,
-    UNIQUE: 500,
-    LENGENDARY: -1,
+    RARE: { bound: 25, upgrade: 0.060000002444 },
+    EPIC: { bound: 83, upgrade: 0.018 },
+    UNIQUE: { bound: 500, upgrade: 0.003 },
+    LENGENDARY: { bound: 0, upgrade: 1 },
   },
   BLACK: {
-    RARE: 10,
-    EPIC: 42,
-    UNIQUE: 107,
-    LENGENDARY: -1,
+    RARE: { bound: 10, upgrade: 0.150000001275 },
+    EPIC: { bound: 42, upgrade: 0.035 },
+    UNIQUE: { bound: 107, upgrade: 0.014 },
+    LENGENDARY: { bound: 0, upgrade: 1 },
   },
   ADDI: {
-    RARE: 31,
-    EPIC: 76,
-    UNIQUE: 214,
-    LENGENDARY: -1,
+    RARE: { bound: 31, upgrade: 0.047619 },
+    EPIC: { bound: 76, upgrade: 0.019608 },
+    UNIQUE: { bound: 214, upgrade: 0.007 },
+    LENGENDARY: { bound: 0, upgrade: 1 },
   },
   WHITE_ADDI: {
-    RARE: 31,
-    EPIC: 76,
-    UNIQUE: 214,
-    LENGENDARY: -1,
+    RARE: { bound: 31, upgrade: 0.047619 },
+    EPIC: { bound: 76, upgrade: 0.019608 },
+    UNIQUE: { bound: 214, upgrade: 0.007 },
+    LENGENDARY: { bound: 0, upgrade: 1 },
   },
 };

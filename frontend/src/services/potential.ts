@@ -1,3 +1,4 @@
+import { FaTruckMonster } from "react-icons/fa6";
 import { MATERIAL_TYPE } from "../constants/enhance/material";
 import {
   POTENTIAL_GRADE,
@@ -101,11 +102,16 @@ export function getOptions(item: ItemEquipmentDetail, addi: boolean) {
       ];
 }
 
-export function nextOptions(
+export function nextPotential(
   prevOptions: string[],
-  probabilities: PotentialResponse[]
+  probabilities: PotentialResponse[],
+  guarantee: number,
+  bound: number
 ) {
-  return ["", "", ""];
+  return {
+    grade: "레어",
+    options: ["옵1", "오비", "5삼"],
+  };
 }
 function isValidOptions(prevOptions: string[], newOptions: string[]) {
   for (let i = 0; i < newOptions.length; i++) {
@@ -114,3 +120,4 @@ function isValidOptions(prevOptions: string[], newOptions: string[]) {
 
   return false;
 }
+function nextGrade() {}

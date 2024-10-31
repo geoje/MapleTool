@@ -16,7 +16,7 @@ const initialState: User = {
   histories: [],
   bossPlans: [],
   inventory: [],
-  guarantee: {},
+  guarantees: {},
 };
 
 const slice = createSlice({
@@ -165,13 +165,14 @@ const slice = createSlice({
       action: PayloadAction<{
         index: number;
         addi: boolean;
+        grade?: string;
         options: string[];
       }>
     ) {
       console.log(action.payload);
     },
 
-    // guarantee
+    // guarantees
     setGurantee(
       state,
       action: PayloadAction<{
@@ -180,14 +181,14 @@ const slice = createSlice({
         value: number;
       }>
     ) {
-      if (!state.guarantee[action.payload.type]) {
-        state.guarantee[action.payload.type] = {
+      if (!state.guarantees[action.payload.type]) {
+        state.guarantees[action.payload.type] = {
           [action.payload.grade]: action.payload.value,
         };
         return;
       }
 
-      state.guarantee[action.payload.type]![action.payload.grade] =
+      state.guarantees[action.payload.type]![action.payload.grade] =
         action.payload.value;
     },
     increaseGurantee(
@@ -197,9 +198,9 @@ const slice = createSlice({
         grade: POTENTIAL_GRADE;
       }>
     ) {
-      const guraanteeByType = state.guarantee[action.payload.type];
+      const guraanteeByType = state.guarantees[action.payload.type];
       if (!guraanteeByType) {
-        state.guarantee[action.payload.type] = {
+        state.guarantees[action.payload.type] = {
           [action.payload.grade]: 1,
         };
         return;
