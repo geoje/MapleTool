@@ -42,13 +42,13 @@ export default function Changes({
       <Flex justify="center" wrap="wrap" pt="1px" gap={2}>
         <Stack>
           <Badge textAlign="center">강화 전</Badge>
-          <Box borderRadius={4} bgColor="gray.900">
+          <Box w={64} borderRadius={4} bgColor="gray.900">
             <ItemToolTip item={enhancedItem.before} />
           </Box>
         </Stack>
         <Stack>
           <Badge textAlign="center">강화 후</Badge>
-          <Box borderRadius={4} bgColor="gray.900">
+          <Box w={64} borderRadius={4} bgColor="gray.900">
             <ItemToolTip item={enhancedItem.after} />
           </Box>
         </Stack>

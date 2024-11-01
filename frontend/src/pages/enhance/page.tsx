@@ -30,7 +30,7 @@ export default function Enhance() {
 
   return (
     <>
-      <Stack w={["100%", "100%", "auto"]}>
+      <Stack w={{ base: "100%", md: "auto" }}>
         <BoardCard
           order={1}
           title="장비 가져오기"
@@ -60,7 +60,7 @@ export default function Enhance() {
           <Config materialType={materialType} />
         </BoardCard>
       </Stack>
-      <Stack w={["100%", "100%", "auto"]}>
+      <Stack w={{ base: "100%", md: "auto" }}>
         <BoardCard
           order={5}
           title="장비 변화"
@@ -83,7 +83,7 @@ export default function Enhance() {
           <Changes inventoryIndex={inventoryIndex} showChanges={showChanges} />
         </BoardCard>
       </Stack>
-      <Stack w={["100%", "100%", "auto"]}>
+      <Stack w={{ base: "100%", md: "auto" }}>
         <BoardCard order={6} title="실행">
           <Execute
             inventoryIndex={inventoryIndex}

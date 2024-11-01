@@ -31,7 +31,7 @@ export default function Artifact() {
 
   return (
     <>
-      <Stack w={["100%", "100%", "auto"]}>
+      <Stack w={{ base: "100%", md: "auto" }}>
         <BoardCard
           order={1}
           title="아티팩트 레벨"
@@ -58,7 +58,7 @@ export default function Artifact() {
           />
         </BoardCard>
       </Stack>
-      <Stack w={["100%", "100%", "auto"]}>
+      <Stack w={{ base: "100%", md: "auto" }}>
         <BoardCard
           order={4}
           title="배치도"
