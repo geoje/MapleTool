@@ -34,7 +34,7 @@ export default function Guarantee({
           ? POTENTIAL_CRITERIA[materialType][grade].bound
           : 0;
 
-        if (!bound) return <React.Fragment key={"guarantee-" + i} />;
+        if (bound <= 0) return <React.Fragment key={"guarantee-" + i} />;
 
         return (
           <Stack key={"guarantee-" + i} align="center">

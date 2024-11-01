@@ -124,6 +124,7 @@ function nextGrade(
   if (!grade || !POTENTIAL_CRITERIA[materialType]) return POTENTIAL_GRADE.RARE;
 
   const criteria = POTENTIAL_CRITERIA[materialType][grade];
+
   if (guarantee == criteria.bound || Math.random() < criteria.upgrade) {
     const grades = Object.values(POTENTIAL_GRADE);
     const gradeIndex = Object.values(POTENTIAL_GRADE).indexOf(grade);

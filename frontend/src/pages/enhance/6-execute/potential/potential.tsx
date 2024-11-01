@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "../../../../stores/hooks";
 import OptionsButton from "./optionButton";
 import { useEffect, useState } from "react";
 import {
+  POTENTIAL_CRITERIA,
   POTENTIAL_GRADE,
   POTENTIAL_INFOS,
 } from "../../../../constants/enhance/potential";
@@ -78,13 +79,16 @@ export default function Potential({
     setNewGrade(undefined);
     setNewOptions([]);
   };
-  const applyOptions = () => {
+  const applyOptions = (
+    options: PotentialResponse[],
+    grade?: POTENTIAL_GRADE
+  ) => {
     dispatch(
       setInventoryPotential({
         index: inventoryIndex,
         addi,
-        grade: newGrade ? POTENTIAL_INFOS[newGrade].name : "",
-        options: formatOptions(newOptions),
+        grade: grade ? POTENTIAL_INFOS[grade].name : "",
+        options: formatOptions(options),
       })
     );
     clearNewOptions();
@@ -109,18 +113,21 @@ export default function Potential({
       guarantee
     );
 
-    if (grade) {
-      dispatch(
-        setGuarantee({
-          type: materialType,
-          grade,
-          value: newPotential.grade == grade ? guarantee + 1 : 0,
-        })
-      );
+    if (grade && POTENTIAL_CRITERIA[materialType]) {
+      const bound = POTENTIAL_CRITERIA[materialType][grade].bound;
+      if (bound > 0) {
+        dispatch(
+          setGuarantee({
+            type: materialType,
+            grade,
+            value: newPotential.grade == grade ? guarantee + 1 : 0,
+          })
+        );
+      }
     }
     dispatch(addMaterials({ index: inventoryIndex, materials: costMaterials }));
-    setNewGrade(newPotential.grade);
-    setNewOptions(newPotential.options);
+
+    return newPotential;
   };
 
   return (
@@ -145,22 +152,25 @@ export default function Potential({
           <Image src={item?.item_icon} />
         </Flex>
       </Flex>
+
+      <OptionsButton
+        title={selectable ? "BEFORE" : "RESULT"}
+        grade={grade}
+        options={options}
+        isDisabled={!options[0]}
+        onClick={selectable ? clearNewOptions : undefined}
+      />
       {selectable && (
         <OptionsButton
-          title="BEFORE"
-          grade={grade}
-          options={options}
-          isDisabled={!options[0]}
-          onClick={selectable ? clearNewOptions : undefined}
+          title="AFTER"
+          grade={newGrade}
+          options={formatOptions(newOptions)}
+          isDisabled={!newOptions[0]}
+          onClick={
+            selectable ? () => applyOptions(newOptions, newGrade) : undefined
+          }
         />
       )}
-      <OptionsButton
-        title={selectable ? "AFTER" : "RESULT"}
-        grade={newGrade}
-        options={formatOptions(newOptions)}
-        isDisabled={!newOptions[0]}
-        onClick={selectable ? applyOptions : undefined}
-      />
       <Flex
         justifyContent="space-between"
         align="center"
@@ -180,10 +190,21 @@ export default function Potential({
         <Button
           flex={1}
           size="xs"
-          isDisabled={!item || (newGrade && grade != newGrade)}
+          isDisabled={!item || (selectable && newGrade && grade != newGrade)}
           isLoading={isFetching}
           loadingText="데이터 요청중"
-          onClick={rollPotential}
+          onClick={() => {
+            const newPotential = rollPotential();
+            if (!newPotential) return;
+
+            if (selectable) {
+              setNewGrade(newPotential.grade);
+              setNewOptions(newPotential.options);
+              return;
+            }
+
+            applyOptions(newPotential.options, newPotential.grade);
+          }}
         >
           재설정
         </Button>

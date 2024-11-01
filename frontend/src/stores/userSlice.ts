@@ -1,4 +1,4 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createTransform, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import User from "../types/user/user";
@@ -187,7 +187,6 @@ const slice = createSlice({
         item.additional_potential_option_1 = action.payload.options[0];
         item.additional_potential_option_2 = action.payload.options[1];
         item.additional_potential_option_3 = action.payload.options[2];
-        console.log(current(state.inventory[action.payload.index].after));
         return;
       }
 
