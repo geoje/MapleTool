@@ -5,6 +5,7 @@ import {
   Stack,
   Text,
   useColorMode,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
   MATERIAL_INFOS,
@@ -37,6 +38,8 @@ import MESO from "../../../../assets/item/meso/coin.png";
 import { usePotentialQuery } from "../../../../stores/characterApi";
 import { useWarningToast } from "../../../../hooks/useToast";
 import PotentialResponse from "../../../../types/character/itemEquipment/potential/potentialResponse";
+import AutoModal from "./autoModal";
+import PotentialCondition from "../../../../types/character/itemEquipment/potential/potentialCondition";
 
 export default function Potential({
   inventoryIndex,
@@ -53,6 +56,8 @@ export default function Potential({
 
   const [newGrade, setNewGrade] = useState<POTENTIAL_GRADE>();
   const [newOptions, setNewOptions] = useState<PotentialResponse[]>([]);
+  const [conditions, setConditions] = useState<PotentialCondition[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const item = inventory[inventoryIndex].after;
   const addi = isAddi(materialType);
@@ -188,6 +193,13 @@ export default function Potential({
       </Flex>
       <Flex gap={2}>
         <Button
+          size="xs"
+          colorScheme={conditions.length ? "blue" : undefined}
+          onClick={onOpen}
+        >
+          자동설정
+        </Button>
+        <Button
           flex={1}
           size="xs"
           isDisabled={!item || (selectable && newGrade && grade != newGrade)}
@@ -206,9 +218,15 @@ export default function Potential({
             applyOptions(newPotential.options, newPotential.grade);
           }}
         >
-          재설정
+          재설정하기
         </Button>
       </Flex>
+      <AutoModal
+        isOpen={isOpen}
+        onClose={onClose}
+        probabilities={data}
+        setConditions={setConditions}
+      />
     </Stack>
   );
 }
