@@ -1,7 +1,7 @@
 import { IconButton, Image, Tooltip } from "@chakra-ui/react";
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 import ItemToolTip from "./itemTooltip";
-import { getMaxGrade } from "../../../services/potential";
+import { getMaxGrade } from "../../../services/enhance/potential";
 import { POTENTIAL_INFOS } from "../../../constants/enhance/potential";
 
 export default function SlotButton({

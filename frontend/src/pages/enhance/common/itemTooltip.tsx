@@ -10,13 +10,13 @@ import {
 import { FaStar } from "react-icons/fa6";
 import { IoBookmarkSharp } from "react-icons/io5";
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
-import { getMaxStarforceCount } from "../../../services/starforce";
+import { getMaxStarforceCount } from "../../../services/enhance/starforce";
 import { TOOLTIP_COLORS } from "../../../constants/enhance/equipment";
 import {
   POTENTIAL_GRADE,
   POTENTIAL_INFOS,
 } from "../../../constants/enhance/potential";
-import { getMaxGrade, parseGrade } from "../../../services/potential";
+import { getMaxGrade, parseGrade } from "../../../services/enhance/potential";
 
 export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
   const grade = getMaxGrade(item);

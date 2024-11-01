@@ -1,13 +1,16 @@
-import { MATERIAL_INFOS, MATERIAL_TYPE } from "../constants/enhance/material";
+import {
+  MATERIAL_INFOS,
+  MATERIAL_TYPE,
+} from "../../constants/enhance/material";
 import {
   POTENTIAL_CRITERIA,
   POTENTIAL_GRADE,
   POTENTIAL_INFOS,
   POTENTIAL_TYPE,
-} from "../constants/enhance/potential";
-import { ItemEquipmentDetail } from "../types/character/itemEquipment/itemEquipment";
-import PotentialResponse from "../types/character/itemEquipment/potential/potentialResponse";
-import { Material } from "../types/user/enhancedItem";
+} from "../../constants/enhance/potential";
+import { ItemEquipmentDetail } from "../../types/character/itemEquipment/itemEquipment";
+import PotentialResponse from "../../types/character/itemEquipment/potential/potentialResponse";
+import { Material } from "../../types/user/enhancedItem";
 
 export function parseGrade(grade: string) {
   if (!grade) return undefined;

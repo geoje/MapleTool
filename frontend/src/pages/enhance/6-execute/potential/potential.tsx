@@ -27,7 +27,7 @@ import {
   isSelectable,
   nextPotential,
   parseGrade,
-} from "../../../../services/potential";
+} from "../../../../services/enhance/potential";
 import {
   addMaterials,
   setGuarantee,
@@ -39,7 +39,6 @@ import { usePotentialQuery } from "../../../../stores/characterApi";
 import { useWarningToast } from "../../../../hooks/useToast";
 import PotentialResponse from "../../../../types/character/itemEquipment/potential/potentialResponse";
 import AutoModal from "./autoModal";
-import PotentialCondition from "../../../../types/character/itemEquipment/potential/potentialCondition";
 
 export default function Potential({
   inventoryIndex,
@@ -56,7 +55,9 @@ export default function Potential({
 
   const [newGrade, setNewGrade] = useState<POTENTIAL_GRADE>();
   const [newOptions, setNewOptions] = useState<PotentialResponse[]>([]);
-  const [conditions, setConditions] = useState<PotentialCondition[]>([]);
+  const [conditionGrid, setConditionGrid] = useState<
+    { name: string; value: number }[][]
+  >([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const item = inventory[inventoryIndex].after;
@@ -194,7 +195,7 @@ export default function Potential({
       <Flex gap={2}>
         <Button
           size="xs"
-          colorScheme={conditions.length ? "blue" : undefined}
+          colorScheme={conditionGrid.length ? "blue" : undefined}
           onClick={onOpen}
         >
           자동설정
@@ -224,8 +225,10 @@ export default function Potential({
       <AutoModal
         isOpen={isOpen}
         onClose={onClose}
-        probabilities={data}
-        setConditions={setConditions}
+        grade={grade ?? POTENTIAL_GRADE.RARE}
+        probabilities={data ?? []}
+        conditionGrid={conditionGrid}
+        setConditionGrid={setConditionGrid}
       />
     </Stack>
   );
