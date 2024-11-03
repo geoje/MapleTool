@@ -10,6 +10,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import {
+  MAX_POTENTIALS,
   POTENTIAL_GRADE,
   POTENTIAL_INFOS,
 } from "../../../../constants/enhance/potential";
@@ -83,7 +84,7 @@ export default function OptionsButton({
             {grade && <Image src={POTENTIAL_INFOS[grade].icon} />}
             <Text fontSize={12}>{grade && POTENTIAL_INFOS[grade].name}</Text>
           </Flex>
-          {[0, 1, 2].map((i) => (
+          {new Array(MAX_POTENTIALS).fill(0).map((_, i) => (
             <OptionText key={"option-" + i} text={options[i]} />
           ))}
         </Stack>

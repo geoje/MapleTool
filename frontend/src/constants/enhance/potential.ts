@@ -15,6 +15,8 @@ export enum POTENTIAL_TYPE {
   ADDI = "ADDI",
 }
 
+export const MAX_POTENTIALS = 3;
+
 interface Info {
   name: string;
   borderColor: string;

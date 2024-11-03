@@ -39,6 +39,7 @@ import { usePotentialQuery } from "../../../../stores/characterApi";
 import { useWarningToast } from "../../../../hooks/useToast";
 import PotentialResponse from "../../../../types/character/itemEquipment/potential/potentialResponse";
 import AutoModal from "./autoModal";
+import PotentialCondition from "../../../../types/character/itemEquipment/potential/potentialCondition";
 
 export default function Potential({
   inventoryIndex,
@@ -55,9 +56,9 @@ export default function Potential({
 
   const [newGrade, setNewGrade] = useState<POTENTIAL_GRADE>();
   const [newOptions, setNewOptions] = useState<PotentialResponse[]>([]);
-  const [conditionGrid, setConditionGrid] = useState<
-    { name: string; value: number }[][]
-  >([]);
+  const [conditionGrid, setConditionGrid] = useState<PotentialCondition[][]>(
+    []
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const item = inventory[inventoryIndex].after;
@@ -226,7 +227,7 @@ export default function Potential({
         isOpen={isOpen}
         onClose={onClose}
         grade={grade ?? POTENTIAL_GRADE.RARE}
-        probabilities={data ?? []}
+        potentialInfos={data ?? []}
         conditionGrid={conditionGrid}
         setConditionGrid={setConditionGrid}
       />

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Table(indexes = {
-        @Index(name = "idx_type_grade_part_level", columnList = "type, grade, part, level")
+        @Index(columnList = "type, part, level")
 })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Potential {

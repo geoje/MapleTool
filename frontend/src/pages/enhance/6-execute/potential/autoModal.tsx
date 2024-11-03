@@ -1,5 +1,4 @@
 import {
-  Alert,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -7,39 +6,39 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
+  Text,
 } from "@chakra-ui/react";
-import { MdInfo } from "react-icons/md";
 import PotentialResponse from "../../../../types/character/itemEquipment/potential/potentialResponse";
 import { POTENTIAL_GRADE } from "../../../../constants/enhance/potential";
+import PotentialCondition from "../../../../types/character/itemEquipment/potential/potentialCondition";
 
 export default function AutoModal({
   isOpen,
   onClose,
   grade,
-  probabilities,
+  potentialInfos,
   conditionGrid,
   setConditionGrid,
 }: {
   isOpen: boolean;
   onClose: () => void;
   grade: POTENTIAL_GRADE;
-  probabilities: PotentialResponse[];
-  conditionGrid: { name: string; value: number }[][];
-  setConditionGrid: (
-    conditionGrid: { name: string; value: number }[][]
-  ) => void;
+  potentialInfos: PotentialResponse[];
+  conditionGrid: PotentialCondition[][];
+  setConditionGrid: (value: PotentialCondition[][]) => void;
 }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>자동설정</ModalHeader>
+        <ModalHeader>
+          <Text>자동설정</Text>
+          <Text pt={2} fontSize="sm" fontWeight="normal">
+            지정한 옵션세트 중 하나라도 충족 할 때까지 자동으로 재설정합니다.
+          </Text>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Alert variant="left-accent" mb={4} gap={2}>
-            <MdInfo />
-            지정한 옵션세트 중 하나라도 충족 할 때까지 자동으로 재설정합니다.
-          </Alert>
           {conditionGrid.map((conditions, i) => (
             <Stack key={"conditions-" + i} pb={4}></Stack>
           ))}
