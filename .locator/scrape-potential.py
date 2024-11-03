@@ -29,12 +29,21 @@ type_to_urls = {
     "명장": "https://maplestory.nexon.com/Guide/OtherProbability/cube/artisan",
     "수에": "https://maplestory.nexon.com/Guide/OtherProbability/cube/strangeAddi",
 }
-locators_grade = [
-    locator.nexon.maplestory.grade.rare,
-    locator.nexon.maplestory.grade.epic,
-    locator.nexon.maplestory.grade.unique,
-    locator.nexon.maplestory.grade.legendary,
-]
+type_to_grades = {
+    "레드": ["레어", "에픽", "유니크", "레전드리"],
+    "블랙": ["레어", "에픽", "유니크", "레전드리"],
+    "에디": ["레어", "에픽", "유니크", "레전드리"],
+    "수상": ["레어", "에픽"],
+    "장인": ["레어", "에픽", "유니크"],
+    "명장": ["레어", "에픽", "유니크", "레전드리"],
+    "수에": ["레어", "에픽"],
+}
+locators_grade = {
+    "레어": locator.nexon.maplestory.grade.rare,
+    "에픽": locator.nexon.maplestory.grade.epic,
+    "유니크": locator.nexon.maplestory.grade.unique,
+    "레전드리": locator.nexon.maplestory.grade.legendary,
+}
 locators_part = [
     locator.nexon.maplestory.part.weapon,
     locator.nexon.maplestory.part.emblem,
@@ -102,11 +111,8 @@ def main():
 
     for type, url in type_to_urls.items():
         tab.goto(url)
-        for locator_grade in locators_grade:
-            if not tab.is_existing(locator_grade):
-                continue
-            grade = tab.find_element(locator_grade).get_text()
-
+        for grade in type_to_grades[type]:
+            locator_grade = locators_grade[grade]
             for locator_part in locators_part:
                 part = tab.find_element(locator_part).get_text()
                 for level in levels:
