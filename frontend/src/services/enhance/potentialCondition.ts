@@ -25,6 +25,8 @@ export function calcConditionInfos(
       )
   );
 
+  console.log(conditionInfos);
+
   return conditionInfos;
 }
 function groupBy<T extends keyof PotentialResponse>(
@@ -71,21 +73,19 @@ function addConditionInfoRecursivly(
     return;
   }
 
-  const pos = positionKeys[posAndIndexes.length];
+  const pos = positionKeys[depth];
   const indexes = new Array(potentialInfosByPos[pos].length)
     .fill(0)
     .map((_, i) => i);
-  indexes.forEach(() =>
-    addConditionInfoRecursivly(
-      potentialInfosByPos,
-      positionKeys,
-      conditionInfos,
-      posAndIndexes,
-      depth + 1
-    )
+  addConditionInfoRecursivly(
+    potentialInfosByPos,
+    positionKeys,
+    conditionInfos,
+    posAndIndexes,
+    depth + 1
   );
   indexes.forEach((_, index) => {
-    posAndIndexes.push({ pos: positionKeys[posAndIndexes.length], index });
+    posAndIndexes.push({ pos, index });
     addConditionInfoRecursivly(
       potentialInfosByPos,
       positionKeys,
@@ -97,67 +97,88 @@ function addConditionInfoRecursivly(
   });
 }
 
-// export function calcExpectedCountByConditions(
-//   conditionInfos: ConditionInfos,
-//   conditions: PotentialCondition[]
-// ) {
-//   const countByGrade: { [grade: string]: number } = {};
+export function calcExpectedCountByConditions(
+  conditionInfos: ConditionInfos,
+  conditions: PotentialCondition[]
+) {
+  const countByGrade: { [grade: string]: number } = {};
 
-//   getIntersectGrades(conditions).forEach((grade) => {
-//     conditions.map(({ name, value }) =>
-//       getCompatiblePotentialInfoGrid(conditionInfos, name, Number(value), grade)
-//     );
+  getIntersectGrades(conditions).forEach((grade) => {
+    const filteredPotentialInfoGridByName = conditions.map(({ name, value }) =>
+      getFilteredPotentialInfoGrid(conditionInfos, name, value, grade)
+    );
+    addProbability(grade, filteredPotentialInfoGridByName, countByGrade, [], 0);
+  });
 
-//     addProbability(grade, conditionInfos, conditions, countByGrade, [], 0);
-//   });
+  for (const key in countByGrade) countByGrade[key] = 1 / countByGrade[key];
+  return countByGrade;
+}
+function getIntersectGrades(conditions: PotentialCondition[]): string[] {
+  if (conditions.length === 0) return [];
 
-//   for (const key in countByGrade) countByGrade[key] = 1 / countByGrade[key];
-//   return countByGrade;
-// }
-// function getIntersectGrades(conditions: PotentialCondition[]): string[] {
-//   if (conditions.length === 0) return [];
+  let intersectGrades = [...conditions[0].grades];
 
-//   let intersectGrades = [...conditions[0].grades];
+  for (let i = 1; i < conditions.length; i++) {
+    const currentGrades = conditions[i].grades;
+    intersectGrades = intersectGrades.filter((grade) =>
+      currentGrades.has(grade)
+    );
+    if (intersectGrades.length === 0) break;
+  }
 
-//   for (let i = 1; i < conditions.length; i++) {
-//     const currentGrades = conditions[i].grades;
-//     intersectGrades = intersectGrades.filter((grade) =>
-//       currentGrades.has(grade)
-//     );
-//     if (intersectGrades.length === 0) break;
-//   }
+  return intersectGrades;
+}
+function getFilteredPotentialInfoGrid(
+  conditionInfos: ConditionInfos,
+  name: string,
+  minValue: number,
+  grade: string
+) {
+  return Object.entries(conditionInfos[name])
+    .filter(([value]) => Number(value) >= minValue)
+    .flatMap(([_, infosByValue]) =>
+      infosByValue[grade] ? infosByValue[grade] : []
+    );
+}
+function addProbability(
+  grade: string,
+  filteredPotentialInfoGridByName: PotentialResponse[][][],
+  probabilityByGrade: { [grade: string]: number },
+  indexes: number[],
+  depth: number
+) {
+  const selectedPotentialInfosByName = indexes.map(
+    (index, i) => filteredPotentialInfoGridByName[i][index]
+  );
+  if (!isCompatiableConditions(selectedPotentialInfosByName)) return;
 
-//   return intersectGrades;
-// }
-// function getCompatiblePotentialInfoGrid(
-//   conditionInfos: ConditionInfos,
-//   name: string,
-//   minValue: number,
-//   grade: string
-// ) {
-//   return Object.entries(conditionInfos[name])
-//     .filter(([value]) => Number(value) >= minValue)
-//     .flatMap(([_, infosByValue]) =>
-//       infosByValue[grade] ? infosByValue[grade] : []
-//     );
-// }
-// function addProbability(
-//   grade: string,
-//   conditionInfos: ConditionInfos,
-//   conditions: PotentialCondition[],
-//   probabilityByGrade: { [grade: string]: number },
-//   indexes: number[],
-//   depth: number
-// ) {
-//   if (depth == conditions.length) {
-//     if (!indexes.length) return;
+  if (depth == filteredPotentialInfoGridByName.length) {
+    return;
+  }
 
-//     return;
-//   }
-// }
-// function isCompatiableConditions(
-//   conditionInfos: ConditionInfos,
-//   conditions: PotentialCondition[]
-// ) {
-//   return false;
-// }
+  filteredPotentialInfoGridByName[depth].forEach((_, i) => {
+    indexes.push(i);
+    addProbability(
+      grade,
+      filteredPotentialInfoGridByName,
+      probabilityByGrade,
+      indexes,
+      depth + 1
+    );
+    indexes.pop();
+  });
+}
+function isCompatiableConditions(
+  selectedPotentialInfosByName: PotentialResponse[][]
+) {
+  const positions = new Set<number>();
+
+  for (const infos of selectedPotentialInfosByName) {
+    for (const info of infos) {
+      if (positions.has(info.position)) return false;
+      positions.add(info.position);
+    }
+  }
+
+  return true;
+}

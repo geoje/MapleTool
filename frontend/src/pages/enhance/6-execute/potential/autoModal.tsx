@@ -27,7 +27,10 @@ import {
 } from "chakra-react-select";
 import ConditionInfos from "../../../../types/character/itemEquipment/potential/conditionInfos";
 import { useMemo } from "react";
-import { calcConditionInfos } from "../../../../services/enhance/potentialCondition";
+import {
+  calcConditionInfos,
+  calcExpectedCountByConditions,
+} from "../../../../services/enhance/potentialCondition";
 import { getPotentialIcon } from "../../../../services/enhance/potential";
 import PotentialCondition from "../../../../types/character/itemEquipment/potential/potentialCondition";
 
@@ -109,6 +112,10 @@ export default function AutoModal({
     <Stack pb={4}>
       <Flex justify="space-between" align="center">
         <Badge>{title}</Badge>
+        {(() => {
+          calcExpectedCountByConditions(conditionInfos, conditions ?? []);
+          return <Text>test</Text>;
+        })()}
         {title.endsWith("추가") || (
           <Button size="xs" variant="ghost">
             삭제

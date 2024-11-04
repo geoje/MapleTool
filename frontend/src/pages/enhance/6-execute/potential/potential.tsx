@@ -85,6 +85,7 @@ export default function Potential({
   const clearNewOptions = () => {
     setNewGrade(undefined);
     setNewOptions([]);
+    setConditionGrid([]);
   };
   const applyOptions = (
     options: PotentialResponse[],
