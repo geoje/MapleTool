@@ -1,4 +1,5 @@
 import ConditionInfos from "../../types/character/itemEquipment/potential/conditionInfos";
+import PotentialCondition from "../../types/character/itemEquipment/potential/potentialCondition";
 import PotentialResponse from "../../types/character/itemEquipment/potential/potentialResponse";
 
 export function calcConditionInfos(
@@ -49,7 +50,7 @@ function addConditionInfoRecursivly(
   depth: number
 ) {
   if (depth == positionKeys.length) {
-    if (positionKeys.length == 0) return;
+    if (!positionKeys.length || !posAndIndexes.length) return;
 
     const name = potentialInfosByPos[positionKeys[0]][0].name;
     const grade = potentialInfosByPos[positionKeys[0]][0].grade;
@@ -74,7 +75,7 @@ function addConditionInfoRecursivly(
   const indexes = new Array(potentialInfosByPos[pos].length)
     .fill(0)
     .map((_, i) => i);
-  indexes.forEach((_, index) =>
+  indexes.forEach(() =>
     addConditionInfoRecursivly(
       potentialInfosByPos,
       positionKeys,
@@ -95,3 +96,68 @@ function addConditionInfoRecursivly(
     posAndIndexes.pop();
   });
 }
+
+// export function calcExpectedCountByConditions(
+//   conditionInfos: ConditionInfos,
+//   conditions: PotentialCondition[]
+// ) {
+//   const countByGrade: { [grade: string]: number } = {};
+
+//   getIntersectGrades(conditions).forEach((grade) => {
+//     conditions.map(({ name, value }) =>
+//       getCompatiblePotentialInfoGrid(conditionInfos, name, Number(value), grade)
+//     );
+
+//     addProbability(grade, conditionInfos, conditions, countByGrade, [], 0);
+//   });
+
+//   for (const key in countByGrade) countByGrade[key] = 1 / countByGrade[key];
+//   return countByGrade;
+// }
+// function getIntersectGrades(conditions: PotentialCondition[]): string[] {
+//   if (conditions.length === 0) return [];
+
+//   let intersectGrades = [...conditions[0].grades];
+
+//   for (let i = 1; i < conditions.length; i++) {
+//     const currentGrades = conditions[i].grades;
+//     intersectGrades = intersectGrades.filter((grade) =>
+//       currentGrades.has(grade)
+//     );
+//     if (intersectGrades.length === 0) break;
+//   }
+
+//   return intersectGrades;
+// }
+// function getCompatiblePotentialInfoGrid(
+//   conditionInfos: ConditionInfos,
+//   name: string,
+//   minValue: number,
+//   grade: string
+// ) {
+//   return Object.entries(conditionInfos[name])
+//     .filter(([value]) => Number(value) >= minValue)
+//     .flatMap(([_, infosByValue]) =>
+//       infosByValue[grade] ? infosByValue[grade] : []
+//     );
+// }
+// function addProbability(
+//   grade: string,
+//   conditionInfos: ConditionInfos,
+//   conditions: PotentialCondition[],
+//   probabilityByGrade: { [grade: string]: number },
+//   indexes: number[],
+//   depth: number
+// ) {
+//   if (depth == conditions.length) {
+//     if (!indexes.length) return;
+
+//     return;
+//   }
+// }
+// function isCompatiableConditions(
+//   conditionInfos: ConditionInfos,
+//   conditions: PotentialCondition[]
+// ) {
+//   return false;
+// }

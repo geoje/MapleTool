@@ -1,5 +1,5 @@
 export default interface PotentialCondition {
-  label: string;
-  value: string;
+  name: string;
+  value: number;
   grades: Set<string>;
 }

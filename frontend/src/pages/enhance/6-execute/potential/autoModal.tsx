@@ -1,5 +1,6 @@
 import {
   Badge,
+  Box,
   Button,
   Flex,
   Image,
@@ -23,13 +24,18 @@ import {
   chakraComponents,
   GroupBase,
   SelectComponentsConfig,
-  SingleValue,
 } from "chakra-react-select";
 import ConditionInfos from "../../../../types/character/itemEquipment/potential/conditionInfos";
 import { useMemo } from "react";
 import { calcConditionInfos } from "../../../../services/enhance/potentialCondition";
 import { getPotentialIcon } from "../../../../services/enhance/potential";
 import PotentialCondition from "../../../../types/character/itemEquipment/potential/potentialCondition";
+
+interface Option {
+  label: string;
+  value: string;
+  grades: Set<string>;
+}
 
 export default function AutoModal({
   isOpen,
@@ -55,11 +61,7 @@ export default function AutoModal({
     [conditionInfos]
   );
 
-  const components: SelectComponentsConfig<
-    PotentialCondition,
-    false,
-    GroupBase<PotentialCondition>
-  > = {
+  const components: SelectComponentsConfig<Option, false, GroupBase<Option>> = {
     Option: ({ children, ...props }) => (
       <chakraComponents.Option {...props}>
         {children}
@@ -71,6 +73,28 @@ export default function AutoModal({
     ),
   };
 
+  const onChange = (
+    newCondition?: PotentialCondition,
+    setIndex?: number,
+    optionIndex?: number
+  ) => {
+    const temp = [...conditionGrid];
+
+    if (!newCondition) {
+      if (setIndex != undefined && optionIndex != undefined) {
+        temp[setIndex].splice(optionIndex, 1);
+        setConditionGrid(temp);
+      }
+      return;
+    }
+
+    if (setIndex == undefined) temp.push([newCondition]);
+    else if (optionIndex == undefined) temp[setIndex].push(newCondition);
+    else temp[setIndex][optionIndex] = newCondition;
+
+    setConditionGrid(temp);
+  };
+
   const Row = ({
     title,
     conditions,
@@ -79,8 +103,8 @@ export default function AutoModal({
   }: {
     title: string;
     conditions?: PotentialCondition[];
-    onCreate?: (value: SingleValue<PotentialCondition>) => void;
-    onUpdate?: (value: SingleValue<PotentialCondition>, index: number) => void;
+    onCreate?: (value: PotentialCondition) => void;
+    onUpdate?: (value: PotentialCondition | undefined, index: number) => void;
   }) => (
     <Stack pb={4}>
       <Flex justify="space-between" align="center">
@@ -92,21 +116,85 @@ export default function AutoModal({
         )}
       </Flex>
       {conditions?.map((condition, i) => (
-        <Select
-          size="sm"
-          components={components}
-          options={selectOptions}
-          value={condition}
-          onChange={onUpdate ? (value) => onUpdate(value, i) : undefined}
-        />
+        <Flex key={"condition-" + i} gap={2}>
+          <Box flex={1}>
+            <Select
+              size="sm"
+              components={components}
+              value={{
+                label: condition.name,
+                value: condition.name,
+                grades: condition.grades,
+              }}
+              options={selectOptions}
+              onChange={(option) => {
+                if (!onUpdate) return;
+                if (!option) {
+                  onUpdate(undefined, i);
+                  return;
+                }
+
+                const infosByName = conditionInfos[option.label];
+                const value = Number(Object.keys(infosByName)[0]);
+                const grades = new Set(Object.keys(infosByName[value]));
+
+                onUpdate({ name: option.label, value, grades }, i);
+              }}
+              isClearable
+            />
+          </Box>
+          <Box w={24}>
+            <Select
+              size="sm"
+              placeholder=""
+              components={components}
+              value={{
+                label: condition.value.toString(),
+                value: condition.value.toString(),
+                grades: new Set(
+                  Object.keys(conditionInfos[condition.name][condition.value])
+                ),
+              }}
+              options={Object.entries(conditionInfos[condition.name]).map(
+                ([value, infosByValue]) => ({
+                  label: value,
+                  value,
+                  grades: new Set(Object.keys(infosByValue)),
+                })
+              )}
+              onChange={(option) => {
+                if (!onUpdate || !option) return;
+                const infosByName = conditionInfos[condition.name];
+                const value = Number(option.value);
+                const grades = new Set(Object.keys(infosByName[value]));
+
+                onUpdate({ name: condition.name, value, grades }, i);
+              }}
+            />
+          </Box>
+        </Flex>
       ))}
-      {(conditions?.length ?? 0 < MAX_POTENTIALS) && (
-        <Select
-          size="sm"
-          components={components}
-          options={selectOptions}
-          onChange={onCreate}
-        />
+      {(conditions?.length ?? 0) < MAX_POTENTIALS && (
+        <Flex gap={2}>
+          <Box flex={1}>
+            <Select
+              size="sm"
+              components={components}
+              options={selectOptions}
+              onChange={(option) => {
+                if (!onCreate || !option) return;
+                const infosByName = conditionInfos[option.label];
+                const value = Number(Object.keys(infosByName)[0]);
+                const grades = new Set(Object.keys(infosByName[value]));
+
+                onCreate({ name: option.label, value, grades });
+              }}
+            />
+          </Box>
+          <Box w={24}>
+            <Select size="sm" placeholder="" components={components} />
+          </Box>
+        </Flex>
       )}
     </Stack>
   );
@@ -126,25 +214,18 @@ export default function AutoModal({
           {conditionGrid.map((conditions, i) => (
             <Row
               key={"conditions-" + i}
-              title={"옵센세트 " + i}
+              title={"옵션세트 " + i}
               conditions={conditions}
-              onUpdate={(newCondition, index) => {
-                if (!newCondition) return;
-                const temp = [...conditionGrid];
-                temp[i][index] = newCondition;
-                setConditionGrid(temp);
-              }}
+              onUpdate={(newCondition, index) =>
+                onChange(newCondition, i, index)
+              }
+              onCreate={(newCondition) => onChange(newCondition, i)}
             />
           ))}
           {
             <Row
               title={"옵션세트 추가"}
-              onCreate={(newCondition) => {
-                if (!newCondition) return;
-                const temp = [...conditionGrid];
-                temp.push([newCondition]);
-                setConditionGrid(temp);
-              }}
+              onCreate={(newCondition) => onChange(newCondition)}
             />
           }
         </ModalBody>
@@ -153,7 +234,9 @@ export default function AutoModal({
   );
 }
 
-function convertConditionInfosToSelectOptions(conditionInfos: ConditionInfos) {
+function convertConditionInfosToSelectOptions(
+  conditionInfos: ConditionInfos
+): Option[] {
   return Object.entries(conditionInfos).map(([name, infosByName]) => ({
     label: name,
     value: name,

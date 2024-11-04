@@ -187,9 +187,8 @@ function isValidOptions(
   if (
     newOptions.every(
       (newOption, i) =>
-        newOption &&
         newOption.name.replace("n", newOption.value.toString()) ==
-          prevOptions[i]
+        prevOptions[i]
     )
   )
     return false;
