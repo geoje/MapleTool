@@ -20,6 +20,10 @@ export function parseGrade(grade: string) {
   )?.[0] as POTENTIAL_GRADE;
 }
 
+export function getPotentialIcon(grade: string) {
+  return POTENTIAL_INFOS[parseGrade(grade) as POTENTIAL_GRADE].icon;
+}
+
 export function getMaxGrade(item: ItemEquipmentDetail) {
   for (const [key, info] of Object.entries(POTENTIAL_INFOS).reverse()) {
     if (
@@ -105,14 +109,14 @@ export function getOptions(item: ItemEquipmentDetail, addi: boolean) {
 }
 
 export function nextPotential(
-  probabilities: PotentialResponse[],
+  potentialInfos: PotentialResponse[],
   options: string[],
   materialType: MATERIAL_TYPE,
   grade: POTENTIAL_GRADE | undefined,
   guarantee: number
 ) {
   const newGrade = nextGrade(materialType, grade, guarantee);
-  const newOptions = nextValidOptions(probabilities, options, newGrade);
+  const newOptions = nextValidOptions(potentialInfos, options, newGrade);
 
   return {
     grade: newGrade,
@@ -137,22 +141,22 @@ function nextGrade(
   return grade;
 }
 function nextValidOptions(
-  probabilities: PotentialResponse[],
+  potentialInfos: PotentialResponse[],
   options: string[],
   grade: POTENTIAL_GRADE
 ) {
   const newOptions: PotentialResponse[] = new Array(3);
   const gradeName = POTENTIAL_INFOS[grade].name;
-  const probabilitiesByGrade = probabilities.filter(
+  const potentialInfosByGrade = potentialInfos.filter(
     (p) => p.grade == gradeName
   );
-  const probabilitiesByPos = groupByPosition(probabilitiesByGrade);
+  const potentialInfosByPos = groupByPosition(potentialInfosByGrade);
 
   for (let i = 0; i < newOptions.length; ) {
     let cumul = 0;
-    const probabilitiesAtPos = probabilitiesByPos[i];
+    const potentialInfosAtPos = potentialInfosByPos[i];
     const rand = Math.random();
-    for (const p of probabilitiesAtPos) {
+    for (const p of potentialInfosAtPos) {
       cumul += p.probability;
       if (rand < cumul) {
         newOptions[i] = p;
@@ -164,14 +168,13 @@ function nextValidOptions(
 
   return newOptions;
 }
-function groupByPosition(probabilities: PotentialResponse[]) {
+function groupByPosition(potentialInfos: PotentialResponse[]) {
   const groupedData: { [key: number]: PotentialResponse[] } = {};
 
-  probabilities.forEach((item) => {
+  potentialInfos.forEach((item) => {
     const pos = item.position;
-    if (!groupedData[pos]) {
-      groupedData[pos] = [];
-    }
+    if (!groupedData[pos]) groupedData[pos] = [];
+
     groupedData[pos].push(item);
   });
 

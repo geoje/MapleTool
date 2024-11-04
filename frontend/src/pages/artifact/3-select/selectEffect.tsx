@@ -72,8 +72,7 @@ function EffectSelector({
   effectNames: string[];
   onNameSelected: (effectName: string) => void;
 }) {
-  const { colorMode } = useColorMode();
-  const dark = colorMode === "dark";
+  const dark = useColorMode().colorMode == "dark";
   const [hoverColor, selectedColor, hoverSelectedColor] = useToken("colors", [
     dark ? "whiteAlpha.200" : "blackAlpha.200",
     dark ? "blue.800" : "blue.50",
@@ -108,7 +107,6 @@ function EffectSelector({
               : undefined,
           }),
         }}
-        useBasicStyles
       />
     </Box>
   );
