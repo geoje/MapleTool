@@ -3,27 +3,32 @@ import PotentialCondition from "../../types/character/itemEquipment/potential/po
 import PotentialResponse from "../../types/character/itemEquipment/potential/potentialResponse";
 import { isValidOptions } from "./potential";
 
+const statRegex = /^(STR|DEX|INT|LUK)/;
+
 export function calcConditionInfos(
   potentialInfos: PotentialResponse[]
 ): ConditionInfos {
   const conditionInfos: ConditionInfos = {};
 
   Object.values(groupBy(potentialInfos, "grade")).forEach(
-    (potentialIfosAtGrade) =>
-      Object.values(groupBy(potentialIfosAtGrade, "name")).forEach(
-        (potentialInfosAtName) => {
-          const infosByPos = groupBy(potentialInfosAtName, "position");
-          const positionKeys = Object.keys(infosByPos).map(Number);
+    (potentialInfosAtGrade) => {
+      const potentialInfosByName = groupBy(potentialInfosAtGrade, "name");
 
-          addConditionInfoRecursivly(
-            infosByPos,
-            positionKeys,
-            conditionInfos,
-            [],
-            0
-          );
-        }
-      )
+      return Object.values(
+        putExceptionalPotentialInfos(potentialInfosByName)
+      ).forEach((potentialInfosAtName) => {
+        const infosByPos = groupBy(potentialInfosAtName, "position");
+        const positionKeys = Object.keys(infosByPos).map(Number);
+
+        addConditionInfoRecursivly(
+          infosByPos,
+          positionKeys,
+          conditionInfos,
+          [],
+          0
+        );
+      });
+    }
   );
 
   return conditionInfos;
@@ -40,6 +45,19 @@ function groupBy<T extends keyof PotentialResponse>(
     groupedData[groupKey].push(item);
     return groupedData;
   }, {} as { [K in PotentialResponse[T]]: PotentialResponse[] });
+}
+function putExceptionalPotentialInfos(potentialInfosByName: {
+  [x: string]: PotentialResponse[];
+}) {
+  Object.keys(potentialInfosByName)
+    .filter((name) => statRegex.test(name))
+    .forEach((name) => {
+      const allStatInfos =
+        potentialInfosByName[name.replace(statRegex, "올스탯")];
+      if (allStatInfos) potentialInfosByName[name].push(...allStatInfos);
+    });
+
+  return potentialInfosByName;
 }
 function addConditionInfoRecursivly(
   potentialInfosByPos: {
@@ -205,7 +223,11 @@ export function isFitConditions(
     conditions.every(
       (condition) =>
         potentialInfos
-          .filter((info) => info.name == condition.name)
+          .filter(
+            (info) =>
+              info.name == condition.name ||
+              (info.name.startsWith("올스탯") && statRegex.test(condition.name))
+          )
           .reduce((acc, info) => (acc += info.value), 0) >= condition.value
     )
   );

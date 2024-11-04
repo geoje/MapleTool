@@ -62,7 +62,7 @@ export default function BoardCard({
 
   return (
     <Card
-      width={{ base: "100%", md: "auto" }}
+      width={{ base: "100vw", md: "auto" }}
       background={dark ? "gray.800" : "white"}
       borderRadius={{ md: "var(--card-radius)" }}
       boxShadow={{ base: "", md: "var(--card-shadow)" }}

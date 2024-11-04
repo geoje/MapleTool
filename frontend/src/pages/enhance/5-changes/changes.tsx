@@ -5,6 +5,7 @@ import {
   Flex,
   Image,
   Stack,
+  Tag,
   Tooltip,
   useColorMode,
 } from "@chakra-ui/react";
@@ -61,7 +62,7 @@ export default function Changes({
       >
         {enhancedItem.used.map(({ name, value }) => (
           <Tooltip key={"material-" + name} label={name} placement="top">
-            <Badge pt={2} pb={1}>
+            <Tag pt={2} pb={1}>
               <Stack>
                 <Flex h={8} justify="center" align="center">
                   <Image src={getMaterialIcon(name)} />
@@ -74,10 +75,10 @@ export default function Changes({
                   incrementColor={color}
                   color={color}
                   value={value}
-                  containerStyles={{ paddingBottom: "2px" }}
+                  containerStyles={{ paddingBottom: "1px" }}
                 />
               </Stack>
-            </Badge>
+            </Tag>
           </Tooltip>
         ))}
       </Flex>

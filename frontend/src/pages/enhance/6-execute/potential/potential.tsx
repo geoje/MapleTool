@@ -313,7 +313,8 @@ export default function Potential({
               <Tag
                 key={"condition-" + j}
                 size="xs"
-                px={2}
+                px={1}
+                py={0.5}
                 fontSize="var(--chakra-fontSizes-xs)"
               >
                 {condition.name.replace("n", condition.value.toString())}

@@ -160,7 +160,7 @@ export default function AutoModal({
                     </Box>
                   }
                 >
-                  <Tag size="xs" px={1}>
+                  <Tag size="xs" px={1} py={0.5}>
                     <Image src={getPotentialIcon(grade)} pr={1} />
                     <TagLabel
                       fontSize="var(--chakra-fontSizes-xs)"

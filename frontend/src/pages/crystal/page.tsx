@@ -12,13 +12,13 @@ export default function Crystal() {
 
   return (
     <>
-      <Stack w={{ base: "100%", md: "auto" }}>
+      <Stack w={{ base: "100vw", md: "auto" }}>
         <BoardCard order={1} title="캐릭터 등록">
           <NameInput setSelected={setSelected} />
           <CharacterButtons selected={selected} setSelected={setSelected} />
         </BoardCard>
       </Stack>
-      <Stack w={{ base: "100%", md: "auto" }}>
+      <Stack w={{ base: "100vw", md: "auto" }}>
         <BoardCard
           order={2}
           title="보스 선택"
@@ -27,7 +27,7 @@ export default function Crystal() {
           <Boss selected={selected} />
         </BoardCard>
       </Stack>
-      <Stack w={{ base: "100%", md: "auto" }}>
+      <Stack w={{ base: "100vw", md: "auto" }}>
         <BoardCard order={3} title="통계">
           <ResultTable />
         </BoardCard>
