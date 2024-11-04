@@ -1,6 +1,7 @@
 import ConditionInfos from "../../types/character/itemEquipment/potential/conditionInfos";
 import PotentialCondition from "../../types/character/itemEquipment/potential/potentialCondition";
 import PotentialResponse from "../../types/character/itemEquipment/potential/potentialResponse";
+import { isValidOptions } from "./potential";
 
 export function calcConditionInfos(
   potentialInfos: PotentialResponse[]
@@ -24,8 +25,6 @@ export function calcConditionInfos(
         }
       )
   );
-
-  console.log(conditionInfos);
 
   return conditionInfos;
 }
@@ -97,21 +96,26 @@ function addConditionInfoRecursivly(
   });
 }
 
-export function calcExpectedCountByConditions(
+export function calcProbabilityByConditions(
   conditionInfos: ConditionInfos,
   conditions: PotentialCondition[]
 ) {
-  const countByGrade: { [grade: string]: number } = {};
+  const probabilityByGrade: { [grade: string]: number } = {};
 
   getIntersectGrades(conditions).forEach((grade) => {
     const filteredPotentialInfoGridByName = conditions.map(({ name, value }) =>
       getFilteredPotentialInfoGrid(conditionInfos, name, value, grade)
     );
-    addProbability(grade, filteredPotentialInfoGridByName, countByGrade, [], 0);
+    addProbability(
+      grade,
+      filteredPotentialInfoGridByName,
+      probabilityByGrade,
+      [],
+      0
+    );
   });
 
-  for (const key in countByGrade) countByGrade[key] = 1 / countByGrade[key];
-  return countByGrade;
+  return probabilityByGrade;
 }
 function getIntersectGrades(conditions: PotentialCondition[]): string[] {
   if (conditions.length === 0) return [];
@@ -150,9 +154,16 @@ function addProbability(
   const selectedPotentialInfosByName = indexes.map(
     (index, i) => filteredPotentialInfoGridByName[i][index]
   );
-  if (!isCompatiableConditions(selectedPotentialInfosByName)) return;
+  if (!isCompatibleConditions(selectedPotentialInfosByName)) return;
 
   if (depth == filteredPotentialInfoGridByName.length) {
+    if (!probabilityByGrade[grade]) probabilityByGrade[grade] = 0;
+    probabilityByGrade[grade] += selectedPotentialInfosByName.reduce(
+      (acc1, infos) =>
+        acc1 * infos.reduce((acc2, info) => acc2 * info.probability, 1),
+      1
+    );
+
     return;
   }
 
@@ -168,7 +179,7 @@ function addProbability(
     indexes.pop();
   });
 }
-function isCompatiableConditions(
+function isCompatibleConditions(
   selectedPotentialInfosByName: PotentialResponse[][]
 ) {
   const positions = new Set<number>();
@@ -180,5 +191,8 @@ function isCompatiableConditions(
     }
   }
 
-  return true;
+  return isValidOptions(
+    ["", "", ""],
+    selectedPotentialInfosByName.flatMap((v) => v)
+  );
 }

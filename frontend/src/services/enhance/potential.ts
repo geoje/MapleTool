@@ -180,11 +180,12 @@ function groupByPosition(potentialInfos: PotentialResponse[]) {
 
   return Object.values(groupedData);
 }
-function isValidOptions(
+export function isValidOptions(
   prevOptions: string[],
   newOptions: PotentialResponse[]
 ) {
   if (
+    newOptions.length &&
     newOptions.every(
       (newOption, i) =>
         newOption.name.replace("n", newOption.value.toString()) ==
