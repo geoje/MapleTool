@@ -45,29 +45,6 @@ export default function Changes({
           <Box w={64} borderRadius={4} bgColor="gray.900">
             <ItemToolTip item={enhancedItem.before} />
           </Box>
-          <Flex gap={2} justify={{ base: "center", md: "start" }} wrap="wrap">
-            {enhancedItem.used.map(({ name, value }) => (
-              <Tooltip key={"material-" + name} label={name} placement="top">
-                <Badge pt={2} pb={1}>
-                  <Stack>
-                    <Flex h={8} justify="center" align="center">
-                      <Image src={getMaterialIcon(name)} />
-                    </Flex>
-                    <AnimatedCounter
-                      includeDecimals={false}
-                      includeCommas
-                      fontSize="12px"
-                      decrementColor={color}
-                      incrementColor={color}
-                      color={color}
-                      value={value}
-                      containerStyles={{ paddingBottom: "2px" }}
-                    />
-                  </Stack>
-                </Badge>
-              </Tooltip>
-            ))}
-          </Flex>
         </Stack>
         <Stack>
           <Badge textAlign="center">강화 후</Badge>
@@ -75,6 +52,34 @@ export default function Changes({
             <ItemToolTip item={enhancedItem.after} />
           </Box>
         </Stack>
+      </Flex>
+      <Flex
+        gap={2}
+        pt={2}
+        justify={{ base: "center", md: "start" }}
+        wrap="wrap"
+      >
+        {enhancedItem.used.map(({ name, value }) => (
+          <Tooltip key={"material-" + name} label={name} placement="top">
+            <Badge pt={2} pb={1}>
+              <Stack>
+                <Flex h={8} justify="center" align="center">
+                  <Image src={getMaterialIcon(name)} />
+                </Flex>
+                <AnimatedCounter
+                  includeDecimals={false}
+                  includeCommas
+                  fontSize="12px"
+                  decrementColor={color}
+                  incrementColor={color}
+                  color={color}
+                  value={value}
+                  containerStyles={{ paddingBottom: "2px" }}
+                />
+              </Stack>
+            </Badge>
+          </Tooltip>
+        ))}
       </Flex>
     </Collapse>
   );

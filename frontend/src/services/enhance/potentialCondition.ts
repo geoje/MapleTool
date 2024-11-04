@@ -196,3 +196,17 @@ function isCompatibleConditions(
     selectedPotentialInfosByName.flatMap((v) => v)
   );
 }
+
+export function isFitConditions(
+  conditionGrid: PotentialCondition[][],
+  potentialInfos: PotentialResponse[]
+) {
+  return conditionGrid.some((conditions) =>
+    conditions.every(
+      (condition) =>
+        potentialInfos
+          .filter((info) => info.name == condition.name)
+          .reduce((acc, info) => (acc += info.value), 0) >= condition.value
+    )
+  );
+}
