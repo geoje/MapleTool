@@ -162,7 +162,10 @@ export default function AutoModal({
                 >
                   <Tag size="xs" px={1}>
                     <Image src={getPotentialIcon(grade)} pr={1} />
-                    <TagLabel fontSize="small" cursor="default">
+                    <TagLabel
+                      fontSize="var(--chakra-fontSizes-xs)"
+                      cursor="default"
+                    >
                       {readablecount}
                     </TagLabel>
                   </Tag>

@@ -1,8 +1,10 @@
 import {
+  Badge,
   Button,
   Flex,
   Image,
   Stack,
+  Tag,
   Text,
   useColorMode,
   useDisclosure,
@@ -40,6 +42,7 @@ import { useWarningToast } from "../../../../hooks/useToast";
 import PotentialResponse from "../../../../types/character/itemEquipment/potential/potentialResponse";
 import AutoModal from "./autoModal";
 import PotentialCondition from "../../../../types/character/itemEquipment/potential/potentialCondition";
+import { FaPlay } from "react-icons/fa6";
 
 export default function Potential({
   inventoryIndex,
@@ -80,12 +83,12 @@ export default function Potential({
 
   useEffect(() => {
     clearNewOptions();
+    setConditionGrid([]);
   }, [inventoryIndex, materialType]);
 
   const clearNewOptions = () => {
     setNewGrade(undefined);
     setNewOptions([]);
-    setConditionGrid([]);
   };
   const applyOptions = (
     options: PotentialResponse[],
@@ -208,6 +211,7 @@ export default function Potential({
           isDisabled={!item || (selectable && newGrade && grade != newGrade)}
           isLoading={isFetching}
           loadingText="데이터 요청중"
+          leftIcon={conditionGrid.length ? <FaPlay /> : undefined}
           onClick={() => {
             const newPotential = rollPotential();
             if (!newPotential) return;
@@ -221,9 +225,28 @@ export default function Potential({
             applyOptions(newPotential.options, newPotential.grade);
           }}
         >
-          재설정하기
+          {conditionGrid.length ? "재설정 시작" : "재설정하기"}
         </Button>
       </Flex>
+      {conditionGrid.map((conditions, i) => (
+        <Flex key={"conditions-" + i} gap={2}>
+          <Badge size="xs" colorScheme="blue">
+            {i + 1}
+          </Badge>
+          <Flex gap={2} wrap="wrap">
+            {conditions.map((condition, j) => (
+              <Tag
+                key={"condition-" + j}
+                size="xs"
+                px={2}
+                fontSize="var(--chakra-fontSizes-xs)"
+              >
+                {condition.name.replace("n", condition.value.toString())}
+              </Tag>
+            ))}
+          </Flex>
+        </Flex>
+      ))}
       <AutoModal
         isOpen={isOpen}
         onClose={onClose}

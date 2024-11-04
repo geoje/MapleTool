@@ -39,12 +39,35 @@ export default function Changes({
 
   return (
     <Collapse in={showChanges} startingHeight="1px">
-      <Flex justify="center" wrap="wrap" pt="1px" gap={2}>
-        <Stack>
+      <Flex justify="center" wrap="wrap" gap={2} pt="1px">
+        <Stack w="min-content">
           <Badge textAlign="center">강화 전</Badge>
           <Box w={64} borderRadius={4} bgColor="gray.900">
             <ItemToolTip item={enhancedItem.before} />
           </Box>
+          <Flex gap={2} justify={{ base: "center", md: "start" }} wrap="wrap">
+            {enhancedItem.used.map(({ name, value }) => (
+              <Tooltip key={"material-" + name} label={name} placement="top">
+                <Badge pt={2} pb={1}>
+                  <Stack>
+                    <Flex h={8} justify="center" align="center">
+                      <Image src={getMaterialIcon(name)} />
+                    </Flex>
+                    <AnimatedCounter
+                      includeDecimals={false}
+                      includeCommas
+                      fontSize="12px"
+                      decrementColor={color}
+                      incrementColor={color}
+                      color={color}
+                      value={value}
+                      containerStyles={{ paddingBottom: "2px" }}
+                    />
+                  </Stack>
+                </Badge>
+              </Tooltip>
+            ))}
+          </Flex>
         </Stack>
         <Stack>
           <Badge textAlign="center">강화 후</Badge>
@@ -52,34 +75,6 @@ export default function Changes({
             <ItemToolTip item={enhancedItem.after} />
           </Box>
         </Stack>
-      </Flex>
-      <Flex
-        pt={2}
-        gap={2}
-        justify={{ base: "center", md: "start" }}
-        wrap="wrap"
-      >
-        {enhancedItem.used.map(({ name, value }) => (
-          <Tooltip key={"material-" + name} label={name} placement="top">
-            <Badge pt={2} pb={1}>
-              <Stack>
-                <Flex h={8} justify="center" align="center">
-                  <Image src={getMaterialIcon(name)} />
-                </Flex>
-                <AnimatedCounter
-                  includeDecimals={false}
-                  includeCommas
-                  fontSize="12px"
-                  decrementColor={color}
-                  incrementColor={color}
-                  color={color}
-                  value={value}
-                  containerStyles={{ paddingBottom: "2px" }}
-                />
-              </Stack>
-            </Badge>
-          </Tooltip>
-        ))}
       </Flex>
     </Collapse>
   );
