@@ -79,6 +79,7 @@ export default function Potential({
   const addi = isAddi(materialType);
   const selectable = isSelectable(materialType);
   const options = getOptions(item, addi);
+  const optionsRef = useRef(options);
 
   const level = item.item_base_option.base_equipment_level;
   const grade = parseGrade(
@@ -94,6 +95,9 @@ export default function Potential({
   });
 
   useEffect(() => () => clearInterval(intervalId), []);
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
   useEffect(() => {
     gradeRef.current = grade;
   }, [grade]);
@@ -137,6 +141,7 @@ export default function Potential({
     }
 
     const grade = gradeRef.current;
+    const options = optionsRef.current;
     const guarantee =
       grade && guaranteesRef.current[materialType]
         ? guaranteesRef.current[materialType][grade] ?? 0
