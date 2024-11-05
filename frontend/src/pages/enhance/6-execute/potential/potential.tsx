@@ -69,6 +69,7 @@ export default function Potential({
 
   const [newGrade, setNewGrade] = useState<POTENTIAL_GRADE>();
   const [newOptions, setNewOptions] = useState<PotentialResponse[]>([]);
+  const newOptionsRef = useRef(newOptions);
   const [conditionGrid, setConditionGrid] = useState<PotentialCondition[][]>(
     []
   );
@@ -98,6 +99,9 @@ export default function Potential({
   useEffect(() => {
     optionsRef.current = options;
   }, [options]);
+  useEffect(() => {
+    newOptionsRef.current = newOptions;
+  }, [newOptions]);
   useEffect(() => {
     gradeRef.current = grade;
   }, [grade]);
@@ -141,7 +145,11 @@ export default function Potential({
     }
 
     const grade = gradeRef.current;
-    const options = optionsRef.current;
+    const options = selectable
+      ? newOptionsRef.current.map((option) =>
+          option.name.replace("n", option.value.toString())
+        )
+      : optionsRef.current;
     const guarantee =
       grade && guaranteesRef.current[materialType]
         ? guaranteesRef.current[materialType][grade] ?? 0
