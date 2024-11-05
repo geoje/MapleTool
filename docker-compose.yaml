@@ -11,8 +11,6 @@ services:
   fe:
     image: nginx:alpine
     restart: unless-stopped
-    ports:
-      - 80:80
     volumes:
       - ./frontend/dist:/usr/share/nginx/html
     entrypoint:
