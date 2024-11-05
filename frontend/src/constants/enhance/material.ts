@@ -6,8 +6,8 @@ import BLACK from "../../assets/item/potential/black.png";
 import STRANGE_ADDI from "../../assets/item/potential/strange-addi.png";
 import ADDI from "../../assets/item/potential/addi.png";
 import WHITE_ADDI from "../../assets/item/potential/white-addi.png";
-import POTENTIAL from "../../assets/item/potential/potential.png";
-import POTENTIAL_ADDI from "../../assets/item/potential/potential-addi.png";
+import POTENTIAL from "../../assets/item/potential/potential.webp";
+import POTENTIAL_ADDI from "../../assets/item/potential/potential-addi.webp";
 
 export enum MATERIAL_TYPE {
   STRANGE = "STRANGE", // 수상한

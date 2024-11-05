@@ -122,6 +122,7 @@ export default function AutoModal({
     onDelete?: (optionIndex?: number) => void;
   }) => {
     const probabilitByConditions = calcProbabilityByConditions(
+      potentialInfos,
       conditionInfos,
       conditions ?? []
     );

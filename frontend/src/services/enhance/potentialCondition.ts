@@ -3,7 +3,8 @@ import PotentialCondition from "../../types/character/itemEquipment/potential/po
 import PotentialResponse from "../../types/character/itemEquipment/potential/potentialResponse";
 import { isValidOptions } from "./potential";
 
-const statRegex = /^(STR|DEX|INT|LUK)/;
+const REGEX_STAT = /^(STR|DEX|INT|LUK)/;
+const NAME_ALLSTAT = "올스탯";
 
 export function calcConditionInfos(
   potentialInfos: PotentialResponse[]
@@ -50,10 +51,10 @@ function putExceptionalPotentialInfos(potentialInfosByName: {
   [x: string]: PotentialResponse[];
 }) {
   Object.keys(potentialInfosByName)
-    .filter((name) => statRegex.test(name))
+    .filter((name) => REGEX_STAT.test(name))
     .forEach((name) => {
       const allStatInfos =
-        potentialInfosByName[name.replace(statRegex, "올스탯")];
+        potentialInfosByName[name.replace(REGEX_STAT, NAME_ALLSTAT)];
       if (allStatInfos) potentialInfosByName[name].push(...allStatInfos);
     });
 
@@ -115,6 +116,7 @@ function addConditionInfoRecursivly(
 }
 
 export function calcProbabilityByConditions(
+  potentialInfos: PotentialResponse[],
   conditionInfos: ConditionInfos,
   conditions: PotentialCondition[]
 ) {
@@ -226,7 +228,8 @@ export function isFitConditions(
           .filter(
             (info) =>
               info.name == condition.name ||
-              (info.name.startsWith("올스탯") && statRegex.test(condition.name))
+              (info.name.startsWith(NAME_ALLSTAT) &&
+                REGEX_STAT.test(condition.name))
           )
           .reduce((acc, info) => (acc += info.value), 0) >= condition.value
     )
