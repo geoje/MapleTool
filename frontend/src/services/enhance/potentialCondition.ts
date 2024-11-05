@@ -276,7 +276,7 @@ function calcBlankProbability(
     1
   );
 }
-
+// CD
 export function isFitConditions(
   conditionGrid: PotentialCondition[][],
   potentialInfos: PotentialResponse[]
