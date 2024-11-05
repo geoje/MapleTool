@@ -340,7 +340,7 @@ export const ARCANEUMBRA: Record<string, Partial<ItemEquipmentDetail>[]> = {
     {
       item_equipment_part: "태도",
       item_equipment_slot: "무기",
-      item_name: "태도",
+      item_name: "라즐리 9형",
       item_icon: LONG_SWORD,
       scroll_upgradeable_count: "8",
       cuttable_count: "10",
@@ -357,7 +357,7 @@ export const ARCANEUMBRA: Record<string, Partial<ItemEquipmentDetail>[]> = {
     {
       item_equipment_part: "대검",
       item_equipment_slot: "무기",
-      item_name: "대검",
+      item_name: "라피스 9형",
       item_icon: HEAVY_SWORD,
       scroll_upgradeable_count: "8",
       cuttable_count: "10",
