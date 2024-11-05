@@ -197,6 +197,9 @@ export default function AutoModal({
                   grades: condition.grades,
                 }}
                 options={selectOptions}
+                isOptionDisabled={(option) =>
+                  conditions.some(({ name }) => name == option.label)
+                }
                 onChange={(option) => {
                   if (!option) {
                     if (onDelete) onDelete(i);
@@ -251,6 +254,9 @@ export default function AutoModal({
                 size="sm"
                 components={components}
                 options={selectOptions}
+                isOptionDisabled={(option) =>
+                  (conditions ?? []).some(({ name }) => name == option.label)
+                }
                 onChange={(option) => {
                   if (!onCreate || !option) return;
                   const infosByName = conditionInfos[option.label];
