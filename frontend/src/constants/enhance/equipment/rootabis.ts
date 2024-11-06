@@ -587,7 +587,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       },
     },
     {
-      item_equipment_part: "듀얼보우건",
+      item_equipment_part: "듀얼 보우건",
       item_equipment_slot: "무기",
       item_name: "파프니르 듀얼윈드윙",
       item_icon: DUAL_BOWGUNS,

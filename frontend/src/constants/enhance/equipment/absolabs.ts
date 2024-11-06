@@ -780,7 +780,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       },
     },
     {
-      item_equipment_part: "듀얼보우건",
+      item_equipment_part: "듀얼 보우건",
       item_equipment_slot: "무기",
       item_name: "앱솔랩스 듀얼보우건",
       item_icon: DUAL_BOWGUNS,
