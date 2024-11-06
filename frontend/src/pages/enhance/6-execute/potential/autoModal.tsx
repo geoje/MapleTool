@@ -12,8 +12,6 @@ import {
   ModalOverlay,
   Spacer,
   Stack,
-  Tag,
-  TagLabel,
   Text,
   Tooltip,
 } from "@chakra-ui/react";
@@ -161,15 +159,10 @@ export default function AutoModal({
                     </Box>
                   }
                 >
-                  <Tag size="xs" px={1} py={0.5}>
+                  <Button size="xs" h={5} px={1} py={0} cursor="default">
                     <Image src={getPotentialIcon(grade)} pr={1} />
-                    <TagLabel
-                      fontSize="var(--chakra-fontSizes-xs)"
-                      cursor="default"
-                    >
-                      {readablecount}
-                    </TagLabel>
-                  </Tag>
+                    {readablecount}
+                  </Button>
                 </Tooltip>
               );
             }
@@ -244,6 +237,9 @@ export default function AutoModal({
                   onUpdate({ name: condition.name, value, grades }, i);
                 }}
               />
+              <Text pl={4} pt={1} fontSize="small">
+                이상
+              </Text>
             </Box>
           </Flex>
         ))}
