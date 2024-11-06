@@ -797,7 +797,7 @@ export const ABSOLABS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       },
     },
     {
-      item_equipment_part: "에이션트 보우",
+      item_equipment_part: "에인션트 보우",
       item_equipment_slot: "무기",
       item_name: "앱솔랩스 에인션트 보우",
       item_icon: ANCIENT_BOW,
