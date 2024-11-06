@@ -1,19 +1,14 @@
 import SPEEL_TRACE from "../../assets/item/scroll/spell-trace.png";
-import CLEAN_SLATE from "../../assets/item/scroll/clean-slate.png";
-import INNOCENCE from "../../assets/item/scroll/innocence.png";
-import ARC_INNOCENCE from "../../assets/item/scroll/arc-innocence.png";
-import GOLDDEN_HAMMER from "../../assets/item/scroll/goldden-hammer.png";
 import INCREDIBLE_CHAOS from "../../assets/item/scroll/incredible-chaos.png";
-import RETURN from "../../assets/item/scroll/return.png";
 import PREMIUM_ACCESSORY_ATTACK from "../../assets/item/scroll/premium-accessory-attack.png";
 import PREMIUM_ACCESSORY_MAGIC_ATTACK from "../../assets/item/scroll/premium-accessory-magic-attack.png";
-import GRINDSTONE from "../../assets/item/scroll/grindstone.png";
 import STARFORCE from "../../assets/item/starforce/star.png";
 
 import POWERFUL from "../../assets/item/bonus/powerful.png";
 import ETERNAL from "../../assets/item/bonus/eternal.png";
 import BLACK_REBIRTH from "../../assets/item/bonus/black.png";
 import ABYSS from "../../assets/item/bonus/abyss.png";
+import GRINDSTONE from "../../assets/item/scroll/grindstone.png";
 
 import STRANGE from "../../assets/item/potential/strange.png";
 import MASTER from "../../assets/item/potential/master.png";
@@ -28,21 +23,16 @@ import POTENTIAL_ADDI from "../../assets/item/potential/potential-addi.webp";
 
 export enum MATERIAL_TYPE {
   SPEEL_TRACE = "SPEEL_TRACE",
-  CLEAN_SLATE = "CLEAN_SLATE",
-  INNOCENCE = "INNOCENCE",
-  ARC_INNOCENCE = "ARC_INNOCENCE",
-  GOLDDEN_HAMMER = "GOLDDEN_HAMMER",
   INCREDIBLE_CHAOS = "INCREDIBLE_CHAOS",
-  RETURN = "RETURN",
   PREMIUM_ACCESSORY_ATTACK = "PREMIUM_ACCESSORY_ATTACK",
   PREMIUM_ACCESSORY_MAGIC_ATTACK = "PREMIUM_ACCESSORY_MAGIC_ATTACK",
-  GRINDSTONE = "GRINDSTONE",
   STARFORCE = "STARFORCE",
 
   POWERFUL = "POWERFUL",
   ETERNAL = "ETERNAL",
   BLACK_REBIRTH = "BLACK_REBIRTH",
   ABYSS = "ABYSS",
+  GRINDSTONE = "GRINDSTONE",
 
   STRANGE = "STRANGE", // 수상한
   MASTER = "MASTER", // 장인
@@ -67,35 +57,10 @@ export const MATERIAL_INFOS: Record<MATERIAL_TYPE, Info> = {
     type: "주흔",
     icon: SPEEL_TRACE,
   },
-  [MATERIAL_TYPE.CLEAN_SLATE]: {
-    name: "순백의 주문서 (개발중)",
-    type: "순백",
-    icon: CLEAN_SLATE,
-  },
-  [MATERIAL_TYPE.INNOCENCE]: {
-    name: "이노센트 주문서 (개발중)",
-    type: "이노",
-    icon: INNOCENCE,
-  },
-  [MATERIAL_TYPE.ARC_INNOCENCE]: {
-    name: "아크 이노센트 주문서 (개발중)",
-    type: "아크이노",
-    icon: ARC_INNOCENCE,
-  },
-  [MATERIAL_TYPE.GOLDDEN_HAMMER]: {
-    name: "황금 망치 (개발중)",
-    type: "황망",
-    icon: GOLDDEN_HAMMER,
-  },
   [MATERIAL_TYPE.INCREDIBLE_CHAOS]: {
     name: "놀라운 긍정의 혼돈의 주문서 (개발중)",
     type: "놀긍혼",
     icon: INCREDIBLE_CHAOS,
-  },
-  [MATERIAL_TYPE.RETURN]: {
-    name: "리턴 스크롤 (개발중)",
-    type: "리턴",
-    icon: RETURN,
   },
   [MATERIAL_TYPE.PREMIUM_ACCESSORY_ATTACK]: {
     name: "프리미엄 악세서리 공격력 스크롤 (개발중)",
@@ -106,11 +71,6 @@ export const MATERIAL_INFOS: Record<MATERIAL_TYPE, Info> = {
     name: "프리미엄 악세서리 마력 스크롤 (개발중)",
     type: "프악마",
     icon: PREMIUM_ACCESSORY_MAGIC_ATTACK,
-  },
-  [MATERIAL_TYPE.GRINDSTONE]: {
-    name: "생명의 연마석 (개발중)",
-    type: "연마석",
-    icon: GRINDSTONE,
   },
   [MATERIAL_TYPE.STARFORCE]: {
     name: "스타포스 (개발중)",
@@ -137,6 +97,11 @@ export const MATERIAL_INFOS: Record<MATERIAL_TYPE, Info> = {
     name: "심연의 환생의 불꽃 (개발중)",
     type: "심환불",
     icon: ABYSS,
+  },
+  [MATERIAL_TYPE.GRINDSTONE]: {
+    name: "생명의 연마석 (개발중)",
+    type: "연마석",
+    icon: GRINDSTONE,
   },
 
   [MATERIAL_TYPE.STRANGE]: {

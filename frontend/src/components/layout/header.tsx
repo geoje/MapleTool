@@ -47,14 +47,14 @@ function Desktop() {
         {title ?? "홈"}
       </Heading>
       <Spacer />
-      {pathname == "/" || (
+      {pathname != "/" && name && (
         <Button
           as={Link}
           to="/"
           variant="ghost"
-          leftIcon={<ProfileImage src={name ? data?.character_image : ""} />}
+          leftIcon={<ProfileImage src={data?.character_image} />}
         >
-          {name ? data?.character_name : ""}
+          {data?.character_name}
         </Button>
       )}
     </Flex>
