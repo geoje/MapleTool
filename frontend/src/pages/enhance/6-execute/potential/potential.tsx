@@ -88,6 +88,7 @@ export default function Potential({
   );
   const gradeRef = useRef(grade);
   const costMaterials = calcRollingMaterials(materialType, level, addi, grade);
+  const costMaterialsRef = useRef(costMaterials);
 
   const { data, isFetching } = usePotentialQuery({
     type: MATERIAL_INFOS[materialType].type,
@@ -108,6 +109,9 @@ export default function Potential({
   useEffect(() => {
     guaranteesRef.current = guarantees;
   }, [guarantees]);
+  useEffect(() => {
+    costMaterialsRef.current = costMaterials;
+  }, [costMaterials]);
 
   useEffect(() => {
     clearNewOptions();
@@ -145,6 +149,7 @@ export default function Potential({
     }
 
     const grade = gradeRef.current;
+    const costMaterials = costMaterialsRef.current;
     const options = selectable
       ? newOptionsRef.current.map((option) =>
           option.name.replace("n", option.value.toString())
