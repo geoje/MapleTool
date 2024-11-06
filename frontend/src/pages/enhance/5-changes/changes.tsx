@@ -10,10 +10,12 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import ItemToolTip from "../common/itemTooltip";
-import { useAppSelector } from "../../../stores/hooks";
+import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
 import RequiredText from "../../../components/content/requiredText";
 import { getMaterialIcon } from "../../../utils/icon";
 import { AnimatedCounter } from "react-animated-counter";
+import DeleteButton from "../../../components/action/deleteButton";
+import { deleteMaterial } from "../../../stores/userSlice";
 
 export default function Changes({
   inventoryIndex,
@@ -22,6 +24,8 @@ export default function Changes({
   inventoryIndex: number;
   showChanges: boolean;
 }) {
+  const dispatch = useAppDispatch();
+
   const dark = useColorMode().colorMode == "dark";
   const inventory = useAppSelector((state) => state.user.inventory);
   const enhancedItem = inventory[inventoryIndex];
@@ -55,14 +59,14 @@ export default function Changes({
         </Stack>
       </Flex>
       <Flex
+        pt={4}
         gap={2}
-        pt={2}
         justify={{ base: "center", md: "start" }}
         wrap="wrap"
       >
         {enhancedItem.used.map(({ name, value }) => (
-          <Tooltip key={"material-" + name} label={name} placement="top">
-            <Tag pt={2} pb={1}>
+          <Tooltip key={"material-" + name} label={name}>
+            <Tag position="relative" pt={2} pb={1}>
               <Stack>
                 <Flex h={8} justify="center" align="center">
                   <Image src={getMaterialIcon(name)} />
@@ -78,6 +82,11 @@ export default function Changes({
                   containerStyles={{ paddingBottom: "1px" }}
                 />
               </Stack>
+              <DeleteButton
+                onClick={() =>
+                  dispatch(deleteMaterial({ index: inventoryIndex, name }))
+                }
+              />
             </Tag>
           </Tooltip>
         ))}

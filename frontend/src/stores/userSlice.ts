@@ -172,6 +172,17 @@ const slice = createSlice({
         used.push(material);
       }
     },
+    deleteMaterial(
+      state,
+      action: PayloadAction<{ index: number; name: string }>
+    ) {
+      const used = state.inventory[action.payload.index].used;
+      const materialIndex = used.findIndex(
+        (material) => material.name == action.payload.name
+      );
+
+      used.splice(materialIndex, 1);
+    },
     setInventoryPotential(
       state,
       action: PayloadAction<{
@@ -246,6 +257,7 @@ export const {
   newInventory,
   deleteInventory,
   addMaterials,
+  deleteMaterial,
   setInventoryPotential,
 
   setGuarantee,
