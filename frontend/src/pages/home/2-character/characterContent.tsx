@@ -23,7 +23,13 @@ export default function CharacterContent({
         <Text fontSize="xs">Lv.{data?.character_level ?? 0}</Text>
       </Flex>
       {data?.character_image ? (
-        <Image src={data.character_image} fallback={<BlankCharacterImage />} />
+        <Image
+          src={data.character_image}
+          fallback={<BlankCharacterImage />}
+          maxW="96px"
+          objectFit="none"
+          objectPosition={data?.character_exp_rate ? undefined : "-38px -54px"}
+        />
       ) : (
         <BlankCharacterImage />
       )}
