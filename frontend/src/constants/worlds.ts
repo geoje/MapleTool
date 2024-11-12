@@ -56,7 +56,7 @@ export const WORLDS: { name: string; label: string; icon: string }[] = [
   },
   {
     name: "enosis",
-    label: "에노시스",
+    label: "이노시스",
     icon: enosis,
   },
   {

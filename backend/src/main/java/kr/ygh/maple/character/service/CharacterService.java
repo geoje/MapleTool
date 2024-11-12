@@ -1,8 +1,11 @@
 package kr.ygh.maple.character.service;
 
+import feign.FeignException;
 import kr.ygh.maple.character.dto.basic.Basic;
 import kr.ygh.maple.character.dto.itemEquipment.ItemEquipment;
+import kr.ygh.maple.character.feign.MapleClient;
 import kr.ygh.maple.common.feign.OpenApiClient;
+import kr.ygh.maple.common.feign.OpenApiError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -12,11 +15,30 @@ import org.springframework.stereotype.Service;
 public class CharacterService {
 
     private final OpenApiClient openApiClient;
+    private final MapleClient mapleClient;
+
     private final OcidService ocidService;
 
     @Cacheable(value = "character:basic", key = "#p0")
     public Basic getBasic(String name) {
-        return openApiClient.getCharacterBasic(ocidService.getOcid(name));
+        String ocid = ocidService.getOcid(name);
+        try {
+            System.out.println("ocid = " + ocid);
+            Basic basic = openApiClient.getCharacterBasic(ocid);
+            System.out.println("basic = " + basic);
+            return basic;
+        } catch (FeignException ex) {
+            return getBasicFallback(name, ex);
+        }
+    }
+
+    private Basic getBasicFallback(String name, FeignException ex) {
+        OpenApiError openApiError = OpenApiError.from(ex.contentUTF8());
+        if (openApiError != OpenApiError.INVALID_IDENTIFIER) {
+            throw ex;
+        }
+
+        return mapleClient.getBasic(name);
     }
 
     @Cacheable(value = "character:equipment", key = "#p0")
