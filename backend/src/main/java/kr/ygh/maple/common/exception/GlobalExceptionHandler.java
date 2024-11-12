@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import kr.ygh.maple.common.feign.NexonError;
+import kr.ygh.maple.common.feign.OpenApiError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -38,11 +38,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FeignException.class)
     public ProblemDetail handleFeign(FeignException ex, HttpServletResponse response) {
         try {
-            NexonError nexonError = NexonError.from(ex.contentUTF8());
-            HttpStatus status = nexonError.getResponseStatus();
+            OpenApiError openApiError = OpenApiError.from(ex.contentUTF8());
+            HttpStatus status = openApiError.getResponseStatus();
             response.setStatus(status.value());
 
-            return ProblemDetail.forStatusAndDetail(status, nexonError.getResponseMessage());
+            return ProblemDetail.forStatusAndDetail(status, openApiError.getResponseMessage());
         } catch (NoSuchElementException e) {
             log.error(ex.getMessage(), ex);
 

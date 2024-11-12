@@ -17,7 +17,7 @@ spring:
     openfeign:
       client:
         config:
-          nexon:
+          open-api:
             logger-level: none
             default-request-headers:
               x-nxopen-api-key:

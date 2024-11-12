@@ -7,8 +7,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient("nexon")
-public interface NexonClient {
+@FeignClient("open-api")
+public interface OpenApiClient {
 
     @GetMapping("/id")
     Ocid getOcid(@RequestParam("character_name") String characterName);

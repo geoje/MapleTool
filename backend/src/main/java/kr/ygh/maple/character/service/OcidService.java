@@ -1,6 +1,6 @@
 package kr.ygh.maple.character.service;
 
-import kr.ygh.maple.common.feign.NexonClient;
+import kr.ygh.maple.common.feign.OpenApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OcidService {
 
-    private final NexonClient nexonClient;
+    private final OpenApiClient openApiClient;
 
     @Cacheable(value = "character:ocid", key = "#p0")
     public String getOcid(String name) {
-        return nexonClient.getOcid(name).ocid();
+        return openApiClient.getOcid(name).ocid();
     }
 }

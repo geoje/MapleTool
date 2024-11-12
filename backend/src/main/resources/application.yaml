@@ -15,8 +15,10 @@ spring:
     openfeign:
       client:
         config:
-          nexon:
+          open-api:
             url: https://open.api.nexon.com/maplestory/v1
+          maple:
+            url: https://maplestory.nexon.com
 
 jasypt:
   encryptor:
