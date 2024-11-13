@@ -15,8 +15,10 @@ spring:
     openfeign:
       client:
         config:
+          maple:
+            logger-level: basic
           open-api:
-            logger-level: full
+            logger-level: basic
             default-request-headers:
               x-nxopen-api-key:
                 - ENC(GKf854Z4Hg+gfvkGA4PuoAzMLGliGyDw5hRNItAIH1YWBv8umSbEO+noyoURAcg8lGhPkAN44tZWxKV7ishLMASRHVC8zeShcG254k2qgBs6P5wL75AnGD2YPX38R2UY3HGZk/W1Rn4c6jLw98CDdAhSq17YWK34qPoxvASnGjXmDqxqWZ6DIB9kFyj8B872)

@@ -40,7 +40,7 @@ public class HtmlConfig {
                 .map(Element::text)
                 .orElse("");
         Optional<String> worldImage = tdMain
-                .map(tr -> tr.selectFirst("dt > img"))
+                .map(tr -> tr.selectFirst("dt > a > img"))
                 .map(img -> img.attr("src"));
         String worldName = worldImage
                 .map(Worlds::parseNameFromImage)

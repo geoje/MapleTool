@@ -23,10 +23,7 @@ public class CharacterService {
     public Basic getBasic(String name) {
         String ocid = ocidService.getOcid(name);
         try {
-            System.out.println("ocid = " + ocid);
-            Basic basic = openApiClient.getCharacterBasic(ocid);
-            System.out.println("basic = " + basic);
-            return basic;
+            return openApiClient.getCharacterBasic(ocid);
         } catch (FeignException ex) {
             return getBasicFallback(name, ex);
         }

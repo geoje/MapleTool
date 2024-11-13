@@ -32,7 +32,7 @@ public enum Worlds {
     }
 
     public static String parseNameFromImage(String url) {
-        Matcher matcher = Pattern.compile("(\\d+)(?=\\.png$)\n").matcher(url);
+        Matcher matcher = Pattern.compile("(\\d+)(?=\\.png$)").matcher(url);
         if (!matcher.find()) {
             return "";
         }
