@@ -1,27 +1,17 @@
 spring:
+  data.redis.host: redis
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://db/maple
     username: root
     password: ENC(82LhaVLTV7bx76p7M18ES5ceqOWYR8ACDxHfoZEqfgXINYjTOJJBwG00dK6F5Mfx)
 
-  jpa:
-    hibernate:
-      ddl-auto: validate
+  jpa.hibernate.ddl-auto: validate
 
-  data:
-    redis:
-      host: redis
+  cloud.openfeign.client.config:
+    open-api:
+      default-request-headers:
+        x-nxopen-api-key:
+          - ENC(5OuUq6/jiTCBrzFlJBEToH/RNv7eLQD9Ms/G3nG05rnTuNpG9Np77bkzwF9TluCYkShbNE/C8ehicr+pypmaP5pPRGc6WjBPy7T7zlUbrirc8KjHFPmc9IbqVbSFufWwXRdr1HnNlx3/3k+xs03TwdG0EqwoUcCc7o3AFyv2G7lhSLp+Qpdm454SK72Ie+zr)
 
-  cloud:
-    openfeign:
-      client:
-        config:
-          open-api:
-            default-request-headers:
-              x-nxopen-api-key:
-                - ENC(5OuUq6/jiTCBrzFlJBEToH/RNv7eLQD9Ms/G3nG05rnTuNpG9Np77bkzwF9TluCYkShbNE/C8ehicr+pypmaP5pPRGc6WjBPy7T7zlUbrirc8KjHFPmc9IbqVbSFufWwXRdr1HnNlx3/3k+xs03TwdG0EqwoUcCc7o3AFyv2G7lhSLp+Qpdm454SK72Ie+zr)
-
-logbook:
-  filter:
-    enabled: false
+logbook.filter.enabled: false

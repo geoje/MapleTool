@@ -1,25 +1,18 @@
 spring:
-  jpa:
-    open-in-view: false
+  jpa.open-in-view: false
+  data.redis.repositories.enabled: false
+  web.resources.add-mappings: false
 
-  data:
-    redis:
-      repositories:
-        enabled: false
+  cloud.openfeign.client.config:
+    open-api:
+      url: https://open.api.nexon.com/maplestory/v1
+    maple:
+      url: https://maplestory.nexon.com
 
-  web:
-    resources:
-      add-mappings: false
+resilience4j.ratelimiter.instances:
+  maple:
+    limitForPeriod: 1
+    limitRefreshPeriod: 20s
+    timeoutDuration: 5m
 
-  cloud:
-    openfeign:
-      client:
-        config:
-          open-api:
-            url: https://open.api.nexon.com/maplestory/v1
-          maple:
-            url: https://maplestory.nexon.com
-
-jasypt:
-  encryptor:
-    password: ${JASYPT_PASSWORD}
+jasypt.encryptor.password: ${JASYPT_PASSWORD}

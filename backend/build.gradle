@@ -30,6 +30,7 @@ dependencies {
     implementation 'org.zalando:logbook-spring-boot-starter:3.9.0'
     implementation 'org.zalando:logbook-openfeign:3.9.0'
     implementation 'org.jsoup:jsoup:1.18.1'
+    implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.2.0'
 
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
