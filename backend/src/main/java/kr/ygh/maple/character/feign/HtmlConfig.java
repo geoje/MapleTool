@@ -1,19 +1,22 @@
 package kr.ygh.maple.character.feign;
 
 import feign.codec.Decoder;
-import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
 import kr.ygh.maple.character.dto.basic.Basic;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.context.annotation.Bean;
 
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+
 public class HtmlConfig {
+
+    private static final String OPEN_API_RELEASED_DATE_TIME = "2023-12-21T00:00+09:00";
 
     private final Map<Type, Function<Document, Object>> decoders;
 
@@ -74,7 +77,7 @@ public class HtmlConfig {
                 .map(img -> img.attr("src"))
                 .orElse("");
 
-        return new Basic(null, characterName, worldName, "", characterClass,
+        return new Basic(OPEN_API_RELEASED_DATE_TIME, characterName, worldName, "", characterClass,
                 "", characterLevel, characterExp, "", guildName, characterImage);
     }
 }

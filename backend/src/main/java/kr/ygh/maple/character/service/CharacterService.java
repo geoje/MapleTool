@@ -4,6 +4,7 @@ import feign.FeignException;
 import kr.ygh.maple.character.dto.basic.Basic;
 import kr.ygh.maple.character.dto.itemEquipment.ItemEquipment;
 import kr.ygh.maple.character.feign.MapleClient;
+import kr.ygh.maple.character.repository.CharacterBasicRepository;
 import kr.ygh.maple.common.feign.OpenApiClient;
 import kr.ygh.maple.common.feign.OpenApiError;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class CharacterService {
     private final MapleClient mapleClient;
 
     private final OcidService ocidService;
+    private final CharacterBasicRepository characterBasicRepository;
 
     @Cacheable(value = "character:basic", key = "#p0")
     public Basic getBasic(String name) {
@@ -35,7 +37,15 @@ public class CharacterService {
             throw ex;
         }
 
-        return mapleClient.getBasic(name);
+        return characterBasicRepository.findById(name)
+                .map(Basic::from)
+                .orElseGet(() -> getBasicFromMaple(name));
+    }
+
+    private Basic getBasicFromMaple(String name) {
+        Basic basic = mapleClient.getBasic(name);
+        characterBasicRepository.save(basic.toEntity());
+        return basic;
     }
 
     @Cacheable(value = "character:equipment", key = "#p0")

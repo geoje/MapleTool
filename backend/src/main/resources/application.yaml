@@ -12,7 +12,7 @@ spring:
 resilience4j.ratelimiter.instances:
   maple:
     limitForPeriod: 1
-    limitRefreshPeriod: 20s
-    timeoutDuration: 5m
+    limitRefreshPeriod: 10s
+    timeoutDuration: 10m
 
 jasypt.encryptor.password: ${JASYPT_PASSWORD}
