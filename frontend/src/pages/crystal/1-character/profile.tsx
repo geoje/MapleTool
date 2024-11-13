@@ -1,12 +1,14 @@
-import { Flex, Image, Spinner, Stack, Text } from "@chakra-ui/react";
-import characterBlank from "../../../assets/union/raid/character-blank.png";
+import { Flex, Spinner, Stack, Text } from "@chakra-ui/react";
+import CharacterImage from "../../../components/content/characterImage";
 
 export default function Profile({
   src,
+  adjust,
   name,
   loading,
 }: {
   src?: string;
+  adjust?: boolean;
   name?: string;
   loading?: boolean;
 }) {
@@ -18,12 +20,7 @@ export default function Profile({
         gap={1}
         wrap="wrap"
       >
-        <Image
-          boxSize="48px"
-          src={src}
-          fallback={<BlankCharacterImage />}
-          style={{ imageRendering: "pixelated" }}
-        />
+        <CharacterImage boxSizePx={48} src={src} adjust={adjust} />
         <Stack align="center" gap={1}>
           <Text fontSize="small">{name}</Text>
           {loading && <Spinner size="xs" />}
@@ -35,25 +32,10 @@ export default function Profile({
         gap={0}
         wrap="wrap"
       >
-        <Image
-          boxSize="48px"
-          src={src}
-          fallback={<BlankCharacterImage />}
-          style={{ imageRendering: "pixelated" }}
-        />
+        <CharacterImage boxSizePx={48} src={src} adjust={adjust} />
         <Text fontSize="small">{name}</Text>
         {loading && <Spinner size="xs" />}
       </Stack>
     </>
-  );
-}
-
-function BlankCharacterImage() {
-  return (
-    <Image
-      boxSize="48px"
-      src={characterBlank}
-      filter="opacity(0.2) drop-shadow(0 0 0 #000000);"
-    />
   );
 }

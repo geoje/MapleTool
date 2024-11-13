@@ -3,7 +3,6 @@ import {
   Flex,
   Heading,
   IconButton,
-  Image,
   Spacer,
   useColorMode,
   useDisclosure,
@@ -15,7 +14,7 @@ import MobileDrawer from "./mobileDrawer";
 import { useEffect } from "react";
 import { useAppSelector } from "../../stores/hooks";
 import { useBasicQuery } from "../../stores/characterApi";
-import characterBlank from "../../assets/union/raid/character-blank.png";
+import CharacterImage from "../content/characterImage";
 
 export default function Header() {
   return (
@@ -52,7 +51,13 @@ function Desktop() {
           as={Link}
           to="/"
           variant="ghost"
-          leftIcon={<ProfileImage src={data?.character_image} />}
+          leftIcon={
+            <CharacterImage
+              boxSizePx={32}
+              src={data?.character_image}
+              adjust={!data?.character_exp_rate}
+            />
+          }
         >
           {data?.character_name}
         </Button>
@@ -96,24 +101,16 @@ function Mobile() {
           to="/"
           size="lg"
           variant="ghost"
-          icon={<ProfileImage src={name ? data?.character_image : ""} />}
+          icon={
+            <CharacterImage
+              boxSizePx={32}
+              src={data?.character_image}
+              adjust={!data?.character_exp_rate}
+            />
+          }
         />
       )}
       <MobileDrawer isOpen={isOpen} onClose={onClose} />
     </Flex>
-  );
-}
-
-function ProfileImage({ src }: { src?: string }) {
-  return <Image boxSize="32px" src={src} fallback={<BlankCharacterImage />} />;
-}
-
-function BlankCharacterImage() {
-  return (
-    <Image
-      boxSize="32px"
-      src={characterBlank}
-      filter="opacity(0.2) drop-shadow(0 0 0 #000000);"
-    />
   );
 }

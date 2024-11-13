@@ -70,6 +70,7 @@ export default function CharacterButton({
         leftIcon={
           <Profile
             src={data?.character_image}
+            adjust={!data?.character_exp_rate}
             name={bossPlan.name}
             loading={isFetching}
           />

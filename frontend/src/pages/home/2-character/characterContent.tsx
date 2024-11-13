@@ -2,7 +2,7 @@ import { Flex, Image, Text } from "@chakra-ui/react";
 import { Basic } from "../../../types/character/basic";
 import { getJobIcon } from "../../../utils/icon";
 import { getWorldIcon } from "../../../utils/icon";
-import characterBlank from "../../../assets/union/raid/character-blank.png";
+import CharacterImage from "../../../components/content/characterImage";
 
 export default function CharacterContent({
   data,
@@ -22,17 +22,10 @@ export default function CharacterContent({
         </Text>
         <Text fontSize="xs">Lv.{data?.character_level ?? 0}</Text>
       </Flex>
-      {data?.character_image ? (
-        <Image
-          src={data.character_image}
-          fallback={<BlankCharacterImage />}
-          maxW="96px"
-          objectFit="none"
-          objectPosition={data?.character_exp_rate ? undefined : "-38px -54px"}
-        />
-      ) : (
-        <BlankCharacterImage />
-      )}
+      <CharacterImage
+        src={data?.character_image}
+        adjust={!data?.character_exp_rate}
+      />
       <Flex pt={2} gap={1} align="center">
         <Image src={getWorldIcon(data?.world_name)} />
         <Text fontSize="xs" fontWeight="bold">
@@ -41,14 +34,5 @@ export default function CharacterContent({
         {statusElement}
       </Flex>
     </>
-  );
-}
-
-function BlankCharacterImage() {
-  return (
-    <Image
-      src={characterBlank}
-      filter="opacity(0.2) drop-shadow(0 0 0 #000000);"
-    />
   );
 }
