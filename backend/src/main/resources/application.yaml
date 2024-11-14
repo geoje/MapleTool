@@ -3,16 +3,20 @@ spring:
   data.redis.repositories.enabled: false
   web.resources.add-mappings: false
 
-  cloud.openfeign.client.config:
-    open-api:
-      url: https://open.api.nexon.com/maplestory/v1
-    maple:
-      url: https://maplestory.nexon.com
-
-resilience4j.ratelimiter.instances:
-  maple:
-    limitForPeriod: 1
-    limitRefreshPeriod: 10s
-    timeoutDuration: 10m
+  cloud.openfeign:
+    okhttp.enabled: true
+    client.config:
+      open-api:
+        url: https://open.api.nexon.com/maplestory/v1
+      maple:
+        url: https://maplestory.nexon.com
+      proxy-scrape:
+        url: https://api.proxyscrape.com/v4/free-proxy-list/get
+        default-query-parameters:
+          request: display_proxies
+          protocol: http
+          proxy_format: protocolipport
+          format: text
+          timeout: 2000
 
 jasypt.encryptor.password: ${JASYPT_PASSWORD}

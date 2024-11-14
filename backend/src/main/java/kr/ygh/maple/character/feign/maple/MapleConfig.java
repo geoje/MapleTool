@@ -1,27 +1,52 @@
-package kr.ygh.maple.character.feign;
+package kr.ygh.maple.character.feign.maple;
 
 import feign.codec.Decoder;
 import kr.ygh.maple.character.dto.basic.Basic;
+import kr.ygh.maple.character.feign.proxy.ProxyProvider;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.context.annotation.Bean;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class HtmlConfig {
+public class MapleConfig {
 
     private static final String OPEN_API_RELEASED_DATE_TIME = "2023-12-21T00:00+09:00";
 
     private final Map<Type, Function<Document, Object>> decoders;
 
-    public HtmlConfig() {
+    public MapleConfig() {
         decoders = Map.of(Basic.class, this::parseBasic);
+    }
+
+    @Bean
+    public feign.okhttp.OkHttpClient okHttpClient(ProxyProvider proxyProvider) {
+        okhttp3.OkHttpClient okHttpClient = new okhttp3.OkHttpClient.Builder()
+                .proxySelector(new ProxySelector() {
+                    @Override
+                    public List<Proxy> select(URI uri) {
+                        return List.of(proxyProvider.getNextProxy());
+                    }
+
+                    @Override
+                    public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+                })
+                .build();
+        return new feign.okhttp.OkHttpClient(okHttpClient);
     }
 
     @Bean

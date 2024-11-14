@@ -1,4 +1,4 @@
-package kr.ygh.maple.character.feign;
+package kr.ygh.maple.character.feign.maple;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;

@@ -22,15 +22,15 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
     implementation 'org.zalando:logbook-spring-boot-starter:3.9.0'
     implementation 'org.zalando:logbook-openfeign:3.9.0'
+    implementation 'io.github.openfeign:feign-okhttp'
     implementation 'org.jsoup:jsoup:1.18.1'
-    implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.2.0'
 
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'

@@ -3,7 +3,7 @@ package kr.ygh.maple.character.service;
 import feign.FeignException;
 import kr.ygh.maple.character.dto.basic.Basic;
 import kr.ygh.maple.character.dto.itemEquipment.ItemEquipment;
-import kr.ygh.maple.character.feign.MapleClient;
+import kr.ygh.maple.character.feign.maple.MapleClient;
 import kr.ygh.maple.character.repository.CharacterBasicRepository;
 import kr.ygh.maple.common.feign.OpenApiClient;
 import kr.ygh.maple.common.feign.OpenApiError;
