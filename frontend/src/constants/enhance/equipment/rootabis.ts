@@ -919,7 +919,7 @@ export const ROOTABIS: Record<string, Partial<ItemEquipmentDetail>[]> = {
       },
     },
     {
-      item_equipment_part: "소울 슈터",
+      item_equipment_part: "소울슈터",
       item_equipment_slot: "무기",
       item_name: "파프니르 엔젤릭슈터",
       item_icon: SOUL_SHOOTER,
