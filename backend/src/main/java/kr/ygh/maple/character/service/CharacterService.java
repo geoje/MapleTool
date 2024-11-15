@@ -3,6 +3,7 @@ package kr.ygh.maple.character.service;
 import feign.FeignException;
 import kr.ygh.maple.character.dto.basic.Basic;
 import kr.ygh.maple.character.dto.itemEquipment.ItemEquipment;
+import kr.ygh.maple.character.exception.MapleClientException;
 import kr.ygh.maple.character.feign.maple.MapleClient;
 import kr.ygh.maple.character.repository.CharacterBasicRepository;
 import kr.ygh.maple.common.feign.OpenApiClient;
@@ -43,9 +44,13 @@ public class CharacterService {
     }
 
     private Basic getBasicFromMaple(String name) {
-        Basic basic = mapleClient.getBasic(name);
-        characterBasicRepository.save(basic.toEntity());
-        return basic;
+        try {
+            Basic basic = mapleClient.getBasic(name);
+            characterBasicRepository.save(basic.toEntity());
+            return basic;
+        } catch (Exception ex) {
+            throw new MapleClientException("서버에서 메이플 랭킹 검색에 실패하였습니다.");
+        }
     }
 
     @Cacheable(value = "character:equipment", key = "#p0")

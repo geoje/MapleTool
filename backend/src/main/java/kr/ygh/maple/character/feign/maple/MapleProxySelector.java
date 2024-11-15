@@ -1,27 +1,24 @@
 package kr.ygh.maple.character.feign.maple;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Proxy.Type;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import kr.ygh.maple.character.feign.proxy.ScrapeClient;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Request.Builder;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
-@Slf4j
+import java.io.IOException;
+import java.net.*;
+import java.net.Proxy.Type;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+@Component
 @RequiredArgsConstructor
 public class MapleProxySelector extends ProxySelector {
 
@@ -35,7 +32,7 @@ public class MapleProxySelector extends ProxySelector {
     public List<Proxy> select(URI uri) {
         URI proxyUri = proxies.poll();
         if (proxyUri == null) {
-            throw new ProxyNotFoundException();
+            throw new IllegalStateException("Proxy not found");
         }
         proxies.add(proxyUri);
         InetSocketAddress inetSocketAddress = InetSocketAddress.createUnresolved(
@@ -49,7 +46,6 @@ public class MapleProxySelector extends ProxySelector {
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         if (sa instanceof InetSocketAddress isa) {
             String url = String.format("http://%s:%d", isa.getHostString(), isa.getPort());
-            log.info("Connect failed and remove proxy: {}", url);
             removeProxy(URI.create(url));
         }
     }
@@ -80,7 +76,6 @@ public class MapleProxySelector extends ProxySelector {
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 proxies.add(uri);
-                log.info("Successfully added proxy: {}, Total count: {}", uri, proxies.size());
             }
         } catch (Exception ignored) {
         }

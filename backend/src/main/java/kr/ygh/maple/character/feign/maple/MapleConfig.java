@@ -1,21 +1,19 @@
 package kr.ygh.maple.character.feign.maple;
 
 import feign.codec.Decoder;
+import kr.ygh.maple.character.dto.basic.Basic;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.springframework.context.annotation.Bean;
+
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import kr.ygh.maple.character.dto.basic.Basic;
-import kr.ygh.maple.character.feign.proxy.ScrapeClient;
-import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.springframework.context.annotation.Bean;
 
-@Slf4j
 public class MapleConfig {
 
     private static final String OPEN_API_RELEASED_DATE_TIME = "2023-12-21T00:00+09:00";
@@ -27,9 +25,9 @@ public class MapleConfig {
     }
 
     @Bean
-    public feign.okhttp.OkHttpClient okHttpClient(ScrapeClient scrapeClient) {
+    public feign.okhttp.OkHttpClient okHttpClient(MapleProxySelector mapleProxySelector) {
         okhttp3.OkHttpClient okHttpClient = new okhttp3.OkHttpClient.Builder()
-                .proxySelector(new MapleProxySelector(scrapeClient))
+                .proxySelector(mapleProxySelector)
                 .build();
         return new feign.okhttp.OkHttpClient(okHttpClient);
     }
