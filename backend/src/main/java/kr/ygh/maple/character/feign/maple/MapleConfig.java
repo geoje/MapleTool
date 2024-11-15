@@ -1,16 +1,10 @@
 package kr.ygh.maple.character.feign.maple;
 
 import feign.codec.Decoder;
-import kr.ygh.maple.character.dto.basic.Basic;
-import kr.ygh.maple.character.feign.proxy.ProxyProvider;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.springframework.context.annotation.Bean;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
@@ -20,7 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import kr.ygh.maple.character.dto.basic.Basic;
+import kr.ygh.maple.character.feign.proxy.ProxyProvider;
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.springframework.context.annotation.Bean;
 
+@Slf4j
 public class MapleConfig {
 
     private static final String OPEN_API_RELEASED_DATE_TIME = "2023-12-21T00:00+09:00";
@@ -37,12 +39,17 @@ public class MapleConfig {
                 .proxySelector(new ProxySelector() {
                     @Override
                     public List<Proxy> select(URI uri) {
-                        return List.of(proxyProvider.getNextProxy());
+                        List<Proxy> singleProxy = proxyProvider.getSingleProxy();
+                        log.info("Proxy selected: {}", singleProxy);
+                        return singleProxy;
                     }
 
                     @Override
                     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-                        throw new RuntimeException(ioe);
+                        if (sa instanceof InetSocketAddress isa) {
+                            String url = String.format("http://%s:%d", isa.getHostString(), isa.getPort());
+                            proxyProvider.removeProxy(URI.create(url));
+                        }
                     }
                 })
                 .build();
