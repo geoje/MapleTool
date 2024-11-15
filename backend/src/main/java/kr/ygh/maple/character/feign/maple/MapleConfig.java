@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import kr.ygh.maple.character.dto.basic.Basic;
+import kr.ygh.maple.character.feign.proxy.ScrapeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,9 +27,9 @@ public class MapleConfig {
     }
 
     @Bean
-    public feign.okhttp.OkHttpClient okHttpClient(MapleProxySelector mapleProxySelector) {
+    public feign.okhttp.OkHttpClient okHttpClient(ScrapeClient scrapeClient) {
         okhttp3.OkHttpClient okHttpClient = new okhttp3.OkHttpClient.Builder()
-                .proxySelector(mapleProxySelector)
+                .proxySelector(new MapleProxySelector(scrapeClient))
                 .build();
         return new feign.okhttp.OkHttpClient(okHttpClient);
     }

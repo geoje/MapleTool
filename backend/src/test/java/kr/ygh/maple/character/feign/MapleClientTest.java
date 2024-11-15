@@ -39,7 +39,7 @@ class MapleClientTest {
                     log.info(basic.toString());
                     success.incrementAndGet();
                 } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    log.error(e.getMessage());
                 } finally {
                     latch.countDown();
                 }

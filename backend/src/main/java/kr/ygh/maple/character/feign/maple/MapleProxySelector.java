@@ -20,10 +20,8 @@ import okhttp3.Request.Builder;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class MapleProxySelector extends ProxySelector {
 
@@ -37,10 +35,13 @@ public class MapleProxySelector extends ProxySelector {
     public List<Proxy> select(URI uri) {
         URI proxyUri = proxies.poll();
         if (proxyUri == null) {
-            throw new IllegalStateException("No proxy found");
+            throw new ProxyNotFoundException();
         }
         proxies.add(proxyUri);
-        InetSocketAddress inetSocketAddress = InetSocketAddress.createUnresolved(uri.getHost(), uri.getPort());
+        InetSocketAddress inetSocketAddress = InetSocketAddress.createUnresolved(
+                proxyUri.getHost(),
+                proxyUri.getPort()
+        );
         return List.of(new Proxy(Type.HTTP, inetSocketAddress));
     }
 
@@ -58,7 +59,8 @@ public class MapleProxySelector extends ProxySelector {
     }
 
     @Scheduled(initialDelay = 0, fixedRate = 600_000)
-    public void retrieveValidProxies() {
+    public void updateValidProxies() {
+        proxies.clear();
         try (ExecutorService executor = Executors.newCachedThreadPool()) {
             scrapeClient.get().stream()
                     .filter(uri -> !proxies.contains(uri))
