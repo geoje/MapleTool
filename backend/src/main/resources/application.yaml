@@ -9,7 +9,7 @@ spring:
       open-api:
         url: https://open.api.nexon.com/maplestory/v1
       maple:
-        url: https://maplestory.nexon.com
+        url: https://maplestory.nexon.com/N23Ranking/World/Total
       proxy-scrape:
         url: https://api.proxyscrape.com/v4/free-proxy-list/get
         default-query-parameters:

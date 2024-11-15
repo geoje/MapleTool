@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "maple", configuration = MapleConfig.class)
 public interface MapleClient {
 
-    @GetMapping("/N23Ranking/World/Total")
+    @GetMapping
     Basic getBasic(@RequestParam("c") String characterName);
 }
