@@ -87,7 +87,9 @@ export default function Enhance() {
           <Config materialType={materialType} />
         </BoardCard>
       </Stack>
-      <Stack w={{ base: "100vw", md: "min-content" }}>
+      <Stack
+        w={{ base: "100vw", md: inventoryIndex == -1 ? "auto" : "min-content" }}
+      >
         <BoardCard
           order={5}
           title="장비 변화"
