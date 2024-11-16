@@ -80,6 +80,7 @@ export default function CharacterButton({
       flexDir="column"
       variant={name && selected ? undefined : "ghost"}
       opacity={isDragging ? 0.4 : undefined}
+      borderWidth={1}
       transform={transform ? transformToString(transform) : undefined}
       transition={transition ?? "transform 0ms linear"}
       onClick={onClick}

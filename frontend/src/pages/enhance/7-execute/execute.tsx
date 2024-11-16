@@ -2,6 +2,7 @@ import RequiredText from "../../../components/content/requiredText";
 import { MATERIAL_TYPE } from "../../../constants/enhance/material";
 import GrindStone from "./grindStone/grindStone";
 import Potential from "./potential/potential";
+import Rebirth from "./rebirth/rebirth";
 
 export default function Execute({
   inventoryIndex,
@@ -22,6 +23,21 @@ export default function Execute({
 
   if (
     [
+      MATERIAL_TYPE.POWERFUL,
+      MATERIAL_TYPE.ETERNAL,
+      MATERIAL_TYPE.BLACK_REBIRTH,
+      MATERIAL_TYPE.ABYSS,
+    ].includes(materialType)
+  )
+    return (
+      <Rebirth inventoryIndex={inventoryIndex} materialType={materialType} />
+    );
+
+  if (materialType == MATERIAL_TYPE.GRINDSTONE)
+    return <GrindStone inventoryIndex={inventoryIndex} />;
+
+  if (
+    [
       MATERIAL_TYPE.STRANGE,
       MATERIAL_TYPE.MASTER,
       MATERIAL_TYPE.ARTISAN,
@@ -37,9 +53,6 @@ export default function Execute({
     return (
       <Potential inventoryIndex={inventoryIndex} materialType={materialType} />
     );
-
-  if (materialType == MATERIAL_TYPE.GRINDSTONE)
-    return <GrindStone inventoryIndex={inventoryIndex} />;
 
   return <RequiredText>개발중인 기능입니다.</RequiredText>;
 }

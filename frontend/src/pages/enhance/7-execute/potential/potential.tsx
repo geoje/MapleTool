@@ -14,9 +14,10 @@ import {
   MATERIAL_TYPE,
 } from "../../../../constants/enhance/material";
 import { useAppDispatch, useAppSelector } from "../../../../stores/hooks";
-import OptionsButton from "./optionButton";
+import OptionsButton from "../common/optionButton";
 import { useEffect, useRef, useState } from "react";
 import {
+  MAX_POTENTIALS,
   POTENTIAL_CRITERIA,
   POTENTIAL_GRADE,
   POTENTIAL_INFOS,
@@ -48,6 +49,7 @@ import AutoModal from "./autoModal";
 import PotentialCondition from "../../../../types/character/itemEquipment/potential/potentialCondition";
 import { FaPlay, FaStop } from "react-icons/fa6";
 import { isFitConditions } from "../../../../services/enhance/potentialCondition";
+import ItemSlot from "../common/itemSlot";
 
 const AUTO_DELAY = 100;
 
@@ -96,7 +98,11 @@ export default function Potential({
     level,
   });
 
-  useEffect(() => () => clearInterval(intervalId), []);
+  useEffect(
+    () => () => clearInterval(intervalId),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   useEffect(() => {
     optionsRef.current = options;
   }, [options]);
@@ -120,6 +126,8 @@ export default function Potential({
       setIntervalId(undefined);
       clearInterval(intervalId);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inventoryIndex, materialType]);
 
   const clearNewOptions = () => {
@@ -236,31 +244,20 @@ export default function Potential({
 
   return (
     <Stack width={{ base: "100%", md: 60 }}>
-      <Flex
-        p={4}
-        bgColor={dark ? "gray.800" : "gray.50"}
-        borderRadius={8}
-        justify="center"
-        align="center"
-      >
-        <Flex
-          w={12}
-          h={12}
-          justify="center"
-          align="center"
-          backgroundColor={dark ? "gray.700" : "gray.200"}
-          borderWidth={1}
-          borderColor={dark ? "gray.400" : "gray.600"}
-          borderStyle="dashed"
-        >
-          <Image src={item?.item_icon} />
-        </Flex>
-      </Flex>
+      <Tag as={Flex} px={2} py={1} gap={2}>
+        <Image src={MATERIAL_INFOS[materialType].icon} />
+        <Text size="xs">
+          아이템의 <b>잠재능력을</b> 재설정합니다.
+        </Text>
+      </Tag>
+      <ItemSlot image={item?.item_icon} />
 
       <OptionsButton
         title={selectable ? "BEFORE" : "RESULT"}
         grade={grade}
         options={options}
+        borderColor={grade ? POTENTIAL_INFOS[grade].borderColor : ""}
+        maxOptionCount={MAX_POTENTIALS}
         isDisabled={!options[0]}
         onClick={selectable ? clearNewOptions : undefined}
       />
@@ -270,6 +267,8 @@ export default function Potential({
           grade={newGrade}
           options={formatOptions(newOptions)}
           isDisabled={!newOptions[0]}
+          borderColor={grade ? POTENTIAL_INFOS[grade].borderColor : ""}
+          maxOptionCount={MAX_POTENTIALS}
           onClick={
             selectable ? () => applyOptions(newOptions, newGrade) : undefined
           }

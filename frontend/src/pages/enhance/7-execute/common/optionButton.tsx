@@ -1,5 +1,6 @@
 import {
   Badge,
+  Box,
   Button,
   Flex,
   Heading,
@@ -10,7 +11,6 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import {
-  MAX_POTENTIALS,
   POTENTIAL_GRADE,
   POTENTIAL_INFOS,
 } from "../../../../constants/enhance/potential";
@@ -19,13 +19,17 @@ export default function OptionsButton({
   title,
   grade,
   options,
+  borderColor,
+  maxOptionCount,
   isDisabled,
   onClick,
 }: {
   title: string;
   grade?: POTENTIAL_GRADE;
   options: string[];
-  isDisabled: boolean;
+  borderColor?: string;
+  maxOptionCount: number;
+  isDisabled?: boolean;
   onClick?: () => void;
 }) {
   const dark = useColorMode().colorMode == "dark";
@@ -46,7 +50,7 @@ export default function OptionsButton({
         alignItems="stretch"
         textAlign="start"
         borderWidth={1}
-        borderColor={grade ? POTENTIAL_INFOS[grade].borderColor : undefined}
+        borderColor={borderColor}
         isDisabled={isDisabled}
         cursor={onClick ? undefined : "default"}
         onClick={onClick}
@@ -72,19 +76,21 @@ export default function OptionsButton({
           borderRadius={4}
           backgroundColor={dark ? "gray.800" : "gray.300"}
         >
-          <Flex
-            h={4}
-            mb={1}
-            gap={1}
-            justify="center"
-            align="center"
-            borderTopRadius={4}
-            backgroundColor={dark ? "gray.700" : "gray.400"}
-          >
-            {grade && <Image src={POTENTIAL_INFOS[grade].icon} />}
-            <Text fontSize={12}>{grade && POTENTIAL_INFOS[grade].name}</Text>
-          </Flex>
-          {new Array(MAX_POTENTIALS).fill(0).map((_, i) => (
+          {borderColor == undefined || (
+            <Flex
+              h={4}
+              gap={1}
+              justify="center"
+              align="center"
+              borderTopRadius={4}
+              backgroundColor={dark ? "gray.700" : "gray.400"}
+            >
+              {grade && <Image src={POTENTIAL_INFOS[grade].icon} />}
+              <Text fontSize={12}>{grade && POTENTIAL_INFOS[grade].name}</Text>
+            </Flex>
+          )}
+          <Box h={1} />
+          {new Array(maxOptionCount).fill(0).map((_, i) => (
             <OptionText key={"option-" + i} text={options[i]} />
           ))}
         </Stack>

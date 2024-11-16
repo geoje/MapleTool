@@ -55,6 +55,7 @@ export default function GrindStone({
           }
         >
           <Image
+            pb={1}
             src={item.item_icon}
             transform={{ base: undefined, sm: "scale(2)" }}
           />
@@ -67,6 +68,7 @@ export default function GrindStone({
         />
         <Slot bgColorScheme="purple" spec={<Text>1 / 5</Text>}>
           <Image
+            pb={2}
             src={GRINDSTONE}
             transform={{ base: undefined, sm: "scale(2)" }}
           />
@@ -86,6 +88,7 @@ export default function GrindStone({
           }
         >
           <Image
+            pb={1}
             src={item.item_icon}
             transform={{ base: undefined, sm: "scale(2)" }}
           />

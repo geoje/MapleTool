@@ -63,6 +63,7 @@ export default function CharacterButton({
         h="fit-content"
         justifyContent="space-between"
         variant={selected == index ? undefined : "ghost"}
+        borderWidth={1}
         opacity={isDragging ? 0.4 : undefined}
         transform={transform ? transformToString(transform) : undefined}
         transition={transition ?? "transform 0ms linear"}
