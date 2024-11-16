@@ -49,10 +49,10 @@ export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
         <Options item={item} />
       </Stack>
 
-      <SpecialRing name={item.item_name} level={item.special_ring_level} />
       <Potential item={item} />
       <Potential item={item} addi />
       <Soul name={item.soul_name} option={item.soul_option} />
+      <SpecialRing name={item.item_name} level={item.special_ring_level} />
     </Box>
   );
 }
