@@ -59,9 +59,14 @@ function MaterialButton({
         <IconButton
           w="40px"
           aria-label={label}
-          opacity={label.endsWith(")") ? 0.2 : undefined}
           colorScheme={selected ? "blue" : undefined}
-          icon={<Image src={icon} maxW="none" />}
+          icon={
+            <Image
+              src={icon}
+              maxW="none"
+              opacity={label.endsWith(")") ? 0.1 : undefined}
+            />
+          }
           onClick={onClick}
         />
       </Tooltip>
