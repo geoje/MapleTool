@@ -29,10 +29,8 @@ export default function GrindStone({
   const dark = colorMode === "dark";
   const palette600 = dark ? ".300" : ".600";
 
-  if (!item.special_ring_level)
-    return (
-      <RequiredText>선택한 아이템은 특수 스킬 반지가 아닙니다.</RequiredText>
-    );
+  if (item.special_ring_level != 4)
+    return <RequiredText>4레벨 특수 스킬 반지를 선택해 주세요.</RequiredText>;
 
   return (
     <Stack>

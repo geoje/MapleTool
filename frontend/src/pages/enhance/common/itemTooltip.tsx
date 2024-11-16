@@ -400,12 +400,10 @@ function OptionUpgrade({
 }) {
   if (upgrade == "0" && upgradeable == "0" && resilience == "0") return <></>;
   return (
-    <Flex>
+    <Flex wrap="wrap">
       <Text fontSize="xs">업그레이드 가능 횟수 : {upgradeable}</Text>
       <Text fontSize="xs" pl="2px" color={TOOLTIP_COLORS.STAR}>
-        {"(복구 가능 횟수 : "}
-        {resilience}
-        {")"}
+        {`(복구 가능 횟수 : ${resilience})`}
       </Text>
     </Flex>
   );

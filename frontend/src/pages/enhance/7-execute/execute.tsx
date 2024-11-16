@@ -22,41 +22,55 @@ export default function Execute({
     return <RequiredText>{message}</RequiredText>;
   }
 
-  if (materialType == MATERIAL_TYPE.STARFORCE)
-    return <Startforce inventoryIndex={inventoryIndex} />;
+  const executions: {
+    element: JSX.Element;
+    materialTypes: MATERIAL_TYPE[];
+  }[] = [
+    {
+      element: <Startforce inventoryIndex={inventoryIndex} />,
+      materialTypes: [MATERIAL_TYPE.STARFORCE],
+    },
+    {
+      element: (
+        <Rebirth inventoryIndex={inventoryIndex} materialType={materialType} />
+      ),
+      materialTypes: [
+        MATERIAL_TYPE.POWERFUL,
+        MATERIAL_TYPE.ETERNAL,
+        MATERIAL_TYPE.BLACK_REBIRTH,
+        MATERIAL_TYPE.ABYSS,
+      ],
+    },
+    {
+      element: <GrindStone inventoryIndex={inventoryIndex} />,
+      materialTypes: [MATERIAL_TYPE.GRINDSTONE],
+    },
+    {
+      element: (
+        <Potential
+          inventoryIndex={inventoryIndex}
+          materialType={materialType}
+        />
+      ),
+      materialTypes: [
+        MATERIAL_TYPE.STRANGE,
+        MATERIAL_TYPE.MASTER,
+        MATERIAL_TYPE.ARTISAN,
+        MATERIAL_TYPE.RED,
+        MATERIAL_TYPE.BLACK,
+        MATERIAL_TYPE.STRANGE_ADDI,
+        MATERIAL_TYPE.ADDI,
+        MATERIAL_TYPE.WHITE_ADDI,
+        MATERIAL_TYPE.POTENTIAL,
+        MATERIAL_TYPE.POTENTIAL_ADDI,
+      ],
+    },
+  ];
 
-  if (
-    [
-      MATERIAL_TYPE.POWERFUL,
-      MATERIAL_TYPE.ETERNAL,
-      MATERIAL_TYPE.BLACK_REBIRTH,
-      MATERIAL_TYPE.ABYSS,
-    ].includes(materialType)
-  )
-    return (
-      <Rebirth inventoryIndex={inventoryIndex} materialType={materialType} />
-    );
-
-  if (materialType == MATERIAL_TYPE.GRINDSTONE)
-    return <GrindStone inventoryIndex={inventoryIndex} />;
-
-  if (
-    [
-      MATERIAL_TYPE.STRANGE,
-      MATERIAL_TYPE.MASTER,
-      MATERIAL_TYPE.ARTISAN,
-      MATERIAL_TYPE.RED,
-      MATERIAL_TYPE.BLACK,
-      MATERIAL_TYPE.STRANGE_ADDI,
-      MATERIAL_TYPE.ADDI,
-      MATERIAL_TYPE.WHITE_ADDI,
-      MATERIAL_TYPE.POTENTIAL,
-      MATERIAL_TYPE.POTENTIAL_ADDI,
-    ].includes(materialType)
-  )
-    return (
-      <Potential inventoryIndex={inventoryIndex} materialType={materialType} />
-    );
+  for (const execution of executions) {
+    if (execution.materialTypes.includes(materialType))
+      return execution.element;
+  }
 
   return <RequiredText>개발중인 기능입니다.</RequiredText>;
 }

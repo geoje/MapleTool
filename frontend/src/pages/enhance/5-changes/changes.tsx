@@ -2,6 +2,7 @@ import { Badge, Box, Collapse, Flex, Stack } from "@chakra-ui/react";
 import ItemToolTip from "../common/itemTooltip";
 import { useAppSelector } from "../../../stores/hooks";
 import RequiredText from "../../../components/content/requiredText";
+import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 
 export default function Changes({
   inventoryIndex,
@@ -15,7 +16,7 @@ export default function Changes({
 
   if (inventoryIndex < 0 || inventoryIndex >= inventory.length) {
     return (
-      <Collapse in={showChanges} startingHeight="1px">
+      <Collapse in={showChanges}>
         <Flex justify="center" pt="1px">
           <RequiredText>장비를 선택해주세요.</RequiredText>
         </Flex>
@@ -23,27 +24,31 @@ export default function Changes({
     );
   }
 
+  if (!showChanges) return <></>;
+
   return (
-    <Collapse in={showChanges} startingHeight="1px">
-      <Flex
-        justify="center"
-        wrap={{ base: "wrap", md: "nowrap" }}
-        gap={2}
-        pt="1px"
-      >
-        <Stack w="min-content">
-          <Badge textAlign="center">강화 전</Badge>
-          <Box w={64} borderRadius={4} bgColor="gray.900">
-            <ItemToolTip item={enhancedItem.before} />
-          </Box>
-        </Stack>
-        <Stack>
-          <Badge textAlign="center">강화 후</Badge>
-          <Box w={64} borderRadius={4} bgColor="gray.900">
-            <ItemToolTip item={enhancedItem.after} />
-          </Box>
-        </Stack>
-      </Flex>
-    </Collapse>
+    <Flex justify="center" wrap="nowrap" gap={2} pt="1px">
+      <Stack>
+        <Badge textAlign="center">강화 전</Badge>
+        <BoxedItemToolTip item={enhancedItem.before} />
+      </Stack>
+      <Stack>
+        <Badge textAlign="center">강화 후</Badge>
+        <BoxedItemToolTip item={enhancedItem.after} />
+      </Stack>
+    </Flex>
+  );
+}
+
+function BoxedItemToolTip({ item }: { item: ItemEquipmentDetail }) {
+  return (
+    <Box
+      w={{ base: "auto", md: 64 }}
+      maxW={64}
+      borderRadius={4}
+      bgColor="gray.900"
+    >
+      <ItemToolTip item={item} />
+    </Box>
   );
 }

@@ -50,7 +50,7 @@ export default function BoardCard({
       {title && order && (
         <Flex pb={5} gap={2}>
           {NumberIcons[order ?? 0]}
-          <Heading size="sm" mr="auto">
+          <Heading size="sm" mr="auto" whiteSpace="nowrap">
             {title}
           </Heading>
           {right}

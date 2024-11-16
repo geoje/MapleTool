@@ -88,7 +88,10 @@ export default function Enhance() {
         </BoardCard>
       </Stack>
       <Stack
-        w={{ base: "100vw", md: inventoryIndex == -1 ? "auto" : "min-content" }}
+        w={{
+          base: "100vw",
+          md: "min-content",
+        }}
       >
         <BoardCard
           order={5}
