@@ -3,6 +3,7 @@ import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/item
 import ItemToolTip from "./itemTooltip";
 import { getMaxGrade } from "../../../services/enhance/potential";
 import { POTENTIAL_INFOS } from "../../../constants/enhance/potential";
+import { getSpecialRingIcon } from "../../../utils/icon";
 
 export default function SlotButton({
   item,
@@ -35,11 +36,22 @@ export default function SlotButton({
         }
         colorScheme={colorScheme}
         icon={
-          <Image
-            src={item?.item_icon}
-            opacity={transparent ? 0.1 : 1}
-            maxW="none"
-          />
+          <>
+            <Image
+              src={item?.item_icon}
+              opacity={transparent ? 0.1 : 1}
+              maxW="none"
+            />
+            {item?.special_ring_level ? (
+              <Image
+                position="absolute"
+                left={1}
+                bottom={1}
+                src={getSpecialRingIcon(item?.special_ring_level)}
+                opacity={transparent ? 0.1 : 1}
+              />
+            ) : undefined}
+          </>
         }
         onClick={onClick}
       />

@@ -17,6 +17,7 @@ import {
   POTENTIAL_INFOS,
 } from "../../../constants/enhance/potential";
 import { getMaxGrade, parseGrade } from "../../../services/enhance/potential";
+import { getSpecialRingIcon } from "../../../utils/icon";
 
 export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
   const grade = getMaxGrade(item);
@@ -38,7 +39,7 @@ export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
 
       <Divider variant="dashed" opacity={0.2} />
       <ImageAndReqLevel
-        imgUrl={item.item_icon}
+        item={item}
         potentialColor={grade ? POTENTIAL_INFOS[grade].imageColor : undefined}
         reqLevel={item.item_base_option.base_equipment_level}
       />
@@ -48,6 +49,7 @@ export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
         <Options item={item} />
       </Stack>
 
+      <SpecialRing name={item.item_name} level={item.special_ring_level} />
       <Potential item={item} />
       <Potential item={item} addi />
       <Soul name={item.soul_name} option={item.soul_option} />
@@ -126,17 +128,18 @@ function PotentialGrade({
 }
 
 function ImageAndReqLevel({
-  imgUrl,
+  item,
   potentialColor,
   reqLevel,
 }: {
-  imgUrl: string;
+  item: ItemEquipmentDetail;
   potentialColor?: string;
   reqLevel: number;
 }) {
   return (
     <Flex width="100%" align="stretch" p={2}>
       <Flex
+        position="relative"
         minW="42px"
         minH="42px"
         justify="center"
@@ -146,7 +149,15 @@ function ImageAndReqLevel({
         borderColor={potentialColor}
         backgroundColor="gray.300"
       >
-        <Image src={imgUrl} style={{ imageRendering: "pixelated" }} />
+        <Image src={item.item_icon} style={{ imageRendering: "pixelated" }} />
+        {item.special_ring_level ? (
+          <Image
+            position="absolute"
+            left={1}
+            bottom={1}
+            src={getSpecialRingIcon(Number(item?.special_ring_level))}
+          />
+        ) : undefined}
       </Flex>
       {potentialColor && (
         <Flex align="start">
@@ -418,6 +429,20 @@ function OptionCuttable({ cuttable }: { cuttable: string }) {
   );
 }
 
+function SpecialRing({ name, level }: { name: string; level: number }) {
+  if (!level) return <></>;
+
+  return (
+    <>
+      <Divider variant="dashed" opacity={0.2} />
+      <Stack p={2} gap={0}>
+        <Text fontSize="xs" color={TOOLTIP_COLORS.STAR}>
+          [특수 스킬 반지] {name} {level}레벨
+        </Text>
+      </Stack>
+    </>
+  );
+}
 function Potential({
   item,
   addi,

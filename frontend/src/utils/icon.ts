@@ -8,6 +8,7 @@ import { MATERIAL_INFOS } from "../constants/enhance/material";
 import { JOBS } from "../constants/jobs";
 import { WORLDS } from "../constants/worlds";
 import MESO from "../assets/item/meso/bag.png";
+import { ICONS as RING_ICONS } from "../constants/enhance/ring";
 
 export function getJobIcon(name?: string) {
   if (!name) return JOB_BLANK;
@@ -29,4 +30,10 @@ export function getMaterialIcon(materialName: string) {
   if (materialName == "메소") return MESO;
   return Object.values(MATERIAL_INFOS).find(({ name }) => name == materialName)
     ?.icon;
+}
+
+export function getSpecialRingIcon(level: number) {
+  return level >= 1 && level <= RING_ICONS.length
+    ? RING_ICONS[level - 1]
+    : undefined;
 }
