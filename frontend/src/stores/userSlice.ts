@@ -157,6 +157,9 @@ const slice = createSlice({
     deleteInventory(state, action: PayloadAction<number>) {
       state.inventory.splice(action.payload, 1);
     },
+    clearInventory(state) {
+      state.inventory = [];
+    },
     addMaterials(
       state,
       action: PayloadAction<{ index: number; materials: Material[] }>
@@ -182,6 +185,9 @@ const slice = createSlice({
       );
 
       used.splice(materialIndex, 1);
+    },
+    clearMaterials(state, action: PayloadAction<number>) {
+      state.inventory[action.payload].used = [];
     },
     setInventoryPotential(
       state,
@@ -256,8 +262,10 @@ export const {
 
   newInventory,
   deleteInventory,
+  clearInventory,
   addMaterials,
   deleteMaterial,
+  clearMaterials,
   setInventoryPotential,
 
   setGuarantee,

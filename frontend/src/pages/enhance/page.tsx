@@ -1,4 +1,10 @@
-import { IconButton, Spinner, Stack, useDisclosure } from "@chakra-ui/react";
+import {
+  IconButton,
+  Spinner,
+  Stack,
+  Tooltip,
+  useDisclosure,
+} from "@chakra-ui/react";
 import BoardCard from "../../components/layout/boardCard";
 import GetEquipment from "./1-getEquipment/getEquipment";
 import SelectEquipment from "./2-selectEquipment/selectEquipment";
@@ -7,15 +13,17 @@ import Config from "./4-config/config";
 import Changes from "./5-changes/changes";
 import Execute from "./7-execute/execute";
 import PresetButtons from "./1-getEquipment/presetButtons";
-import { LuChevronUp, LuChevronDown } from "react-icons/lu";
+import { LuTrash2, LuChevronUp, LuChevronDown } from "react-icons/lu";
 import { useState } from "react";
 import { SET_TYPE } from "../../constants/enhance/set";
-import { useAppSelector } from "../../stores/hooks";
+import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import { useItemEquipmentQuery } from "../../stores/characterApi";
 import { MATERIAL_TYPE } from "../../constants/enhance/material";
 import UsedMaterial from "./6-usedMaterial/usedMaterial";
+import { clearInventory, clearMaterials } from "../../stores/userSlice";
 
 export default function Enhance() {
+  const dispatch = useAppDispatch();
   const name = useAppSelector((state) => state.user.name);
   const { isFetching } = useItemEquipmentQuery(name, {
     skip: !name,
@@ -45,7 +53,25 @@ export default function Enhance() {
         >
           <GetEquipment preset={preset} setPreset={setPreset} />
         </BoardCard>
-        <BoardCard order={2} title="장비 선택">
+        <BoardCard
+          order={2}
+          title="장비 선택"
+          right={
+            <Tooltip label="전체 삭제" placement="top">
+              <IconButton
+                size="xs"
+                aria-label="clearInventory"
+                variant="ghost"
+                colorScheme="red"
+                icon={<LuTrash2 size={16} />}
+                onClick={() => {
+                  setEquipmentIndex(-1);
+                  dispatch(clearInventory());
+                }}
+              />
+            </Tooltip>
+          }
+        >
           <SelectEquipment
             equipmentIndex={inventoryIndex}
             setEquipmentIndex={setEquipmentIndex}
@@ -83,7 +109,22 @@ export default function Enhance() {
         >
           <Changes inventoryIndex={inventoryIndex} showChanges={showChanges} />
         </BoardCard>
-        <BoardCard order={6} title="사용 재료">
+        <BoardCard
+          order={6}
+          title="사용 재료"
+          right={
+            <Tooltip label="전체 삭제" placement="top">
+              <IconButton
+                size="xs"
+                aria-label="clearInventory"
+                variant="ghost"
+                colorScheme="red"
+                icon={<LuTrash2 size={16} />}
+                onClick={() => dispatch(clearMaterials(inventoryIndex))}
+              />
+            </Tooltip>
+          }
+        >
           <UsedMaterial inventoryIndex={inventoryIndex} />
         </BoardCard>
       </Stack>
