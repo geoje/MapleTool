@@ -1,4 +1,4 @@
-import { Flex, Image, Stack, Tag, Text, useColorMode } from "@chakra-ui/react";
+import { Button, Flex, Image, Stack, Tag, Text } from "@chakra-ui/react";
 import {
   MATERIAL_INFOS,
   MATERIAL_TYPE,
@@ -51,6 +51,12 @@ export default function Rebirth({
           onClick={() => {}}
         />
       )}
+      <Flex gap={2}>
+        <Button size="xs">자동설정</Button>
+        <Button flex={1} size="xs">
+          재설정하기
+        </Button>
+      </Flex>
     </Stack>
   );
 }
