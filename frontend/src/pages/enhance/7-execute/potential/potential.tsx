@@ -277,8 +277,8 @@ export default function Potential({
       <Flex
         justifyContent="space-between"
         align="center"
-        bgColor={dark ? "gray.800" : "gray.50"}
-        px={1}
+        bgColor={dark ? "gray.900" : "gray.50"}
+        px={2}
         borderRadius={8}
       >
         <Image src={MESO} />
@@ -286,8 +286,8 @@ export default function Potential({
           {formatNumber(
             costMaterials.find(({ name }) => name.startsWith("메소"))?.value ??
               0
-          )}{" "}
-          메소
+          )}
+          &nbsp;메소
         </Text>
       </Flex>
       <Flex gap={2}>

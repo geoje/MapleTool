@@ -3,6 +3,7 @@ import { MATERIAL_TYPE } from "../../../constants/enhance/material";
 import GrindStone from "./grindStone/grindStone";
 import Potential from "./potential/potential";
 import Rebirth from "./rebirth/rebirth";
+import Startforce from "./starforce/startforce";
 
 export default function Execute({
   inventoryIndex,
@@ -20,6 +21,9 @@ export default function Execute({
 
     return <RequiredText>{message}</RequiredText>;
   }
+
+  if (materialType == MATERIAL_TYPE.STARFORCE)
+    return <Startforce inventoryIndex={inventoryIndex} />;
 
   if (
     [

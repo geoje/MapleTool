@@ -15,7 +15,7 @@ import GRINDSTONE from "../../../../assets/item/scroll/grindstone.png";
 import MESO from "../../../../assets/item/meso/coin.png";
 import { RxPlus, RxDoubleArrowRight } from "react-icons/rx";
 import { FaPlus, FaMinus, FaPlusCircle } from "react-icons/fa";
-import Slot from "./slot";
+import ItemSlot2 from "../common/itemSlot2";
 
 export default function GrindStone({
   inventoryIndex,
@@ -46,7 +46,7 @@ export default function GrindStone({
         </Text>
       </Tag>
       <Flex align="center" gap={2}>
-        <Slot
+        <ItemSlot2
           bgColorScheme="blue"
           spec={
             <Text>
@@ -59,27 +59,27 @@ export default function GrindStone({
             src={item.item_icon}
             transform={{ base: undefined, sm: "scale(2)" }}
           />
-        </Slot>
+        </ItemSlot2>
         <Icon
           as={RxPlus}
           boxSize={8}
           strokeWidth={2}
           color={"gray" + palette600}
         />
-        <Slot bgColorScheme="purple" spec={<Text>1 / 5</Text>}>
+        <ItemSlot2 bgColorScheme="purple" spec={<Text>1 / 5</Text>}>
           <Image
             pb={2}
             src={GRINDSTONE}
             transform={{ base: undefined, sm: "scale(2)" }}
           />
-        </Slot>
+        </ItemSlot2>
         <Icon
           as={RxDoubleArrowRight}
           boxSize={8}
           strokeWidth={2}
           color={"gray" + palette600}
         />
-        <Slot
+        <ItemSlot2
           bgColorScheme="blue"
           spec={
             <Text>
@@ -92,7 +92,7 @@ export default function GrindStone({
             src={item.item_icon}
             transform={{ base: undefined, sm: "scale(2)" }}
           />
-        </Slot>
+        </ItemSlot2>
       </Flex>
       <Flex justify="center" gap={1}>
         <IconButton aria-label="decrease" size="xs" icon={<FaMinus />} />

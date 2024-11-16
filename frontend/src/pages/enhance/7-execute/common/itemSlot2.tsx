@@ -1,11 +1,19 @@
-import { AspectRatio, Box, Flex, useColorMode } from "@chakra-ui/react";
+import {
+  AspectRatio,
+  Box,
+  Flex,
+  ResponsiveValue,
+  useColorMode,
+} from "@chakra-ui/react";
 
-export default function Slot({
+export default function ItemSlot2({
   bgColorScheme,
   spec,
+  w,
   children,
 }: {
-  bgColorScheme: string;
+  bgColorScheme: "blue" | "purple";
+  w?: ResponsiveValue<number | (string & {})>;
   spec?: React.ReactNode;
   children?: React.ReactNode;
 }) {
@@ -19,7 +27,8 @@ export default function Slot({
     <AspectRatio
       as={Flex}
       ratio={1}
-      flex={1}
+      w={w}
+      flex={w ? undefined : 1}
       justify="center"
       align="center"
       bgColor={bgColorScheme + palette50}
