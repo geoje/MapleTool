@@ -285,7 +285,8 @@ export default function Potential({
         <Image src={MESO} />
         <Text fontSize={12}>
           {formatNumber(
-            costMaterials.find(({ name }) => name == "메소")?.value ?? 0
+            costMaterials.find(({ name }) => name.startsWith("메소"))?.value ??
+              0
           )}{" "}
           메소
         </Text>

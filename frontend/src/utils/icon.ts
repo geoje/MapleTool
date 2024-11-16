@@ -27,7 +27,7 @@ export function getArtifactIcon(index?: number, level?: number) {
 }
 
 export function getMaterialIcon(materialName: string) {
-  if (materialName == "메소") return MESO;
+  if (materialName.startsWith("메소")) return MESO;
   return Object.values(MATERIAL_INFOS).find(({ name }) => name == materialName)
     ?.icon;
 }

@@ -48,22 +48,19 @@ export function calcRollingMaterials(
     MATERIAL_TYPE.POTENTIAL_ADDI,
   ].includes(materialType);
 
-  const uses = [
+  const materialName = MATERIAL_INFOS[materialType].name;
+  return [
     {
-      name: "메소",
+      name: `메소 - ${materialName}`,
       value: cube
         ? calcEvaluateCost(level)
         : calcRollingCost(level, grade ?? POTENTIAL_GRADE.RARE, addi),
     },
-  ];
-
-  if (cube)
-    uses.push({
-      name: MATERIAL_INFOS[materialType].name,
+    {
+      name: materialName,
       value: 1,
-    });
-
-  return uses;
+    },
+  ];
 }
 function calcRollingCost(level: number, grade: POTENTIAL_GRADE, addi: boolean) {
   const costByLevel =

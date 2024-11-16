@@ -25,7 +25,12 @@ export default function Changes({
 
   return (
     <Collapse in={showChanges} startingHeight="1px">
-      <Flex justify="center" wrap="wrap" gap={2} pt="1px">
+      <Flex
+        justify="center"
+        wrap={{ base: "wrap", md: "nowrap" }}
+        gap={2}
+        pt="1px"
+      >
         <Stack w="min-content">
           <Badge textAlign="center">강화 전</Badge>
           <Box w={64} borderRadius={4} bgColor="gray.900">

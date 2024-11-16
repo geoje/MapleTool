@@ -46,9 +46,15 @@ export default function UsedMaterial({
       {enhancedItem.used.map(({ name, value }) => (
         <Tooltip key={"material-" + name} label={name}>
           <Tag position="relative" pt={2} pb={1}>
-            <Stack>
-              <Flex h={8} justify="center" align="center">
+            <Stack align="center">
+              <Flex position="relative" h={8} justify="center" align="end">
                 <Image src={getMaterialIcon(name)} />
+                {name.startsWith("메소") && (
+                  <Image
+                    h={4}
+                    src={getMaterialIcon(name.replace("메소 - ", ""))}
+                  />
+                )}
               </Flex>
               <AnimatedCounter
                 includeDecimals={false}
