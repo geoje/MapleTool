@@ -17,7 +17,7 @@ import {
   POTENTIAL_INFOS,
 } from "../../../constants/enhance/potential";
 import { getMaxGrade, parseGrade } from "../../../services/enhance/potential";
-import { getSpecialRingIcon } from "../../../utils/icon";
+import ItemIcon from "./itemIcon";
 
 export default function ItemToolTip({ item }: { item: ItemEquipmentDetail }) {
   const grade = getMaxGrade(item);
@@ -149,15 +149,7 @@ function ImageAndReqLevel({
         borderColor={potentialColor}
         backgroundColor="gray.300"
       >
-        <Image src={item.item_icon} style={{ imageRendering: "pixelated" }} />
-        {item.special_ring_level ? (
-          <Image
-            position="absolute"
-            left={1}
-            bottom={1}
-            src={getSpecialRingIcon(Number(item?.special_ring_level))}
-          />
-        ) : undefined}
+        <ItemIcon item={item} />
       </Flex>
       {potentialColor && (
         <Flex align="start">

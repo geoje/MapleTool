@@ -1,9 +1,9 @@
-import { IconButton, Image, Tooltip } from "@chakra-ui/react";
+import { IconButton, Tooltip } from "@chakra-ui/react";
 import { ItemEquipmentDetail } from "../../../types/character/itemEquipment/itemEquipment";
 import ItemToolTip from "./itemTooltip";
 import { getMaxGrade } from "../../../services/enhance/potential";
 import { POTENTIAL_INFOS } from "../../../constants/enhance/potential";
-import { getSpecialRingIcon } from "../../../utils/icon";
+import ItemIcon from "./itemIcon";
 
 export default function SlotButton({
   item,
@@ -35,24 +35,7 @@ export default function SlotButton({
           grade && !transparent ? POTENTIAL_INFOS[grade].borderColor : undefined
         }
         colorScheme={colorScheme}
-        icon={
-          <>
-            <Image
-              src={item?.item_icon}
-              opacity={transparent ? 0.1 : 1}
-              maxW="none"
-            />
-            {item?.special_ring_level ? (
-              <Image
-                position="absolute"
-                left={1}
-                bottom={1}
-                src={getSpecialRingIcon(item?.special_ring_level)}
-                opacity={transparent ? 0.1 : 1}
-              />
-            ) : undefined}
-          </>
-        }
+        icon={<ItemIcon item={item} opacity={transparent ? 0.1 : 1} />}
         onClick={onClick}
       />
     </Tooltip>

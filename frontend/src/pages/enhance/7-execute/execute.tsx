@@ -1,5 +1,6 @@
 import RequiredText from "../../../components/content/requiredText";
 import { MATERIAL_TYPE } from "../../../constants/enhance/material";
+import GrindStone from "./grindStone/grindStone";
 import Potential from "./potential/potential";
 
 export default function Execute({
@@ -32,11 +33,13 @@ export default function Execute({
       MATERIAL_TYPE.POTENTIAL,
       MATERIAL_TYPE.POTENTIAL_ADDI,
     ].includes(materialType)
-  ) {
+  )
     return (
       <Potential inventoryIndex={inventoryIndex} materialType={materialType} />
     );
-  }
 
-  return <></>;
+  if (materialType == MATERIAL_TYPE.GRINDSTONE)
+    return <GrindStone inventoryIndex={inventoryIndex} />;
+
+  return <RequiredText>개발중인 기능입니다.</RequiredText>;
 }

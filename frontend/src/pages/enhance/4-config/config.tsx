@@ -21,5 +21,5 @@ export default function Config({
   )
     return <Guarantee materialType={materialType} />;
 
-  return <></>;
+  return <RequiredText>필요한 추가 설정이 없습니다.</RequiredText>;
 }
