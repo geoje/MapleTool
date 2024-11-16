@@ -7,7 +7,13 @@ import { SLOT_GRID } from "../../../constants/enhance/equipment";
 import { newInventory } from "../../../stores/userSlice";
 import RequiredText from "../../../components/content/requiredText";
 
-export default function CharacterEquipTable({ preset }: { preset: number }) {
+export default function CharacterEquipTable({
+  preset,
+  onItemClick,
+}: {
+  preset: number;
+  onItemClick: () => void;
+}) {
   const dispatch = useAppDispatch();
   const name = useAppSelector((state) => state.user.name);
   const { data } = useItemEquipmentQuery(name, { skip: !name });
@@ -38,7 +44,14 @@ export default function CharacterEquipTable({ preset }: { preset: number }) {
                 preset != 1 &&
                 JSON.stringify(item) == JSON.stringify(defaultItemGrid[i][j])
               }
-              onClick={item ? () => dispatch(newInventory(item)) : undefined}
+              onClick={
+                item
+                  ? () => {
+                      dispatch(newInventory(item));
+                      onItemClick();
+                    }
+                  : undefined
+              }
             />
           ) : (
             <div key={`item-${i}-${j}`} />

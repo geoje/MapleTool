@@ -247,7 +247,7 @@ export default function Potential({
       <Tag as={Flex} px={2} py={1} gap={2}>
         <Image src={MATERIAL_INFOS[materialType].icon} />
         <Text size="xs">
-          아이템의 <b>잠재능력을</b> 재설정합니다.
+          아이템의 <b>잠재능력</b>을 재설정합니다.
         </Text>
       </Tag>
       <ItemSlot image={item?.item_icon} />

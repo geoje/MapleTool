@@ -34,11 +34,8 @@ export default function Startforce({
         </Text>
       </Tag>
       <Flex h="min-content" gap={2}>
-        <ItemSlot2 bgColorScheme="blue" w={{ base: 16, sm: 32 }}>
-          <Image
-            src={item.item_icon}
-            transform={{ base: undefined, sm: "scale(2)" }}
-          />
+        <ItemSlot2 bgColorScheme="blue" w={32}>
+          <Image src={item.item_icon} transform="scale(2)" />
         </ItemSlot2>
         <Box
           w={{ base: "auto", md: 64 }}

@@ -13,9 +13,11 @@ import PreparedEquipTable from "./preparedEquipTable";
 export default function GetEquipment({
   preset,
   setPreset,
+  onItemClick,
 }: {
   preset: number | SET_TYPE;
   setPreset: (value: SET_TYPE) => void;
+  onItemClick: () => void;
 }) {
   return (
     <Stack align="center" gap={1} divider={<Divider />}>
@@ -36,9 +38,9 @@ export default function GetEquipment({
       </Flex>
 
       {typeof preset == "number" ? (
-        <CharacterEquipTable preset={preset} />
+        <CharacterEquipTable preset={preset} onItemClick={onItemClick} />
       ) : (
-        <PreparedEquipTable preset={preset} />
+        <PreparedEquipTable preset={preset} onItemClick={onItemClick} />
       )}
     </Stack>
   );

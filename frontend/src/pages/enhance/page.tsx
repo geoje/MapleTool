@@ -25,6 +25,7 @@ import { clearInventory, clearMaterials } from "../../stores/userSlice";
 export default function Enhance() {
   const dispatch = useAppDispatch();
   const name = useAppSelector((state) => state.user.name);
+  const inventory = useAppSelector((state) => state.user.inventory);
   const { isFetching } = useItemEquipmentQuery(name, {
     skip: !name,
     refetchOnMountOrArgChange: true,
@@ -51,7 +52,11 @@ export default function Enhance() {
             )
           }
         >
-          <GetEquipment preset={preset} setPreset={setPreset} />
+          <GetEquipment
+            preset={preset}
+            setPreset={setPreset}
+            onItemClick={() => setEquipmentIndex(inventory.length)}
+          />
         </BoardCard>
         <BoardCard
           order={2}

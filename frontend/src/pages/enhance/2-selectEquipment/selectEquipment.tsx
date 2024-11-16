@@ -25,7 +25,13 @@ export default function SelectEquipment({
 
   return (
     <Center>
-      <SimpleGrid columns={5} gap={1}>
+      <SimpleGrid
+        display={{ base: "flex", md: "grid" }}
+        columns={5}
+        gap={1}
+        flexWrap="wrap"
+        justifyContent="center"
+      >
         {inventory.map((item, i) => (
           <Box key={`item-${i}`} position="relative">
             <SlotButton

@@ -20,6 +20,7 @@ export default function SlotButton({
 
   return item ? (
     <Tooltip
+      display={{ base: "none", md: "block" }}
       color="white"
       background="blackAlpha.800"
       w={64}
