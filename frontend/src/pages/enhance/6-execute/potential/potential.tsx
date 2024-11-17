@@ -246,8 +246,12 @@ export default function Potential({
 
   return (
     <Stack width={{ base: "100%", md: 60 }}>
-      <Guarantee materialType={materialType} />
-      <Divider my={1} />
+      {(POTENTIAL_CRITERIA[materialType]?.RARE.bound ?? 0) > 0 && (
+        <>
+          <Guarantee materialType={materialType} />
+          <Divider my={1} />
+        </>
+      )}
       <Tag as={Flex} px={2} py={1} gap={2}>
         <Image src={MATERIAL_INFOS[materialType].icon} />
         <Text size="xs">
