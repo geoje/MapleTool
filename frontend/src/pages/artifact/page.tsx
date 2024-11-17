@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import ArtifactLevel from "./1-artifactLevel/artifactLevel";
 import EffectLevel from "./2-effectLevel/effectLevel";
 import SelectEffect from "./3-select/selectEffect";
-import ResultGrid from "./4-result/result";
 import BoardCard from "../../components/layout/boardCard";
-import { remainPoint } from "../../services/artifact";
 import { useAppSelector } from "../../stores/hooks";
 import { useBasicQuery } from "../../stores/unionApi";
+import { flatEffectNamesByLevel, remainPoint } from "../../services/artifact";
+import ResultGrid from "./4-result/result";
 
 export default function Artifact() {
   const name = useAppSelector((state) => state.user.name);
@@ -21,7 +21,9 @@ export default function Artifact() {
   );
   const [effectIndex, setEffectIndex] = useState(0);
   const [effectLevels, setEffectLevels] = useState<number[]>([]);
-  const [effectNames, setEffectNames] = useState<string[]>([]);
+  const [effectNamesByLevel, setEffectNamesByLevel] = useState<
+    Record<number, Set<string>>
+  >({});
 
   useEffect(() => {
     if (!data) return;
@@ -29,9 +31,13 @@ export default function Artifact() {
     setArtifactLevel(Math.max(data?.union_artifact_level ?? 1, 1));
   }, [data, setArtifactLevel]);
 
+  useEffect(() => {
+    setEffectNamesByLevel({});
+  }, [artifactLevel]);
+
   return (
     <>
-      <Stack w={{ base: "100vw", md: "auto" }}>
+      <Stack w={{ base: "100vw", md: "min-content" }}>
         <BoardCard
           order={1}
           title="아티팩트 레벨"
@@ -53,8 +59,8 @@ export default function Artifact() {
         <BoardCard order={3} title="효과 선택">
           <SelectEffect
             effectLevels={effectLevels}
-            effectNames={effectNames}
-            setEffectNames={setEffectNames}
+            effectNamesByLevel={effectNamesByLevel}
+            setEffectNamesByLevel={setEffectNamesByLevel}
           />
         </BoardCard>
       </Stack>
@@ -67,7 +73,10 @@ export default function Artifact() {
           <ResultGrid
             artifactLevel={artifactLevel}
             effectIndex={effectIndex}
-            effectNames={effectNames}
+            effectNames={flatEffectNamesByLevel(
+              effectLevels,
+              effectNamesByLevel
+            )}
           />
         </BoardCard>
       </Stack>

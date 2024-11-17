@@ -49,8 +49,8 @@ export default function Crystal({
           key={"effect-" + i}
           size="xs"
           backgroundColor={
-            effect &&
-            colorScheme + (hoverEffect == effect ? palette200 : palette100)
+            colorScheme +
+            (hoverEffect && hoverEffect == effect ? palette200 : palette100)
           }
           _hover={{ backgroundColor: colorScheme + palette200 }}
           onMouseEnter={() => setHoverEffect(effect)}

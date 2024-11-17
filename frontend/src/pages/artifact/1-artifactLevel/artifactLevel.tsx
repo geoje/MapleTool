@@ -1,10 +1,4 @@
-import {
-  Button,
-  HStack,
-  Input,
-  Tooltip,
-  useNumberInput,
-} from "@chakra-ui/react";
+import { Button, HStack, Input, useNumberInput } from "@chakra-ui/react";
 import {
   MAX_ARTIFACT_LEVEL,
   MIN_ARTIFACT_LEVEL,
@@ -29,10 +23,8 @@ export default function ArtifactLevel({
   return (
     <HStack maxW={48}>
       <Button {...getDecrementButtonProps()}>-</Button>
-      <Input size="lg" {...getInputProps()} />
-      <Tooltip label="꾹 누를 수도 있어요.">
-        <Button {...getIncrementButtonProps()}>+</Button>
-      </Tooltip>
+      <Input minW={12} size="lg" {...getInputProps()} />
+      <Button {...getIncrementButtonProps()}>+</Button>
     </HStack>
   );
 }

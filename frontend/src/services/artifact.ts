@@ -1,6 +1,8 @@
 import {
   CRYSTALS_BY_LEVEL,
   EFFECT_COUNT_PER_CRYSTAL,
+  EFFECT_NAMES,
+  MAX_APPLIED_EFFECT_LEVEL,
   POINT_BY_CRYSTAL,
 } from "../constants/artifact";
 
@@ -65,4 +67,36 @@ export function remainPoint(artifactLevel: number) {
     .map((c) => POINT_BY_CRYSTAL[c.level])
     .reduce((prev, cur) => prev + cur);
   return point - usedPoint;
+}
+
+export function groupEffectLevelsCount(effectLevels: number[]): {
+  [key: number]: number;
+} {
+  return effectLevels
+    .map((level) => Math.min(MAX_APPLIED_EFFECT_LEVEL, level))
+    .reduce((acc, level) => {
+      acc[level] = (acc[level] || 0) + 1;
+      return acc;
+    }, {} as { [key: number]: number });
+}
+
+export function flatEffectNamesByLevel(
+  effectLevels: number[],
+  effectNamesByLevel: Record<number, Set<string>>
+) {
+  const effectLevelsCount = groupEffectLevelsCount(effectLevels);
+
+  return Object.keys(effectNamesByLevel)
+    .map((level) => Number(level))
+    .sort()
+    .flatMap((level) => [
+      ...[...effectNamesByLevel[level]].sort(
+        (a, b) =>
+          EFFECT_NAMES.findIndex(({ full }) => full == a) -
+          EFFECT_NAMES.findIndex(({ full }) => full == b)
+      ),
+      ...new Array(
+        effectLevelsCount[level] - effectNamesByLevel[level].size
+      ).fill(""),
+    ]);
 }

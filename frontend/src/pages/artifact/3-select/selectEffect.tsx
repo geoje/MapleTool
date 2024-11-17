@@ -1,113 +1,87 @@
-import {
-  Badge,
-  Box,
-  Flex,
-  Stack,
-  useColorMode,
-  useToken,
-} from "@chakra-ui/react";
-import { Select, components } from "chakra-react-select";
-import {
-  EFFECT_NAMES,
-  MAX_APPLIED_EFFECT_LEVEL,
-} from "../../../constants/artifact";
-import { useEffect } from "react";
+import { Badge, Button, Flex, Stack, Tooltip } from "@chakra-ui/react";
+import { EFFECT_NAMES } from "../../../constants/artifact";
+import { groupEffectLevelsCount } from "../../../services/artifact";
 
 export default function SelectEffect({
   effectLevels,
-  effectNames,
-  setEffectNames,
+  effectNamesByLevel,
+  setEffectNamesByLevel,
 }: {
   effectLevels: number[];
-  effectNames: string[];
-  setEffectNames: (values: string[]) => void;
+  effectNamesByLevel: Record<number, Set<string>>;
+  setEffectNamesByLevel: (values: Record<number, Set<string>>) => void;
 }) {
-  useEffect(() => {
-    const unusedEffectNames = EFFECT_NAMES.filter(
-      ({ full }) => !effectNames.some((existName) => existName == full)
-    ).map(({ full }) => full);
-    const newEffectNames = [...effectNames, ...unusedEffectNames].slice(
-      0,
-      effectLevels.length
-    );
-    setEffectNames(newEffectNames);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [effectLevels]);
+  const effectLevelsCount = groupEffectLevelsCount(effectLevels);
+  const fullNamesCount = Object.values(effectNamesByLevel)
+    .map((levels) => levels.size)
+    .reduce((prev, cur) => prev + cur, 0);
 
   return (
-    <Stack>
-      {effectLevels.map((effectLevel, i) => (
-        <Flex key={"effect-selector-" + i} align="center" gap={2}>
-          <EffectSelector
-            effectName={effectNames[i]}
-            effectNames={effectNames}
-            onNameSelected={(effectName) => {
-              const symmetryIndex = effectNames.indexOf(effectName);
-              const temp = [...effectNames];
-              temp[i] = effectName;
-              if (symmetryIndex != -1) temp[symmetryIndex] = effectNames[i];
-              setEffectNames(temp);
-            }}
-          />
-          <Badge
-            colorScheme={
-              effectLevel > MAX_APPLIED_EFFECT_LEVEL ? "orange" : "blue"
-            }
-          >
-            {Math.min(effectLevel, MAX_APPLIED_EFFECT_LEVEL)}
-          </Badge>
-        </Flex>
-      ))}
+    <Stack gap={fullNamesCount == effectLevels.length ? 0 : 4}>
+      <Flex gap={1} wrap="wrap">
+        {Object.keys(effectLevelsCount)
+          .map((level) => Number(level))
+          .sort((a, b) => b - a)
+          .map((level) =>
+            new Array(
+              (effectLevelsCount[level] ?? 0) -
+                (effectNamesByLevel[level]?.size ?? 0)
+            )
+              .fill(0)
+              .map((_, i) => (
+                <Badge key={"level-" + i} size="xs" colorScheme="blue">
+                  {level}
+                </Badge>
+              ))
+          )}
+      </Flex>
+      <Flex gap={1} wrap="wrap">
+        {EFFECT_NAMES.map((effect, i) => {
+          const entry = Object.entries(effectNamesByLevel).find(
+            ([_, fullNames]) => fullNames.has(effect.full)
+          );
+
+          return (
+            <Tooltip key={"effect-" + i} placement="top" label={effect.full}>
+              <Button
+                size="xs"
+                colorScheme="blue"
+                variant={entry ? undefined : "outline"}
+                isDisabled={!entry && fullNamesCount == effectLevels.length}
+                onClick={() => {
+                  if (entry) {
+                    entry[1].delete(effect.full);
+                    setEffectNamesByLevel({
+                      ...effectNamesByLevel,
+                      [Number(entry[0])]: entry[1],
+                    });
+                    return;
+                  }
+
+                  for (const level of new Set(effectLevels)) {
+                    if (
+                      (effectNamesByLevel[level]?.size ?? 0) <
+                      effectLevelsCount[level]
+                    ) {
+                      setEffectNamesByLevel({
+                        ...effectNamesByLevel,
+                        [level]: new Set([
+                          ...(effectNamesByLevel[level] ?? []),
+                          effect.full,
+                        ]),
+                      });
+                      return;
+                    }
+                  }
+                }}
+              >
+                {effect.abbreviate}
+                {entry ? ` ${entry[0]}` : ""}
+              </Button>
+            </Tooltip>
+          );
+        })}
+      </Flex>
     </Stack>
-  );
-}
-
-function EffectSelector({
-  effectName,
-  effectNames,
-  onNameSelected,
-}: {
-  effectName: string;
-  effectNames: string[];
-  onNameSelected: (effectName: string) => void;
-}) {
-  const dark = useColorMode().colorMode == "dark";
-  const [hoverColor, selectedColor, hoverSelectedColor] = useToken("colors", [
-    dark ? "whiteAlpha.200" : "blackAlpha.200",
-    dark ? "blue.800" : "blue.50",
-    dark ? "blue.700" : "blue.100",
-  ]);
-
-  return (
-    <Box flex={1}>
-      <Select
-        size="sm"
-        options={EFFECT_NAMES.map(({ full }) => ({
-          label: full,
-          value: String(effectNames.includes(full) ? true : false),
-        }))}
-        value={{ label: effectName, value: String(true) }}
-        onChange={(selected) => selected && onNameSelected(selected.label)}
-        components={{
-          Option: (props) => <components.Option {...props} />,
-        }}
-        styles={{
-          option: (base, props) => ({
-            ...base,
-            fontSize: "var(--chakra-fontSizes-sm)",
-            cursor: "pointer",
-            color: dark ? "white" : "black",
-            backgroundColor: props.isSelected
-              ? props.isFocused
-                ? hoverSelectedColor
-                : selectedColor
-              : props.isFocused
-              ? hoverColor
-              : undefined,
-          }),
-        }}
-      />
-    </Box>
   );
 }
