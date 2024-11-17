@@ -11,10 +11,10 @@ import {
   POTENTIAL_CRITERIA,
   POTENTIAL_GRADE,
   POTENTIAL_INFOS,
-} from "../../../constants/enhance/potential";
-import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
-import { MATERIAL_TYPE } from "../../../constants/enhance/material";
-import { setGuarantee } from "../../../stores/userSlice";
+} from "../../../../constants/enhance/potential";
+import { useAppDispatch, useAppSelector } from "../../../../stores/hooks";
+import { MATERIAL_TYPE } from "../../../../constants/enhance/material";
+import { setGuarantee } from "../../../../stores/userSlice";
 import React from "react";
 
 export default function Guarantee({
@@ -26,7 +26,7 @@ export default function Guarantee({
   const guarantees = useAppSelector((state) => state.user.guarantees);
 
   return (
-    <Flex justify={{ base: "center", md: "space-between" }} gap={0.5}>
+    <Flex justify={{ base: "center", md: "space-between" }} gap={2}>
       {Object.values(POTENTIAL_GRADE).map((grade, i) => {
         const currentValue =
           (guarantees[materialType] ? guarantees[materialType][grade] : 0) ?? 0;

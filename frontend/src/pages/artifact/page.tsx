@@ -75,7 +75,12 @@ export default function Artifact() {
     }
     setEffectIndex(levelsIndex);
     setEffectNamesByLevel(namesByLevel);
-  }, [dataArtifact, setEffectIndex, setEffectNamesByLevel]);
+  }, [
+    dataArtifact,
+    availableEffectLevelGrid,
+    setEffectIndex,
+    setEffectNamesByLevel,
+  ]);
 
   return (
     <>

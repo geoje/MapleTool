@@ -1,6 +1,7 @@
 import {
   Badge,
   Button,
+  Divider,
   Flex,
   Image,
   Stack,
@@ -50,6 +51,7 @@ import PotentialCondition from "../../../../types/character/itemEquipment/potent
 import { FaPlay, FaStop } from "react-icons/fa6";
 import { isFitConditions } from "../../../../services/enhance/potentialCondition";
 import ItemSlot from "../common/itemSlot";
+import Guarantee from "./guarantee";
 
 const AUTO_DELAY = 100;
 
@@ -244,6 +246,8 @@ export default function Potential({
 
   return (
     <Stack width={{ base: "100%", md: 60 }}>
+      <Guarantee materialType={materialType} />
+      <Divider my={1} />
       <Tag as={Flex} px={2} py={1} gap={2}>
         <Image src={MATERIAL_INFOS[materialType].icon} />
         <Text size="xs">
@@ -267,7 +271,7 @@ export default function Potential({
           grade={newGrade}
           options={formatOptions(newOptions)}
           isDisabled={!newOptions[0]}
-          borderColor={grade ? POTENTIAL_INFOS[grade].borderColor : ""}
+          borderColor={newGrade ? POTENTIAL_INFOS[newGrade].borderColor : ""}
           maxOptionCount={MAX_POTENTIALS}
           onClick={
             selectable ? () => applyOptions(newOptions, newGrade) : undefined

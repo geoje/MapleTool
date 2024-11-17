@@ -9,9 +9,8 @@ import BoardCard from "../../components/layout/boardCard";
 import GetEquipment from "./1-getEquipment/getEquipment";
 import SelectEquipment from "./2-selectEquipment/selectEquipment";
 import SelectMaterial from "./3-selectMaterial/selectMaterial";
-import Config from "./4-config/config";
-import Changes from "./5-changes/changes";
-import Execute from "./7-execute/execute";
+import Changes from "./4-changes/changes";
+import Execute from "./6-execute/execute";
 import PresetButtons from "./1-getEquipment/presetButtons";
 import { LuTrash2, LuChevronUp, LuChevronDown } from "react-icons/lu";
 import { useState } from "react";
@@ -19,7 +18,7 @@ import { SET_TYPE } from "../../constants/enhance/set";
 import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import { useItemEquipmentQuery } from "../../stores/characterApi";
 import { MATERIAL_TYPE } from "../../constants/enhance/material";
-import UsedMaterial from "./6-usedMaterial/usedMaterial";
+import UsedMaterial from "./5-usedMaterial/usedMaterial";
 import { clearInventory, clearMaterials } from "../../stores/userSlice";
 
 export default function Enhance() {
@@ -88,9 +87,6 @@ export default function Enhance() {
             setMaterialType={setMaterialType}
           />
         </BoardCard>
-        <BoardCard order={4} title="추가 설정">
-          <Config materialType={materialType} />
-        </BoardCard>
       </Stack>
       <Stack
         w={{
@@ -99,7 +95,7 @@ export default function Enhance() {
         }}
       >
         <BoardCard
-          order={5}
+          order={4}
           title="장비 변화"
           right={
             <IconButton
@@ -120,7 +116,7 @@ export default function Enhance() {
           <Changes inventoryIndex={inventoryIndex} showChanges={showChanges} />
         </BoardCard>
         <BoardCard
-          order={6}
+          order={5}
           title="사용 재료"
           right={
             <Tooltip label="전체 삭제" placement="top">
@@ -139,7 +135,7 @@ export default function Enhance() {
         </BoardCard>
       </Stack>
       <Stack w={{ base: "100vw", md: "auto" }}>
-        <BoardCard order={7} title="실행">
+        <BoardCard order={6} title="실행">
           <Execute
             inventoryIndex={inventoryIndex}
             materialType={materialType}
