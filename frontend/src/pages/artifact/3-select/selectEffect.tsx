@@ -24,8 +24,11 @@ export default function SelectEffect({
           .sort((a, b) => b - a)
           .map((level) =>
             new Array(
-              (effectLevelsCount[level] ?? 0) -
-                (effectNamesByLevel[level]?.size ?? 0)
+              Math.max(
+                0,
+                (effectLevelsCount[level] ?? 0) -
+                  (effectNamesByLevel[level]?.size ?? 0)
+              )
             )
               .fill(0)
               .map((_, i) => (

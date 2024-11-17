@@ -37,12 +37,9 @@ export default function Artifact() {
 
   useEffect(() => {
     setArtifactLevel(Math.max(dataBasic?.union_artifact_level ?? 1, 1));
-  }, [dataBasic, setArtifactLevel]);
-
-  useEffect(() => {
     setEffectIndex(0);
     setEffectNamesByLevel({});
-  }, [artifactLevel, setEffectIndex]);
+  }, [dataBasic, setArtifactLevel]);
 
   useEffect(() => {
     if (!dataArtifact) return;
@@ -58,7 +55,6 @@ export default function Artifact() {
           (level, i) => level == dataArtifactEffects[i]
         )
     );
-
     if (levelsIndex == -1) return;
 
     const namesByLevel: Record<number, Set<string>> = {};
@@ -75,12 +71,9 @@ export default function Artifact() {
     }
     setEffectIndex(levelsIndex);
     setEffectNamesByLevel(namesByLevel);
-  }, [
-    dataArtifact,
-    availableEffectLevelGrid,
-    setEffectIndex,
-    setEffectNamesByLevel,
-  ]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataArtifact]);
 
   return (
     <>
@@ -92,7 +85,11 @@ export default function Artifact() {
         >
           <ArtifactLevel
             artifactLevel={artifactLevel}
-            setArtifactlevel={setArtifactLevel}
+            setArtifactlevel={(artifactLevel) => {
+              setArtifactLevel(artifactLevel);
+              setEffectIndex(0);
+              setEffectNamesByLevel({});
+            }}
           />
         </BoardCard>
         <BoardCard
@@ -103,7 +100,10 @@ export default function Artifact() {
           <EffectLevel
             artifactLevel={artifactLevel}
             effectIndex={effectIndex}
-            setEffectIndex={setEffectIndex}
+            setEffectIndex={(effectIndex) => {
+              setEffectIndex(effectIndex);
+              setEffectNamesByLevel({});
+            }}
           />
         </BoardCard>
         <BoardCard order={3} title="효과 선택">

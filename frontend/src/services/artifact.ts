@@ -81,7 +81,7 @@ export function groupEffectLevelsCount(effectLevels: number[]) {
 export function flatEffectNamesByLevel(
   effectLevels: number[],
   effectNamesByLevel: Record<number, Set<string>>
-) {
+): string[] {
   const effectLevelsCount = groupEffectLevelsCount(effectLevels);
 
   return Object.keys(effectNamesByLevel)
@@ -94,7 +94,7 @@ export function flatEffectNamesByLevel(
           EFFECT_INFOS.findIndex(({ full }) => full == b)
       ),
       ...new Array(
-        effectLevelsCount[level] - effectNamesByLevel[level].size
+        Math.max(0, effectLevelsCount[level] - effectNamesByLevel[level].size)
       ).fill(""),
     ]);
 }
