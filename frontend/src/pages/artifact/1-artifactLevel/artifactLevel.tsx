@@ -30,7 +30,7 @@ export default function ArtifactLevel({
     <HStack maxW={48}>
       <Button {...getDecrementButtonProps()}>-</Button>
       <Input size="lg" {...getInputProps()} />
-      <Tooltip label="꾹 누를 수도 있어요">
+      <Tooltip label="꾹 누를 수도 있어요.">
         <Button {...getIncrementButtonProps()}>+</Button>
       </Tooltip>
     </HStack>

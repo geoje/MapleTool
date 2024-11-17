@@ -31,8 +31,51 @@ export function convertPlansToParams(bossPlans: BossPlan[]) {
   for (const bossPlan of bossPlans)
     params[bossPlan.name] = convertPlanToBits(bossPlan);
 
-  return new URLSearchParams(params);
+  const originPath =
+    window.location.origin + window.location.pathname.replace(/\/$/, "");
+  const search = new URLSearchParams(params).toString();
+
+  return originPath + "?" + search;
 }
 function convertPlanToBits(bossPlan: BossPlan) {
-  return String(1234);
+  const BOSS_TYPE_KEYS = Object.keys(BOSS_TYPE);
+  const BOSS_DIFFICULTY_KEYS = Object.keys(BOSS_DIFFICULTY);
+
+  return String(
+    bossPlan.boss
+      .map((b) => {
+        const typeIndex = BOSS_TYPE_KEYS.indexOf(b.type);
+        const difficultyIndex = BOSS_DIFFICULTY_KEYS.indexOf(b.difficulty);
+
+        return `${typeIndex}.${difficultyIndex}.${b.members}`;
+      })
+      .join("-")
+  );
+}
+export function parsePlansFromParams(searchParams: URLSearchParams) {
+  const bossPlans: BossPlan[] = [];
+
+  for (const [key, value] of searchParams)
+    bossPlans.push(parsePlanFromParam(key, value));
+
+  return bossPlans;
+}
+function parsePlanFromParam(key: string, value: string): BossPlan {
+  const boss = value
+    .split("-")
+    .map((vs) => vs.split("."))
+    .map((vs) => {
+      const type = Object.keys(BOSS_TYPE)[Number(vs[0])] as BOSS_TYPE;
+      const difficulty = Object.keys(BOSS_DIFFICULTY)[
+        Number(vs[1])
+      ] as BOSS_DIFFICULTY;
+      const members = Number(vs[2]);
+
+      if (!type || !difficulty || !members) return;
+
+      return { type, difficulty, members };
+    })
+    .filter((b) => b != undefined);
+
+  return { name: key, order: "", boss };
 }

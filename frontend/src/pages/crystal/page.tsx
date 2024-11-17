@@ -1,4 +1,19 @@
-import { IconButton, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import BoardCard from "../../components/layout/boardCard";
 import ResultTable from "./3-statistics/resultTable";
 import { useState } from "react";
@@ -6,13 +21,89 @@ import CharacterButtons from "./1-character/characterButtons";
 import Boss from "./2-boss/boss";
 import PreparedButtons from "./2-boss/preparedButtons";
 import NameInput from "./1-character/nameInput";
-import { LuShare2 } from "react-icons/lu";
-import { convertPlansToParams } from "../../services/boss";
-import { useAppSelector } from "../../stores/hooks";
+import { LuShare2, LuTrash2 } from "react-icons/lu";
+import {
+  convertPlansToParams,
+  parsePlansFromParams,
+} from "../../services/boss";
+import { useAppDispatch, useAppSelector } from "../../stores/hooks";
+import {
+  useInfoToast,
+  useSuccessToast,
+  useWarningToast,
+} from "../../hooks/useToast";
+import { useSearchParams } from "react-router-dom";
+import CharacterButton from "./1-character/characterButton";
+import { setBossPlans } from "../../stores/userSlice";
 
 export default function Crystal() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const loadedBossPlans = parsePlansFromParams(searchParams);
+
+  const dispatch = useAppDispatch();
   const bossPlans = useAppSelector((state) => state.user.bossPlans);
   const [selected, setSelected] = useState(-1);
+  const toastInfo = useInfoToast();
+  const toastWraning = useWarningToast();
+  const toastSuccess = useSuccessToast();
+
+  const ShareIconButton = () => (
+    <Tooltip label="공유" placement="top">
+      <IconButton
+        aria-label="share"
+        size="xs"
+        icon={<LuShare2 size={16} />}
+        variant="ghost"
+        onClick={() => {
+          if (!bossPlans.length) {
+            toastWraning({ title: "캐릭터를 등록해주세요." });
+            return;
+          }
+
+          const url = convertPlansToParams(bossPlans);
+          const urlElement = (
+            <Text fontSize="small" lineHeight={1} wordBreak="break-all">
+              {url}
+            </Text>
+          );
+          if (!navigator.clipboard) {
+            toastInfo({
+              title: "수동 링크 복사",
+              description: urlElement,
+            });
+            return;
+          }
+
+          navigator.clipboard
+            .writeText(url)
+            .then(() =>
+              toastSuccess({
+                title: "클립보드에 복사됨",
+                description: urlElement,
+              })
+            )
+            .catch(() =>
+              toastInfo({
+                title: "수동 링크 복사",
+                description: urlElement,
+              })
+            );
+        }}
+      />
+    </Tooltip>
+  );
+  const DeleteIconButton = () => (
+    <Tooltip label="전체 삭제" placement="top">
+      <IconButton
+        size="xs"
+        aria-label="clear"
+        variant="ghost"
+        colorScheme="red"
+        icon={<LuTrash2 size={16} />}
+        onClick={() => dispatch(setBossPlans([]))}
+      />
+    </Tooltip>
+  );
 
   return (
     <>
@@ -21,15 +112,10 @@ export default function Crystal() {
           order={1}
           title="캐릭터 등록"
           right={
-            <IconButton
-              aria-label="share"
-              size="xs"
-              icon={<LuShare2 size={16} />}
-              variant="ghost"
-              onClick={() =>
-                console.log(convertPlansToParams(bossPlans).toString())
-              }
-            />
+            <Flex gap={1}>
+              <ShareIconButton />
+              <DeleteIconButton />
+            </Flex>
           }
         >
           <NameInput setSelected={setSelected} />
@@ -47,9 +133,60 @@ export default function Crystal() {
       </Stack>
       <Stack w={{ base: "100vw", md: "auto" }}>
         <BoardCard order={3} title="통계">
-          <ResultTable />
+          <ResultTable bossPlans={bossPlans} />
         </BoardCard>
       </Stack>
+      {loadedBossPlans.length ? (
+        <Modal size="xl" isOpen onClose={setSearchParams}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>공유된 보스수익</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody as={Stack}>
+              {loadedBossPlans.map((bossPlan, i) => (
+                <CharacterButton
+                  key={"loaded-" + i}
+                  bossPlan={bossPlan}
+                  index={i}
+                  selected={-1}
+                  readOnly
+                />
+              ))}
+            </ModalBody>
+            <ModalFooter
+              as={Flex}
+              gap={2}
+              wrap={{ base: "wrap", md: undefined }}
+              justifyContent="space-between"
+              alignItems="end"
+            >
+              <Box
+                flexGrow={1}
+                p={2}
+                borderWidth={1}
+                borderRadius="var(--chakra-radii-md)"
+              >
+                <ResultTable bossPlans={loadedBossPlans} />
+              </Box>
+              <Stack flex={1}>
+                <Button
+                  size="sm"
+                  colorScheme="blue"
+                  onClick={() => {
+                    dispatch(setBossPlans(loadedBossPlans));
+                    setSearchParams();
+                  }}
+                >
+                  불러오기
+                </Button>
+                <Button size="sm" onClick={() => setSearchParams()}>
+                  취소
+                </Button>
+              </Stack>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : undefined}
     </>
   );
 }

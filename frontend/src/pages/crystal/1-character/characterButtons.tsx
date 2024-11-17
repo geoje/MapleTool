@@ -66,7 +66,7 @@ export default function CharacterButtons({
         items={bossPlans.map((plan) => ({ ...plan, id: plan.name }))}
         strategy={rectSortingStrategy}
       >
-        <Stack gap={2} pt={4}>
+        <Stack gap={2} pt={bossPlans.length ? 4 : 0}>
           {bossPlans.map((plan, i) => (
             <CharacterButton
               key={"character-" + plan.name}

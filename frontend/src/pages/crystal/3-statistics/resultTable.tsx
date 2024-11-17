@@ -6,15 +6,15 @@ import {
   SimpleGrid,
   Text,
 } from "@chakra-ui/react";
-import { useAppSelector } from "../../../stores/hooks";
 import { Fragment } from "react/jsx-runtime";
 import { useState } from "react";
 import { calculateRevenue } from "../../../services/boss";
 import { MAX_BOSS_SELECTABLE } from "../../../constants/boss";
 import { formatNumber } from "../../../utils/formatter";
+import BossPlan from "../../../types/user/bossPlan";
+import RequiredText from "../../../components/content/requiredText";
 
-export default function ResultTable() {
-  const bossPlans = useAppSelector((state) => state.user.bossPlans);
+export default function ResultTable({ bossPlans }: { bossPlans: BossPlan[] }) {
   const [excludes, setExcludes] = useState(new Set<number>());
 
   const revenues = bossPlans.map(calculateRevenue);
@@ -25,6 +25,10 @@ export default function ResultTable() {
   const totalRevenue = revenues
     .filter((_, i) => !excludes.has(i))
     .reduce((acc, cur) => acc + cur, 0);
+
+  if (!bossPlans.length) {
+    return <RequiredText>캐릭터를 등록해주세요.</RequiredText>;
+  }
 
   return (
     <SimpleGrid>

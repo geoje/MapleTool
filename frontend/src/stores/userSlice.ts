@@ -8,6 +8,7 @@ import { ItemEquipmentDetail } from "../types/character/itemEquipment/itemEquipm
 import { POTENTIAL_GRADE } from "../constants/enhance/potential";
 import { MATERIAL_TYPE } from "../constants/enhance/material";
 import { Material } from "../types/user/enhancedItem";
+import BossPlan from "../types/user/bossPlan";
 
 export const userKey = "user";
 
@@ -56,6 +57,9 @@ const slice = createSlice({
     },
 
     // bossPlan
+    setBossPlans(state, action: PayloadAction<BossPlan[]>) {
+      state.bossPlans = action.payload;
+    },
     newBossPlan(state, action: PayloadAction<string>) {
       if (state.bossPlans.find((plan) => plan.name == action.payload)) return;
 
@@ -252,6 +256,7 @@ export const {
   moveHistory,
   deleteHistory,
 
+  setBossPlans,
   newBossPlan,
   moveBossPlan,
   deleteBossPlan,

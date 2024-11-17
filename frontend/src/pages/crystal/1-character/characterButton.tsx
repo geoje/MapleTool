@@ -54,54 +54,53 @@ export default function CharacterButton({
   }) => `translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY})`;
 
   return (
-    <>
-      <Button
-        ref={setNodeRef}
-        py={2}
-        pl={5}
-        gap={2}
-        h="fit-content"
-        justifyContent="space-between"
-        variant={selected == index ? undefined : "ghost"}
-        borderWidth={1}
-        opacity={isDragging ? 0.4 : undefined}
-        transform={transform ? transformToString(transform) : undefined}
-        transition={transition ?? "transform 0ms linear"}
-        onClick={onClick}
-        leftIcon={
-          <Profile
-            src={data?.character_image}
-            adjust={!data?.character_exp_rate}
-            name={bossPlan.name}
-            loading={isFetching}
-          />
-        }
-      >
-        {selected == index && (
-          <Handle
-            attributes={attributes}
-            listeners={listeners}
-            ref={setActivatorNodeRef}
-          />
-        )}
+    <Button
+      ref={setNodeRef}
+      py={2}
+      pl={5}
+      gap={2}
+      h="fit-content"
+      justifyContent="space-between"
+      variant={selected == index ? undefined : "ghost"}
+      borderWidth={1}
+      opacity={isDragging ? 0.4 : undefined}
+      transform={transform ? transformToString(transform) : undefined}
+      transition={transition ?? "transform 0ms linear"}
+      cursor={onClick ? undefined : "default"}
+      onClick={onClick}
+      leftIcon={
+        <Profile
+          src={data?.character_image}
+          adjust={!data?.character_exp_rate}
+          name={bossPlan.name}
+          loading={isFetching}
+        />
+      }
+    >
+      {selected == index && (
+        <Handle
+          attributes={attributes}
+          listeners={listeners}
+          ref={setActivatorNodeRef}
+        />
+      )}
 
-        <Flex gap={1} wrap="wrap">
-          {bossPlan.boss.map((boss, i) => (
-            <BossSummary
-              key={`boss-${bossPlan.name}-${i}`}
-              src={getBossIcon(boss.type)}
-              difficulty={boss.difficulty}
-              partyMembers={boss.members}
-            />
-          ))}
-        </Flex>
-        {selected == index && !readOnly && (
-          <>
-            <DeleteButton onClick={() => dispatch(deleteBossPlan(index))} />
-          </>
-        )}
-      </Button>
-    </>
+      <Flex gap={1} wrap="wrap">
+        {bossPlan.boss.map((boss, i) => (
+          <BossSummary
+            key={`boss-${bossPlan.name}-${i}`}
+            src={getBossIcon(boss.type)}
+            difficulty={boss.difficulty}
+            partyMembers={boss.members}
+          />
+        ))}
+      </Flex>
+      {!readOnly && (
+        <>
+          <DeleteButton onClick={() => dispatch(deleteBossPlan(index))} />
+        </>
+      )}
+    </Button>
   );
 }
 
