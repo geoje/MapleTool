@@ -60,6 +60,7 @@ function MaterialButton({
           w="40px"
           aria-label={label}
           colorScheme={selected ? "blue" : undefined}
+          borderWidth={1}
           icon={
             <Image
               src={icon}
