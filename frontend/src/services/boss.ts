@@ -1,6 +1,9 @@
 import { BOSS, BOSS_DIFFICULTY, BOSS_TYPE } from "../constants/boss";
 import BossPlan from "../types/user/bossPlan";
 
+const FORMATION62 =
+  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 export function getPrice(bossType: BOSS_TYPE, difficulty: BOSS_DIFFICULTY) {
   return BOSS[bossType].prices[difficulty] ?? 0;
 }
@@ -37,6 +40,8 @@ export function convertPlansToParams(bossPlans: BossPlan[]) {
 
   return originPath + "?" + search;
 }
+// 000     000        00000
+// members difficulty type
 function convertPlanToBits(bossPlan: BossPlan) {
   const BOSS_TYPE_KEYS = Object.keys(BOSS_TYPE);
   const BOSS_DIFFICULTY_KEYS = Object.keys(BOSS_DIFFICULTY);
@@ -46,11 +51,26 @@ function convertPlanToBits(bossPlan: BossPlan) {
       .map((b) => {
         const typeIndex = BOSS_TYPE_KEYS.indexOf(b.type);
         const difficultyIndex = BOSS_DIFFICULTY_KEYS.indexOf(b.difficulty);
+        const num = typeIndex | (difficultyIndex << 5) | (b.members << 8);
 
-        return `${typeIndex}.${difficultyIndex}.${b.members}`;
+        return formatNumberTo62(num);
       })
-      .join("-")
+      .join(".")
   );
+}
+function formatNumberTo62(num: number) {
+  let result = "";
+
+  if (!num) {
+    return FORMATION62[0];
+  }
+
+  while (num) {
+    result = FORMATION62[num % FORMATION62.length] + result;
+    num = Math.floor(num / FORMATION62.length);
+  }
+
+  return result;
 }
 export function parsePlansFromParams(searchParams: URLSearchParams) {
   const bossPlans: BossPlan[] = [];
@@ -62,14 +82,17 @@ export function parsePlansFromParams(searchParams: URLSearchParams) {
 }
 function parsePlanFromParam(key: string, value: string): BossPlan {
   const boss = value
-    .split("-")
-    .map((vs) => vs.split("."))
-    .map((vs) => {
-      const type = Object.keys(BOSS_TYPE)[Number(vs[0])] as BOSS_TYPE;
+    .split(".")
+    .map((formatted) => {
+      const num = parseNumberFrom62(formatted);
+      const typeIndex = num & 31;
+      const difficultyIndex = (num >> 5) & 7;
+      const members = (num >> 8) & 7;
+
+      const type = Object.keys(BOSS_TYPE)[typeIndex] as BOSS_TYPE;
       const difficulty = Object.keys(BOSS_DIFFICULTY)[
-        Number(vs[1])
+        difficultyIndex
       ] as BOSS_DIFFICULTY;
-      const members = Number(vs[2]);
 
       if (!type || !difficulty || !members) return;
 
@@ -78,4 +101,15 @@ function parsePlanFromParam(key: string, value: string): BossPlan {
     .filter((b) => b != undefined);
 
   return { name: key, order: "", boss };
+}
+function parseNumberFrom62(formated: string) {
+  let result = 0;
+
+  for (let i = 0; i < formated.length; i++) {
+    const char = formated[i];
+    const index = FORMATION62.indexOf(char);
+    result = result * FORMATION62.length + (index == -1 ? 0 : index);
+  }
+
+  return result;
 }
