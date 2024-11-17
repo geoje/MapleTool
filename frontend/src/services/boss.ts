@@ -24,3 +24,15 @@ export function getMaxMembers(
     ? 3
     : 6;
 }
+
+export function convertPlansToParams(bossPlans: BossPlan[]) {
+  const params: Record<string, string> = {};
+
+  for (const bossPlan of bossPlans)
+    params[bossPlan.name] = convertPlanToBits(bossPlan);
+
+  return new URLSearchParams(params);
+}
+function convertPlanToBits(bossPlan: BossPlan) {
+  return String(1234);
+}
