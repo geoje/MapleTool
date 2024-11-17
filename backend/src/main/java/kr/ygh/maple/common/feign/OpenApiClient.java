@@ -3,6 +3,7 @@ package kr.ygh.maple.common.feign;
 import kr.ygh.maple.character.dto.basic.Basic;
 import kr.ygh.maple.character.dto.itemEquipment.ItemEquipment;
 import kr.ygh.maple.character.dto.ocid.Ocid;
+import kr.ygh.maple.union.dto.artifact.Artifact;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,4 +22,7 @@ public interface OpenApiClient {
 
     @GetMapping("/user/union")
     kr.ygh.maple.union.dto.basic.Basic getUnionBasic(@RequestParam("ocid") String ocid);
+
+    @GetMapping("/user/union-artifact")
+    Artifact getUnionArtifact(@RequestParam("ocid") String ocid);
 }

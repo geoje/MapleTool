@@ -2,6 +2,7 @@ package kr.ygh.maple.union.controller;
 
 import jakarta.validation.Valid;
 import kr.ygh.maple.common.dto.NameRequest;
+import kr.ygh.maple.union.dto.artifact.Artifact;
 import kr.ygh.maple.union.dto.basic.Basic;
 import kr.ygh.maple.union.service.UnionService;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,10 @@ public class UnionController {
     @GetMapping("basic")
     public Basic basic(@ModelAttribute @Valid NameRequest nameRequest) {
         return unionService.readBasic(nameRequest.name());
+    }
+
+    @GetMapping("artifact")
+    public Artifact artifact(@ModelAttribute @Valid NameRequest nameRequest) {
+        return unionService.readArtifact(nameRequest.name());
     }
 }

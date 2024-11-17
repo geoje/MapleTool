@@ -1,6 +1,6 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import { useState } from "react";
-import { EFFECT_NAMES } from "../../../constants/artifact";
+import { EFFECT_INFOS } from "../../../constants/artifact";
 import { crystalEffectIndexes, crystals } from "../../../services/artifact";
 import { getArtifactIcon } from "../../../utils/icon";
 import Crystal from "./crystal";
@@ -24,7 +24,7 @@ export default function ResultGrid({
     indexes.map((oneAddedEffectNameIndex) => {
       const fullEffectName = effectNames[oneAddedEffectNameIndex - 1];
       return (
-        EFFECT_NAMES.find((effectName) => effectName.full == fullEffectName)
+        EFFECT_INFOS.find((effectName) => effectName.full == fullEffectName)
           ?.abbreviate ?? ""
       );
     })

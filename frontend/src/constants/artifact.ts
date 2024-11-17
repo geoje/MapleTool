@@ -495,23 +495,84 @@ export const CRYSTALS_BY_LEVEL: {
   ],
 ];
 export const POINT_BY_CRYSTAL = [0, 0, 1, 3, 5, 8];
-export const EFFECT_NAMES = [
-  { full: "올스탯 증가", abbreviate: "올스탯" },
-  { full: "최대 HP/MP 증가", abbreviate: "HP/MP" },
-  { full: "공격력/마력 증가", abbreviate: "공마" },
-  { full: "데미지 증가", abbreviate: "데미지" },
-  { full: "보스 몬스터 공격시 데미지 증가", abbreviate: "보공" },
-  { full: "몬스터 방어율 무시 증가", abbreviate: "방무" },
-  { full: "버프 지속시간 증가", abbreviate: "벞지" },
-  { full: "재사용 대기시간 미적용 확률 증가", abbreviate: "재사용" },
-  { full: "메소 획득량 증가", abbreviate: "메획" },
-  { full: "아이템 드롭률 증가", abbreviate: "아드" },
-  { full: "크리티컬 확률 증가", abbreviate: "크확" },
-  { full: "크리티컬 데미지 증가", abbreviate: "크뎀" },
-  { full: "추가 경험치 획득 증가", abbreviate: "경험치" },
-  { full: "상태이상 내성 증가", abbreviate: "내성" },
-  { full: "소환수 지속시간 증가", abbreviate: "소환수" },
-  { full: "파이널 어택류 스킬 데미지 증가", abbreviate: "파이널" },
+export const EFFECT_INFOS = [
+  { expression: /^올스탯 \d+ 증가/, full: "올스탯 증가", abbreviate: "올스탯" },
+  {
+    expression: /^최대 HP \d+, 최대 MP \d+ 증가/,
+    full: "최대 HP/MP 증가",
+    abbreviate: "HP/MP",
+  },
+  {
+    expression: /^공격력 \d+, 마력 \d+ 증가/,
+    full: "공격력/마력 증가",
+    abbreviate: "공마",
+  },
+  {
+    expression: /^데미지 (\d|\.)+% 증가/,
+    full: "데미지 증가",
+    abbreviate: "데미지",
+  },
+  {
+    expression: /^보스 몬스터 공격 시 데미지 (\d|\.)+% 증가/,
+    full: "보스 몬스터 공격시 데미지 증가",
+    abbreviate: "보공",
+  },
+  {
+    expression: /^몬스터 방어율 무시 (\d|\.)+% 증가/,
+    full: "몬스터 방어율 무시 증가",
+    abbreviate: "방무",
+  },
+  {
+    expression: /^버프 지속시간 \d+% 증가/,
+    full: "버프 지속시간 증가",
+    abbreviate: "벞지",
+  },
+  {
+    expression: /^재사용 대기시간 미적용 확률 (\d|\.)+% 증가/,
+    full: "재사용 대기시간 미적용 확률 증가",
+    abbreviate: "재사용",
+  },
+  {
+    expression: /^메소 획득량 (\d|\.)+% 증가/,
+    full: "메소 획득량 증가",
+    abbreviate: "메획",
+  },
+  {
+    expression: /^아이템 드롭률 \d+% 증가/,
+    full: "아이템 드롭률 증가",
+    abbreviate: "아드",
+  },
+  {
+    expression: /^크리티컬 확률 \d+% 증가/,
+    full: "크리티컬 확률 증가",
+    abbreviate: "크확",
+  },
+  {
+    expression: /^크리티컬 데미지 (\d|\.)+% 증가/,
+    full: "크리티컬 데미지 증가",
+    abbreviate: "크뎀",
+  },
+  {
+    expression:
+      /추가 경험치 획득 \d+% 증가, 다수 공격 스킬의 최대 공격 가능 대상 수 1 증가/,
+    full: "추가 경험치 획득 증가",
+    abbreviate: "경험치",
+  },
+  {
+    expression: /^상태 이상 내성 \d+ 증가/,
+    full: "상태이상 내성 증가",
+    abbreviate: "상태이상",
+  },
+  {
+    expression: /^소환수 지속시간 \d+% 증가/,
+    full: "소환수 지속시간 증가",
+    abbreviate: "소환수",
+  },
+  {
+    expression: /^파이널 어택류 스킬의 데미지 \d+% 증가/,
+    full: "파이널 어택류 스킬 데미지 증가",
+    abbreviate: "파이널",
+  },
 ];
 export const EFFECT_COUNT_PER_CRYSTAL =
   CRYSTALS_BY_LEVEL[1][0].effects[0].length; // 3

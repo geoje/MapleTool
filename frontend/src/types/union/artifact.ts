@@ -2,6 +2,7 @@ export interface Artifact {
   date: string;
   union_artifact_effect: ArtifactEffect[];
   union_artifact_crystal: ArtifactCrystal[];
+  union_artifact_remain_ap: number;
 }
 
 export interface ArtifactCrystal {

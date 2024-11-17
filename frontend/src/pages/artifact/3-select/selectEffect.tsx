@@ -1,5 +1,5 @@
 import { Badge, Button, Flex, Stack, Tooltip } from "@chakra-ui/react";
-import { EFFECT_NAMES } from "../../../constants/artifact";
+import { EFFECT_INFOS } from "../../../constants/artifact";
 import { groupEffectLevelsCount } from "../../../services/artifact";
 
 export default function SelectEffect({
@@ -36,7 +36,7 @@ export default function SelectEffect({
           )}
       </Flex>
       <Flex gap={1} wrap="wrap">
-        {EFFECT_NAMES.map((effect, i) => {
+        {EFFECT_INFOS.map((effect, i) => {
           const entry = Object.entries(effectNamesByLevel).find(
             ([_, fullNames]) => fullNames.has(effect.full)
           );
