@@ -17,7 +17,7 @@ export default function Artifact() {
   });
 
   const [artifactLevel, setArtifactLevel] = useState(
-    data?.union_artifact_level ?? 1
+    Math.max(data?.union_artifact_level ?? 1, 1)
   );
   const [effectIndex, setEffectIndex] = useState(0);
   const [effectLevels, setEffectLevels] = useState<number[]>([]);
@@ -26,7 +26,7 @@ export default function Artifact() {
   useEffect(() => {
     if (!data) return;
 
-    setArtifactLevel(data?.union_artifact_level ?? 1);
+    setArtifactLevel(Math.max(data?.union_artifact_level ?? 1, 1));
   }, [data, setArtifactLevel]);
 
   return (

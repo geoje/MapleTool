@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public class MapleConfig {
 
-    private static final String OPEN_API_RELEASED_DATE_TIME = "2023-12-21T00:00+09:00";
+    private static final String OPEN_API_RELEASED_YESTERDAY_TIME = "2023-12-20T00:00+09:00";
 
     private final Map<Type, Function<Document, Object>> decoders;
 
@@ -85,7 +85,7 @@ public class MapleConfig {
                 .map(img -> img.attr("src"))
                 .orElse("");
 
-        return new Basic(OPEN_API_RELEASED_DATE_TIME, characterName, worldName, "", characterClass,
+        return new Basic(OPEN_API_RELEASED_YESTERDAY_TIME, characterName, worldName, "", characterClass,
                 "", characterLevel, characterExp, "", guildName, characterImage);
     }
 }
