@@ -44,7 +44,7 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       JASYPT_PASSWORD: ${JASYPT_PASSWORD}
     links:
-      - redis
+      - mem
       - db
     volumes:
       - ./backend/build/libs:/opt

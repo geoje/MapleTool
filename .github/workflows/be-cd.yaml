@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - backend/**
+      - docker-compose.yaml
 
 jobs:
   deploy:
