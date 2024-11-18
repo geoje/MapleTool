@@ -1,7 +1,7 @@
 networks:
   default:
     external: true
-    name: npm
+    name: traefik
 
 volumes:
   redis:
