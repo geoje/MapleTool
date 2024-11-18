@@ -1,25 +1,26 @@
+name: mapletool
+
 volumes:
-  redis:
   db:
 
 services:
-  redis:
+  mem:
     image: redis:alpine
-    restart: unless-stopped
+    restart: on-failure:3
     ports:
-      - "6379:6379"
-    volumes:
-      - redis:/data
+      - 6379:6379
+    tmpfs:
+      - /data
 
   db:
     image: mysql:8.0
-    restart: unless-stopped
+    restart: on-failure:3
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: maple
       LANG: C.UTF-8
     ports:
-      - "3306:3306"
+      - 3306:3306
     volumes:
       - db:/var/lib/mysql
     command:

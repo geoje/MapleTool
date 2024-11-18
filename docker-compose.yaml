@@ -4,13 +4,12 @@ networks:
     name: traefik
 
 volumes:
-  redis:
   db:
 
 services:
   fe:
     image: nginx:alpine
-    restart: unless-stopped
+    restart: on-failure:3
     volumes:
       - ./frontend/dist:/usr/share/nginx/html
     labels:
@@ -40,7 +39,7 @@ services:
 
   be:
     image: openjdk:21-jdk-slim
-    restart: unless-stopped
+    restart: on-failure:3
     environment:
       SPRING_PROFILES_ACTIVE: prod
       JASYPT_PASSWORD: ${JASYPT_PASSWORD}
@@ -59,21 +58,22 @@ services:
     working_dir: /opt
     entrypoint: ["java", "-jar", "mapletool.jar"]
 
-  redis:
+  mem:
     image: redis:alpine
-    restart: unless-stopped
-    volumes:
-      - redis:/data
+    restart: on-failure:3
+    tmpfs:
+      - /data
 
   db:
     image: mysql:8.0
-    restart: unless-stopped
+    restart: on-failure:3
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: maple
       LANG: C.UTF-8
     volumes:
       - db:/var/lib/mysql
+      - ./db:/var/run/mysqld
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_general_ci
