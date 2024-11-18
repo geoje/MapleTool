@@ -57,4 +57,6 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             cd ~/${{ github.event.repository.name }}
-            docker compose restart be
+            docker compose stop be
+            docker compose rm -f be
+            docker compose up -d be

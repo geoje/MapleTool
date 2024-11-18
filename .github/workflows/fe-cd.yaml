@@ -48,4 +48,6 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             cd ~/${{ github.event.repository.name }}
+            docker compose stop fe
+            docker compose rm -f fe
             docker compose up -d fe
