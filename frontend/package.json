@@ -7,7 +7,7 @@
     "dev": "start http://localhost:5173 && vite",
     "build": "tsc && vite build",
     "deploy": "git checkout main && git pull && git merge dev && git push && git checkout dev",
-    "lint": "eslint  .",
+    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
