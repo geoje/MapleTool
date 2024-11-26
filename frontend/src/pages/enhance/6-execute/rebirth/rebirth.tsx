@@ -6,7 +6,7 @@ import {
 import { useAppSelector } from "../../../../stores/hooks";
 import ItemSlot from "../common/itemSlot";
 import OptionsButton from "../common/optionButton";
-import { MAX_REBIRTHS } from "../../../../constants/enhance/rebirth";
+import { MAX_REBIRTH_LINES } from "../../../../constants/enhance/rebirth";
 import { isSelectable } from "../../../../services/enhance/rebirth";
 
 export default function Rebirth({
@@ -40,14 +40,14 @@ export default function Rebirth({
           "공격력: +5",
           "올스탯: +6%",
         ]}
-        maxOptionCount={MAX_REBIRTHS}
+        maxOptionCount={MAX_REBIRTH_LINES}
         onClick={selectable ? () => {} : undefined}
       />
       {selectable && (
         <OptionsButton
           title="AFTER"
           options={["STR: +30", "DEX: +25", "LUK: +109", "올스탯: +6%"]}
-          maxOptionCount={MAX_REBIRTHS}
+          maxOptionCount={MAX_REBIRTH_LINES}
           onClick={() => {}}
         />
       )}

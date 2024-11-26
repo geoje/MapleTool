@@ -23,35 +23,35 @@ interface Info {
   icon: string;
 }
 export const SET_INFOS: Record<SET_TYPE, Info> = {
-  [SET_TYPE.ROOTABIS]: {
+  ROOTABIS: {
     name: "루타비스",
     icon: ROOTABIS,
   },
-  [SET_TYPE.ABSOLABS]: {
+  ABSOLABS: {
     name: "앱솔랩스",
     icon: ABSOLABS,
   },
-  [SET_TYPE.ARCANEUMBRA]: {
+  ARCANEUMBRA: {
     name: "아케인셰이드",
     icon: ARCANEUMBRA,
   },
-  [SET_TYPE.ETERNAL]: {
+  ETERNAL: {
     name: "에테르넬",
     icon: ETERNAL,
   },
-  [SET_TYPE.BOSS]: {
+  BOSS: {
     name: "보스 장신구",
     icon: BOSS,
   },
-  [SET_TYPE.DAWN]: {
+  DAWN: {
     name: "여명의 보스",
     icon: DAWN,
   },
-  [SET_TYPE.PITCHED]: {
+  PITCHED: {
     name: "칠흑의 보스",
     icon: PITCHED,
   },
-  [SET_TYPE.RADIANCE]: {
+  RADIANCE: {
     name: "광휘의 보스",
     icon: RADIANCE,
   },

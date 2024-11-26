@@ -60,27 +60,27 @@ interface ColorSet {
   border: string;
 }
 export const COLOR: Partial<Record<BOSS_DIFFICULTY, ColorSet>> = {
-  [BOSS_DIFFICULTY.EASY]: {
+  EASY: {
     text: "#ffffff",
     back: "#999999",
     border: "#999999",
   },
-  [BOSS_DIFFICULTY.NORMAL]: {
+  NORMAL: {
     text: "#ffffff",
     back: "#33aabb",
     border: "#33aabb",
   },
-  [BOSS_DIFFICULTY.HARD]: {
+  HARD: {
     text: "#ffffff",
     back: "#dd4489",
     border: "#dd4489",
   },
-  [BOSS_DIFFICULTY.CHAOS]: {
+  CHAOS: {
     text: "#ffddbb",
     back: "#444444",
     border: "#ddbb88",
   },
-  [BOSS_DIFFICULTY.EXTREME]: {
+  EXTREME: {
     text: "#ee4455",
     back: "#444444",
     border: "#ee3355",
@@ -94,201 +94,201 @@ interface Boss {
   prices: Partial<Record<BOSS_DIFFICULTY, number>>;
 }
 export const BOSS: Record<BOSS_TYPE, Boss> = {
-  [BOSS_TYPE.ZZAKUM]: {
+  ZZAKUM: {
     name: "자쿰",
     abbreviate: "자쿰",
     icon: zzakum,
     prices: {
-      [BOSS_DIFFICULTY.CHAOS]: 8_980_000,
+      CHAOS: 8_980_000,
     },
   },
-  [BOSS_TYPE.MAGNUS]: {
+  MAGNUS: {
     name: "매그너스",
     abbreviate: "매그",
     icon: magnus,
     prices: {
-      [BOSS_DIFFICULTY.HARD]: 10_700_000,
+      HARD: 10_700_000,
     },
   },
-  [BOSS_TYPE.HILLA]: {
+  HILLA: {
     name: "힐라",
     abbreviate: "힐라",
     icon: hilla,
     prices: {
-      [BOSS_DIFFICULTY.HARD]: 6_390_000,
+      HARD: 6_390_000,
     },
   },
-  [BOSS_TYPE.PAPULATUS]: {
+  PAPULATUS: {
     name: "파풀라투스",
     abbreviate: "파풀",
     icon: papulatus,
     prices: {
-      [BOSS_DIFFICULTY.CHAOS]: 24_700_000,
+      CHAOS: 24_700_000,
     },
   },
-  [BOSS_TYPE.PIERRE]: {
+  PIERRE: {
     name: "피에르",
     abbreviate: "피에르",
     icon: pierre,
     prices: {
-      [BOSS_DIFFICULTY.CHAOS]: 9_080_000,
+      CHAOS: 9_080_000,
     },
   },
-  [BOSS_TYPE.VON_BON]: {
+  VON_BON: {
     name: "반반",
     abbreviate: "반반",
     icon: vonBon,
     prices: {
-      [BOSS_DIFFICULTY.CHAOS]: 9_060_000,
+      CHAOS: 9_060_000,
     },
   },
-  [BOSS_TYPE.CRIMSON_QUEEN]: {
+  CRIMSON_QUEEN: {
     name: "블러디퀸",
     abbreviate: "블퀸",
     icon: crimsonQueen,
     prices: {
-      [BOSS_DIFFICULTY.CHAOS]: 9_040_000,
+      CHAOS: 9_040_000,
     },
   },
-  [BOSS_TYPE.VELLUM]: {
+  VELLUM: {
     name: "벨룸",
     abbreviate: "벨룸",
     icon: vellum,
     prices: {
-      [BOSS_DIFFICULTY.CHAOS]: 11_600_000,
+      CHAOS: 11_600_000,
     },
   },
-  [BOSS_TYPE.PINK_BEAN]: {
+  PINK_BEAN: {
     name: "핑크빈",
     abbreviate: "핑크빈",
     icon: pinkBean,
     prices: {
-      [BOSS_DIFFICULTY.CHAOS]: 7_310_000,
+      CHAOS: 7_310_000,
     },
   },
-  [BOSS_TYPE.CYGNUS]: {
+  CYGNUS: {
     name: "시그너스",
     abbreviate: "시그",
     icon: cygnus,
     prices: {
-      [BOSS_DIFFICULTY.EASY]: 5_060_000,
-      [BOSS_DIFFICULTY.NORMAL]: 8_330_000,
+      EASY: 5_060_000,
+      NORMAL: 8_330_000,
     },
   },
-  [BOSS_TYPE.LOTUS]: {
+  LOTUS: {
     name: "스우",
     abbreviate: "스우",
     icon: lotus,
     prices: {
-      [BOSS_DIFFICULTY.NORMAL]: 31_400_000,
-      [BOSS_DIFFICULTY.HARD]: 119_000_000,
-      [BOSS_DIFFICULTY.EXTREME]: 392_000_000,
+      NORMAL: 31_400_000,
+      HARD: 119_000_000,
+      EXTREME: 392_000_000,
     },
   },
-  [BOSS_TYPE.DAMIEN]: {
+  DAMIEN: {
     name: "데미안",
     abbreviate: "데미안",
     icon: damien,
     prices: {
-      [BOSS_DIFFICULTY.NORMAL]: 32_900_000,
-      [BOSS_DIFFICULTY.HARD]: 113_000_000,
+      NORMAL: 32_900_000,
+      HARD: 113_000_000,
     },
   },
-  [BOSS_TYPE.GUARDIAN_ANGEL_SLIME]: {
+  GUARDIAN_ANGEL_SLIME: {
     name: "가디언 엔젤 슬라임",
     abbreviate: "가엔슬",
     icon: guardianAngelSlime,
     prices: {
-      [BOSS_DIFFICULTY.NORMAL]: 47_800_000,
-      [BOSS_DIFFICULTY.CHAOS]: 161_000_000,
+      NORMAL: 47_800_000,
+      CHAOS: 161_000_000,
     },
   },
-  [BOSS_TYPE.LUCID]: {
+  LUCID: {
     name: "루시드",
     abbreviate: "루시드",
     icon: lucid,
     prices: {
-      [BOSS_DIFFICULTY.EASY]: 49_000_000,
-      [BOSS_DIFFICULTY.NORMAL]: 58_600_000,
-      [BOSS_DIFFICULTY.HARD]: 135_000_000,
+      EASY: 49_000_000,
+      NORMAL: 58_600_000,
+      HARD: 135_000_000,
     },
   },
-  [BOSS_TYPE.WILL]: {
+  WILL: {
     name: "윌",
     abbreviate: "윌",
     icon: will,
     prices: {
-      [BOSS_DIFFICULTY.EASY]: 53_100_000,
-      [BOSS_DIFFICULTY.NORMAL]: 67_600_000,
-      [BOSS_DIFFICULTY.HARD]: 165_000_000,
+      EASY: 53_100_000,
+      NORMAL: 67_600_000,
+      HARD: 165_000_000,
     },
   },
-  [BOSS_TYPE.GLOOM]: {
+  GLOOM: {
     name: "더스크",
     abbreviate: "더스크",
     icon: gloom,
     prices: {
-      [BOSS_DIFFICULTY.NORMAL]: 72_400_000,
-      [BOSS_DIFFICULTY.CHAOS]: 150_000_000,
+      NORMAL: 72_400_000,
+      CHAOS: 150_000_000,
     },
   },
-  [BOSS_TYPE.VERUS_HILLA]: {
+  VERUS_HILLA: {
     name: "진 힐라",
     abbreviate: "진힐라",
     icon: verusHilla,
     prices: {
-      [BOSS_DIFFICULTY.NORMAL]: 153_000_000,
-      [BOSS_DIFFICULTY.HARD]: 200_000_000,
+      NORMAL: 153_000_000,
+      HARD: 200_000_000,
     },
   },
-  [BOSS_TYPE.DARKNELL]: {
+  DARKNELL: {
     name: "듄켈",
     abbreviate: "듄켈",
     icon: darknell,
     prices: {
-      [BOSS_DIFFICULTY.NORMAL]: 78_100_000,
-      [BOSS_DIFFICULTY.HARD]: 177_000_000,
+      NORMAL: 78_100_000,
+      HARD: 177_000_000,
     },
   },
-  [BOSS_TYPE.CHOSEN_SEREN]: {
+  CHOSEN_SEREN: {
     name: "선택받은 세렌",
     abbreviate: "세렌",
     icon: chosenSeren,
     prices: {
-      [BOSS_DIFFICULTY.NORMAL]: 227_000_000,
-      [BOSS_DIFFICULTY.HARD]: 314_000_000,
-      [BOSS_DIFFICULTY.EXTREME]: 1_340_000_000,
+      NORMAL: 227_000_000,
+      HARD: 314_000_000,
+      EXTREME: 1_340_000_000,
     },
   },
-  [BOSS_TYPE.KALOS_THE_GUARDIAN]: {
+  KALOS_THE_GUARDIAN: {
     name: "감시자 칼로스",
     abbreviate: "칼로스",
     icon: kalosTheGuardian,
     prices: {
-      [BOSS_DIFFICULTY.EASY]: 265_000_000,
-      [BOSS_DIFFICULTY.NORMAL]: 364_000_000,
-      [BOSS_DIFFICULTY.CHAOS]: 746_000_000,
-      [BOSS_DIFFICULTY.EXTREME]: 1_500_000_000,
+      EASY: 265_000_000,
+      NORMAL: 364_000_000,
+      CHAOS: 746_000_000,
+      EXTREME: 1_500_000_000,
     },
   },
-  [BOSS_TYPE.KALING]: {
+  KALING: {
     name: "카링",
     abbreviate: "카링",
     icon: kaling,
     prices: {
-      [BOSS_DIFFICULTY.EASY]: 293_000_000,
-      [BOSS_DIFFICULTY.NORMAL]: 425_000_000,
-      [BOSS_DIFFICULTY.HARD]: 870_000_000,
-      [BOSS_DIFFICULTY.EXTREME]: 1_750_000_000,
+      EASY: 293_000_000,
+      NORMAL: 425_000_000,
+      HARD: 870_000_000,
+      EXTREME: 1_750_000_000,
     },
   },
-  [BOSS_TYPE.LIMBO]: {
+  LIMBO: {
     name: "림보",
     abbreviate: "림보",
     icon: limbo,
     prices: {
-      [BOSS_DIFFICULTY.NORMAL]: 600_000_000,
-      [BOSS_DIFFICULTY.HARD]: 1_070_000_000,
+      NORMAL: 600_000_000,
+      HARD: 1_070_000_000,
     },
   },
 };
