@@ -151,12 +151,7 @@ export default function Potential({
     clearNewOptions();
   };
   const rollPotential = () => {
-    if (!data) {
-      toastWarning({
-        title: "해당 아이템에 대한 잠재능력 정보가 없습니다.",
-      });
-      return;
-    }
+    if (!data) return;
 
     const grade = gradeRef.current;
     const costMaterials = costMaterialsRef.current;
@@ -207,14 +202,12 @@ export default function Potential({
     return newPotential;
   };
   const onExecuteButtonClick = () => {
-    if (conditionGrid.length) {
-      if (!data) {
-        toastWarning({
-          title: "해당 아이템에 대한 잠재능력 정보가 없습니다.",
-        });
-        return;
-      }
+    if (!data?.length) {
+      toastWarning({ title: "해당 아이템에 대한 잠재능력 정보가 없습니다." });
+      return;
+    }
 
+    if (conditionGrid.length) {
       if (intervalId) {
         toastInfo({ title: "자동 재설정 중지" });
         setIntervalId(undefined);
