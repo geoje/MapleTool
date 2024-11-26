@@ -10,24 +10,55 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import RequiredText from "../../../../components/content/requiredText";
-import { useAppSelector } from "../../../../stores/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../stores/hooks";
 import GRINDSTONE from "../../../../assets/item/scroll/grindstone.png";
 import MESO from "../../../../assets/item/meso/coin.png";
 import { RxPlus, RxDoubleArrowRight } from "react-icons/rx";
 import { FaPlus, FaMinus, FaPlusCircle } from "react-icons/fa";
 import ItemSlot2 from "../common/itemSlot2";
+import { useState } from "react";
+import { GRINDSTONE_INFOS } from "../../../../constants/enhance/ring";
+import { formatNumber } from "../../../../utils/formatter";
+import { useSuccessToast, useWarningToast } from "../../../../hooks/useToast";
+import { addMaterials, upgradeSpecialRing } from "../../../../stores/userSlice";
 
 export default function GrindStone({
   inventoryIndex,
 }: {
   inventoryIndex: number;
 }) {
+  const dark = useColorMode().colorMode == "dark";
+  const palette600 = dark ? ".300" : ".600";
+  const toastWarning = useWarningToast();
+  const toastSuccess = useSuccessToast();
+
+  const dispatch = useAppDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
   const item = inventory[inventoryIndex].after;
+  const [count, setCount] = useState(1);
 
-  const { colorMode } = useColorMode();
-  const dark = colorMode === "dark";
-  const palette600 = dark ? ".300" : ".600";
+  const onExecuteButtonClick = () => {
+    dispatch(
+      addMaterials({
+        index: inventoryIndex,
+        materials: [
+          {
+            name: "메소 - 생명의 연마석",
+            value: GRINDSTONE_INFOS[count - 1].cost,
+          },
+          { name: "생명의 연마석", value: count },
+        ],
+      })
+    );
+
+    if (Math.random() < GRINDSTONE_INFOS[count - 1].probability) {
+      dispatch(upgradeSpecialRing({ index: inventoryIndex }));
+      toastSuccess({ title: "연마에 성공했습니다!" });
+      return;
+    }
+
+    toastWarning({ title: "연마에 실패했습니다." });
+  };
 
   if (item.special_ring_level != 4)
     return <RequiredText>4레벨 특수 스킬 반지를 선택해 주세요.</RequiredText>;
@@ -64,7 +95,7 @@ export default function GrindStone({
           strokeWidth={2}
           color={"gray" + palette600}
         />
-        <ItemSlot2 bgColorScheme="purple" spec={<Text>1 / 5</Text>}>
+        <ItemSlot2 bgColorScheme="purple" spec={<Text>{count} / 5</Text>}>
           <Image
             pb={2}
             src={GRINDSTONE}
@@ -93,17 +124,32 @@ export default function GrindStone({
         </ItemSlot2>
       </Flex>
       <Flex justify="center" gap={1}>
-        <IconButton aria-label="decrease" size="xs" icon={<FaMinus />} />
-        <IconButton aria-label="decrease" size="xs" icon={<FaPlus />} />
-        <Button size="xs">MAX</Button>
+        <IconButton
+          aria-label="decrease"
+          size="xs"
+          icon={<FaMinus />}
+          onClick={() => setCount(Math.max(1, count - 1))}
+        />
+        <IconButton
+          aria-label="decrease"
+          size="xs"
+          icon={<FaPlus />}
+          onClick={() => setCount(Math.min(GRINDSTONE_INFOS.length, count + 1))}
+        />
+        <Button size="xs" onClick={() => setCount(GRINDSTONE_INFOS.length)}>
+          MAX
+        </Button>
       </Flex>
       <Flex justify="center" py={2} gap={2}>
         <Tag fontSize={12}>
-          <b>성공 확률</b>&nbsp; 10%
+          <b>성공 확률</b>&nbsp;{" "}
+          {Math.floor(GRINDSTONE_INFOS[count - 1].probability * 100)}%
         </Tag>
         <Tag>
           <Image src={MESO} pr={2} />
-          <Text fontSize={12}>500,000,000</Text>
+          <Text fontSize={12}>
+            {formatNumber(GRINDSTONE_INFOS[count - 1].cost)}
+          </Text>
         </Tag>
       </Flex>
       <Flex justify="center">
@@ -113,6 +159,7 @@ export default function GrindStone({
           size="sm"
           colorScheme="blue"
           leftIcon={<FaPlusCircle />}
+          onClick={onExecuteButtonClick}
         >
           강화
         </Button>

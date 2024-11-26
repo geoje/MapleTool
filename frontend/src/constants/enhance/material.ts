@@ -99,7 +99,7 @@ export const MATERIAL_INFOS: Record<MATERIAL_TYPE, Info> = {
     icon: ABYSS,
   },
   [MATERIAL_TYPE.GRINDSTONE]: {
-    name: "생명의 연마석 (개발중)",
+    name: "생명의 연마석",
     type: "연마석",
     icon: GRINDSTONE,
   },

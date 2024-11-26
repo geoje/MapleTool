@@ -216,6 +216,13 @@ const slice = createSlice({
       item.potential_option_2 = action.payload.options[1];
       item.potential_option_3 = action.payload.options[2];
     },
+    upgradeSpecialRing(state, action: PayloadAction<{ index: number }>) {
+      const item = state.inventory[action.payload.index].after;
+
+      if (item.special_ring_level == 4) {
+        item.special_ring_level = 5;
+      }
+    },
 
     // guarantees
     setGuarantee(
@@ -272,6 +279,7 @@ export const {
   deleteMaterial,
   clearMaterials,
   setInventoryPotential,
+  upgradeSpecialRing,
 
   setGuarantee,
 } = slice.actions;

@@ -62,11 +62,12 @@ export default function Potential({
   inventoryIndex: number;
   materialType: MATERIAL_TYPE;
 }) {
-  const dispatch = useAppDispatch();
   const dark = useColorMode().colorMode == "dark";
   const toastWarning = useWarningToast();
   const toastSuccess = useSuccessToast();
   const toastInfo = useInfoToast();
+
+  const dispatch = useAppDispatch();
   const inventory = useAppSelector((state) => state.user.inventory);
   const guarantees = useAppSelector((state) => state.user.guarantees);
   const guaranteesRef = useRef(guarantees);
