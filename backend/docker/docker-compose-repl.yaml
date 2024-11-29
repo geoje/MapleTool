@@ -1,0 +1,79 @@
+name: mapletool
+
+volumes:
+  db:
+  db-ro:
+
+services:
+  mem:
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    tmpfs:
+      - /data
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: maple
+      LANG: C.UTF-8
+      TZ: Asia/Seoul
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --require_secure_transport=OFF
+      - --server-id=1
+      - --log-bin=mysql-bin
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+      - --binlog-do-db=maple
+    healthcheck:
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 30s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  db-ro:
+    image: mysql:8.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      LANG: C.UTF-8
+      TZ: Asia/Seoul
+    ports:
+      - 3307:3306
+    volumes:
+      - db-ro:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --require_secure_transport=OFF
+      - --server-id=2
+      - --relay-log=relay-bin
+      - --read-only=1
+      - --gtid-mode=ON
+      - --enforce-gtid-consistency=ON
+    configs:
+      - source: db-ro-init
+        target: /docker-entrypoint-initdb.d/db-ro-init.sql
+
+configs:
+  db-ro-init:
+    content: |
+      CHANGE REPLICATION SOURCE TO
+          SOURCE_HOST='db',
+          SOURCE_USER='root',
+          SOURCE_PASSWORD='root';
+      START REPLICA;
