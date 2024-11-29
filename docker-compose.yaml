@@ -9,7 +9,7 @@ volumes:
 services:
   fe:
     image: nginx:alpine
-    restart: on-failure:3
+    restart: always
     volumes:
       - ./frontend/dist:/usr/share/nginx/html
     labels:
@@ -39,7 +39,7 @@ services:
 
   be:
     image: openjdk:21-jdk-slim
-    restart: on-failure:3
+    restart: always
     environment:
       SPRING_PROFILES_ACTIVE: prod
       JASYPT_PASSWORD: ${JASYPT_PASSWORD}
@@ -60,13 +60,13 @@ services:
 
   mem:
     image: redis:alpine
-    restart: on-failure:3
+    restart: always
     tmpfs:
       - /data
 
   db:
     image: mysql:8.0
-    restart: on-failure:3
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: maple

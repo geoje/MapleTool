@@ -6,7 +6,7 @@ volumes:
 services:
   mem:
     image: redis:alpine
-    restart: on-failure:3
+    restart: always
     ports:
       - 6379:6379
     tmpfs:
@@ -14,7 +14,7 @@ services:
 
   db:
     image: mysql:8.0
-    restart: on-failure:3
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: maple
