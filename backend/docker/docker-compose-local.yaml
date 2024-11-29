@@ -19,6 +19,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: maple
       LANG: C.UTF-8
+      TZ: Asia/Seoul
     ports:
       - 3306:3306
     volumes:
