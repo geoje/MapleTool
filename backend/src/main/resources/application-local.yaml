@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost/maple
     username: root
-    password: root
+    password: ENC(V9w5wIjCXj5sXSp+EeoPhUIX+jGjDzOOY3FAqj541Dlh03Erl9zn6Sar6ZI4IQpR)
 
   jpa:
     show-sql: true

@@ -1,5 +1,10 @@
 name: mapletool
 
+networks:
+  default:
+    external: true
+    name: traefik
+
 volumes:
   db:
 
@@ -7,8 +12,6 @@ services:
   mem:
     image: redis:alpine
     restart: unless-stopped
-    ports:
-      - 6379:6379
     tmpfs:
       - /data
 
@@ -17,14 +20,13 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_EXPIRE_LOGS_DAYS: 7
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: maple
       LANG: C.UTF-8
       TZ: Asia/Seoul
-    ports:
-      - 3306:3306
     volumes:
       - db:/var/lib/mysql
+      - ./db:/var/run/mysqld
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_general_ci

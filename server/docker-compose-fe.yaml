@@ -1,0 +1,37 @@
+name: mapletool
+
+networks:
+  default:
+    external: true
+    name: traefik
+
+services:
+  fe:
+    image: nginx:alpine
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.mapletool-fe.loadbalancer.server.port=80
+      - traefik.http.routers.mapletool-fe.rule=Host(`maple.ygh.kr`)
+      - traefik.http.routers.mapletool-fe.entrypoints=websecure
+      - traefik.http.routers.mapletool-fe.tls=true
+      - traefik.http.routers.mapletool-fe.tls.certresolver=letsencrypt
+    volumes:
+      - ../frontend/dist:/usr/share/nginx/html:ro
+    configs:
+      - source: nginx-config
+        target: /etc/nginx/conf.d/default.conf
+
+configs:
+  nginx-config:
+    content: |
+      server {
+        listen       80;
+        server_name  localhost;
+        root         /usr/share/nginx/html;
+
+        location / {
+          try_files /$$uri /index.html;
+          index index.html;
+        }
+      }
