@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - backend/**
-      - docker-compose.yaml
+      - server/**
 
 jobs:
   deploy:
@@ -47,7 +47,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: docker-compose.yaml, backend/build/libs/
+          source: backend/build/libs/, server/
           target: ~/${{ github.event.repository.name }}
 
       - name: Restart docker compose

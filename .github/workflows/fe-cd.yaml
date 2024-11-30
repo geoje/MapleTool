@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - frontend/**
-      - docker-compose.yaml
+      - server/**
 
 jobs:
   deploy:
@@ -38,7 +38,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: docker-compose.yaml, frontend/dist/
+          source: frontend/dist/, server/
           target: ~/${{ github.event.repository.name }}
 
       - name: Reload docker compose
@@ -48,7 +48,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}
+            cd ~/${{ github.event.repository.name }}/server
             docker compose stop fe
             docker compose rm -f fe
             docker compose up -d fe

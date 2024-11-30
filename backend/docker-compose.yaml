@@ -16,6 +16,7 @@ services:
     image: mysql:8.0
     restart: unless-stopped
     environment:
+      MYSQL_EXPIRE_LOGS_DAYS: 7
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: maple
       LANG: C.UTF-8
