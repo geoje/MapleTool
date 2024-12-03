@@ -15,6 +15,8 @@ services:
   backup:
     image: perconalab/percona-xtrabackup:8.0
     user: 999:999
+    environment:
+      TZ: Asia/Seoul
     volumes:
       - mapletool_db:/var/lib/mysql
       - ./backup:/backup
@@ -23,18 +25,19 @@ services:
       - -c
       - |
         set -e
-        NEW_DIR=`date "+%Y%m%d-%H%M%S-%Z"`
-        LASTEST_DIR=`ls -d /backup/*/ 2>/dev/null | tail -n 1`
+        NEW_DIR=/backup/`date "+%Y%m%d-%H%M%S-%Z"`
+        LASTEST_DIR=$$(ls -d /backup/*/ 2>/dev/null | tail -n 1)
 
-        if [[ `date "+%d"` -eq 01 || -z $${NEW_DIR} ]]; then
+        if [[ `date "+%d"` -eq 01 || -z $${LASTEST_DIR} ]]; then
           xtrabackup --backup --host=db --user=root \
             --password=${MYSQL_ROOT_PASSWORD} \
-            --target-dir=`/backup/$${NEW_DIR}`
-            && ls -d /backup/*/ | grep -v "/backup/$${NEW_DIR}/" | xargs rm -rf
+            --target-dir=$${NEW_DIR} \
+            && ls -d /backup/*/ 2>/dev/null \
+              | grep -v $${NEW_DIR} | xargs rm -rf
         else
           xtrabackup --backup --host=db --user=root \
             --password=${MYSQL_ROOT_PASSWORD} \
-            --target-dir=`/backup/$${NEW_DIR}` \
+            --target-dir=$${NEW_DIR} \
             --incremental-basedir=/$${LASTEST_DIR}
         fi
 
