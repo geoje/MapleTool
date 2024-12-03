@@ -24,7 +24,7 @@ services:
       - |
         set -e
         NEW_DIR=/backup/`date "+%Y%m%d-%H%M%S-%Z"`
-        LASTEST_DIR=$$(ls -d /backup/*/ 2>/dev/null | tail -n 1)
+        LASTEST_DIR=`ls -d /backup/*/ 2>/dev/null | tail -n 1`
 
         if [[ `date "+%d"` -eq 01 || -z $${LASTEST_DIR} ]]; then
           xtrabackup --backup --compress --host=db --user=root \
