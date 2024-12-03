@@ -1,0 +1,66 @@
+# docker compose -f docker-compose-bu.yaml run --rm (backup|restore)
+
+name: mapletool
+
+networks:
+  default:
+    external: true
+    name: traefik
+
+volumes:
+  mapletool_db:
+    external: true
+
+services:
+  backup:
+    image: perconalab/percona-xtrabackup:8.0
+    user: 999:999
+    volumes:
+      - mapletool_db:/var/lib/mysql
+      - ./backup:/backup
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        set -e
+        NEW_DIR=`date "+%Y%m%d-%H%M%S-%Z"`
+        LASTEST_DIR=`ls -d /backup/*/ 2>/dev/null | tail -n 1`
+
+        if [[ `date "+%d"` -eq 01 || -z $${NEW_DIR} ]]; then
+          xtrabackup --backup --host=db --user=root \
+            --password=${MYSQL_ROOT_PASSWORD} \
+            --target-dir=`/backup/$${NEW_DIR}`
+            && ls -d /backup/*/ | grep -v "/backup/$${NEW_DIR}/" | xargs rm -rf
+        else
+          xtrabackup --backup --host=db --user=root \
+            --password=${MYSQL_ROOT_PASSWORD} \
+            --target-dir=`/backup/$${NEW_DIR}` \
+            --incremental-basedir=/$${LASTEST_DIR}
+        fi
+
+  restore:
+    image: perconalab/percona-xtrabackup:8.0
+    user: 999:999
+    volumes:
+      - mapletool_db:/var/lib/mysql
+      - ./backup:/backup
+    entrypoint:
+      - bash
+      - -c
+      - |
+        set -e
+        FULL_DIR=`ls -d /backup/*/ 2>/dev/null | head -n 1`
+        if [ -z "$FULL_DIR" ]; then
+          exit 1
+        fi
+
+        xtrabackup --prepare --apply-log-only --host=db --user=root \
+            --password=${MYSQL_ROOT_PASSWORD} \
+            --target-dir=$${FULL_DIR}
+        ls -d /backup/*/ | tail -n +2 | xargs -I {} \
+          xtrabackup --prepare --apply-log-only --host=db --user=root \
+            --password=${MYSQL_ROOT_PASSWORD} \
+            --target-dir=$${FULL_DIR} --incremental-dir={}
+
+        xtrabackup --copy-back --host=db --user=root \
+            --password=${MYSQL_ROOT_PASSWORD}

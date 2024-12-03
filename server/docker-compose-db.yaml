@@ -26,7 +26,7 @@ services:
       TZ: Asia/Seoul
     volumes:
       - db:/var/lib/mysql
-      - ./db:/var/run/mysqld
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_general_ci
+      - ./connection:/var/run/mysqld
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
