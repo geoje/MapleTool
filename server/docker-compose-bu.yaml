@@ -59,20 +59,20 @@ services:
         xtrabackup --decompress --target-dir=$${FULL_DIR}
         if [ $${FULL_DIR} = $${LAST_DIR} ]; then
           xtrabackup --prepare --target-dir=$${FULL_DIR}
-          rm -rf /var/lib/mysql/*
-          xtrabackup --copy-back --target-dir=$${FULL_DIR}
-          exit 0
+        else
+          xtrabackup --prepare --target-dir=$${FULL_DIR} --apply-log-only
+
+          for DIR in `ls -d /backup/*/ | tail -n +2 | head -n -1`; do
+            xtrabackup --decompress --target-dir=$${DIR}
+            xtrabackup --prepare --target-dir=$${FULL_DIR} \
+              --incremental-dir=$${DIR} --apply-log-only
+          done
+
+          xtrabackup --decompress --target-dir=$${LAST_DIR}
+          xtrabackup --prepare --target-dir=$${FULL_DIR} \
+            --incremental-dir=$${LAST_DIR}
         fi
-        xtrabackup --prepare --apply-log-only --target-dir=$${FULL_DIR}
 
-        for DIR in `ls -d /backup/*/ | tail -n +2 | head -n -1`; do
-          xtrabackup --decompress --target-dir=$${DIR}
-          xtrabackup --prepare --apply-log-only --target-dir=$${FULL_DIR} \
-            --incremental-dir=$${DIR}
-        done
-
-        xtrabackup --decompress --target-dir=$${LAST_DIR}
-        xtrabackup --prepare --target-dir=$${FULL_DIR} \
-          --incremental-dir=$${LAST_DIR}
         rm -rf /var/lib/mysql/*
         xtrabackup --copy-back --target-dir=$${FULL_DIR}
+        rm -rf /backup/*
