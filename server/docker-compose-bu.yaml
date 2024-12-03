@@ -53,7 +53,7 @@ services:
       - |
         set -e
         FULL_DIR=`ls -d /backup/*/ 2>/dev/null | head -n 1`
-        if [ -z "$FULL_DIR" ]; then
+        if [ -z "$${FULL_DIR}" ]; then
           exit 1
         fi
 
