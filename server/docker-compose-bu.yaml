@@ -1,7 +1,5 @@
 # docker compose -f docker-compose-bu.yaml run --rm (backup|restore)
 
-name: mapletool
-
 networks:
   default:
     external: true
@@ -29,13 +27,13 @@ services:
         LASTEST_DIR=$$(ls -d /backup/*/ 2>/dev/null | tail -n 1)
 
         if [[ `date "+%d"` -eq 01 || -z $${LASTEST_DIR} ]]; then
-          xtrabackup --backup --host=db --user=root \
+          xtrabackup --backup --compress --host=db --user=root \
             --password=${MYSQL_ROOT_PASSWORD} \
             --target-dir=$${NEW_DIR} \
             && ls -d /backup/*/ 2>/dev/null \
               | grep -v $${NEW_DIR} | xargs rm -rf
         else
-          xtrabackup --backup --host=db --user=root \
+          xtrabackup --backup --compress --host=db --user=root \
             --password=${MYSQL_ROOT_PASSWORD} \
             --target-dir=$${NEW_DIR} \
             --incremental-basedir=/$${LASTEST_DIR}
@@ -53,17 +51,28 @@ services:
       - |
         set -e
         FULL_DIR=`ls -d /backup/*/ 2>/dev/null | head -n 1`
+        LAST_DIR=`ls -d /backup/*/ 2>/dev/null | tail -n 1`
         if [ -z "$${FULL_DIR}" ]; then
           exit 1
         fi
 
-        xtrabackup --prepare --apply-log-only --host=db --user=root \
-            --password=${MYSQL_ROOT_PASSWORD} \
-            --target-dir=$${FULL_DIR}
-        ls -d /backup/*/ | tail -n +2 | xargs -I {} \
-          xtrabackup --prepare --apply-log-only --host=db --user=root \
-            --password=${MYSQL_ROOT_PASSWORD} \
-            --target-dir=$${FULL_DIR} --incremental-dir={}
+        xtrabackup --decompress --target-dir=$${FULL_DIR}
+        if [ $${FULL_DIR} = $${LAST_DIR} ]; then
+          xtrabackup --prepare --target-dir=$${FULL_DIR}
+          rm -rf /var/lib/mysql/*
+          xtrabackup --copy-back --target-dir=$${FULL_DIR}
+          exit 0
+        fi
+        xtrabackup --prepare --apply-log-only --target-dir=$${FULL_DIR}
 
-        xtrabackup --copy-back --host=db --user=root \
-            --password=${MYSQL_ROOT_PASSWORD}
+        for DIR in `ls -d /backup/*/ | tail -n +2 | head -n -1`; do
+          xtrabackup --decompress --target-dir=$${DIR}
+          xtrabackup --prepare --apply-log-only --target-dir=$${FULL_DIR} \
+            --incremental-dir=$${DIR}
+        done
+
+        xtrabackup --decompress --target-dir=$${LAST_DIR}
+        xtrabackup --prepare --target-dir=$${FULL_DIR} \
+          --incremental-dir=$${LAST_DIR}
+        rm -rf /var/lib/mysql/*
+        xtrabackup --copy-back --target-dir=$${FULL_DIR}
