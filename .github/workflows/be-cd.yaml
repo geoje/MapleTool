@@ -57,7 +57,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}
-            docker compose stop be
-            docker compose rm -f be
-            docker compose up -d be
+            cd ~/${{ github.event.repository.name }}/server
+            docker compose -f docker-compose-db.yaml pull
+            docker compose -f docker-compose-be.yaml pull
+            docker compose -f docker-compose-be.yaml down
+            docker compose -f docker-compose-be.yaml up -d
+            docker compose -f docker-compose-db.yaml up -d
