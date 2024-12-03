@@ -36,7 +36,7 @@ services:
           xtrabackup --backup --compress --host=db --user=root \
             --password=${MYSQL_ROOT_PASSWORD} \
             --target-dir=$${NEW_DIR} \
-            --incremental-basedir=/$${LASTEST_DIR}
+            --incremental-basedir=$${LASTEST_DIR}
         fi
 
   restore:
