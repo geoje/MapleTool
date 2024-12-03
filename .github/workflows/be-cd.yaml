@@ -37,7 +37,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}
+            cd ~/${{ github.event.repository.name }}/server
             echo "JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}" > .env
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
 
