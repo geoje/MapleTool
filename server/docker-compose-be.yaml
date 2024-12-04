@@ -13,12 +13,12 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       JASYPT_PASSWORD: ${JASYPT_PASSWORD}
     labels:
-      - traefik.enable=true
-      - traefik.http.services.mapletool-be.loadbalancer.server.port=8080
-      - traefik.http.routers.mapletool-be.rule=Host(`maple.ygh.kr`) && PathPrefix(`/api`)
-      - traefik.http.routers.mapletool-be.entrypoints=websecure
-      - traefik.http.routers.mapletool-be.tls=true
-      - traefik.http.routers.mapletool-be.tls.certresolver=letsencrypt
+      traefik.enable: true
+      traefik.http.services.mapletool-be.loadbalancer.server.port: 8080
+      traefik.http.routers.mapletool-be.rule: Host(`maple.ygh.kr`) && PathPrefix(`/api`)
+      traefik.http.routers.mapletool-be.entrypoints: websecure
+      traefik.http.routers.mapletool-be.tls: true
+      traefik.http.routers.mapletool-be.tls.certresolver: letsencrypt
     volumes:
       - ../backend/build/libs:/opt:ro
     working_dir: /opt
