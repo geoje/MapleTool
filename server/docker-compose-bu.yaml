@@ -12,7 +12,7 @@ volumes:
 services:
   backup:
     image: perconalab/percona-xtrabackup:8.0
-    user: 999:999
+    user: root:root
     environment:
       TZ: Asia/Seoul
     volumes:
@@ -26,22 +26,25 @@ services:
         NEW_DIR=/backup/`date "+%Y%m%d-%H%M%S-%Z"`
         LASTEST_DIR=`ls -d /backup/*/ 2>/dev/null | tail -n 1`
 
+        mkdir -p /tmp$${NEW_DIR}
         if [[ `date "+%d"` -eq 01 || -z $${LASTEST_DIR} ]]; then
           xtrabackup --backup --compress --host=db --user=root \
             --password=${MYSQL_ROOT_PASSWORD} \
-            --target-dir=$${NEW_DIR} \
-            && ls -d /backup/*/ 2>/dev/null \
-              | grep -v $${NEW_DIR} | xargs rm -rf
+            --target-dir=/tmp$${NEW_DIR} \
+            && rm -rf /backup/*
         else
           xtrabackup --backup --compress --host=db --user=root \
             --password=${MYSQL_ROOT_PASSWORD} \
-            --target-dir=$${NEW_DIR} \
+            --target-dir=/tmp$${NEW_DIR} \
             --incremental-basedir=$${LASTEST_DIR}
         fi
 
+        mv /tmp$${NEW_DIR} $${NEW_DIR}
+        chown -R 1000:1000 /backup
+
   restore:
     image: perconalab/percona-xtrabackup:8.0
-    user: 999:999
+    user: root:root
     volumes:
       - mapletool_db:/var/lib/mysql
       - ./backup:/backup
@@ -76,3 +79,4 @@ services:
         rm -rf /var/lib/mysql/*
         xtrabackup --copy-back --target-dir=$${FULL_DIR}
         rm -rf /backup/*
+        chown -R 999:999 /var/lib/mysql
