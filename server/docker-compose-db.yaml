@@ -24,7 +24,7 @@ services:
     #   - 3306:3306
     environment:
       MYSQL_EXPIRE_LOGS_DAYS: 7
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?error}
       MYSQL_DATABASE: maple
       LANG: C.UTF-8
       TZ: Asia/Seoul

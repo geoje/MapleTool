@@ -29,12 +29,12 @@ services:
         mkdir -p /tmp$${NEW_DIR}
         if [[ `date "+%d"` -eq 01 || -z $${LASTEST_DIR} ]]; then
           xtrabackup --backup --compress --host=db --user=root \
-            --password=${MYSQL_ROOT_PASSWORD} \
+            --password=${MYSQL_ROOT_PASSWORD:?error} \
             --target-dir=/tmp$${NEW_DIR} \
             && rm -rf /backup/*
         else
           xtrabackup --backup --compress --host=db --user=root \
-            --password=${MYSQL_ROOT_PASSWORD} \
+            --password=${MYSQL_ROOT_PASSWORD:?error} \
             --target-dir=/tmp$${NEW_DIR} \
             --incremental-basedir=$${LASTEST_DIR}
         fi

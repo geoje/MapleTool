@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      JASYPT_PASSWORD: ${JASYPT_PASSWORD}
+      JASYPT_PASSWORD: ${JASYPT_PASSWORD:?error}
     labels:
       traefik.enable: true
       traefik.http.services.mapletool-be.loadbalancer.server.port: 8080
