@@ -1,5 +1,5 @@
 spring:
-  data.redis.host: redis
+  data.redis.host: mem
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://db/maple

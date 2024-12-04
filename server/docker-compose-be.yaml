@@ -1,5 +1,3 @@
-name: mapletool
-
 networks:
   default:
     external: true
@@ -8,16 +6,26 @@ networks:
 services:
   be:
     image: openjdk:21-jdk-slim
-    restart: unless-stopped
+    deploy:
+      update_config:
+        order: start-first
+        failure_action: rollback
+    ports: [8080:8080]
     environment:
       SPRING_PROFILES_ACTIVE: prod
       JASYPT_PASSWORD: ${JASYPT_PASSWORD:?error}
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+    #   interval: 5s
+    #   timeout: 2s
+    #   retries: 3
+    #   start_period: 15s
     labels:
-      traefik.enable: true
+      traefik.enable: 1
       traefik.http.services.mapletool-be.loadbalancer.server.port: 8080
       traefik.http.routers.mapletool-be.rule: Host(`maple.ygh.kr`) && PathPrefix(`/api`)
       traefik.http.routers.mapletool-be.entrypoints: websecure
-      traefik.http.routers.mapletool-be.tls: true
+      traefik.http.routers.mapletool-be.tls: 1
       traefik.http.routers.mapletool-be.tls.certresolver: letsencrypt
     volumes:
       - ../backend/build/libs:/opt:ro
