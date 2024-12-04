@@ -22,4 +22,4 @@ services:
     volumes:
       - ../backend/build/libs:/opt:ro
     working_dir: /opt
-    entrypoint: ["java", "-jar", "mapletool.jar"]
+    entrypoint: [java, -jar, mapletool.jar]
