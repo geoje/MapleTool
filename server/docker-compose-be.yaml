@@ -10,7 +10,6 @@ services:
       update_config:
         order: start-first
         failure_action: rollback
-    ports: [8080:8080]
     environment:
       SPRING_PROFILES_ACTIVE: prod
       JASYPT_PASSWORD: ${JASYPT_PASSWORD:?error}

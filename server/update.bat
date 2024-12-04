@@ -1,0 +1,1 @@
+docker service update --force mapletool_be

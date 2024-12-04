@@ -12,16 +12,14 @@ services:
   mem:
     image: redis:alpine
     restart: unless-stopped
-    # ports:
-    #   - 6379:6379
+    # ports: [6379:6379]
     tmpfs:
       - /data
 
   db:
     image: mysql:8.0
     restart: unless-stopped
-    # ports:
-    #   - 3306:3306
+    # ports: [3306:3306]
     environment:
       MYSQL_EXPIRE_LOGS_DAYS: 7
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?error}
