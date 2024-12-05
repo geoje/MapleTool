@@ -17,7 +17,7 @@ services:
       TZ: Asia/Seoul
     volumes:
       - mapletool_db:/var/lib/mysql
-      - ./backup:/backup
+      - ../backup:/backup
     entrypoint:
       - /bin/bash
       - -c
@@ -47,7 +47,7 @@ services:
     user: root:root
     volumes:
       - mapletool_db:/var/lib/mysql
-      - ./backup:/backup
+      - ../backup:/backup
     entrypoint:
       - bash
       - -c
