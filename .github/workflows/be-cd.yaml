@@ -11,6 +11,10 @@ on:
       - server/docker/docker-compose-be.yaml
       - server/docker/docker-compose-db.yaml
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -72,6 +76,5 @@ jobs:
               || docker stack deploy -c docker-compose-be.yaml ${REPO_NAME}
               
             docker image prune -af
-            if [[ "$status" != "completed" ]]; then
-              exit 1
-            fi
+            docker service inspect mapletool_be --format '{{.UpdateStatus.State}}' \
+              | grep -qv 'completed' && exit 1
