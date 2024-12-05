@@ -62,7 +62,7 @@ jobs:
               && docker service update --force ${REPO_NAME}_fe \
               || docker stack deploy -c docker-compose-fe.yaml ${REPO_NAME}
 
+            docker service inspect ${REPO_NAME}_fe
             docker image prune -af
-            docker service inspect mapletool_fe --format '{{.UpdateStatus.State}}'
-            docker service inspect mapletool_fe --format '{{.UpdateStatus.State}}' \
+            docker service inspect ${REPO_NAME}_fe --format '{{.UpdateStatus.State}}' \
               | grep -qv 'completed' && exit 1
