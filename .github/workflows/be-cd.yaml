@@ -12,7 +12,7 @@ on:
       - server/docker/docker-compose-db.yaml
 
 concurrency:
-  group: be
+  group: $ {{ github.workflow }}
   cancel-in-progress: true
 
 jobs:
@@ -76,5 +76,5 @@ jobs:
               || docker stack deploy -c docker-compose-be.yaml ${REPO_NAME}
               
             docker image prune -af
-            docker service inspect ${REPO_NAME}_be --format '{{.UpdateStatus.State}}' \
-              | grep -qv 'completed' && exit 1
+            docker service inspect ${REPO_NAME}_be --format {{.UpdateStatus.State}} \
+              | grep -q completed
