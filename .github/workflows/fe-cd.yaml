@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - frontend/**
+      - .github/workflows/fe-cd.yaml
       - server/docker/docker-compose-fe.yaml
 
 jobs:

@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - backend/**
+      - .github/workflows/be-cd.yaml
       - server/docker/docker-compose-be.yaml
       - server/docker/docker-compose-db.yaml
 
@@ -63,7 +64,7 @@ jobs:
             docker compose -f docker-compose-be.yaml pull
             docker compose -f docker-compose-db.yaml pull
 
-            export `cat .env`
+            export $(cat .env)
             REPO_NAME=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
             docker compose -f docker-compose-db.yaml up -d
             docker service ls | grep -iw ${REPO_NAME}_be \
