@@ -52,7 +52,7 @@ jobs:
             cd ~/${{ github.event.repository.name }}/server/docker
             docker compose -f docker-compose-fe.yaml pull
 
-            REPO_NAME = `${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'`
+            REPO_NAME=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
             docker service ls | grep -iw ${REPO_NAME}_fe \
               && docker service update --force ${REPO_NAME}_fe \
               || docker stack deploy -c docker-compose-fe.yaml mapletool

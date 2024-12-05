@@ -38,7 +38,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: backend/build/libs/, server/
+          source: backend/build/libs/, server/docker
           target: ~/${{ github.event.repository.name }}
 
       - name: Setup environment variables
@@ -64,7 +64,7 @@ jobs:
             docker compose -f docker-compose-db.yaml pull
 
             export `cat .env`
-            REPO_NAME = `${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'`
+            REPO_NAME=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
             docker compose -f docker-compose-db.yaml up -d
             docker service ls | grep -iw ${REPO_NAME}_be \
               && docker service update --force ${REPO_NAME}_be \
