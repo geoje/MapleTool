@@ -15,9 +15,6 @@ services:
       JASYPT_PASSWORD: ${JASYPT_PASSWORD:?error}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 1s
-      timeout: 1s
-      retries: 60
     labels:
       traefik.enable: 1
       traefik.http.services.mapletool-be.loadbalancer.server.port: 8080
@@ -26,6 +23,6 @@ services:
       traefik.http.routers.mapletool-be.tls: 1
       traefik.http.routers.mapletool-be.tls.certresolver: letsencrypt
     volumes:
-      - ../backend/build/libs:/opt:ro
+      - ../../backend/build/libs:/opt:ro
     working_dir: /opt
     entrypoint: [java, -jar, mapletool.jar]
