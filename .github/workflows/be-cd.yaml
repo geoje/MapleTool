@@ -12,7 +12,7 @@ on:
       - server/docker/docker-compose-db.yaml
 
 concurrency:
-  group: $ {{ github.workflow }}
+  group: ${{ github.workflow }}
   cancel-in-progress: true
 
 jobs:
