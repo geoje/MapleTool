@@ -70,4 +70,8 @@ jobs:
             docker service ls | grep -iw ${REPO_NAME}_be \
               && docker service update --force ${REPO_NAME}_be \
               || docker stack deploy -c docker-compose-be.yaml ${REPO_NAME}
+              
             docker image prune -af
+            if [[ "$status" != "completed" ]]; then
+              exit 1
+            fi

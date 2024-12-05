@@ -14,6 +14,4 @@ export default function () {
     "is status 200": (r) => r.status === 200,
     // "response time is less than 1000ms": (r) => r.timings.duration < 1000,
   });
-
-  console.log(res.status_text, res.body.length);
 }

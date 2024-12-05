@@ -56,5 +56,9 @@ jobs:
             REPO_NAME=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
             docker service ls | grep -iw ${REPO_NAME}_fe \
               && docker service update --force ${REPO_NAME}_fe \
-              || docker stack deploy -c docker-compose-fe.yaml mapletool
+              || docker stack deploy -c docker-compose-fe.yaml ${REPO_NAME}
+
             docker image prune -af
+            if [[ "$status" != "completed" ]]; then
+              exit 1
+            fi

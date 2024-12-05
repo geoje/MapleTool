@@ -1,8 +1,8 @@
 spring:
-  data.redis.host: mem
+  data.redis.host: mapletool-mem-1
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://db/maple
+    url: jdbc:mysql://mapletool-db-1/maple
     username: root
     password: ENC(82LhaVLTV7bx76p7M18ES5ceqOWYR8ACDxHfoZEqfgXINYjTOJJBwG00dK6F5Mfx)
 
