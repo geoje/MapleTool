@@ -6,7 +6,8 @@ on:
       - main
     paths:
       - backend/**
-      - server/**
+      - server/docker/docker-compose-be
+      - server/docker/docker-compose-db
 
 jobs:
   deploy:
@@ -30,17 +31,6 @@ jobs:
           chmod +x gradlew
           ./gradlew build -x test
 
-      - name: Setup environment variables
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          script: |
-            cd ~/${{ github.event.repository.name }}/server
-            echo "JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}" > .env
-            echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
-
       - name: Copy jar
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -50,16 +40,32 @@ jobs:
           source: backend/build/libs/, server/
           target: ~/${{ github.event.repository.name }}
 
-      - name: Restart docker compose
+      - name: Setup environment variables
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}/server
-            docker compose -f docker-compose-db.yaml pull
+            cd ~/${{ github.event.repository.name }}/server/docker
+            echo "JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}" > .env
+            echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+
+      - name: Update db and be
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd ~/${{ github.event.repository.name }}/server/docker
             docker compose -f docker-compose-be.yaml pull
-            docker compose -f docker-compose-be.yaml down
-            docker compose -f docker-compose-be.yaml up -d
+            docker compose -f docker-compose-db.yaml pull
+
+            export `cat .env`
+            REPO_NAME = `${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'`
             docker compose -f docker-compose-db.yaml up -d
+            docker service ls | grep -iw ${REPO_NAME}_be \
+              && docker service update --force ${REPO_NAME}_be \
+              || docker stack deploy -c docker-compose-be.yaml ${REPO_NAME}
+            docker image prune -af

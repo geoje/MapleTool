@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - frontend/**
-      - server/**
+      - server/docker/docker-compose-fe
 
 jobs:
   deploy:
@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: "frontend/package-lock.json"
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install modules
         working-directory: frontend
@@ -38,17 +38,21 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: frontend/dist/, server/
+          source: frontend/dist/, server/docker/
           target: ~/${{ github.event.repository.name }}
 
-      - name: Restart docker compose
+      - name: Update fe
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}/server
+            cd ~/${{ github.event.repository.name }}/server/docker
             docker compose -f docker-compose-fe.yaml pull
-            docker compose -f docker-compose-fe.yaml down
-            docker compose -f docker-compose-fe.yaml up -d
+
+            REPO_NAME = `${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'`
+            docker service ls | grep -iw ${REPO_NAME}_fe \
+              && docker service update --force ${REPO_NAME}_fe \
+              || docker stack deploy -c docker-compose-fe.yaml mapletool
+            docker image prune -af
