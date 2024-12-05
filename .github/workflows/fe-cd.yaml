@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - frontend/**
-      - server/docker/docker-compose-fe
+      - server/docker/docker-compose-fe.yaml
 
 jobs:
   deploy:

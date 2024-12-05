@@ -6,8 +6,8 @@ on:
       - main
     paths:
       - backend/**
-      - server/docker/docker-compose-be
-      - server/docker/docker-compose-db
+      - server/docker/docker-compose-be.yaml
+      - server/docker/docker-compose-db.yaml
 
 jobs:
   deploy:
