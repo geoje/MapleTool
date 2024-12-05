@@ -11,7 +11,7 @@ on:
       - server/docker/docker-compose-fe.yaml
 
 concurrency:
-  group: ${{ github.ref }}
+  group: fe
   cancel-in-progress: true
 
 jobs:
