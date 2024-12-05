@@ -63,5 +63,7 @@ jobs:
               || docker stack deploy -c docker-compose-fe.yaml ${REPO_NAME}
 
             docker image prune -af
-            docker service inspect ${REPO_NAME}_fe --format {{.UpdateStatus.State}} \
-              | grep -q completed
+            STATUS=$(docker service inspect ${REPO_NAME}_fe --format {{.UpdateStatus.State}})
+            if [[ ${STATUS} != "completed" ]]; then
+              exit 1
+            fi
