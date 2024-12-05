@@ -13,11 +13,11 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
     labels:
-      traefik.enable: 1
+      traefik.enable: "true"
       traefik.http.services.mapletool-fe.loadbalancer.server.port: 80
       traefik.http.routers.mapletool-fe.rule: Host(`maple.ygh.kr`)
       traefik.http.routers.mapletool-fe.entrypoints: websecure
-      traefik.http.routers.mapletool-fe.tls: 1
+      traefik.http.routers.mapletool-fe.tls: "true"
       traefik.http.routers.mapletool-fe.tls.certresolver: letsencrypt
     volumes:
       - ../../frontend/dist:/usr/share/nginx/html:ro
