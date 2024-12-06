@@ -1,19 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Stack,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Flex, IconButton, Stack, Text, Tooltip } from "@chakra-ui/react";
 import BoardCard from "../../components/layout/boardCard";
 import ResultTable from "./3-statistics/resultTable";
 import { useState } from "react";
@@ -22,24 +7,17 @@ import Boss from "./2-boss/boss";
 import PreparedButtons from "./2-boss/preparedButtons";
 import NameInput from "./1-character/nameInput";
 import { LuShare2, LuTrash2 } from "react-icons/lu";
-import {
-  convertPlansToParams,
-  parsePlansFromParams,
-} from "../../services/boss";
+import { convertPlansToParams } from "../../services/boss";
 import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import {
   useInfoToast,
   useSuccessToast,
   useWarningToast,
 } from "../../hooks/useToast";
-import { useSearchParams } from "react-router-dom";
-import CharacterButton from "./1-character/characterButton";
 import { setBossPlans } from "../../stores/userSlice";
+import SharedModal from "./common/sharedModal";
 
 export default function Crystal() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const loadedBossPlans = parsePlansFromParams(searchParams);
-
   const dispatch = useAppDispatch();
   const bossPlans = useAppSelector((state) => state.user.bossPlans);
   const [selected, setSelected] = useState(-1);
@@ -136,57 +114,7 @@ export default function Crystal() {
           <ResultTable bossPlans={bossPlans} />
         </BoardCard>
       </Stack>
-      {loadedBossPlans.length ? (
-        <Modal size="xl" isOpen onClose={setSearchParams}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>공유된 보스수익</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody as={Stack}>
-              {loadedBossPlans.map((bossPlan, i) => (
-                <CharacterButton
-                  key={"loaded-" + i}
-                  bossPlan={bossPlan}
-                  index={i}
-                  selected={-1}
-                  readOnly
-                />
-              ))}
-            </ModalBody>
-            <ModalFooter
-              as={Flex}
-              gap={2}
-              wrap={{ base: "wrap", md: undefined }}
-              justifyContent="space-between"
-              alignItems="end"
-            >
-              <Box
-                flexGrow={1}
-                p={2}
-                borderWidth={1}
-                borderRadius="var(--chakra-radii-md)"
-              >
-                <ResultTable bossPlans={loadedBossPlans} />
-              </Box>
-              <Stack flex={1}>
-                <Button
-                  size="sm"
-                  colorScheme="blue"
-                  onClick={() => {
-                    dispatch(setBossPlans(loadedBossPlans));
-                    setSearchParams();
-                  }}
-                >
-                  불러오기
-                </Button>
-                <Button size="sm" onClick={() => setSearchParams()}>
-                  취소
-                </Button>
-              </Stack>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      ) : undefined}
+      <SharedModal />
     </>
   );
 }
