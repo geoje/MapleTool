@@ -1,18 +1,17 @@
 package kr.ygh.maple.character.feign.maple;
 
 import feign.codec.Decoder;
-import kr.ygh.maple.character.dto.basic.Basic;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.springframework.context.annotation.Bean;
-
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import kr.ygh.maple.character.dto.basic.Basic;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.springframework.context.annotation.Bean;
 
 public class MapleConfig {
 
@@ -49,7 +48,7 @@ public class MapleConfig {
         String characterName = tdMain
                 .map(tr -> tr.selectFirst("dt > a"))
                 .map(Element::text)
-                .orElse("");
+                .orElseThrow();
         Optional<String> worldImage = tdMain
                 .map(tr -> tr.selectFirst("dt > a > img"))
                 .map(img -> img.attr("src"));
