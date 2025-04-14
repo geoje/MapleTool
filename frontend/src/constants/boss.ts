@@ -20,6 +20,7 @@ import chosenSeren from "../assets/boss/chosen-seren.png";
 import kalosTheGuardian from "../assets/boss/kalos-the-guardian.png";
 import kaling from "../assets/boss/kaling.png";
 import limbo from "../assets/boss/limbo.png";
+import baldrix from "../assets/boss/baldrix.png";
 
 export enum BOSS_TYPE {
   ZZAKUM = "ZZAKUM",
@@ -44,6 +45,7 @@ export enum BOSS_TYPE {
   KALOS_THE_GUARDIAN = "KALOS_THE_GUARDIAN",
   KALING = "KALING",
   LIMBO = "LIMBO",
+  BALDRIX = "BALDRIX",
 }
 export enum BOSS_DIFFICULTY {
   EASY = "EASY",
@@ -99,7 +101,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "자쿰",
     icon: zzakum,
     prices: {
-      CHAOS: 8_980_000,
+      CHAOS: 8980000,
     },
   },
   MAGNUS: {
@@ -107,7 +109,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "매그",
     icon: magnus,
     prices: {
-      HARD: 10_700_000,
+      HARD: 10700000,
     },
   },
   HILLA: {
@@ -115,7 +117,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "힐라",
     icon: hilla,
     prices: {
-      HARD: 6_390_000,
+      HARD: 6390000,
     },
   },
   PAPULATUS: {
@@ -123,7 +125,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "파풀",
     icon: papulatus,
     prices: {
-      CHAOS: 24_700_000,
+      CHAOS: 24700000,
     },
   },
   PIERRE: {
@@ -131,7 +133,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "피에르",
     icon: pierre,
     prices: {
-      CHAOS: 9_080_000,
+      CHAOS: 9080000,
     },
   },
   VON_BON: {
@@ -139,7 +141,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "반반",
     icon: vonBon,
     prices: {
-      CHAOS: 9_060_000,
+      CHAOS: 9060000,
     },
   },
   CRIMSON_QUEEN: {
@@ -147,7 +149,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "블퀸",
     icon: crimsonQueen,
     prices: {
-      CHAOS: 9_040_000,
+      CHAOS: 9040000,
     },
   },
   VELLUM: {
@@ -155,7 +157,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "벨룸",
     icon: vellum,
     prices: {
-      CHAOS: 11_600_000,
+      CHAOS: 11600000,
     },
   },
   PINK_BEAN: {
@@ -163,7 +165,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "핑크빈",
     icon: pinkBean,
     prices: {
-      CHAOS: 7_310_000,
+      CHAOS: 7310000,
     },
   },
   CYGNUS: {
@@ -171,8 +173,8 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "시그",
     icon: cygnus,
     prices: {
-      EASY: 5_060_000,
-      NORMAL: 8_330_000,
+      EASY: 5060000,
+      NORMAL: 8330000,
     },
   },
   LOTUS: {
@@ -180,9 +182,9 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "스우",
     icon: lotus,
     prices: {
-      NORMAL: 31_400_000,
-      HARD: 119_000_000,
-      EXTREME: 392_000_000,
+      NORMAL: 31400000,
+      HARD: 119000000,
+      EXTREME: 392000000,
     },
   },
   DAMIEN: {
@@ -190,8 +192,8 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "데미안",
     icon: damien,
     prices: {
-      NORMAL: 32_900_000,
-      HARD: 113_000_000,
+      NORMAL: 32900000,
+      HARD: 113000000,
     },
   },
   GUARDIAN_ANGEL_SLIME: {
@@ -199,8 +201,8 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "가엔슬",
     icon: guardianAngelSlime,
     prices: {
-      NORMAL: 47_800_000,
-      CHAOS: 161_000_000,
+      NORMAL: 47800000,
+      CHAOS: 161000000,
     },
   },
   LUCID: {
@@ -208,9 +210,9 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "루시드",
     icon: lucid,
     prices: {
-      EASY: 49_000_000,
-      NORMAL: 58_600_000,
-      HARD: 135_000_000,
+      EASY: 49000000,
+      NORMAL: 58600000,
+      HARD: 135000000,
     },
   },
   WILL: {
@@ -218,9 +220,9 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "윌",
     icon: will,
     prices: {
-      EASY: 53_100_000,
-      NORMAL: 67_600_000,
-      HARD: 165_000_000,
+      EASY: 53100000,
+      NORMAL: 67600000,
+      HARD: 165000000,
     },
   },
   GLOOM: {
@@ -228,8 +230,8 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "더스크",
     icon: gloom,
     prices: {
-      NORMAL: 72_400_000,
-      CHAOS: 150_000_000,
+      NORMAL: 72400000,
+      CHAOS: 150000000,
     },
   },
   VERUS_HILLA: {
@@ -237,8 +239,8 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "진힐라",
     icon: verusHilla,
     prices: {
-      NORMAL: 153_000_000,
-      HARD: 200_000_000,
+      NORMAL: 153000000,
+      HARD: 200000000,
     },
   },
   DARKNELL: {
@@ -246,8 +248,8 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "듄켈",
     icon: darknell,
     prices: {
-      NORMAL: 78_100_000,
-      HARD: 177_000_000,
+      NORMAL: 78100000,
+      HARD: 177000000,
     },
   },
   CHOSEN_SEREN: {
@@ -255,9 +257,9 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "세렌",
     icon: chosenSeren,
     prices: {
-      NORMAL: 227_000_000,
-      HARD: 314_000_000,
-      EXTREME: 1_340_000_000,
+      NORMAL: 227000000,
+      HARD: 314000000,
+      EXTREME: 1340000000,
     },
   },
   KALOS_THE_GUARDIAN: {
@@ -265,10 +267,10 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "칼로스",
     icon: kalosTheGuardian,
     prices: {
-      EASY: 265_000_000,
-      NORMAL: 364_000_000,
-      CHAOS: 746_000_000,
-      EXTREME: 1_500_000_000,
+      EASY: 265000000,
+      NORMAL: 364000000,
+      CHAOS: 746000000,
+      EXTREME: 1500000000,
     },
   },
   KALING: {
@@ -276,10 +278,10 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "카링",
     icon: kaling,
     prices: {
-      EASY: 293_000_000,
-      NORMAL: 425_000_000,
-      HARD: 870_000_000,
-      EXTREME: 1_750_000_000,
+      EASY: 293000000,
+      NORMAL: 425000000,
+      HARD: 870000000,
+      EXTREME: 1750000000,
     },
   },
   LIMBO: {
@@ -287,8 +289,17 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     abbreviate: "림보",
     icon: limbo,
     prices: {
-      NORMAL: 600_000_000,
-      HARD: 1_070_000_000,
+      NORMAL: 600000000,
+      HARD: 1070000000,
+    },
+  },
+  BALDRIX: {
+    name: "발드릭스",
+    abbreviate: "발드",
+    icon: baldrix,
+    prices: {
+      NORMAL: 800000000,
+      HARD: 1200000000,
     },
   },
 };
