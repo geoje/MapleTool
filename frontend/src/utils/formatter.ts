@@ -3,6 +3,9 @@ const units = ["억", "만", ""];
 export function formatNumber(num: number): string {
   if (num === 0) return "0";
 
+  const isNegative = num < 0;
+  num = Math.abs(num);
+
   const parts = [];
 
   parts.push(Math.floor(num / 100000000));
@@ -21,7 +24,7 @@ export function formatNumber(num: number): string {
     .filter((part) => part !== "")
     .join(" ");
 
-  return result;
+  return isNegative ? `-${result}` : result;
 }
 
 export function formatSearchParams(params: object) {

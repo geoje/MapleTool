@@ -1,4 +1,9 @@
-import { BOSS, BOSS_DIFFICULTY, BOSS_TYPE } from "../constants/boss";
+import {
+  BOSS,
+  BOSS_DIFFICULTY,
+  BOSS_PREV_PRICE,
+  BOSS_TYPE,
+} from "../constants/boss";
 import BossPlan from "../types/user/bossPlan";
 
 const FORMATION62 =
@@ -7,6 +12,12 @@ const FORMATION62 =
 export function getPrice(bossType: BOSS_TYPE, difficulty: BOSS_DIFFICULTY) {
   return BOSS[bossType].prices[difficulty] ?? 0;
 }
+export function getPreviousPrice(
+  bossType: BOSS_TYPE,
+  difficulty: BOSS_DIFFICULTY
+) {
+  return BOSS_PREV_PRICE[bossType][difficulty] ?? 0;
+}
 export function getBossIcon(bossType: BOSS_TYPE): string {
   return BOSS[bossType].icon ?? "";
 }
@@ -14,6 +25,13 @@ export function calculateRevenue(bossPlan: BossPlan) {
   return bossPlan.boss
     .map(({ type, difficulty, members: partyMembers }) =>
       Math.round(getPrice(type, difficulty) / partyMembers)
+    )
+    .reduce((acc, cur) => acc + cur, 0);
+}
+export function calculatePreviousRevenue(bossPlan: BossPlan) {
+  return bossPlan.boss
+    .map(({ type, difficulty, members: partyMembers }) =>
+      Math.round(getPreviousPrice(type, difficulty) / partyMembers)
     )
     .reduce((acc, cur) => acc + cur, 0);
 }
