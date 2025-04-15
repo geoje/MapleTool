@@ -196,13 +196,13 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     name: "진 힐라",
     abbreviate: "진힐라",
     icon: verusHilla,
-    prices: { NORMAL: 62500000, HARD: 142000000 },
+    prices: { NORMAL: 107000000, HARD: 160000000 },
   },
   DARKNELL: {
     name: "듄켈",
     abbreviate: "듄켈",
     icon: darknell,
-    prices: { NORMAL: 107000000, HARD: 160000000 },
+    prices: { NORMAL: 62500000, HARD: 142000000 },
   },
   CHOSEN_SEREN: {
     name: "선택받은 세렌",
