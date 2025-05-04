@@ -1,13 +1,4 @@
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  Flex,
-  IconButton,
-  Stack,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Flex, IconButton, Stack, Text, Tooltip } from "@chakra-ui/react";
 import BoardCard from "../../components/layout/boardCard";
 import ResultTable from "./3-statistics/resultTable";
 import { useState } from "react";
@@ -94,10 +85,6 @@ export default function Crystal() {
 
   return (
     <>
-      <Alert variant="left-accent">
-        <AlertIcon />
-        <AlertDescription>4월 17일 패치 후 가격 기준입니다.</AlertDescription>
-      </Alert>
       <Stack w={{ base: "100vw", md: "auto" }}>
         <BoardCard
           order={1}

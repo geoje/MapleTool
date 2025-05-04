@@ -8,10 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Fragment } from "react/jsx-runtime";
 import { useState } from "react";
-import {
-  calculatePreviousRevenue,
-  calculateRevenue,
-} from "../../../services/boss";
+import { calculateRevenue } from "../../../services/boss";
 import { MAX_BOSS_SELECTABLE } from "../../../constants/boss";
 import { formatNumber } from "../../../utils/formatter";
 import BossPlan from "../../../types/user/bossPlan";
@@ -21,15 +18,11 @@ export default function ResultTable({ bossPlans }: { bossPlans: BossPlan[] }) {
   const [excludes, setExcludes] = useState(new Set<number>());
 
   const revenues = bossPlans.map(calculateRevenue);
-  const prevRevenues = bossPlans.map(calculatePreviousRevenue);
   const totalCount = bossPlans
     .map((plan) => plan.boss.length)
     .filter((_, i) => !excludes.has(i))
     .reduce((acc, cur) => acc + cur, 0);
   const totalRevenue = revenues
-    .filter((_, i) => !excludes.has(i))
-    .reduce((acc, cur) => acc + cur, 0);
-  const totalPrevRevenue = prevRevenues
     .filter((_, i) => !excludes.has(i))
     .reduce((acc, cur) => acc + cur, 0);
 
@@ -38,7 +31,7 @@ export default function ResultTable({ bossPlans }: { bossPlans: BossPlan[] }) {
   }
 
   return (
-    <SimpleGrid columns={3}>
+    <SimpleGrid>
       {bossPlans.map((plan, i) => (
         <Fragment key={"result-" + i}>
           <Flex
@@ -79,29 +72,16 @@ export default function ResultTable({ bossPlans }: { bossPlans: BossPlan[] }) {
           >
             <Text>{formatNumber(revenues[i])}</Text>
           </Flex>
-          <Flex
-            justify="end"
-            align="center"
-            opacity={excludes.has(i) ? 0.4 : 1}
-            pl={2}
-            py={1}
-            borderBottomWidth={1}
-          >
-            <Text
-              color={
-                revenues[i] == prevRevenues[i]
-                  ? undefined
-                  : revenues[i] - prevRevenues[i] > 0
-                  ? "red.500"
-                  : "blue.500"
-              }
-            >
-              ({formatNumber(revenues[i] - prevRevenues[i])})
-            </Text>
-          </Flex>
         </Fragment>
       ))}
-      <GridItem as={Flex} justify="space-between" align="center" gap={2} py={1}>
+      <GridItem
+        as={Flex}
+        justify="space-between"
+        align="center"
+        colSpan={2}
+        gap={2}
+        pt={2}
+      >
         <Badge
           colorScheme={
             totalCount ==
@@ -113,24 +93,8 @@ export default function ResultTable({ bossPlans }: { bossPlans: BossPlan[] }) {
         >
           {totalCount}
         </Badge>
-      </GridItem>
-      <Flex justify="end" align="center" pl={2} py={1}>
         <Text fontWeight="bold">{formatNumber(totalRevenue)}</Text>
-      </Flex>
-      <Flex justify="end" align="center" pl={2} py={1}>
-        <Text
-          fontWeight="bold"
-          color={
-            totalRevenue == totalPrevRevenue
-              ? undefined
-              : totalRevenue - totalPrevRevenue > 0
-              ? "red.500"
-              : "blue.500"
-          }
-        >
-          ({formatNumber(totalRevenue - totalPrevRevenue)})
-        </Text>
-      </Flex>
+      </GridItem>
     </SimpleGrid>
   );
 }
