@@ -48,7 +48,11 @@ export default function OrderTable({
           type as BOSS_TYPE,
           selectedPlanItem?.difficulty
         )}
-        members={selectedPlanItem?.members ?? 1}
+        members={
+          selectedPlanItem && difficulty == selectedPlanItem?.difficulty
+            ? selectedPlanItem?.members
+            : 1
+        }
         price={BOSS[type].prices[difficulty]}
         isDisabled={
           !selectedPlanItem && bossPlan.boss.length >= MAX_BOSS_SELECTABLE
@@ -59,6 +63,7 @@ export default function OrderTable({
               index: selected,
               type: type,
               difficulty: newDifficulty,
+              members: 1,
             })
           )
         }
