@@ -62,8 +62,10 @@ jobs:
               && docker service update --force ${REPO_NAME}_fe \
               || docker stack deploy -c docker-compose-fe.yaml ${REPO_NAME}
 
-            docker image prune -af
             STATUS=$(docker service inspect ${REPO_NAME}_fe --format {{.UpdateStatus.State}})
-            if [[ ${STATUS} != "completed" ]]; then
+            if [[ -n "${STATUS}" && ${STATUS} != "completed" ]]; then
+              echo "Service update status is '${STATUS}', not completed. Exiting."
               exit 1
             fi
+            docker container prune -f
+            docker image prune -af
