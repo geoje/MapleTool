@@ -16,6 +16,7 @@ import {
 } from "../../hooks/useToast";
 import { setBossPlans } from "../../stores/userSlice";
 import SharedModal from "./common/sharedModal";
+import VersionText from "./2-boss/versionText";
 
 export default function Crystal() {
   const dispatch = useAppDispatch();
@@ -107,6 +108,7 @@ export default function Crystal() {
           right={<PreparedButtons selected={selected} />}
         >
           <Boss selected={selected} />
+          <VersionText />
         </BoardCard>
       </Stack>
       <Stack w={{ base: "100vw", md: "auto" }}>
