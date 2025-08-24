@@ -1,0 +1,24 @@
+name: mapletool
+
+networks:
+  default:
+    external: true
+    name: traefik
+
+volumes:
+  db:
+
+services:
+  db:
+    image: mysql:8.0.43
+    restart: unless-stopped
+    ports: ["3307:3306"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?error}
+      MYSQL_DATABASE: learn
+      LANG: C.UTF-8
+    volumes:
+      - db:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci

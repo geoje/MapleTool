@@ -17,7 +17,6 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: prod
 
     steps:
       - name: Checkout
@@ -44,28 +43,27 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: frontend/dist/, server/docker/
+          source: frontend/dist/, frontend/Dockerfile, frontend/nginx.conf, server/docker/
           target: ~/${{ github.event.repository.name }}
 
       - name: Update fe
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
             cd ~/${{ github.event.repository.name }}/server/docker
-            docker compose -f docker-compose-fe.yaml pull
 
-            REPO_NAME=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
-            docker service ls | grep -iw ${REPO_NAME}_fe \
-              && docker service update --force ${REPO_NAME}_fe \
-              || docker stack deploy -c docker-compose-fe.yaml ${REPO_NAME}
+            docker compose -f docker-compose-fe.yaml build
 
-            STATUS=$(docker service inspect ${REPO_NAME}_fe --format {{.UpdateStatus.State}})
+            STACK=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
+            docker service ls | grep -iw ${STACK}_fe \
+              && docker service update --force ${STACK}_fe \
+              || docker stack deploy -c docker-compose-fe.yaml ${STACK}
+
+            STATUS=$(docker service inspect ${STACK}_fe --format {{.UpdateStatus.State}} 2>/dev/null || echo "")
             if [[ -n "${STATUS}" && ${STATUS} != "completed" ]]; then
               echo "Service update status is '${STATUS}', not completed. Exiting."
               exit 1
             fi
-            docker container prune -f
-            docker image prune -af

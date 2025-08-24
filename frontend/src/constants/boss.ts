@@ -18,7 +18,7 @@ import verusHilla from "../assets/boss/verus-hilla.png";
 import darknell from "../assets/boss/darknell.png";
 import chosenSeren from "../assets/boss/chosen-seren.png";
 import kalosTheGuardian from "../assets/boss/kalos-the-guardian.png";
-// import theFirstAdversary from "../assets/boss/the-first-adversary.png";
+import theFirstAdversary from "../assets/boss/the-first-adversary.png";
 import kaling from "../assets/boss/kaling.png";
 import limbo from "../assets/boss/limbo.png";
 import baldrix from "../assets/boss/baldrix.png";
@@ -230,7 +230,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   THE_FIRST_ADVERSARY: {
     name: "최초의 대적자",
     abbreviate: "대적자",
-    icon: "",
+    icon: theFirstAdversary,
     prices: {
       EASY: 361_000_000,
       NORMAL: 530_000_000,
