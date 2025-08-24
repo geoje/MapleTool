@@ -12,6 +12,7 @@ export default function PreparedButtons({ selected }: { selected: number }) {
     <Flex gap={2}>
       {PREPARED_BOSS.map((item, i) => (
         <Button
+          key={`prepared-${i}`}
           size="xs"
           onClick={() =>
             dispatch(setBossItems({ index: selected, boss: item.boss }))

@@ -5,7 +5,9 @@ networks:
 
 services:
   fe:
-    image: nginx:alpine
+    image: mapletool-fe
+    build:
+      context: ../../frontend
     deploy:
       update_config:
         order: start-first
@@ -19,22 +21,3 @@ services:
       traefik.http.routers.mapletool-fe.entrypoints: websecure
       traefik.http.routers.mapletool-fe.tls: "true"
       traefik.http.routers.mapletool-fe.tls.certresolver: letsencrypt
-    volumes:
-      - ../../frontend/dist:/usr/share/nginx/html:ro
-    entrypoint:
-      - sh
-      - -euc
-      - |
-        cat <<EOF > /etc/nginx/conf.d/default.conf
-        server {
-          listen       80;
-          server_name  localhost;
-          root         /usr/share/nginx/html;
-
-          location / {
-            try_files /\$$uri /index.html;
-            index index.html;
-          }
-        }
-        EOF
-        nginx -g 'daemon off;'

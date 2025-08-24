@@ -1,7 +1,8 @@
 spring:
+  data.redis.port: 6380
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost/maple
+    url: jdbc:mysql://localhost:3307/maple
     username: root
     password: root
 
