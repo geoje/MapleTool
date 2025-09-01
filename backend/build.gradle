@@ -48,10 +48,21 @@ dependencyManagement {
     }
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
 }
 
 tasks.named("jar") {
     enabled = false
+}
+
+tasks.register('deploy', Exec) {
+    group = 'git'
+    commandLine 'sh', '-c', '''
+        git checkout main &&
+        git pull &&
+        git merge dev &&
+        git push &&
+        git checkout dev
+    '''
 }
