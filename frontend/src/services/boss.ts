@@ -4,16 +4,25 @@ import BossPlan from "../types/user/bossPlan";
 const FORMATION62 =
   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-export function getPrice(bossType: BOSS_TYPE, difficulty: BOSS_DIFFICULTY) {
-  return BOSS[bossType].prices[difficulty] ?? 0;
+export function getPrice(
+  bossType: BOSS_TYPE,
+  difficulty: BOSS_DIFFICULTY,
+  previous: boolean
+) {
+  return previous
+    ? BOSS[bossType].prev_prices[difficulty] ?? 0
+    : BOSS[bossType].prices[difficulty] ?? 0;
 }
 export function getBossIcon(bossType: BOSS_TYPE): string {
   return BOSS[bossType].icon ?? "";
 }
-export function calculateRevenue(bossPlan: BossPlan) {
+export function calculateRevenue(
+  bossPlan: BossPlan,
+  previous: boolean = false
+) {
   return bossPlan.boss
     .map(({ type, difficulty, members: partyMembers }) =>
-      Math.round(getPrice(type, difficulty) / partyMembers)
+      Math.round(getPrice(type, difficulty, previous) / partyMembers)
     )
     .reduce((acc, cur) => acc + cur, 0);
 }

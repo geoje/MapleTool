@@ -16,7 +16,7 @@ import {
 } from "../../hooks/useToast";
 import { setBossPlans } from "../../stores/userSlice";
 import SharedModal from "./common/sharedModal";
-import VersionText from "./2-boss/versionText";
+import { BOSS_VERSION } from "../../constants/boss";
 
 export default function Crystal() {
   const dispatch = useAppDispatch();
@@ -108,11 +108,18 @@ export default function Crystal() {
           right={<PreparedButtons selected={selected} />}
         >
           <Boss selected={selected} />
-          <VersionText />
         </BoardCard>
       </Stack>
       <Stack w={{ base: "100vw", md: "auto" }}>
-        <BoardCard order={3} title="통계">
+        <BoardCard
+          order={3}
+          title="통계"
+          right={
+            <Text mt={2} textAlign="end" fontSize="small" color="gray.500">
+              ({BOSS_VERSION} 이후 증감량)
+            </Text>
+          }
+        >
           <ResultTable bossPlans={bossPlans} />
         </BoardCard>
       </Stack>
