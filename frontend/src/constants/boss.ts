@@ -23,7 +23,7 @@ import kaling from "../assets/boss/kaling.png";
 import limbo from "../assets/boss/limbo.png";
 import baldrix from "../assets/boss/baldrix.png";
 
-export const SHOW_BOSS_COMPARISON = true;
+export const SHOW_BOSS_COMPARISON = false;
 export const BOSS_VERSION = "10/23";
 
 export enum BOSS_TYPE {
