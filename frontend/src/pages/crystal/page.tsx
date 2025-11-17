@@ -16,7 +16,7 @@ import {
 } from "../../hooks/useToast";
 import { setBossPlans } from "../../stores/userSlice";
 import SharedModal from "./common/sharedModal";
-import { BOSS_VERSION } from "../../constants/boss";
+import { BOSS_VERSION, SHOW_BOSS_COMPARISON } from "../../constants/boss";
 
 export default function Crystal() {
   const dispatch = useAppDispatch();
@@ -115,9 +115,11 @@ export default function Crystal() {
           order={3}
           title="통계"
           right={
-            <Text mt={2} textAlign="end" fontSize="small" color="gray.500">
-              ({BOSS_VERSION} 이후 증감량)
-            </Text>
+            SHOW_BOSS_COMPARISON ? (
+              <Text mt={2} textAlign="end" fontSize="small" color="gray.500">
+                ({BOSS_VERSION} 이후 증감량)
+              </Text>
+            ) : undefined
           }
         >
           <ResultTable bossPlans={bossPlans} />
