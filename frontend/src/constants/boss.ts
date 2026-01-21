@@ -20,8 +20,10 @@ import chosenSeren from "../assets/boss/chosen-seren.png";
 import kalosTheGuardian from "../assets/boss/kalos-the-guardian.png";
 import theFirstAdversary from "../assets/boss/the-first-adversary.png";
 import kaling from "../assets/boss/kaling.png";
+import radiantMaleficStar from "../assets/boss/radiant-malefic-star.png";
 import limbo from "../assets/boss/limbo.png";
 import baldrix from "../assets/boss/baldrix.png";
+import jupiter from "../assets/boss/jupiter.png";
 
 export const SHOW_BOSS_COMPARISON = false;
 export const BOSS_VERSION = "10/23";
@@ -299,7 +301,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   RADIANT_MALEFIC_STAR: {
     name: "찬란한 흉성",
     abbreviate: "흉성",
-    icon: "",
+    icon: radiantMaleficStar,
     prices: { NORMAL: 658_000_000, HARD: 2_819_000_000 },
     prev_prices: { NORMAL: 658_000_000, HARD: 2_819_000_000 },
   },
@@ -320,7 +322,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
   JUPITER: {
     name: "유피테르",
     abbreviate: "유피",
-    icon: "",
+    icon: jupiter,
     prices: { NORMAL: 0, HARD: 0 },
     prev_prices: { NORMAL: 0, HARD: 0 },
   },
