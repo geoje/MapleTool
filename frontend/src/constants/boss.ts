@@ -49,8 +49,10 @@ export enum BOSS_TYPE {
   KALOS_THE_GUARDIAN = "KALOS_THE_GUARDIAN",
   THE_FIRST_ADVERSARY = "THE_FIRST_ADVERSARY",
   KALING = "KALING",
+  RADIANT_MALEFIC_STAR = "RADIANT_MALEFIC_STAR",
   LIMBO = "LIMBO",
   BALDRIX = "BALDRIX",
+  JUPITER = "JUPITER",
 }
 export enum BOSS_DIFFICULTY {
   EASY = "EASY",
@@ -294,6 +296,13 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
       EXTREME: 3_150_000_000,
     },
   },
+  RADIANT_MALEFIC_STAR: {
+    name: "찬란한 흉성",
+    abbreviate: "흉성",
+    icon: "",
+    prices: { NORMAL: 658_000_000, HARD: 2_819_000_000 },
+    prev_prices: { NORMAL: 658_000_000, HARD: 2_819_000_000 },
+  },
   LIMBO: {
     name: "림보",
     abbreviate: "림보",
@@ -307,5 +316,12 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     icon: baldrix,
     prices: { NORMAL: 1_440_000_000, HARD: 3_240_000_000 },
     prev_prices: { NORMAL: 1_200_000_000, HARD: 2_160_000_000 },
+  },
+  JUPITER: {
+    name: "유피테르",
+    abbreviate: "유피",
+    icon: "",
+    prices: { NORMAL: 0, HARD: 0 },
+    prev_prices: { NORMAL: 0, HARD: 0 },
   },
 };
