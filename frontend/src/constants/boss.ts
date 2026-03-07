@@ -323,7 +323,7 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
     name: "유피테르",
     abbreviate: "유피",
     icon: jupiter,
-    prices: { NORMAL: 0, HARD: 0 },
-    prev_prices: { NORMAL: 0, HARD: 0 },
+    prices: { NORMAL: 1_700_000_000, HARD: 5_100_000_000 },
+    prev_prices: { NORMAL: 1_700_000_000, HARD: 5_100_000_000 },
   },
 };
