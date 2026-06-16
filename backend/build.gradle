@@ -22,12 +22,13 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
     implementation 'org.zalando:logbook-spring-boot-starter:3.9.0'
     implementation 'org.zalando:logbook-openfeign:3.9.0'
     implementation 'io.github.openfeign:feign-okhttp'
@@ -58,11 +59,5 @@ tasks.named("jar") {
 
 tasks.register('deploy', Exec) {
     group = 'git'
-    commandLine 'sh', '-c', '''
-        git checkout main &&
-        git pull &&
-        git merge dev &&
-        git push &&
-        git checkout dev
-    '''
+    commandLine 'sh', '-c', 'git fetch origin main:main && git push origin dev:main'
 }

@@ -4,13 +4,6 @@ volumes:
   db:
 
 services:
-  mem:
-    image: redis:8.2.1-alpine
-    restart: unless-stopped
-    ports: ["6380:6379"]
-    tmpfs:
-      - /data
-
   db:
     image: mysql:8.0.43
     restart: unless-stopped

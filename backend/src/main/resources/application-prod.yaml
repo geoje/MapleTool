@@ -1,5 +1,4 @@
 spring:
-  data.redis.host: mapletool-mem-1
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://mapletool-db-1/maple
