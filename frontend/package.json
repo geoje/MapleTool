@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "open http://localhost:5173 && vite",
+    "deploy": "git fetch origin main:main && git push origin dev:main",
     "build": "tsc && vite build",
-    "deploy": "git checkout main && git pull && git merge dev && git push && git checkout dev",
     "lint": "eslint .",
     "preview": "vite preview"
   },
