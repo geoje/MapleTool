@@ -8,8 +8,8 @@ on:
     paths:
       - backend/**
       - .github/workflows/be-cd.yaml
-      - server/docker/docker-compose-be.yaml
-      - server/docker/docker-compose-db.yaml
+      - docker-compose-be.yaml
+      - docker-compose-db.yaml
 
 concurrency:
   group: ${{ github.workflow }}
@@ -18,15 +18,13 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      JASYPT_PASSWORD: ${{ secrets.JASYPT_PASSWORD }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: 21
           distribution: temurin
@@ -39,57 +37,50 @@ jobs:
           ./gradlew build -x test
 
       - name: Copy jar
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: backend/build/libs/, backend/Dockerfile, server/docker
+          source: backend/build/libs/, backend/Dockerfile, docker-compose-be.yaml, docker-compose-db.yaml
           target: ~/${{ github.event.repository.name }}
 
       - name: Setup environment variables
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}/server/docker
+            cd ~/${{ github.event.repository.name }}
             echo "JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}" > .env
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
 
       - name: Update db
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}/server/docker
+            cd ~/${{ github.event.repository.name }}
             export $(cat .env)
-
             docker compose -f docker-compose-db.yaml pull
             docker compose -f docker-compose-db.yaml up -d
 
       - name: Update be
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}/server/docker
+            cd ~/${{ github.event.repository.name }}
             export $(cat .env)
-
             docker compose -f docker-compose-be.yaml build
-
             STACK=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
-            docker service ls | grep -iw ${STACK}_be \
-              && docker service update --force ${STACK}_be \
-              || docker stack deploy -c docker-compose-be.yaml ${STACK}
-
-            STATUS=$(docker service inspect ${STACK}_be --format {{.UpdateStatus.State}} 2>/dev/null || echo "")
-            if [[ -n "${STATUS}" && ${STATUS} != "completed" ]]; then
-              echo "Service update status is '${STATUS}', not completed. Exiting."
-              exit 1
+            if docker service ls | grep -qw ${STACK}_be; then
+              docker service update --force --detach=false ${STACK}_be
+            else
+              docker stack deploy -c docker-compose-be.yaml ${STACK}
             fi

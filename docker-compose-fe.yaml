@@ -7,7 +7,7 @@ services:
   fe:
     image: mapletool-fe
     build:
-      context: ../../frontend
+      context: frontend
     deploy:
       update_config:
         order: start-first

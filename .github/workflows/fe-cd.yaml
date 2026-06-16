@@ -8,7 +8,7 @@ on:
     paths:
       - frontend/**
       - .github/workflows/fe-cd.yaml
-      - server/docker/docker-compose-fe.yaml
+      - docker-compose-fe.yaml
 
 concurrency:
   group: ${{ github.workflow }}
@@ -20,10 +20,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Nodejs 20
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: npm
@@ -38,32 +38,26 @@ jobs:
         run: npm run build
 
       - name: Copy dist
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: frontend/dist/, frontend/Dockerfile, frontend/nginx.conf, server/docker/
+          source: frontend/dist/, frontend/Dockerfile, frontend/nginx.conf, docker-compose-fe.yaml
           target: ~/${{ github.event.repository.name }}
 
       - name: Update fe
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/${{ github.event.repository.name }}/server/docker
-
+            cd ~/${{ github.event.repository.name }}
             docker compose -f docker-compose-fe.yaml build
-
             STACK=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
-            docker service ls | grep -iw ${STACK}_fe \
-              && docker service update --force ${STACK}_fe \
-              || docker stack deploy -c docker-compose-fe.yaml ${STACK}
-
-            STATUS=$(docker service inspect ${STACK}_fe --format {{.UpdateStatus.State}} 2>/dev/null || echo "")
-            if [[ -n "${STATUS}" && ${STATUS} != "completed" ]]; then
-              echo "Service update status is '${STATUS}', not completed. Exiting."
-              exit 1
+            if docker service ls | grep -qw ${STACK}_fe; then
+              docker service update --force --detach=false ${STACK}_fe
+            else
+              docker stack deploy -c docker-compose-fe.yaml ${STACK}
             fi
