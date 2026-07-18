@@ -5,13 +5,28 @@ spring:
   jpa.open-in-view: false
   web.resources.add-mappings: false
 
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/maple
+    username: root
+    password: root
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate.ddl-auto: update
+
   cloud.openfeign:
     okhttp.enabled: true
     client.config:
       open-api:
         url: https://open.api.nexon.com/maplestory/v1
+        logger-level: basic
+        default-request-headers:
+          x-nxopen-api-key: ENC(GKf854Z4Hg+gfvkGA4PuoAzMLGliGyDw5hRNItAIH1YWBv8umSbEO+noyoURAcg8lGhPkAN44tZWxKV7ishLMASRHVC8zeShcG254k2qgBs6P5wL75AnGD2YPX38R2UY3HGZk/W1Rn4c6jLw98CDdAhSq17YWK34qPoxvASnGjXmDqxqWZ6DIB9kFyj8B872)
       maple:
         url: https://maplestory.nexon.com/N23Ranking/World/Total
+        logger-level: basic
       proxy-scrape:
         url: https://api.proxyscrape.com/v4/free-proxy-list/get
         default-query-parameters:
@@ -21,10 +36,15 @@ spring:
           format: text
           timeout: 2000
 
+logbook.strategy: without-body
+logging.level:
+  org.zalando.logbook: TRACE
+  org.springframework.cache: TRACE
+
 management:
   endpoints.web.exposure.include: health
   metrics.tags:
-    application: mapletool
+    application: ${spring.application.name}
     instance: dev
   otlp.metrics.export:
     base-time-unit: seconds
