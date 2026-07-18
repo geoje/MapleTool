@@ -122,9 +122,9 @@ jobs:
           script: |
             cd ~/${{ github.event.repository.name }}
             cat > .env << 'EOF'
-            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}
             GRAFANA_PASSWORD=${{ secrets.GRAFANA_PASSWORD }}
-            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
             EOF
 
       - name: Update db

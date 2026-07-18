@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Dev",
+      "type": "shell",
+      "command": "export $(cat .settings | xargs) && ./gradlew compileJava --continuous & ./gradlew bootRun --console=plain & cd ../frontend && eval \"$(fnm env --shell bash)\" && npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "spring-boot",
+          "pattern": {
+            "regexp": "^.*$",
+            "file": 1,
+            "message": 1
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "Starting MapleToolApplication",
+            "endsPattern": "Started MapleToolApplication"
+          }
+        },
+        {
+          "owner": "vite",
+          "pattern": {
+            "regexp": "^.*$",
+            "file": 1,
+            "message": 1
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "VITE",
+            "endsPattern": "ready in"
+          }
+        }
+      ]
+    },
+    {
+      "label": "Deploy",
+      "type": "shell",
+      "command": "git fetch origin main:main && git push origin dev:main",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
