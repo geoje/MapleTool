@@ -12,4 +12,9 @@ spring:
       default-request-headers:
         x-nxopen-api-key: ENC(5OuUq6/jiTCBrzFlJBEToH/RNv7eLQD9Ms/G3nG05rnTuNpG9Np77bkzwF9TluCYkShbNE/C8ehicr+pypmaP5pPRGc6WjBPy7T7zlUbrirc8KjHFPmc9IbqVbSFufWwXRdr1HnNlx3/3k+xs03TwdG0EqwoUcCc7o3AFyv2G7lhSLp+Qpdm454SK72Ie+zr)
 
+management:
+  metrics.tags.instance: prod
+  otlp.metrics.export.headers:
+    Authorization: ENC(FM9kDPDs80e4nak6Zk16FJjAkUWnXq4+sNKXd5n+fiRHPmg6cyKjabICACJLIjq15Af6YgXRrbs2EDxwY/6A/EQuKzC4uJxVfBIPkyK+jRqr1Nk8c/HqWNwLyEWUen3GNoZrAJsH4hDLq4iVyagbEV/qwA8sEwgxDdWezeTMI/jp9MMlgh3r2JAbSq3BxkQV6Tt9H8jjo87oJq6mNHBvGk+WRzSeMqkIW0Fw82K6LXMC1e6INOkGlR3klslIVkhVfP6UtvVU13dN0erXHIwR7sjL43M3d6992pTmIF73FWuohdsXShhWcf4wUE8W0jUHOD0Ot0v9P4EOna1NrPt4/Kr85DfrNCYTksWfgdJEi9k=)
+
 logbook.filter.enabled: false

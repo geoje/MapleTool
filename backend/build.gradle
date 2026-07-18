@@ -29,8 +29,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
     implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation 'com.github.loki4j:loki-logback-appender:1.5.2'
     implementation 'org.zalando:logbook-spring-boot-starter:3.9.0'
     implementation 'org.zalando:logbook-openfeign:3.9.0'
+    implementation 'io.micrometer:micrometer-registry-otlp'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
     implementation 'io.github.openfeign:feign-okhttp'
     implementation 'org.jsoup:jsoup:1.18.1'
 

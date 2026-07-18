@@ -1,4 +1,7 @@
+jasypt.encryptor.password: ${JASYPT_PASSWORD}
+
 spring:
+  application.name: mapletool
   jpa.open-in-view: false
   web.resources.add-mappings: false
 
@@ -18,4 +21,13 @@ spring:
           format: text
           timeout: 2000
 
-jasypt.encryptor.password: ${JASYPT_PASSWORD}
+management:
+  endpoints.web.exposure.include: health
+  metrics.tags:
+    application: mapletool
+    instance: dev
+  otlp.metrics.export:
+    base-time-unit: seconds
+    url: https://otlp-gateway-prod-ap-northeast-0.grafana.net/otlp/v1/metrics
+    headers:
+      Authorization: ENC(dxYsw1+qYR01iosE1UOwOoxLawIXcxnjZ3XhtCT8LIthTgYM/wD5UOdhDP9b0eBYQ4+lO5RvKvwxOz5GvSYhkpE73b7RVmj5t1IH7zU0EsFjxcjUmq3AXAzgEk7Asf/3p/9r0cr+8GiHfEOmBXj5uqNFyg030mc5bri8R2DsJBAT4/4N5o3OxUryei3zBLZk8ws4Q/FKJpDjnBnzYINpGuAj068ZMvx+miXazRfL8Btb6QunasYzRNbzV5Xz7Z7O0pvjMb11kEqrs1WCXrxs7ODFBbOpLPKXGY/MB4uoI5iCdz6X3L91nIWvb8AN6x+yYJsNOOg0XLZiREHMn8iOU4P693gzP74fAM20t73fcbk=)
