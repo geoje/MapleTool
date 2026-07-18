@@ -42,7 +42,6 @@ logging.level:
   org.springframework.cache: TRACE
 
 management:
-  observations.http.server.requests.filter.deny-for-url: /actuator/**
   metrics.tags:
     application: ${spring.application.name}
     instance: dev
