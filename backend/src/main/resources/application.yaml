@@ -42,7 +42,7 @@ logging.level:
   org.springframework.cache: TRACE
 
 management:
-  endpoints.web.exposure.include: health
+  observations.http.server.requests.filter.deny-for-url: /actuator/**
   metrics.tags:
     application: ${spring.application.name}
     instance: dev
@@ -50,4 +50,4 @@ management:
     base-time-unit: seconds
     url: https://otlp-gateway-prod-ap-northeast-0.grafana.net/otlp/v1/metrics
     headers:
-      Authorization: ENC(dxYsw1+qYR01iosE1UOwOoxLawIXcxnjZ3XhtCT8LIthTgYM/wD5UOdhDP9b0eBYQ4+lO5RvKvwxOz5GvSYhkpE73b7RVmj5t1IH7zU0EsFjxcjUmq3AXAzgEk7Asf/3p/9r0cr+8GiHfEOmBXj5uqNFyg030mc5bri8R2DsJBAT4/4N5o3OxUryei3zBLZk8ws4Q/FKJpDjnBnzYINpGuAj068ZMvx+miXazRfL8Btb6QunasYzRNbzV5Xz7Z7O0pvjMb11kEqrs1WCXrxs7ODFBbOpLPKXGY/MB4uoI5iCdz6X3L91nIWvb8AN6x+yYJsNOOg0XLZiREHMn8iOU4P693gzP74fAM20t73fcbk=)
+      Authorization: ENC(9pQPTJR+Wnh8dSDKuCst02vDvpukqwxirfrBNrLgVzJ3xeb8l8XFzpDctGJFI+3yVg/dV+Ve0fcEa688KWACunUD1C2U+e0yNChkmasWhA+XCOvw82fwiaWEcqUUWCpRvSTOmqokjW8/ZVb9pseq+X8urKzPIz+dDpnVdTmkUZSZHf4kGv4/dSKs4T1XN7o3nVF2NLmjz5RrkQ0LbBX55toW7PPTKdRxawIoJcTzBERgABH/AQR3ziSARG0pBSHVhuhiqK0CzTKFtvCL4IdzLZSA8SBcCPs0KTMWz/2hOdn9N8x9LMXsA/KFNBdyuARuiIYNunj3Bu0KlFMwrNZwcEktrStAT9mEKNxOo7bDpQw=)
