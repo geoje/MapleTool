@@ -15,6 +15,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       JASYPT_PASSWORD: ${JASYPT_PASSWORD:?error}
+      GRAFANA_PASSWORD: ${GRAFANA_PASSWORD:?error}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
     labels:
