@@ -17,12 +17,13 @@ import chosenSeren from "../assets/boss/chosen-seren.png";
 import kalosTheGuardian from "../assets/boss/kalos-the-guardian.png";
 import theFirstAdversary from "../assets/boss/the-first-adversary.png";
 import kaling from "../assets/boss/kaling.png";
+import bellona from "../assets/boss/bellona.png";
 import radiantMaleficStar from "../assets/boss/radiant-malefic-star.png";
 import limbo from "../assets/boss/limbo.png";
 import baldrix from "../assets/boss/baldrix.png";
 import jupiter from "../assets/boss/jupiter.png";
 
-export const SHOW_BOSS_COMPARISON = true;
+export const SHOW_BOSS_COMPARISON = false;
 export const BOSS_VERSION = "7/1";
 
 export enum BOSS_TYPE {
@@ -45,6 +46,7 @@ export enum BOSS_TYPE {
   KALOS_THE_GUARDIAN = "KALOS_THE_GUARDIAN",
   THE_FIRST_ADVERSARY = "THE_FIRST_ADVERSARY",
   KALING = "KALING",
+  BELLONA = "BELLONA",
   RADIANT_MALEFIC_STAR = "RADIANT_MALEFIC_STAR",
   LIMBO = "LIMBO",
   BALDRIX = "BALDRIX",
@@ -269,6 +271,21 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
       NORMAL: 714_000_000,
       HARD: 1_830_000_000,
       EXTREME: 5_670_000_000,
+    },
+  },
+  BELLONA: {
+    name: "벨로나",
+    abbreviate: "벨로나",
+    icon: bellona,
+    prices: {
+      EASY: 440_000_000,
+      NORMAL: 890_000_000,
+      HARD: 2_950_000_000,
+    },
+    prev_prices: {
+      EASY: 440_000_000,
+      NORMAL: 890_000_000,
+      HARD: 2_950_000_000,
     },
   },
   RADIANT_MALEFIC_STAR: {
