@@ -273,27 +273,27 @@ export const BOSS: Record<BOSS_TYPE, Boss> = {
       EXTREME: 5_670_000_000,
     },
   },
-  BELLONA: {
-    name: "벨로나",
-    abbreviate: "벨로나",
-    icon: bellona,
-    prices: {
-      EASY: 440_000_000,
-      NORMAL: 890_000_000,
-      HARD: 2_950_000_000,
-    },
-    prev_prices: {
-      EASY: 440_000_000,
-      NORMAL: 890_000_000,
-      HARD: 2_950_000_000,
-    },
-  },
   RADIANT_MALEFIC_STAR: {
     name: "찬란한 흉성",
     abbreviate: "흉성",
     icon: radiantMaleficStar,
     prices: { NORMAL: 625_000_000, HARD: 2_678_000_000 },
     prev_prices: { NORMAL: 658_000_000, HARD: 2_819_000_000 },
+  },
+  BELLONA: {
+    name: "벨로나",
+    abbreviate: "벨로나",
+    icon: bellona,
+    prices: {
+      EASY: 440_000_000,
+      NORMAL: 850_000_000,
+      HARD: 2_950_000_000,
+    },
+    prev_prices: {
+      EASY: 440_000_000,
+      NORMAL: 850_000_000,
+      HARD: 2_950_000_000,
+    },
   },
   LIMBO: {
     name: "림보",
