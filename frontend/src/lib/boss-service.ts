@@ -93,26 +93,37 @@ function getPreviousCubeReward(bossType: BossType, difficulty: BossDifficulty) {
 
 function sumCubes(
   bossPlan: BossPlan,
+  category: "weekly" | "monthly",
   cubeFn: (type: BossType, difficulty: BossDifficulty) => { silver?: number; gold?: number } | undefined
 ): CubeTotals {
-  return bossPlan.boss.reduce(
-    (acc, { type, difficulty }) => {
-      const reward = cubeFn(type, difficulty);
-      return {
-        silver: acc.silver + (reward?.silver ?? 0),
-        gold: acc.gold + (reward?.gold ?? 0),
-      };
-    },
-    { silver: 0, gold: 0 }
-  );
+  return bossPlan.boss
+    .filter(({ type }) => (BOSS[type].category ?? "weekly") == category)
+    .reduce(
+      (acc, { type, difficulty, members }) => {
+        const reward = cubeFn(type, difficulty);
+        return {
+          silver: acc.silver + (reward?.silver ?? 0) / members,
+          gold: acc.gold + (reward?.gold ?? 0) / members,
+        };
+      },
+      { silver: 0, gold: 0 }
+    );
 }
 
 export function calculateCubes(bossPlan: BossPlan): CubeTotals {
-  return sumCubes(bossPlan, getCubeReward);
+  return sumCubes(bossPlan, "weekly", getCubeReward);
+}
+
+export function calculateMonthlyCubes(bossPlan: BossPlan): CubeTotals {
+  return sumCubes(bossPlan, "monthly", getCubeReward);
 }
 
 export function calculatePreviousCubes(bossPlan: BossPlan): CubeTotals {
-  return sumCubes(bossPlan, getPreviousCubeReward);
+  return sumCubes(bossPlan, "weekly", getPreviousCubeReward);
+}
+
+export function calculatePreviousMonthlyCubes(bossPlan: BossPlan): CubeTotals {
+  return sumCubes(bossPlan, "monthly", getPreviousCubeReward);
 }
 
 export function getMaxMembers(bossType: BossType, difficulty?: BossDifficulty) {

@@ -36,9 +36,23 @@ export function formatDelta(delta: number): string | null {
   return `(${sign}${formatted})`;
 }
 
-export function formatCountDelta(delta: number): string | null {
-  if (delta == 0) return null;
+// Truncates (not rounds) toward zero, keeping only one decimal place.
+export function truncateToOneDecimal(value: number): number {
+  return Math.trunc(value * 10) / 10;
+}
 
-  const sign = delta > 0 ? "+" : "-";
-  return `(${sign}${Math.abs(delta)})`;
+function formatTruncated(value: number): string {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}
+
+export function formatCubeCount(value: number): string {
+  return formatTruncated(truncateToOneDecimal(value));
+}
+
+export function formatCountDelta(delta: number): string | null {
+  const truncated = truncateToOneDecimal(delta);
+  if (truncated == 0) return null;
+
+  const sign = truncated > 0 ? "+" : "-";
+  return `(${sign}${formatTruncated(Math.abs(truncated))})`;
 }

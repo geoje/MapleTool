@@ -16,19 +16,22 @@ import {
   CUBE_ICON,
   DIFFICULTY_COLOR,
   FIRST_HALF_BOSS_TYPES,
+  MAX_BOSS_SELECTABLE,
   SECOND_HALF_BOSS_TYPES,
 } from "@/constants/boss";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import {
   calculateCubes,
+  calculateMonthlyCubes,
   calculateMonthlyRevenue,
   calculatePreviousCubes,
+  calculatePreviousMonthlyCubes,
   calculatePreviousMonthlyRevenue,
   calculatePreviousRevenue,
   calculateRevenue,
   countWeeklyBoss,
 } from "@/lib/boss-service";
-import { formatCountDelta, formatDelta, formatNumber } from "@/lib/format";
+import { formatCountDelta, formatCubeCount, formatDelta, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useBossStore } from "@/stores/boss-store";
 import type { BossPlan, BossPlanItem } from "@/types";
@@ -39,12 +42,23 @@ function getRowItems(bossPlan: BossPlan, types: BossType[]) {
     .filter((item): item is BossPlanItem => !!item);
 }
 
-function BossIcon({ item }: { item: BossPlanItem }) {
+function BossIcon({ item }: { item?: BossPlanItem }) {
+  if (!item) {
+    return (
+      <div className="flex flex-col items-center gap-1">
+        <div className="box-content size-6 border-2 border-dashed border-muted-foreground/20" />
+        <div className="flex items-center gap-0.5">
+          <span className="invisible rounded-b-[2px] px-1 text-[10px] leading-tight">-</span>
+        </div>
+      </div>
+    );
+  }
+
   const boss = BOSS[item.type];
   const color = DIFFICULTY_COLOR[item.difficulty];
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center gap-1">
       <div className="overflow-hidden border-2" style={{ borderColor: color?.border }}>
         <img src={boss.icon} alt="" className="block size-6 object-cover" />
       </div>
@@ -68,18 +82,20 @@ function BossIcon({ item }: { item: BossPlanItem }) {
 function BossRows({ bossPlan }: { bossPlan: BossPlan }) {
   const items = getRowItems(bossPlan, [...FIRST_HALF_BOSS_TYPES, ...SECOND_HALF_BOSS_TYPES]);
   const blackMageItem = bossPlan.boss.find((item) => item.type == BossType.BLACK_MAGE);
+  const emptySlotCount = Math.max(0, MAX_BOSS_SELECTABLE - items.length);
 
   return (
     <div className="flex flex-wrap items-start gap-1.5 sm:flex-nowrap">
       {items.map((item) => (
         <BossIcon key={item.type} item={item} />
       ))}
-      {blackMageItem && (
-        <div className="flex items-stretch gap-1.5">
-          {items.length > 0 && <Separator orientation="vertical" />}
-          <BossIcon item={blackMageItem} />
-        </div>
-      )}
+      {Array.from({ length: emptySlotCount }, (_, i) => (
+        <BossIcon key={"empty-" + i} />
+      ))}
+      <div className="flex items-stretch gap-1.5">
+        <Separator orientation="vertical" />
+        <BossIcon item={blackMageItem} />
+      </div>
     </div>
   );
 }
@@ -154,6 +170,33 @@ function CardIconButton({
   );
 }
 
+function StatTooltip({
+  icon,
+  value,
+  delta,
+  label,
+}: {
+  icon: string;
+  value: React.ReactNode;
+  delta?: string | null;
+  label: string;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex w-fit items-center gap-2 font-normal">
+          <img src={icon} alt="" className="h-4 w-auto shrink-0" />
+          <span>{value}</span>
+          {delta && (
+            <span className={delta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>{delta}</span>
+          )}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
 function CharacterFieldContent({
   bossPlan,
   radio,
@@ -186,6 +229,15 @@ function CharacterFieldContent({
   const previousCubes = calculatePreviousCubes(bossPlan);
   const silverDelta = showComparison ? formatCountDelta(cubes.silver - previousCubes.silver) : null;
   const goldDelta = showComparison ? formatCountDelta(cubes.gold - previousCubes.gold) : null;
+
+  const monthlyCubes = calculateMonthlyCubes(bossPlan);
+  const previousMonthlyCubes = calculatePreviousMonthlyCubes(bossPlan);
+  const monthlySilverDelta = showComparison
+    ? formatCountDelta(monthlyCubes.silver - previousMonthlyCubes.silver)
+    : null;
+  const monthlyGoldDelta = showComparison
+    ? formatCountDelta(monthlyCubes.gold - previousMonthlyCubes.gold)
+    : null;
 
   return (
     <div className="flex w-full flex-wrap items-start gap-3">
@@ -231,73 +283,55 @@ function CharacterFieldContent({
           {radio}
         </div>
 
-        {bossPlan.boss.length > 0 && <BossRows bossPlan={bossPlan} />}
+        <BossRows bossPlan={bossPlan} />
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:items-stretch sm:gap-3 sm:mt-2">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:flex-col sm:flex-nowrap sm:items-start sm:justify-center sm:gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex w-fit items-center gap-2">
-                  <img src={crystalPurple} alt="" className="h-4 w-auto shrink-0" />
-                  <span>{formatNumber(revenue)}</span>
-                  {weeklyDelta && (
-                    <span className={weeklyDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
-                      {weeklyDelta}
-                    </span>
-                  )}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">주간 수익</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex w-fit items-center gap-2">
-                  <img src={crystalYellow} alt="" className="h-4 w-auto shrink-0" />
-                  <span>{formatNumber(monthlyRevenue)}</span>
-                  {monthlyDelta && (
-                    <span className={monthlyDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
-                      {monthlyDelta}
-                    </span>
-                  )}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">월간 수익</TooltipContent>
-            </Tooltip>
+        <div className="flex flex-wrap items-start gap-4 text-xs -mt-1 sm:mt-1">
+          <div className="flex flex-col gap-1">
+            <StatTooltip
+              icon={crystalPurple}
+              value={formatNumber(revenue)}
+              delta={weeklyDelta}
+              label="주간 수익"
+            />
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <StatTooltip
+                icon={CUBE_ICON.silver}
+                value={formatCubeCount(cubes.silver)}
+                delta={silverDelta}
+                label="메멘토 실버 큐브 (주간)"
+              />
+              <StatTooltip
+                icon={CUBE_ICON.gold}
+                value={formatCubeCount(cubes.gold)}
+                delta={goldDelta}
+                label="메멘토 골드 큐브 (주간)"
+              />
+            </div>
           </div>
 
-          <Separator orientation="vertical" className="h-4 sm:h-auto" />
+          <Separator orientation="vertical" className="h-auto self-stretch" />
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:flex-col sm:flex-nowrap sm:items-start sm:justify-center sm:gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex w-fit items-center gap-2">
-                  <img src={CUBE_ICON.silver} alt="" className="h-4 w-auto shrink-0" />
-                  <span>{cubes.silver}</span>
-                  {silverDelta && (
-                    <span className={silverDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
-                      {silverDelta}
-                    </span>
-                  )}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">메멘토 실버 큐브</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex w-fit items-center gap-2">
-                  <img src={CUBE_ICON.gold} alt="" className="h-4 w-auto shrink-0" />
-                  <span>{cubes.gold}</span>
-                  {goldDelta && (
-                    <span className={goldDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
-                      {goldDelta}
-                    </span>
-                  )}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">메멘토 골드 큐브</TooltipContent>
-            </Tooltip>
+          <div className="flex flex-col gap-1">
+            <StatTooltip
+              icon={crystalYellow}
+              value={formatNumber(monthlyRevenue)}
+              delta={monthlyDelta}
+              label="월간 수익"
+            />
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <StatTooltip
+                icon={CUBE_ICON.silver}
+                value={formatCubeCount(monthlyCubes.silver)}
+                delta={monthlySilverDelta}
+                label="메멘토 실버 큐브 (월간)"
+              />
+              <StatTooltip
+                icon={CUBE_ICON.gold}
+                value={formatCubeCount(monthlyCubes.gold)}
+                delta={monthlyGoldDelta}
+                label="메멘토 골드 큐브 (월간)"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -395,7 +429,7 @@ export function CharacterList({
   );
 }
 
-function DeltaValue({
+function ValueWithDelta({
   value,
   delta,
   align = "end",
@@ -447,6 +481,13 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
     },
     { silver: 0, gold: 0 }
   );
+  const totalMonthlyCubes = selectedPlans.reduce(
+    (acc, plan) => {
+      const cubes = calculateMonthlyCubes(plan);
+      return { silver: acc.silver + cubes.silver, gold: acc.gold + cubes.gold };
+    },
+    { silver: 0, gold: 0 }
+  );
   const totalCrystals = selectedPlans.reduce((acc, plan) => acc + countWeeklyBoss(plan), 0);
 
   const totalPrevWeekly = showComparison
@@ -464,6 +505,15 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
         { silver: 0, gold: 0 }
       )
     : null;
+  const totalPrevMonthlyCubes = showComparison
+    ? selectedPlans.reduce(
+        (acc, plan) => {
+          const cubes = calculatePreviousMonthlyCubes(plan);
+          return { silver: acc.silver + cubes.silver, gold: acc.gold + cubes.gold };
+        },
+        { silver: 0, gold: 0 }
+      )
+    : null;
 
   const totalWeeklyDelta = totalPrevWeekly != null ? formatDelta(totalWeekly - totalPrevWeekly) : null;
   const totalMonthlyDelta =
@@ -472,41 +522,82 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
     totalPrevCubes != null ? formatCountDelta(totalCubes.silver - totalPrevCubes.silver) : null;
   const totalGoldDelta =
     totalPrevCubes != null ? formatCountDelta(totalCubes.gold - totalPrevCubes.gold) : null;
+  const totalMonthlySilverDelta =
+    totalPrevMonthlyCubes != null
+      ? formatCountDelta(totalMonthlyCubes.silver - totalPrevMonthlyCubes.silver)
+      : null;
+  const totalMonthlyGoldDelta =
+    totalPrevMonthlyCubes != null
+      ? formatCountDelta(totalMonthlyCubes.gold - totalPrevMonthlyCubes.gold)
+      : null;
+
+  const dividerRow = bossPlans.length + 2;
+  const lastRowEnd = bossPlans.length + 4; // header(1) + one row per plan + divider row + totals row, as a grid line index
 
   return (
     <>
       <Separator />
 
       <div className="w-full overflow-x-auto">
-        <div className="grid grid-cols-[max-content_1fr_repeat(5,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
+        <div className="grid grid-cols-[max-content_1fr_repeat(9,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
+          <div
+            className="w-px self-stretch bg-border"
+            style={{ gridColumn: 3, gridRow: `1 / ${lastRowEnd}` }}
+          />
+          <div
+            className="w-px self-stretch bg-border"
+            style={{ gridColumn: 8, gridRow: `1 / ${lastRowEnd}` }}
+          />
+
           <span />
           <span className="font-medium text-muted-foreground">캐릭터명</span>
           <span className="text-right font-medium text-muted-foreground">주간 결정 개수</span>
           <span className="text-right font-medium text-muted-foreground">주간 수익</span>
-          <span className="text-right font-medium text-muted-foreground">월간 수익</span>
           <Tooltip>
             <TooltipTrigger asChild>
               <img
                 src={CUBE_ICON.silver}
-                alt="메멘토 실버 큐브"
+                alt="메멘토 실버 큐브 (주간)"
                 className="h-4 w-auto shrink-0 justify-self-center"
               />
             </TooltipTrigger>
-            <TooltipContent>메멘토 실버 큐브</TooltipContent>
+            <TooltipContent>메멘토 실버 큐브 (주간)</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <img
                 src={CUBE_ICON.gold}
-                alt="메멘토 골드 큐브"
+                alt="메멘토 골드 큐브 (주간)"
                 className="h-4 w-auto shrink-0 justify-self-center"
               />
             </TooltipTrigger>
-            <TooltipContent>메멘토 골드 큐브</TooltipContent>
+            <TooltipContent>메멘토 골드 큐브 (주간)</TooltipContent>
+          </Tooltip>
+          <span className="text-right font-medium text-muted-foreground">월간 수익</span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <img
+                src={CUBE_ICON.silver}
+                alt="메멘토 실버 큐브 (월간)"
+                className="h-4 w-auto shrink-0 justify-self-center"
+              />
+            </TooltipTrigger>
+            <TooltipContent>메멘토 실버 큐브 (월간)</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <img
+                src={CUBE_ICON.gold}
+                alt="메멘토 골드 큐브 (월간)"
+                className="h-4 w-auto shrink-0 justify-self-center"
+              />
+            </TooltipTrigger>
+            <TooltipContent>메멘토 골드 큐브 (월간)</TooltipContent>
           </Tooltip>
 
           {bossPlans.map((plan, i) => {
             const cubes = calculateCubes(plan);
+            const monthlyCubes = calculateMonthlyCubes(plan);
             const revenue = calculateRevenue(plan);
             const monthlyRevenue = calculateMonthlyRevenue(plan);
             const weeklyDelta = showComparison
@@ -520,6 +611,13 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
               ? formatCountDelta(cubes.silver - previousCubes.silver)
               : null;
             const goldDelta = previousCubes ? formatCountDelta(cubes.gold - previousCubes.gold) : null;
+            const previousMonthlyCubes = showComparison ? calculatePreviousMonthlyCubes(plan) : null;
+            const monthlySilverDelta = previousMonthlyCubes
+              ? formatCountDelta(monthlyCubes.silver - previousMonthlyCubes.silver)
+              : null;
+            const monthlyGoldDelta = previousMonthlyCubes
+              ? formatCountDelta(monthlyCubes.gold - previousMonthlyCubes.gold)
+              : null;
             const isSelected = !excludedIndices.has(i);
             const dim = !isSelected ? "opacity-40" : undefined;
 
@@ -537,31 +635,79 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
                 </span>
                 <span className={cn("truncate", dim)}>{plan.name}</span>
                 <span className={cn("text-right", dim)}>{countWeeklyBoss(plan)}</span>
-                <DeltaValue value={formatNumber(revenue)} delta={weeklyDelta} className={dim} />
-                <DeltaValue value={formatNumber(monthlyRevenue)} delta={monthlyDelta} className={dim} />
-                <DeltaValue value={cubes.silver} delta={silverDelta} align="center" className={dim} />
-                <DeltaValue value={cubes.gold} delta={goldDelta} align="center" className={dim} />
+                <ValueWithDelta value={formatNumber(revenue)} delta={weeklyDelta} className={dim} />
+                <ValueWithDelta
+                  value={formatCubeCount(cubes.silver)}
+                  delta={silverDelta}
+                  align="center"
+                  className={dim}
+                />
+                <ValueWithDelta
+                  value={formatCubeCount(cubes.gold)}
+                  delta={goldDelta}
+                  align="center"
+                  className={dim}
+                />
+                <ValueWithDelta
+                  value={formatNumber(monthlyRevenue)}
+                  delta={monthlyDelta}
+                  className={dim}
+                />
+                <ValueWithDelta
+                  value={formatCubeCount(monthlyCubes.silver)}
+                  delta={monthlySilverDelta}
+                  align="center"
+                  className={dim}
+                />
+                <ValueWithDelta
+                  value={formatCubeCount(monthlyCubes.gold)}
+                  delta={monthlyGoldDelta}
+                  align="center"
+                  className={dim}
+                />
               </div>
             );
           })}
 
-          <div className="col-span-7 border-t" />
+          <div className="border-t" style={{ gridColumn: "1 / -1", gridRow: dividerRow }} />
 
           <span />
           <span className="font-medium">총합</span>
           <span className="text-right font-medium">{totalCrystals}</span>
-          <span className="font-medium">
-            <DeltaValue value={formatNumber(totalWeekly)} delta={totalWeeklyDelta} />
-          </span>
-          <span className="font-medium">
-            <DeltaValue value={formatNumber(totalMonthly)} delta={totalMonthlyDelta} />
-          </span>
-          <span className="font-medium">
-            <DeltaValue value={totalCubes.silver} delta={totalSilverDelta} align="center" />
-          </span>
-          <span className="font-medium">
-            <DeltaValue value={totalCubes.gold} delta={totalGoldDelta} align="center" />
-          </span>
+          <ValueWithDelta
+            value={formatNumber(totalWeekly)}
+            delta={totalWeeklyDelta}
+            className="font-medium"
+          />
+          <ValueWithDelta
+            value={formatCubeCount(totalCubes.silver)}
+            delta={totalSilverDelta}
+            align="center"
+            className="font-medium"
+          />
+          <ValueWithDelta
+            value={formatCubeCount(totalCubes.gold)}
+            delta={totalGoldDelta}
+            align="center"
+            className="font-medium"
+          />
+          <ValueWithDelta
+            value={formatNumber(totalMonthly)}
+            delta={totalMonthlyDelta}
+            className="font-medium"
+          />
+          <ValueWithDelta
+            value={formatCubeCount(totalMonthlyCubes.silver)}
+            delta={totalMonthlySilverDelta}
+            align="center"
+            className="font-medium"
+          />
+          <ValueWithDelta
+            value={formatCubeCount(totalMonthlyCubes.gold)}
+            delta={totalMonthlyGoldDelta}
+            align="center"
+            className="font-medium"
+          />
         </div>
       </div>
     </>
