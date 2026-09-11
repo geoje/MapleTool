@@ -4,6 +4,7 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import crystalPurple from "@/assets/crystal/purple.png";
 import meso from "@/assets/enhance/meso.png";
+import artifactNavIcon from "@/assets/union-artifact/nav-icon.svg";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -12,11 +13,13 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { to: "/boss-revenue", label: "보스 수익", icon: crystalPurple },
   { to: "/enhance-expected-value", label: "강화 기대값", icon: meso },
+  { to: "/union-artifact", label: "유니온 아티팩트", icon: artifactNavIcon },
 ];
 
 const TITLES: Record<string, string> = {
   "/boss-revenue": "보스 수익",
   "/enhance-expected-value": "강화 기대값",
+  "/union-artifact": "유니온 아티팩트",
 };
 
 function NavLinkItem({ to, label, icon }: (typeof NAV_ITEMS)[number]) {

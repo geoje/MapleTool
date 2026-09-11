@@ -1,0 +1,40 @@
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import type { UnionBasic } from "@/types";
+
+export function useUnionBasic(name: string) {
+  const [data, setData] = useState<UnionBasic>();
+  const [isFetching, setIsFetching] = useState(false);
+
+  useEffect(() => {
+    setData(undefined);
+    if (!name) return;
+
+    const controller = new AbortController();
+    setIsFetching(true);
+
+    fetch(`/api/union/basic?name=${encodeURIComponent(name)}`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const problem = await response.json().catch(() => ({}));
+          throw new Error(problem.detail ?? "서버 요청에 실패하였습니다.");
+        }
+
+        return response.json() as Promise<UnionBasic>;
+      })
+      .then(setData)
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        toast.warning(error.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setIsFetching(false);
+      });
+
+    return () => controller.abort();
+  }, [name]);
+
+  return { data, isFetching };
+}

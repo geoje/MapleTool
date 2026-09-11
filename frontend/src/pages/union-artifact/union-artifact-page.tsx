@@ -1,0 +1,142 @@
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { EFFECT_INFOS } from "@/constants/artifact";
+import { useUnionArtifact } from "@/hooks/use-union-artifact";
+import { useUnionBasic } from "@/hooks/use-union-basic";
+import { calcEffectLevelGrid, flatEffectNamesByLevel, remainPoint, remapEffectNamesByLevel } from "@/lib/artifact-service";
+import { useArtifactStore } from "@/stores/artifact-store";
+import { ArtifactLevel } from "@/pages/union-artifact/artifact-level";
+import { NameInput } from "@/pages/union-artifact/character-panel";
+import { EffectLevel } from "@/pages/union-artifact/effect-level";
+import { ResultGrid } from "@/pages/union-artifact/result-grid";
+import { SelectEffect } from "@/pages/union-artifact/select-effect";
+
+const SECTION_TITLE = "text-xs font-medium uppercase tracking-wide text-muted-foreground";
+
+export function UnionArtifactPage() {
+  const name = useArtifactStore((state) => state.name);
+  const { data: dataBasic, isFetching: isFetchingBasic } = useUnionBasic(name);
+  const { data: dataArtifact, isFetching: isFetchingArtifact } = useUnionArtifact(name);
+
+  const [artifactLevel, setArtifactLevel] = useState(1);
+  const [effectIndex, setEffectIndex] = useState(0);
+  const [effectNamesByLevel, setEffectNamesByLevel] = useState<Record<number, Set<string>>>({});
+
+  const availableEffectLevelGrid = calcEffectLevelGrid(artifactLevel);
+
+  useEffect(() => {
+    setArtifactLevel(Math.max(dataBasic?.union_artifact_level ?? 1, 1));
+    setEffectIndex(0);
+    setEffectNamesByLevel({});
+  }, [dataBasic]);
+
+  useEffect(() => {
+    if (!dataArtifact) return;
+
+    const dataArtifactEffects = dataArtifact.union_artifact_effect
+      .map((effect) => effect.level)
+      .sort((a, b) => b - a);
+
+    const levelsIndex = availableEffectLevelGrid.findIndex(
+      (availableEffectLevels) =>
+        availableEffectLevels.length == dataArtifactEffects.length &&
+        availableEffectLevels.every((level, i) => level == dataArtifactEffects[i])
+    );
+    if (levelsIndex == -1) return;
+
+    const namesByLevel: Record<number, Set<string>> = {};
+    for (const effect of dataArtifact.union_artifact_effect) {
+      const effectInfo = EFFECT_INFOS.find((info) => info.expression.test(effect.name));
+      if (!effectInfo) continue;
+
+      if (namesByLevel[effect.level]) namesByLevel[effect.level].add(effectInfo.full);
+      else namesByLevel[effect.level] = new Set([effectInfo.full]);
+    }
+    setEffectIndex(levelsIndex);
+    setEffectNamesByLevel(namesByLevel);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataArtifact]);
+
+  const effectLevels = availableEffectLevelGrid[effectIndex] ?? [];
+
+  return (
+    <div className="flex flex-wrap items-start gap-4">
+      <div className="flex w-full flex-col gap-4 md:w-80">
+        <Card>
+          <CardHeader>
+            <CardTitle className={SECTION_TITLE}>아티팩트 레벨</CardTitle>
+            <CardAction>
+              {isFetchingBasic && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
+            </CardAction>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <NameInput />
+            <div className="relative h-5 text-xs">
+              <Separator className="absolute inset-0 top-1/2" />
+              <span className="relative mx-auto block w-fit bg-card px-2 text-muted-foreground">또는</span>
+            </div>
+            <ArtifactLevel
+              artifactLevel={artifactLevel}
+              onChange={(level) => {
+                setArtifactLevel(level);
+                setEffectIndex(0);
+                setEffectNamesByLevel((prev) => remapEffectNamesByLevel(prev, calcEffectLevelGrid(level)[0] ?? []));
+              }}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className={SECTION_TITLE}>효과 레벨</CardTitle>
+            <CardAction>
+              {isFetchingArtifact && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            <EffectLevel
+              artifactLevel={artifactLevel}
+              effectIndex={effectIndex}
+              onChange={(index) => {
+                setEffectIndex(index);
+                setEffectNamesByLevel((prev) => remapEffectNamesByLevel(prev, availableEffectLevelGrid[index] ?? []));
+              }}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className={SECTION_TITLE}>효과 선택</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SelectEffect
+              effectLevels={effectLevels}
+              effectNamesByLevel={effectNamesByLevel}
+              setEffectNamesByLevel={setEffectNamesByLevel}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="w-full md:w-auto">
+        <CardHeader>
+          <CardTitle className={SECTION_TITLE}>배치도</CardTitle>
+          <CardAction>
+            <Badge variant="outline">남은 AP {remainPoint(artifactLevel)}</Badge>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <ResultGrid
+            artifactLevel={artifactLevel}
+            effectIndex={effectIndex}
+            effectNames={flatEffectNamesByLevel(effectLevels, effectNamesByLevel)}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
