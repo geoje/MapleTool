@@ -1,4 +1,4 @@
-import { BOSS, BOSS_CODE, BossDifficulty, BossType, DIFFICULTY_CODE } from "@/constants/boss";
+import { BOSS, BOSS_CODE, BossDifficulty, BossType, DIFFICULTY_CODE, MAX_BOSS_SELECTABLE } from "@/constants/boss";
 import type { BossPlan } from "@/types";
 
 const DIFFICULTY_ORDER = Object.keys(BossDifficulty) as BossDifficulty[];
@@ -56,6 +56,26 @@ export function calculatePreviousMonthlyRevenue(bossPlan: BossPlan) {
 
 export function countWeeklyBoss(bossPlan: BossPlan) {
   return bossPlan.boss.filter(({ type }) => (BOSS[type].category ?? "weekly") == "weekly").length;
+}
+
+// Drops the cheapest weekly boss entries so at most MAX_BOSS_SELECTABLE remain selected.
+export function capBossPlan(bossPlan: BossPlan): BossPlan {
+  const weekly = bossPlan.boss.filter(({ type }) => (BOSS[type].category ?? "weekly") == "weekly");
+  if (weekly.length <= MAX_BOSS_SELECTABLE) return bossPlan;
+
+  const dropCount = weekly.length - MAX_BOSS_SELECTABLE;
+  const dropTypes = new Set(
+    [...weekly]
+      .sort((a, b) => getPrice(a.type, a.difficulty) - getPrice(b.type, b.difficulty))
+      .slice(0, dropCount)
+      .map((item) => item.type)
+  );
+
+  return { ...bossPlan, boss: bossPlan.boss.filter((item) => !dropTypes.has(item.type)) };
+}
+
+export function capBossPlans(bossPlans: BossPlan[]): BossPlan[] {
+  return bossPlans.map(capBossPlan);
 }
 
 export interface CubeTotals {
@@ -128,7 +148,7 @@ export function parsePlansFromParams(searchParams: URLSearchParams) {
 
   for (const [key, value] of searchParams) bossPlans.push(parsePlanFromParam(key, value));
 
-  return bossPlans;
+  return capBossPlans(bossPlans);
 }
 
 function parsePlanFromParam(key: string, value: string): BossPlan {

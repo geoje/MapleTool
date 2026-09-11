@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { BossDifficulty, BossType } from "@/constants/boss";
+import { capBossPlans } from "@/lib/boss-service";
 import type { BossOrder, BossPlan } from "@/types";
 
 interface BossStore {
@@ -25,7 +26,7 @@ export const useBossStore = create<BossStore>()(
     (set) => ({
       bossPlans: [],
 
-      setBossPlans: (bossPlans) => set({ bossPlans }),
+      setBossPlans: (bossPlans) => set({ bossPlans: capBossPlans(bossPlans) }),
 
       addBossPlan: (name) =>
         set((state) => {
@@ -117,6 +118,11 @@ export const useBossStore = create<BossStore>()(
           };
         }),
     }),
-    { name: "maple-boss-store" }
+    {
+      name: "maple-boss-store",
+      onRehydrateStorage: () => (state) => {
+        if (state) state.bossPlans = capBossPlans(state.bossPlans);
+      },
+    }
   )
 );
