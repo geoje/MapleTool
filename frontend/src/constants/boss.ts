@@ -129,6 +129,8 @@ interface CubeReward {
   gold?: number;
 }
 
+export const PRICE_CHANGE_DATE = new Date(2026, 8, 17);
+
 interface Boss {
   name: string;
   abbreviate: string;

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { PRICE_CHANGE_DATE } from "@/constants/boss";
 import { convertPlansToParams } from "@/lib/boss-service";
 import { cn } from "@/lib/utils";
 import { useBossStore } from "@/stores/boss-store";
@@ -13,10 +14,13 @@ import { ShareDialog } from "@/pages/boss-revenue/share-dialog";
 
 const SECTION_TITLE = "text-xs font-medium uppercase tracking-wide text-muted-foreground";
 
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const IS_WITHIN_A_WEEK_OF_PRICE_CHANGE = Date.now() - PRICE_CHANGE_DATE.getTime() < ONE_WEEK_MS;
+
 export function BossRevenuePage() {
   const bossPlans = useBossStore((state) => state.bossPlans);
   const [selected, setSelected] = useState(-1);
-  const [showComparison, setShowComparison] = useState(false);
+  const [showComparison, setShowComparison] = useState(IS_WITHIN_A_WEEK_OF_PRICE_CHANGE);
 
   const handleShare = async () => {
     if (!bossPlans.length) {
@@ -60,7 +64,9 @@ export function BossRevenuePage() {
                   <Scale className="size-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>9월 17일 수익 변화 표시</TooltipContent>
+              <TooltipContent>
+                {PRICE_CHANGE_DATE.getMonth() + 1}월 {PRICE_CHANGE_DATE.getDate()}일 수익 변화 표시
+              </TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
