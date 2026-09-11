@@ -28,7 +28,7 @@ import {
   calculateRevenue,
   countWeeklyBoss,
 } from "@/lib/boss-service";
-import { formatDelta, formatNumber } from "@/lib/format";
+import { formatCountDelta, formatDelta, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useBossStore } from "@/stores/boss-store";
 import type { BossPlan, BossPlanItem } from "@/types";
@@ -70,19 +70,15 @@ function BossRows({ bossPlan }: { bossPlan: BossPlan }) {
   const blackMageItem = bossPlan.boss.find((item) => item.type == BossType.BLACK_MAGE);
 
   return (
-    <div className="flex gap-1.5">
-      {items.length > 0 && (
-        <div className="grid grid-cols-6 gap-1.5">
-          {items.map((item) => (
-            <BossIcon key={item.type} item={item} />
-          ))}
-        </div>
-      )}
+    <div className="flex flex-wrap items-start gap-1.5 sm:flex-nowrap">
+      {items.map((item) => (
+        <BossIcon key={item.type} item={item} />
+      ))}
       {blackMageItem && (
-        <>
+        <div className="flex items-stretch gap-1.5">
           {items.length > 0 && <Separator orientation="vertical" />}
           <BossIcon item={blackMageItem} />
-        </>
+        </div>
       )}
     </div>
   );
@@ -186,122 +182,118 @@ function CharacterFieldContent({
 
   const cubes = calculateCubes(bossPlan);
   const previousCubes = calculatePreviousCubes(bossPlan);
-  const silverDelta = showComparison ? formatDelta(cubes.silver - previousCubes.silver) : null;
-  const goldDelta = showComparison ? formatDelta(cubes.gold - previousCubes.gold) : null;
+  const silverDelta = showComparison ? formatCountDelta(cubes.silver - previousCubes.silver) : null;
+  const goldDelta = showComparison ? formatCountDelta(cubes.gold - previousCubes.gold) : null;
 
   return (
-    <div className="flex w-full flex-col">
-      <div className="mb-2.5 flex flex-wrap items-start gap-3">
-        <div className="flex w-[100px] shrink-0 flex-col items-center gap-1.5">
-          <div className="relative size-[100px] overflow-hidden rounded-md bg-muted">
-            {data?.character_image && !imageFailed && (
-              <img
-                src={data.character_image}
-                alt=""
-                className="pointer-events-none absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-1/2"
-                onError={() => setImageFailed(true)}
-              />
-            )}
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            <Badge className="rounded-full bg-muted text-xs font-medium text-foreground">
-              {bossPlan.name}
-            </Badge>
-            {isFetching && (
-              <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />
-            )}
-          </div>
+    <div className="flex w-full flex-wrap items-start gap-3">
+      <div className="flex w-[100px] shrink-0 flex-col items-center gap-1.5">
+        <div className="relative size-[100px] overflow-hidden rounded-md bg-muted">
+          {data?.character_image && !imageFailed && (
+            <img
+              src={data.character_image}
+              alt=""
+              className="pointer-events-none absolute left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-1/2"
+              onError={() => setImageFailed(true)}
+            />
+          )}
         </div>
 
-        <div className="flex flex-1 flex-col gap-1.5">
-          <div className="flex items-center justify-end gap-1">
-            {!readOnly && (
-              <div className="flex items-center gap-0.5">
-                <CardIconButton label="move down" disabled={!onMoveDown} onClick={onMoveDown}>
-                  <ChevronDown className="size-3.5" />
-                </CardIconButton>
-                <CardIconButton label="move up" disabled={!onMoveUp} onClick={onMoveUp}>
-                  <ChevronUp className="size-3.5" />
-                </CardIconButton>
-                <CardIconButton label="delete" onClick={onDelete}>
-                  <X className="size-3.5" />
-                </CardIconButton>
-              </div>
-            )}
-
-            {radio}
-          </div>
-
-          {bossPlan.boss.length > 0 && <BossRows bossPlan={bossPlan} />}
+        <div className="flex items-center gap-1.5">
+          <Badge className="rounded-full bg-muted text-xs font-medium text-foreground">
+            {bossPlan.name}
+          </Badge>
+          {isFetching && <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />}
         </div>
       </div>
 
-      <div className="-mx-2.5 -mb-2.5 flex w-auto! items-stretch rounded-b-lg border-t bg-muted/50 text-xs">
-        <div className="flex flex-1 flex-col justify-center gap-1 p-2.5">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex w-fit items-center gap-2">
-                <img src={crystalPurple} alt="" className="h-4 w-auto shrink-0" />
-                <span>{formatNumber(revenue)}</span>
-                {weeklyDelta && (
-                  <span className={weeklyDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
-                    {weeklyDelta}
-                  </span>
-                )}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="right">주간 수익</TooltipContent>
-          </Tooltip>
+      <div className="flex flex-1 flex-col gap-1.5">
+        <div className="flex items-center justify-end gap-1">
+          {!readOnly && (
+            <div className="flex items-center gap-0.5">
+              <CardIconButton label="move down" disabled={!onMoveDown} onClick={onMoveDown}>
+                <ChevronDown className="size-3.5" />
+              </CardIconButton>
+              <CardIconButton label="move up" disabled={!onMoveUp} onClick={onMoveUp}>
+                <ChevronUp className="size-3.5" />
+              </CardIconButton>
+              <CardIconButton label="delete" onClick={onDelete}>
+                <X className="size-3.5" />
+              </CardIconButton>
+            </div>
+          )}
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex w-fit items-center gap-2">
-                <img src={crystalYellow} alt="" className="h-4 w-auto shrink-0" />
-                <span>{formatNumber(monthlyRevenue)}</span>
-                {monthlyDelta && (
-                  <span className={monthlyDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
-                    {monthlyDelta}
-                  </span>
-                )}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="right">월간 수익</TooltipContent>
-          </Tooltip>
+          {radio}
         </div>
 
-        <Separator orientation="vertical" />
+        {bossPlan.boss.length > 0 && <BossRows bossPlan={bossPlan} />}
 
-        <div className="flex flex-1 flex-col justify-center gap-1 p-2.5">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex w-fit items-center gap-2">
-                <img src={CUBE_ICON.silver} alt="" className="h-4 w-auto shrink-0" />
-                <span>{cubes.silver}</span>
-                {silverDelta && (
-                  <span className={silverDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
-                    {silverDelta}
-                  </span>
-                )}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="right">메멘토 실버 큐브</TooltipContent>
-          </Tooltip>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:items-stretch sm:gap-3 sm:mt-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:flex-col sm:flex-nowrap sm:items-start sm:justify-center sm:gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex w-fit items-center gap-2">
+                  <img src={crystalPurple} alt="" className="h-4 w-auto shrink-0" />
+                  <span>{formatNumber(revenue)}</span>
+                  {weeklyDelta && (
+                    <span className={weeklyDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
+                      {weeklyDelta}
+                    </span>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">주간 수익</TooltipContent>
+            </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex w-fit items-center gap-2">
-                <img src={CUBE_ICON.gold} alt="" className="h-4 w-auto shrink-0" />
-                <span>{cubes.gold}</span>
-                {goldDelta && (
-                  <span className={goldDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
-                    {goldDelta}
-                  </span>
-                )}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="right">메멘토 골드 큐브</TooltipContent>
-          </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex w-fit items-center gap-2">
+                  <img src={crystalYellow} alt="" className="h-4 w-auto shrink-0" />
+                  <span>{formatNumber(monthlyRevenue)}</span>
+                  {monthlyDelta && (
+                    <span className={monthlyDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
+                      {monthlyDelta}
+                    </span>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">월간 수익</TooltipContent>
+            </Tooltip>
+          </div>
+
+          <Separator orientation="vertical" className="h-4 sm:h-auto" />
+
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:flex-col sm:flex-nowrap sm:items-start sm:justify-center sm:gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex w-fit items-center gap-2">
+                  <img src={CUBE_ICON.silver} alt="" className="h-4 w-auto shrink-0" />
+                  <span>{cubes.silver}</span>
+                  {silverDelta && (
+                    <span className={silverDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
+                      {silverDelta}
+                    </span>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">메멘토 실버 큐브</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex w-fit items-center gap-2">
+                  <img src={CUBE_ICON.gold} alt="" className="h-4 w-auto shrink-0" />
+                  <span>{cubes.gold}</span>
+                  {goldDelta && (
+                    <span className={goldDelta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>
+                      {goldDelta}
+                    </span>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">메멘토 골드 큐브</TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </div>
@@ -466,9 +458,9 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
   const totalMonthlyDelta =
     totalPrevMonthly != null ? formatDelta(totalMonthly - totalPrevMonthly) : null;
   const totalSilverDelta =
-    totalPrevCubes != null ? formatDelta(totalCubes.silver - totalPrevCubes.silver) : null;
+    totalPrevCubes != null ? formatCountDelta(totalCubes.silver - totalPrevCubes.silver) : null;
   const totalGoldDelta =
-    totalPrevCubes != null ? formatDelta(totalCubes.gold - totalPrevCubes.gold) : null;
+    totalPrevCubes != null ? formatCountDelta(totalCubes.gold - totalPrevCubes.gold) : null;
 
   return (
     <>
@@ -513,8 +505,10 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
               ? formatDelta(monthlyRevenue - calculatePreviousMonthlyRevenue(plan))
               : null;
             const previousCubes = showComparison ? calculatePreviousCubes(plan) : null;
-            const silverDelta = previousCubes ? formatDelta(cubes.silver - previousCubes.silver) : null;
-            const goldDelta = previousCubes ? formatDelta(cubes.gold - previousCubes.gold) : null;
+            const silverDelta = previousCubes
+              ? formatCountDelta(cubes.silver - previousCubes.silver)
+              : null;
+            const goldDelta = previousCubes ? formatCountDelta(cubes.gold - previousCubes.gold) : null;
             const isSelected = !excludedNames.has(plan.name);
             const dim = !isSelected && "opacity-40";
 

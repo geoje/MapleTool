@@ -29,6 +29,16 @@ export function formatNumber(num: number): string {
 export function formatDelta(delta: number): string | null {
   if (delta == 0) return null;
 
+  const formatted = formatNumber(Math.abs(delta));
+  if (formatted === "0") return null;
+
   const sign = delta > 0 ? "+" : "-";
-  return `(${sign}${formatNumber(Math.abs(delta))})`;
+  return `(${sign}${formatted})`;
+}
+
+export function formatCountDelta(delta: number): string | null {
+  if (delta == 0) return null;
+
+  const sign = delta > 0 ? "+" : "-";
+  return `(${sign}${Math.abs(delta)})`;
 }
