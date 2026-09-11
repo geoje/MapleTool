@@ -625,181 +625,177 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
   const lastRowEnd = bossPlans.length + 4; // header(1) + one row per plan + divider row + totals row, as a grid line index
 
   return (
-    <>
-      <Separator />
+    <div className="w-full overflow-x-auto">
+      <div className="grid select-none grid-cols-[max-content_1fr_repeat(9,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
+        <div
+          className="w-px self-stretch bg-border"
+          style={{ gridColumn: 3, gridRow: `1 / ${lastRowEnd}` }}
+        />
+        <div
+          className="w-px self-stretch bg-border"
+          style={{ gridColumn: 8, gridRow: `1 / ${lastRowEnd}` }}
+        />
 
-      <div className="w-full overflow-x-auto">
-        <div className="grid select-none grid-cols-[max-content_1fr_repeat(9,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
-          <div
-            className="w-px self-stretch bg-border"
-            style={{ gridColumn: 3, gridRow: `1 / ${lastRowEnd}` }}
-          />
-          <div
-            className="w-px self-stretch bg-border"
-            style={{ gridColumn: 8, gridRow: `1 / ${lastRowEnd}` }}
-          />
+        <span />
+        <span className="font-medium text-muted-foreground">캐릭터명</span>
+        <span className="text-right font-medium text-muted-foreground">주간 결정 개수</span>
+        <span className="text-right font-medium text-muted-foreground">주간 수익</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img
+              src={CUBE_ICON.silver}
+              alt="메멘토 실버 큐브 (주간)"
+              className="h-4 w-auto shrink-0 justify-self-center"
+            />
+          </TooltipTrigger>
+          <TooltipContent>메멘토 실버 큐브 (주간)</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img
+              src={CUBE_ICON.gold}
+              alt="메멘토 골드 큐브 (주간)"
+              className="h-4 w-auto shrink-0 justify-self-center"
+            />
+          </TooltipTrigger>
+          <TooltipContent>메멘토 골드 큐브 (주간)</TooltipContent>
+        </Tooltip>
+        <span className="text-right font-medium text-muted-foreground">월간 수익</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img
+              src={CUBE_ICON.silver}
+              alt="메멘토 실버 큐브 (월간)"
+              className="h-4 w-auto shrink-0 justify-self-center"
+            />
+          </TooltipTrigger>
+          <TooltipContent>메멘토 실버 큐브 (월간)</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img
+              src={CUBE_ICON.gold}
+              alt="메멘토 골드 큐브 (월간)"
+              className="h-4 w-auto shrink-0 justify-self-center"
+            />
+          </TooltipTrigger>
+          <TooltipContent>메멘토 골드 큐브 (월간)</TooltipContent>
+        </Tooltip>
 
-          <span />
-          <span className="font-medium text-muted-foreground">캐릭터명</span>
-          <span className="text-right font-medium text-muted-foreground">주간 결정 개수</span>
-          <span className="text-right font-medium text-muted-foreground">주간 수익</span>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <img
-                src={CUBE_ICON.silver}
-                alt="메멘토 실버 큐브 (주간)"
-                className="h-4 w-auto shrink-0 justify-self-center"
+        {bossPlans.map((plan, i) => {
+          const cubes = calculateCubes(plan);
+          const monthlyCubes = calculateMonthlyCubes(plan);
+          const revenue = calculateRevenue(plan);
+          const monthlyRevenue = calculateMonthlyRevenue(plan);
+          const weeklyDelta = showComparison
+            ? formatDelta(revenue - calculatePreviousRevenue(plan))
+            : null;
+          const monthlyDelta = showComparison
+            ? formatDelta(monthlyRevenue - calculatePreviousMonthlyRevenue(plan))
+            : null;
+          const previousCubes = showComparison ? calculatePreviousCubes(plan) : null;
+          const silverDelta = previousCubes
+            ? formatCountDelta(cubes.silver - previousCubes.silver)
+            : null;
+          const goldDelta = previousCubes ? formatCountDelta(cubes.gold - previousCubes.gold) : null;
+          const previousMonthlyCubes = showComparison ? calculatePreviousMonthlyCubes(plan) : null;
+          const monthlySilverDelta = previousMonthlyCubes
+            ? formatCountDelta(monthlyCubes.silver - previousMonthlyCubes.silver)
+            : null;
+          const monthlyGoldDelta = previousMonthlyCubes
+            ? formatCountDelta(monthlyCubes.gold - previousMonthlyCubes.gold)
+            : null;
+          const isSelected = !excludedIndices.has(i);
+          const dim = !isSelected ? "opacity-40" : undefined;
+
+          return (
+            <div
+              key={"summary-" + i}
+              className="contents"
+              onClick={() => toggleSelected(i)}
+            >
+              <span onClick={(event) => event.stopPropagation()} className="flex items-center">
+                <Checkbox
+                  checked={isSelected}
+                  onCheckedChange={() => toggleSelected(i)}
+                />
+              </span>
+              <span className={cn("truncate", dim)}>{plan.name}</span>
+              <span className={cn("text-right", dim)}>{countWeeklyBoss(plan)}</span>
+              <ValueWithDelta value={formatNumber(revenue)} delta={weeklyDelta} className={dim} />
+              <ValueWithDelta
+                value={formatCubeCount(cubes.silver)}
+                delta={silverDelta}
+                align="center"
+                className={dim}
               />
-            </TooltipTrigger>
-            <TooltipContent>메멘토 실버 큐브 (주간)</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <img
-                src={CUBE_ICON.gold}
-                alt="메멘토 골드 큐브 (주간)"
-                className="h-4 w-auto shrink-0 justify-self-center"
+              <ValueWithDelta
+                value={formatCubeCount(cubes.gold)}
+                delta={goldDelta}
+                align="center"
+                className={dim}
               />
-            </TooltipTrigger>
-            <TooltipContent>메멘토 골드 큐브 (주간)</TooltipContent>
-          </Tooltip>
-          <span className="text-right font-medium text-muted-foreground">월간 수익</span>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <img
-                src={CUBE_ICON.silver}
-                alt="메멘토 실버 큐브 (월간)"
-                className="h-4 w-auto shrink-0 justify-self-center"
+              <ValueWithDelta
+                value={formatNumber(monthlyRevenue)}
+                delta={monthlyDelta}
+                className={dim}
               />
-            </TooltipTrigger>
-            <TooltipContent>메멘토 실버 큐브 (월간)</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <img
-                src={CUBE_ICON.gold}
-                alt="메멘토 골드 큐브 (월간)"
-                className="h-4 w-auto shrink-0 justify-self-center"
+              <ValueWithDelta
+                value={formatCubeCount(monthlyCubes.silver)}
+                delta={monthlySilverDelta}
+                align="center"
+                className={dim}
               />
-            </TooltipTrigger>
-            <TooltipContent>메멘토 골드 큐브 (월간)</TooltipContent>
-          </Tooltip>
+              <ValueWithDelta
+                value={formatCubeCount(monthlyCubes.gold)}
+                delta={monthlyGoldDelta}
+                align="center"
+                className={dim}
+              />
+            </div>
+          );
+        })}
 
-          {bossPlans.map((plan, i) => {
-            const cubes = calculateCubes(plan);
-            const monthlyCubes = calculateMonthlyCubes(plan);
-            const revenue = calculateRevenue(plan);
-            const monthlyRevenue = calculateMonthlyRevenue(plan);
-            const weeklyDelta = showComparison
-              ? formatDelta(revenue - calculatePreviousRevenue(plan))
-              : null;
-            const monthlyDelta = showComparison
-              ? formatDelta(monthlyRevenue - calculatePreviousMonthlyRevenue(plan))
-              : null;
-            const previousCubes = showComparison ? calculatePreviousCubes(plan) : null;
-            const silverDelta = previousCubes
-              ? formatCountDelta(cubes.silver - previousCubes.silver)
-              : null;
-            const goldDelta = previousCubes ? formatCountDelta(cubes.gold - previousCubes.gold) : null;
-            const previousMonthlyCubes = showComparison ? calculatePreviousMonthlyCubes(plan) : null;
-            const monthlySilverDelta = previousMonthlyCubes
-              ? formatCountDelta(monthlyCubes.silver - previousMonthlyCubes.silver)
-              : null;
-            const monthlyGoldDelta = previousMonthlyCubes
-              ? formatCountDelta(monthlyCubes.gold - previousMonthlyCubes.gold)
-              : null;
-            const isSelected = !excludedIndices.has(i);
-            const dim = !isSelected ? "opacity-40" : undefined;
+        <div className="border-t" style={{ gridColumn: "1 / -1", gridRow: dividerRow }} />
 
-            return (
-              <div
-                key={"summary-" + i}
-                className="contents"
-                onClick={() => toggleSelected(i)}
-              >
-                <span onClick={(event) => event.stopPropagation()} className="flex items-center">
-                  <Checkbox
-                    checked={isSelected}
-                    onCheckedChange={() => toggleSelected(i)}
-                  />
-                </span>
-                <span className={cn("truncate", dim)}>{plan.name}</span>
-                <span className={cn("text-right", dim)}>{countWeeklyBoss(plan)}</span>
-                <ValueWithDelta value={formatNumber(revenue)} delta={weeklyDelta} className={dim} />
-                <ValueWithDelta
-                  value={formatCubeCount(cubes.silver)}
-                  delta={silverDelta}
-                  align="center"
-                  className={dim}
-                />
-                <ValueWithDelta
-                  value={formatCubeCount(cubes.gold)}
-                  delta={goldDelta}
-                  align="center"
-                  className={dim}
-                />
-                <ValueWithDelta
-                  value={formatNumber(monthlyRevenue)}
-                  delta={monthlyDelta}
-                  className={dim}
-                />
-                <ValueWithDelta
-                  value={formatCubeCount(monthlyCubes.silver)}
-                  delta={monthlySilverDelta}
-                  align="center"
-                  className={dim}
-                />
-                <ValueWithDelta
-                  value={formatCubeCount(monthlyCubes.gold)}
-                  delta={monthlyGoldDelta}
-                  align="center"
-                  className={dim}
-                />
-              </div>
-            );
-          })}
-
-          <div className="border-t" style={{ gridColumn: "1 / -1", gridRow: dividerRow }} />
-
-          <span />
-          <span className="font-medium">총합</span>
-          <span className="text-right font-medium">{totalCrystals}</span>
-          <ValueWithDelta
-            value={formatNumber(totalWeekly)}
-            delta={totalWeeklyDelta}
-            className="font-medium"
-          />
-          <ValueWithDelta
-            value={formatCubeCount(totalCubes.silver)}
-            delta={totalSilverDelta}
-            align="center"
-            className="font-medium"
-          />
-          <ValueWithDelta
-            value={formatCubeCount(totalCubes.gold)}
-            delta={totalGoldDelta}
-            align="center"
-            className="font-medium"
-          />
-          <ValueWithDelta
-            value={formatNumber(totalMonthly)}
-            delta={totalMonthlyDelta}
-            className="font-medium"
-          />
-          <ValueWithDelta
-            value={formatCubeCount(totalMonthlyCubes.silver)}
-            delta={totalMonthlySilverDelta}
-            align="center"
-            className="font-medium"
-          />
-          <ValueWithDelta
-            value={formatCubeCount(totalMonthlyCubes.gold)}
-            delta={totalMonthlyGoldDelta}
-            align="center"
-            className="font-medium"
-          />
-        </div>
+        <span />
+        <span className="font-medium">총합</span>
+        <span className="text-right font-medium">{totalCrystals}</span>
+        <ValueWithDelta
+          value={formatNumber(totalWeekly)}
+          delta={totalWeeklyDelta}
+          className="font-medium"
+        />
+        <ValueWithDelta
+          value={formatCubeCount(totalCubes.silver)}
+          delta={totalSilverDelta}
+          align="center"
+          className="font-medium"
+        />
+        <ValueWithDelta
+          value={formatCubeCount(totalCubes.gold)}
+          delta={totalGoldDelta}
+          align="center"
+          className="font-medium"
+        />
+        <ValueWithDelta
+          value={formatNumber(totalMonthly)}
+          delta={totalMonthlyDelta}
+          className="font-medium"
+        />
+        <ValueWithDelta
+          value={formatCubeCount(totalMonthlyCubes.silver)}
+          delta={totalMonthlySilverDelta}
+          align="center"
+          className="font-medium"
+        />
+        <ValueWithDelta
+          value={formatCubeCount(totalMonthlyCubes.gold)}
+          delta={totalMonthlyGoldDelta}
+          align="center"
+          className="font-medium"
+        />
       </div>
-    </>
+    </div>
   );
 }
