@@ -510,7 +510,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
               : null;
             const goldDelta = previousCubes ? formatCountDelta(cubes.gold - previousCubes.gold) : null;
             const isSelected = !excludedNames.has(plan.name);
-            const dim = !isSelected && "opacity-40";
+            const dim = !isSelected ? "opacity-40" : undefined;
 
             return (
               <div
