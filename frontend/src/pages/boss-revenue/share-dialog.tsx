@@ -10,7 +10,6 @@ import {
 import { parsePlansFromParams } from "@/lib/boss-service";
 import { useBossStore } from "@/stores/boss-store";
 import { CharacterButton } from "@/pages/boss-revenue/character-panel";
-import { ResultTable } from "@/pages/boss-revenue/result-table";
 
 export function ShareDialog() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,7 +22,7 @@ export function ShareDialog() {
 
   return (
     <Dialog open onOpenChange={(open) => !open && close()}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>공유된 보스 수익</DialogTitle>
         </DialogHeader>
@@ -32,10 +31,6 @@ export function ShareDialog() {
           {loadedBossPlans.map((bossPlan, i) => (
             <CharacterButton key={"loaded-" + i} bossPlan={bossPlan} index={i} />
           ))}
-        </div>
-
-        <div className="rounded-md border p-2">
-          <ResultTable bossPlans={loadedBossPlans} />
         </div>
 
         <DialogFooter className="gap-2 sm:justify-between">

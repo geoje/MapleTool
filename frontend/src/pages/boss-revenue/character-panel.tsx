@@ -83,7 +83,7 @@ function BossRows({ bossPlan }: { bossPlan: BossPlan }) {
             <BossIcon key={item.type} item={item} />
           ))}
           {blackMageItem && (
-            <div className="ml-auto flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5">
               <Separator orientation="vertical" className="h-6" />
               <BossIcon item={blackMageItem} />
             </div>
