@@ -1,10 +1,12 @@
-const units = ["억", "만", ""];
+const units = ["억", "만"];
 
 export function formatNumber(num: number): string {
   if (num === 0) return "0";
 
   const isNegative = num < 0;
-  num = Math.abs(num);
+  num = Math.floor(Math.abs(num) / 10000) * 10000;
+
+  if (num === 0) return "0";
 
   const parts = [];
 
@@ -12,9 +14,6 @@ export function formatNumber(num: number): string {
   num %= 100000000;
 
   parts.push(Math.floor(num / 10000));
-  num %= 10000;
-
-  parts.push(Math.floor(num));
 
   const result = parts
     .map((part, index) => {

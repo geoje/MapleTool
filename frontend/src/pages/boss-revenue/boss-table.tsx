@@ -1,6 +1,13 @@
 import { ChevronsUpDown, ChevronUp, ChevronDown, RotateCcw } from "lucide-react";
-import { BOSS, BossDifficulty, BossType, DIFFICULTY_COLOR, FIRST_HALF_BOSS_TYPES } from "@/constants/boss";
-import { getMaxDifficulty, getMaxMembers } from "@/lib/boss-service";
+import {
+  BOSS,
+  BossDifficulty,
+  BossType,
+  DIFFICULTY_COLOR,
+  FIRST_HALF_BOSS_TYPES,
+  MAX_BOSS_SELECTABLE,
+} from "@/constants/boss";
+import { countWeeklyBoss, getMaxDifficulty, getMaxMembers } from "@/lib/boss-service";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,15 +37,16 @@ export function BossTableActions({ selected }: { selected: number }) {
   if (!bossPlan) return null;
 
   const handleSelectFirstHalfMax = () => {
-    for (const type of FIRST_HALF_BOSS_TYPES) {
-      const existingItem = bossPlan.boss.find((item) => item.type == type);
-      if (type == BossType.LOTUS) {
-        if (existingItem?.difficulty == BossDifficulty.EXTREME) continue;
-        putBossItem(selected, type, BossDifficulty.HARD, 1);
-        continue;
-      }
+    const candidates = FIRST_HALF_BOSS_TYPES.map((type) => {
+      const difficulty = type == BossType.LOTUS ? BossDifficulty.HARD : getMaxDifficulty(type);
+      return { type, difficulty, price: BOSS[type].prices[difficulty] ?? 0 };
+    })
+      .sort((a, b) => b.price - a.price)
+      .slice(0, MAX_BOSS_SELECTABLE);
 
-      putBossItem(selected, type, getMaxDifficulty(type), 1);
+    clearBossItems(selected);
+    for (const { type, difficulty } of candidates) {
+      putBossItem(selected, type, difficulty, 1);
     }
   };
 
@@ -109,12 +117,14 @@ function HeadCell({ children, className }: { children?: React.ReactNode; classNa
 function DefaultRows({ selected, bossPlan }: { selected: number; bossPlan: BossPlan }) {
   const putBossItem = useBossStore((state) => state.putBossItem);
   const removeBossItem = useBossStore((state) => state.removeBossItem);
+  const weeklyCount = countWeeklyBoss(bossPlan);
 
   return (
     <>
       {Object.entries(BOSS).map(([type, boss], i) => {
         const parsedType = type as BossType;
         const selectedItem = bossPlan.boss.find(({ type: t }) => t == parsedType);
+        const isWeekly = (boss.category ?? "weekly") == "weekly";
 
         return (
           <BossRow
@@ -126,6 +136,7 @@ function DefaultRows({ selected, bossPlan }: { selected: number; bossPlan: BossP
             maxMembers={getMaxMembers(parsedType, selectedItem?.difficulty)}
             members={selectedItem?.members ?? 1}
             price={selectedItem ? boss.prices[selectedItem.difficulty] : undefined}
+            isDisabled={isWeekly && !selectedItem && weeklyCount >= MAX_BOSS_SELECTABLE}
             onDifficultyChange={(difficulty) =>
               difficulty
                 ? putBossItem(selected, parsedType, difficulty)
@@ -150,6 +161,7 @@ function OrderedRows({
 }) {
   const putBossItem = useBossStore((state) => state.putBossItem);
   const removeBossItem = useBossStore((state) => state.removeBossItem);
+  const weeklyCount = countWeeklyBoss(bossPlan);
 
   const bossInfos = Object.entries(BOSS)
     .flatMap(([type, boss]) =>
@@ -159,13 +171,14 @@ function OrderedRows({
         abbreviate: boss.abbreviate,
         difficulty: difficulty as BossDifficulty,
         price,
+        isWeekly: (boss.category ?? "weekly") == "weekly",
       }))
     )
     .sort((a, b) => (descending ? b.price - a.price : a.price - b.price));
 
   return (
     <>
-      {bossInfos.map(({ type, icon, abbreviate, difficulty, price }, i) => {
+      {bossInfos.map(({ type, icon, abbreviate, difficulty, price, isWeekly }, i) => {
         const selectedItem = bossPlan.boss.find(({ type: t }) => t == type);
         const isSelectedDifficulty = selectedItem?.difficulty == difficulty;
 
@@ -179,6 +192,7 @@ function OrderedRows({
             maxMembers={getMaxMembers(type, selectedItem?.difficulty)}
             members={isSelectedDifficulty ? selectedItem.members : 1}
             price={price}
+            isDisabled={isWeekly && !selectedItem && weeklyCount >= MAX_BOSS_SELECTABLE}
             onDifficultyChange={(newDifficulty) =>
               newDifficulty
                 ? putBossItem(selected, type, newDifficulty, 1)
@@ -200,6 +214,7 @@ function BossRow({
   maxMembers,
   members,
   price,
+  isDisabled,
   onDifficultyChange,
   onMembersChange,
 }: {
@@ -210,12 +225,15 @@ function BossRow({
   maxMembers: number;
   members: number;
   price?: number;
+  isDisabled?: boolean;
   onDifficultyChange: (difficulty?: BossDifficulty) => void;
   onMembersChange: (members: number) => void;
 }) {
   return (
     <>
-      <div className="flex items-center gap-2 border-t py-1 pr-4">
+      <div
+        className={cn("flex items-center gap-2 border-t py-1 pr-4", isDisabled && "opacity-40")}
+      >
         <img src={icon} alt="" className="size-6 object-cover" />
         <span className="hidden text-sm sm:inline">{label}</span>
       </div>
@@ -227,6 +245,7 @@ function BossRow({
             <label key={`difficulty-${i}`} className="flex items-center gap-1.5">
               <Checkbox
                 checked={selectedDifficulty == difficulty}
+                disabled={isDisabled}
                 onCheckedChange={(checked) => onDifficultyChange(checked ? difficulty : undefined)}
               />
               <Badge
@@ -245,7 +264,11 @@ function BossRow({
       </div>
 
       <div className="flex items-center justify-center border-t py-1">
-        <Select value={String(members)} onValueChange={(value) => onMembersChange(Number(value))}>
+        <Select
+          value={String(members)}
+          onValueChange={(value) => onMembersChange(Number(value))}
+          disabled={isDisabled}
+        >
           <SelectTrigger size="sm" className="h-7 w-16">
             <SelectValue />
           </SelectTrigger>

@@ -4,6 +4,7 @@ import crystalPurple from "@/assets/crystal/purple.png";
 import crystalYellow from "@/assets/crystal/yellow.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -65,33 +66,25 @@ function BossIcon({ item }: { item: BossPlanItem }) {
 }
 
 function BossRows({ bossPlan }: { bossPlan: BossPlan }) {
-  const row1Items = getRowItems(bossPlan, FIRST_HALF_BOSS_TYPES);
-  const row2Items = getRowItems(bossPlan, SECOND_HALF_BOSS_TYPES);
+  const items = getRowItems(bossPlan, [...FIRST_HALF_BOSS_TYPES, ...SECOND_HALF_BOSS_TYPES]);
   const blackMageItem = bossPlan.boss.find((item) => item.type == BossType.BLACK_MAGE);
 
   return (
-    <>
-      {row1Items.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {row1Items.map((item) => (
+    <div className="flex gap-1.5">
+      {items.length > 0 && (
+        <div className="grid grid-cols-6 gap-1.5">
+          {items.map((item) => (
             <BossIcon key={item.type} item={item} />
           ))}
         </div>
       )}
-      {(row2Items.length > 0 || blackMageItem) && (
-        <div className="flex flex-wrap items-center gap-1.5">
-          {row2Items.map((item) => (
-            <BossIcon key={item.type} item={item} />
-          ))}
-          {blackMageItem && (
-            <div className="flex items-center gap-1.5">
-              <Separator orientation="vertical" className="h-6" />
-              <BossIcon item={blackMageItem} />
-            </div>
-          )}
-        </div>
+      {blackMageItem && (
+        <>
+          {items.length > 0 && <Separator orientation="vertical" />}
+          <BossIcon item={blackMageItem} />
+        </>
       )}
-    </>
+    </div>
   );
 }
 
@@ -403,13 +396,21 @@ function DeltaValue({
   value,
   delta,
   align = "end",
+  className,
 }: {
   value: React.ReactNode;
   delta?: string | null;
   align?: "end" | "center";
+  className?: string;
 }) {
   return (
-    <span className={cn("flex items-center gap-1", align == "end" ? "justify-end" : "justify-center")}>
+    <span
+      className={cn(
+        "flex items-center gap-1",
+        align == "end" ? "justify-end" : "justify-center",
+        className
+      )}
+    >
       {value}
       {delta && (
         <span className={delta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>{delta}</span>
@@ -420,28 +421,39 @@ function DeltaValue({
 
 export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
   const bossPlans = useBossStore((state) => state.bossPlans);
+  const [excludedNames, setExcludedNames] = useState<Set<string>>(new Set());
 
   if (!bossPlans.length) return null;
 
-  const totalWeekly = bossPlans.reduce((acc, plan) => acc + calculateRevenue(plan), 0);
-  const totalMonthly = bossPlans.reduce((acc, plan) => acc + calculateMonthlyRevenue(plan), 0);
-  const totalCubes = bossPlans.reduce(
+  const toggleSelected = (name: string) =>
+    setExcludedNames((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+
+  const selectedPlans = bossPlans.filter((plan) => !excludedNames.has(plan.name));
+
+  const totalWeekly = selectedPlans.reduce((acc, plan) => acc + calculateRevenue(plan), 0);
+  const totalMonthly = selectedPlans.reduce((acc, plan) => acc + calculateMonthlyRevenue(plan), 0);
+  const totalCubes = selectedPlans.reduce(
     (acc, plan) => {
       const cubes = calculateCubes(plan);
       return { silver: acc.silver + cubes.silver, gold: acc.gold + cubes.gold };
     },
     { silver: 0, gold: 0 }
   );
-  const totalCrystals = bossPlans.reduce((acc, plan) => acc + countWeeklyBoss(plan), 0);
+  const totalCrystals = selectedPlans.reduce((acc, plan) => acc + countWeeklyBoss(plan), 0);
 
   const totalPrevWeekly = showComparison
-    ? bossPlans.reduce((acc, plan) => acc + calculatePreviousRevenue(plan), 0)
+    ? selectedPlans.reduce((acc, plan) => acc + calculatePreviousRevenue(plan), 0)
     : null;
   const totalPrevMonthly = showComparison
-    ? bossPlans.reduce((acc, plan) => acc + calculatePreviousMonthlyRevenue(plan), 0)
+    ? selectedPlans.reduce((acc, plan) => acc + calculatePreviousMonthlyRevenue(plan), 0)
     : null;
   const totalPrevCubes = showComparison
-    ? bossPlans.reduce(
+    ? selectedPlans.reduce(
         (acc, plan) => {
           const cubes = calculatePreviousCubes(plan);
           return { silver: acc.silver + cubes.silver, gold: acc.gold + cubes.gold };
@@ -463,7 +475,8 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
       <Separator />
 
       <div className="w-full overflow-x-auto">
-        <div className="grid grid-cols-[1fr_repeat(5,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
+        <div className="grid grid-cols-[max-content_1fr_repeat(5,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
+          <span />
           <span className="font-medium text-muted-foreground">캐릭터명</span>
           <span className="text-right font-medium text-muted-foreground">주간 결정 개수</span>
           <span className="text-right font-medium text-muted-foreground">주간 수익</span>
@@ -502,21 +515,34 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
             const previousCubes = showComparison ? calculatePreviousCubes(plan) : null;
             const silverDelta = previousCubes ? formatDelta(cubes.silver - previousCubes.silver) : null;
             const goldDelta = previousCubes ? formatDelta(cubes.gold - previousCubes.gold) : null;
+            const isSelected = !excludedNames.has(plan.name);
+            const dim = !isSelected && "opacity-40";
 
             return (
-              <div key={"summary-" + plan.name} className="contents">
-                <span className="truncate">{plan.name}</span>
-                <span className="text-right">{countWeeklyBoss(plan)}</span>
-                <DeltaValue value={formatNumber(revenue)} delta={weeklyDelta} />
-                <DeltaValue value={formatNumber(monthlyRevenue)} delta={monthlyDelta} />
-                <DeltaValue value={cubes.silver} delta={silverDelta} align="center" />
-                <DeltaValue value={cubes.gold} delta={goldDelta} align="center" />
+              <div
+                key={"summary-" + plan.name}
+                className="contents"
+                onClick={() => toggleSelected(plan.name)}
+              >
+                <span onClick={(event) => event.stopPropagation()} className="flex items-center">
+                  <Checkbox
+                    checked={isSelected}
+                    onCheckedChange={() => toggleSelected(plan.name)}
+                  />
+                </span>
+                <span className={cn("truncate", dim)}>{plan.name}</span>
+                <span className={cn("text-right", dim)}>{countWeeklyBoss(plan)}</span>
+                <DeltaValue value={formatNumber(revenue)} delta={weeklyDelta} className={dim} />
+                <DeltaValue value={formatNumber(monthlyRevenue)} delta={monthlyDelta} className={dim} />
+                <DeltaValue value={cubes.silver} delta={silverDelta} align="center" className={dim} />
+                <DeltaValue value={cubes.gold} delta={goldDelta} align="center" className={dim} />
               </div>
             );
           })}
 
-          <div className="col-span-6 border-t" />
+          <div className="col-span-7 border-t" />
 
+          <span />
           <span className="font-medium">총합</span>
           <span className="text-right font-medium">{totalCrystals}</span>
           <span className="font-medium">
