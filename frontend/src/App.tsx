@@ -10,6 +10,7 @@ export function App() {
         <Route path="/" element={<Navigate to="/boss-revenue" replace />} />
         <Route path="/boss-revenue" element={<BossRevenuePage />} />
         <Route path="/enhance-expected-value" element={<EnhancePage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   );
