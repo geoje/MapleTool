@@ -64,7 +64,7 @@ export const BossDifficulty = {
 } as const;
 export type BossDifficulty = (typeof BossDifficulty)[keyof typeof BossDifficulty];
 
-// 공유 링크에 쓰이는 난이도 코드. 순서/인덱스가 아니라 고정 알파벳이라 난이도가 추가돼도 안 꼬임.
+// Difficulty codes used in share links. Fixed letters instead of positional indexes, so adding a new difficulty can't shift existing links.
 export const DIFFICULTY_CODE: Record<BossDifficulty, string> = {
   EASY: "e",
   NORMAL: "n",
@@ -73,9 +73,9 @@ export const DIFFICULTY_CODE: Record<BossDifficulty, string> = {
   EXTREME: "ex",
 };
 
-// 공유 링크에 쓰이는 보스 코드. 보스 스펠링에서 겹치지 않을 때까지 최소 글자만 뽑은 고정 값이라
-// 목록 중간에 새 보스가 추가돼도 기존 링크가 깨지지 않는다. 새 보스를 추가할 때는 기존 코드와
-// 겹치지 않는 코드를 새로 만들어서 여기에 추가만 하면 됨 (기존 값은 절대 바꾸지 말 것).
+// Boss codes used in share links: fixed values, shortest unique prefix of each boss's spelling.
+// Adding a boss in the middle of the list can't break existing links. When adding a new boss,
+// pick a code that doesn't collide with an existing one — never change an existing entry.
 export const BOSS_CODE: Record<BossType, string> = {
   ZZAKUM: "z",
   MAGNUS: "m",

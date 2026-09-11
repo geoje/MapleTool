@@ -112,7 +112,7 @@ export function convertPlansToParams(bossPlans: BossPlan[]) {
 }
 
 // bossCode-difficultyCode-members(.bossCode-difficultyCode-members)*
-// 예: z-e-3.m-h-2  ->  자쿰 이지 3인, 매그너스 하드 2인
+// e.g. z-e-3.m-h-2 -> Zakum Easy 3 members, Magnus Hard 2 members
 function convertPlanToCode(bossPlan: BossPlan) {
   return bossPlan.boss
     .map((b) => `${BOSS_CODE[b.type]}-${DIFFICULTY_CODE[b.difficulty]}-${b.members}`)
