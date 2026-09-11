@@ -80,7 +80,7 @@ export function BossRevenuePage() {
         </CardHeader>
         <CardContent className="flex w-full flex-col gap-3 md:w-auto md:min-w-80">
           <CharacterList selected={selected} setSelected={setSelected} showComparison={showComparison} />
-          <SummaryTable />
+          <SummaryTable showComparison={showComparison} />
         </CardContent>
       </Card>
 

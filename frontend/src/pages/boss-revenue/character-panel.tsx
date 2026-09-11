@@ -27,6 +27,7 @@ import {
   calculateRevenue,
 } from "@/lib/boss-service";
 import { formatDelta, formatNumber } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { useBossStore } from "@/stores/boss-store";
 import type { BossPlan, BossPlanItem } from "@/types";
 
@@ -397,7 +398,26 @@ export function CharacterList({
   );
 }
 
-export function SummaryTable() {
+function DeltaValue({
+  value,
+  delta,
+  align = "end",
+}: {
+  value: React.ReactNode;
+  delta?: string | null;
+  align?: "end" | "center";
+}) {
+  return (
+    <span className={cn("flex items-center gap-1", align == "end" ? "justify-end" : "justify-center")}>
+      {value}
+      {delta && (
+        <span className={delta.startsWith("(+") ? "text-red-500" : "text-blue-500"}>{delta}</span>
+      )}
+    </span>
+  );
+}
+
+export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
   const bossPlans = useBossStore((state) => state.bossPlans);
 
   if (!bossPlans.length) return null;
@@ -412,6 +432,30 @@ export function SummaryTable() {
     { silver: 0, gold: 0 }
   );
   const totalCrystals = bossPlans.reduce((acc, plan) => acc + plan.boss.length, 0);
+
+  const totalPrevWeekly = showComparison
+    ? bossPlans.reduce((acc, plan) => acc + calculatePreviousRevenue(plan), 0)
+    : null;
+  const totalPrevMonthly = showComparison
+    ? bossPlans.reduce((acc, plan) => acc + calculatePreviousMonthlyRevenue(plan), 0)
+    : null;
+  const totalPrevCubes = showComparison
+    ? bossPlans.reduce(
+        (acc, plan) => {
+          const cubes = calculatePreviousCubes(plan);
+          return { silver: acc.silver + cubes.silver, gold: acc.gold + cubes.gold };
+        },
+        { silver: 0, gold: 0 }
+      )
+    : null;
+
+  const totalWeeklyDelta = totalPrevWeekly != null ? formatDelta(totalWeekly - totalPrevWeekly) : null;
+  const totalMonthlyDelta =
+    totalPrevMonthly != null ? formatDelta(totalMonthly - totalPrevMonthly) : null;
+  const totalSilverDelta =
+    totalPrevCubes != null ? formatDelta(totalCubes.silver - totalPrevCubes.silver) : null;
+  const totalGoldDelta =
+    totalPrevCubes != null ? formatDelta(totalCubes.gold - totalPrevCubes.gold) : null;
 
   return (
     <>
@@ -445,15 +489,26 @@ export function SummaryTable() {
 
         {bossPlans.map((plan) => {
           const cubes = calculateCubes(plan);
+          const revenue = calculateRevenue(plan);
+          const monthlyRevenue = calculateMonthlyRevenue(plan);
+          const weeklyDelta = showComparison
+            ? formatDelta(revenue - calculatePreviousRevenue(plan))
+            : null;
+          const monthlyDelta = showComparison
+            ? formatDelta(monthlyRevenue - calculatePreviousMonthlyRevenue(plan))
+            : null;
+          const previousCubes = showComparison ? calculatePreviousCubes(plan) : null;
+          const silverDelta = previousCubes ? formatDelta(cubes.silver - previousCubes.silver) : null;
+          const goldDelta = previousCubes ? formatDelta(cubes.gold - previousCubes.gold) : null;
 
           return (
             <div key={"summary-" + plan.name} className="contents">
               <span className="truncate">{plan.name}</span>
               <span className="text-right">{plan.boss.length}</span>
-              <span className="text-right">{formatNumber(calculateRevenue(plan))}</span>
-              <span className="text-right">{formatNumber(calculateMonthlyRevenue(plan))}</span>
-              <span className="text-center">{cubes.silver}</span>
-              <span className="text-center">{cubes.gold}</span>
+              <DeltaValue value={formatNumber(revenue)} delta={weeklyDelta} />
+              <DeltaValue value={formatNumber(monthlyRevenue)} delta={monthlyDelta} />
+              <DeltaValue value={cubes.silver} delta={silverDelta} align="center" />
+              <DeltaValue value={cubes.gold} delta={goldDelta} align="center" />
             </div>
           );
         })}
@@ -462,10 +517,18 @@ export function SummaryTable() {
 
         <span className="font-medium">총합</span>
         <span className="text-right font-medium">{totalCrystals}</span>
-        <span className="text-right font-medium">{formatNumber(totalWeekly)}</span>
-        <span className="text-right font-medium">{formatNumber(totalMonthly)}</span>
-        <span className="text-center font-medium">{totalCubes.silver}</span>
-        <span className="text-center font-medium">{totalCubes.gold}</span>
+        <span className="font-medium">
+          <DeltaValue value={formatNumber(totalWeekly)} delta={totalWeeklyDelta} />
+        </span>
+        <span className="font-medium">
+          <DeltaValue value={formatNumber(totalMonthly)} delta={totalMonthlyDelta} />
+        </span>
+        <span className="font-medium">
+          <DeltaValue value={totalCubes.silver} delta={totalSilverDelta} align="center" />
+        </span>
+        <span className="font-medium">
+          <DeltaValue value={totalCubes.gold} delta={totalGoldDelta} align="center" />
+        </span>
       </div>
     </>
   );
