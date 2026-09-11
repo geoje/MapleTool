@@ -8,7 +8,8 @@ interface BossStore {
   bossPlans: BossPlan[];
   setBossPlans: (plans: BossPlan[]) => void;
   addBossPlan: (name: string) => void;
-  moveBossPlan: (from: string, to: string) => void;
+  duplicateBossPlan: (index: number) => void;
+  moveBossPlan: (from: number, to: number) => void;
   deleteBossPlan: (index: number) => void;
   setBossOrder: (index: number, order: BossOrder) => void;
   clearBossItems: (index: number) => void;
@@ -30,23 +31,32 @@ export const useBossStore = create<BossStore>()(
 
       addBossPlan: (name) =>
         set((state) => {
-          if (!name.trim() || state.bossPlans.some((plan) => plan.name == name))
-            return state;
+          if (!name.trim()) return state;
 
           return {
             bossPlans: [...state.bossPlans, { name, order: "", boss: [] }],
           };
         }),
 
-      moveBossPlan: (from, to) =>
+      duplicateBossPlan: (index) =>
         set((state) => {
-          const idxFrom = state.bossPlans.findIndex((plan) => plan.name == from);
-          const idxTo = state.bossPlans.findIndex((plan) => plan.name == to);
-          if (idxFrom == -1 || idxTo == -1) return state;
+          const plan = state.bossPlans[index];
+          if (!plan) return state;
 
           const bossPlans = [...state.bossPlans];
-          const [value] = bossPlans.splice(idxFrom, 1);
-          bossPlans.splice(idxTo, 0, value);
+          bossPlans.splice(index + 1, 0, { ...plan, boss: plan.boss.map((item) => ({ ...item })) });
+
+          return { bossPlans };
+        }),
+
+      moveBossPlan: (from, to) =>
+        set((state) => {
+          if (from < 0 || from >= state.bossPlans.length || to < 0 || to >= state.bossPlans.length)
+            return state;
+
+          const bossPlans = [...state.bossPlans];
+          const [value] = bossPlans.splice(from, 1);
+          bossPlans.splice(to, 0, value);
 
           return { bossPlans };
         }),

@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Loader2, Search, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Copy, Loader2, Search, X } from "lucide-react";
 import { useRef, useState } from "react";
 import crystalPurple from "@/assets/crystal/purple.png";
 import crystalYellow from "@/assets/crystal/yellow.png";
@@ -160,6 +160,7 @@ function CharacterFieldContent({
   readOnly,
   showComparison,
   onDelete,
+  onDuplicate,
   onMoveUp,
   onMoveDown,
 }: {
@@ -168,6 +169,7 @@ function CharacterFieldContent({
   readOnly?: boolean;
   showComparison?: boolean;
   onDelete?: () => void;
+  onDuplicate?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
 }) {
@@ -216,6 +218,9 @@ function CharacterFieldContent({
               </CardIconButton>
               <CardIconButton label="move up" disabled={!onMoveUp} onClick={onMoveUp}>
                 <ChevronUp className="size-3.5" />
+              </CardIconButton>
+              <CardIconButton label="duplicate" onClick={onDuplicate}>
+                <Copy className="size-3.5" />
               </CardIconButton>
               <CardIconButton label="delete" onClick={onDelete}>
                 <X className="size-3.5" />
@@ -320,6 +325,7 @@ export function CharacterList({
   const bossPlans = useBossStore((state) => state.bossPlans);
   const moveBossPlan = useBossStore((state) => state.moveBossPlan);
   const deleteBossPlan = useBossStore((state) => state.deleteBossPlan);
+  const duplicateBossPlan = useBossStore((state) => state.duplicateBossPlan);
 
   if (!bossPlans.length) return null;
 
@@ -333,7 +339,7 @@ export function CharacterList({
 
         return (
           <FieldLabel
-            key={"character-" + plan.name}
+            key={"character-" + i}
             htmlFor={id}
             className="has-data-checked:border-primary/30 has-data-checked:bg-muted/50"
           >
@@ -356,11 +362,16 @@ export function CharacterList({
                 onDelete={() => {
                   deleteBossPlan(i);
                   if (selected == i) setSelected(-1);
+                  else if (selected > i) setSelected(selected - 1);
+                }}
+                onDuplicate={() => {
+                  duplicateBossPlan(i);
+                  if (selected > i) setSelected(selected + 1);
                 }}
                 onMoveDown={
                   i < bossPlans.length - 1
                     ? () => {
-                        moveBossPlan(plan.name, bossPlans[i + 1].name);
+                        moveBossPlan(i, i + 1);
                         if (selected == i) setSelected(i + 1);
                         else if (selected == i + 1) setSelected(i);
                       }
@@ -369,7 +380,7 @@ export function CharacterList({
                 onMoveUp={
                   i > 0
                     ? () => {
-                        moveBossPlan(plan.name, bossPlans[i - 1].name);
+                        moveBossPlan(i, i - 1);
                         if (selected == i) setSelected(i - 1);
                         else if (selected == i - 1) setSelected(i);
                       }
@@ -413,19 +424,19 @@ function DeltaValue({
 
 export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
   const bossPlans = useBossStore((state) => state.bossPlans);
-  const [excludedNames, setExcludedNames] = useState<Set<string>>(new Set());
+  const [excludedIndices, setExcludedIndices] = useState<Set<number>>(new Set());
 
   if (!bossPlans.length) return null;
 
-  const toggleSelected = (name: string) =>
-    setExcludedNames((prev) => {
+  const toggleSelected = (index: number) =>
+    setExcludedIndices((prev) => {
       const next = new Set(prev);
-      if (next.has(name)) next.delete(name);
-      else next.add(name);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
       return next;
     });
 
-  const selectedPlans = bossPlans.filter((plan) => !excludedNames.has(plan.name));
+  const selectedPlans = bossPlans.filter((_, i) => !excludedIndices.has(i));
 
   const totalWeekly = selectedPlans.reduce((acc, plan) => acc + calculateRevenue(plan), 0);
   const totalMonthly = selectedPlans.reduce((acc, plan) => acc + calculateMonthlyRevenue(plan), 0);
@@ -494,7 +505,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
             <TooltipContent>메멘토 골드 큐브</TooltipContent>
           </Tooltip>
 
-          {bossPlans.map((plan) => {
+          {bossPlans.map((plan, i) => {
             const cubes = calculateCubes(plan);
             const revenue = calculateRevenue(plan);
             const monthlyRevenue = calculateMonthlyRevenue(plan);
@@ -509,19 +520,19 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
               ? formatCountDelta(cubes.silver - previousCubes.silver)
               : null;
             const goldDelta = previousCubes ? formatCountDelta(cubes.gold - previousCubes.gold) : null;
-            const isSelected = !excludedNames.has(plan.name);
+            const isSelected = !excludedIndices.has(i);
             const dim = !isSelected ? "opacity-40" : undefined;
 
             return (
               <div
-                key={"summary-" + plan.name}
+                key={"summary-" + i}
                 className="contents"
-                onClick={() => toggleSelected(plan.name)}
+                onClick={() => toggleSelected(i)}
               >
                 <span onClick={(event) => event.stopPropagation()} className="flex items-center">
                   <Checkbox
                     checked={isSelected}
-                    onCheckedChange={() => toggleSelected(plan.name)}
+                    onCheckedChange={() => toggleSelected(i)}
                   />
                 </span>
                 <span className={cn("truncate", dim)}>{plan.name}</span>
