@@ -32,7 +32,11 @@ export function BossTableActions({ selected }: { selected: number }) {
   const handleSelectFirstHalfMax = () => {
     for (const type of FIRST_HALF_BOSS_TYPES) {
       const existingItem = bossPlan.boss.find((item) => item.type == type);
-      if (type == BossType.LOTUS && existingItem?.difficulty == BossDifficulty.EXTREME) continue;
+      if (type == BossType.LOTUS) {
+        if (existingItem?.difficulty == BossDifficulty.EXTREME) continue;
+        putBossItem(selected, type, BossDifficulty.HARD, 1);
+        continue;
+      }
 
       putBossItem(selected, type, getMaxDifficulty(type), 1);
     }

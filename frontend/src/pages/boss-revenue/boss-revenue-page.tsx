@@ -60,7 +60,7 @@ export function BossRevenuePage() {
                   <Scale className="size-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>2026년 9월 17일 기준 증감량 표시</TooltipContent>
+              <TooltipContent>9월 17일 수익 변화 표시</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>

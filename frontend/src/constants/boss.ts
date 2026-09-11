@@ -267,8 +267,8 @@ export const BOSS: Record<BossType, Boss> = {
     icon: chosenSeren,
     prices: { NORMAL: 167_000_000, HARD: 302_000_000, EXTREME: 1_840_000_000 },
     previousPrices: { NORMAL: 239_000_000, HARD: 356_000_000, EXTREME: 2_835_000_000 },
-    cubes: { NORMAL: { silver: 2, gold: 0 } },
-    previousCubes: { NORMAL: { silver: 0, gold: 1 } },
+    cubes: { NORMAL: { silver: 2, gold: 0 }, HARD: { gold: 2 } },
+    previousCubes: { NORMAL: { silver: 0, gold: 1 }, HARD: { gold: 2 } },
   },
   KALOS_THE_GUARDIAN: {
     name: "감시자 칼로스",
@@ -285,8 +285,8 @@ export const BOSS: Record<BossType, Boss> = {
       NORMAL: 505_000_000,
       CHAOS: 1_273_000_000,
     },
-    cubes: { NORMAL: { gold: 3 } },
-    previousCubes: { NORMAL: { gold: 0 } },
+    cubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
+    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 0 } },
   },
   THE_FIRST_ADVERSARY: {
     name: "최초의 대적자",
@@ -303,8 +303,8 @@ export const BOSS: Record<BossType, Boss> = {
       NORMAL: 560_000_000,
       HARD: 1_435_000_000,
     },
-    cubes: { NORMAL: { gold: 3 } },
-    previousCubes: { NORMAL: { gold: 0 } },
+    cubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
+    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 0 } },
   },
   KALING: {
     name: "카링",
@@ -321,8 +321,8 @@ export const BOSS: Record<BossType, Boss> = {
       NORMAL: 678_000_000,
       HARD: 1_739_000_000,
     },
-    cubes: { NORMAL: { gold: 3 } },
-    previousCubes: { NORMAL: { gold: 0 } },
+    cubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
+    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 0 } },
   },
   RADIANT_MALEFIC_STAR: {
     name: "찬란한 흉성",
