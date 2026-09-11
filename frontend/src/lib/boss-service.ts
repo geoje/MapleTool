@@ -54,6 +54,10 @@ export function calculatePreviousMonthlyRevenue(bossPlan: BossPlan) {
   return sumRevenue(bossPlan, "monthly", getPreviousPrice);
 }
 
+export function countWeeklyBoss(bossPlan: BossPlan) {
+  return bossPlan.boss.filter(({ type }) => (BOSS[type].category ?? "weekly") == "weekly").length;
+}
+
 export interface CubeTotals {
   silver: number;
   gold: number;

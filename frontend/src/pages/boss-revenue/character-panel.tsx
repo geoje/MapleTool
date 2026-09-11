@@ -25,6 +25,7 @@ import {
   calculatePreviousMonthlyRevenue,
   calculatePreviousRevenue,
   calculateRevenue,
+  countWeeklyBoss,
 } from "@/lib/boss-service";
 import { formatDelta, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -431,7 +432,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
     },
     { silver: 0, gold: 0 }
   );
-  const totalCrystals = bossPlans.reduce((acc, plan) => acc + plan.boss.length, 0);
+  const totalCrystals = bossPlans.reduce((acc, plan) => acc + countWeeklyBoss(plan), 0);
 
   const totalPrevWeekly = showComparison
     ? bossPlans.reduce((acc, plan) => acc + calculatePreviousRevenue(plan), 0)
@@ -463,7 +464,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
 
       <div className="grid grid-cols-[1fr_repeat(5,max-content)] items-center gap-x-3 gap-y-1.5 text-xs">
         <span className="font-medium text-muted-foreground">캐릭터명</span>
-        <span className="text-right font-medium text-muted-foreground">결정 개수</span>
+        <span className="text-right font-medium text-muted-foreground">주간 결정 개수</span>
         <span className="text-right font-medium text-muted-foreground">주간 수익</span>
         <span className="text-right font-medium text-muted-foreground">월간 수익</span>
         <Tooltip>
@@ -504,7 +505,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
           return (
             <div key={"summary-" + plan.name} className="contents">
               <span className="truncate">{plan.name}</span>
-              <span className="text-right">{plan.boss.length}</span>
+              <span className="text-right">{countWeeklyBoss(plan)}</span>
               <DeltaValue value={formatNumber(revenue)} delta={weeklyDelta} />
               <DeltaValue value={formatNumber(monthlyRevenue)} delta={monthlyDelta} />
               <DeltaValue value={cubes.silver} delta={silverDelta} align="center" />
