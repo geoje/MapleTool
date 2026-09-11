@@ -30,12 +30,11 @@ import {
   calculatePreviousRevenue,
   calculateRevenue,
   countWeeklyBoss,
-  resolveScheduledBoss,
 } from "@/lib/boss-service";
 import { formatCountDelta, formatCubeCount, formatDelta, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useBossStore } from "@/stores/boss-store";
-import type { BossPlan, BossPlanItem, CharacterSchedule } from "@/types";
+import type { BossPlan, BossPlanItem } from "@/types";
 
 function getRowItems(bossPlan: BossPlan, types: BossType[]) {
   return types
@@ -60,18 +59,8 @@ function BossIcon({ item }: { item?: BossPlanItem }) {
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="relative overflow-hidden border-2" style={{ borderColor: color?.border }}>
+      <div className="overflow-hidden border-2" style={{ borderColor: color?.border }}>
         <img src={boss.icon} alt="" className="block size-6 object-cover" />
-        {item.complete_flag && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="absolute bottom-0 right-0 flex size-2.5 items-center justify-center rounded-full bg-emerald-500">
-                <Check className="size-2 text-white" strokeWidth={4} />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="top">이번주 처치 완료</TooltipContent>
-          </Tooltip>
-        )}
       </div>
       <div className="flex items-center gap-0.5">
         <span
@@ -114,29 +103,15 @@ function BossRows({ bossPlan }: { bossPlan: BossPlan }) {
 export function NameInput({ setSelected }: { setSelected: (index: number) => void }) {
   const bossPlans = useBossStore((state) => state.bossPlans);
   const addBossPlan = useBossStore((state) => state.addBossPlan);
-  const putBossItem = useBossStore((state) => state.putBossItem);
   const [name, setName] = useState("");
   const isComposing = useRef(false);
 
   const handleSubmit = () => {
-    const trimmed = name.trim();
-    if (!trimmed) return;
+    if (!name.trim()) return;
 
-    const index = bossPlans.length;
-    setSelected(index);
-    addBossPlan(trimmed);
+    setSelected(bossPlans.length);
+    addBossPlan(name);
     setName("");
-
-    fetch(`/api/boss/schedule?name=${encodeURIComponent(trimmed)}`)
-      .then((response) => (response.ok ? (response.json() as Promise<CharacterSchedule>) : undefined))
-      .then((schedule) => {
-        if (!schedule) return;
-
-        for (const item of resolveScheduledBoss(schedule.boss_contents)) {
-          putBossItem(index, item.type, item.difficulty, item.members, item.complete_flag);
-        }
-      })
-      .catch(() => {});
   };
 
   return (

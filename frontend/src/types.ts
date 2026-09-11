@@ -6,7 +6,6 @@ export interface BossPlanItem {
   type: BossType;
   difficulty: BossDifficulty;
   members: number;
-  complete_flag?: boolean;
 }
 
 export interface BossPlan {
@@ -58,19 +57,4 @@ export interface UnionArtifact {
   union_artifact_effect: ArtifactEffect[];
   union_artifact_crystal: ArtifactCrystal[];
   union_artifact_remain_ap: number;
-}
-
-export interface BossContent {
-  content_name: string;
-  difficulty: string;
-  cycle: string;
-  list_order_no: number;
-  registration_flag: string;
-  complete_flag: string;
-}
-
-export interface CharacterSchedule {
-  date: string;
-  character_name: string;
-  boss_contents: BossContent[];
 }

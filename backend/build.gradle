@@ -35,6 +35,7 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-otlp'
     implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
     implementation 'io.github.openfeign:feign-okhttp'
+    implementation 'org.jsoup:jsoup:1.18.1'
 
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
