@@ -462,74 +462,76 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
     <>
       <Separator />
 
-      <div className="grid grid-cols-[1fr_repeat(5,max-content)] items-center gap-x-3 gap-y-1.5 text-xs">
-        <span className="font-medium text-muted-foreground">캐릭터명</span>
-        <span className="text-right font-medium text-muted-foreground">주간 결정 개수</span>
-        <span className="text-right font-medium text-muted-foreground">주간 수익</span>
-        <span className="text-right font-medium text-muted-foreground">월간 수익</span>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <img
-              src={CUBE_ICON.silver}
-              alt="메멘토 실버 큐브"
-              className="h-4 w-auto shrink-0 justify-self-center"
-            />
-          </TooltipTrigger>
-          <TooltipContent>메멘토 실버 큐브</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <img
-              src={CUBE_ICON.gold}
-              alt="메멘토 골드 큐브"
-              className="h-4 w-auto shrink-0 justify-self-center"
-            />
-          </TooltipTrigger>
-          <TooltipContent>메멘토 골드 큐브</TooltipContent>
-        </Tooltip>
+      <div className="w-full overflow-x-auto">
+        <div className="grid grid-cols-[1fr_repeat(5,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
+          <span className="font-medium text-muted-foreground">캐릭터명</span>
+          <span className="text-right font-medium text-muted-foreground">주간 결정 개수</span>
+          <span className="text-right font-medium text-muted-foreground">주간 수익</span>
+          <span className="text-right font-medium text-muted-foreground">월간 수익</span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <img
+                src={CUBE_ICON.silver}
+                alt="메멘토 실버 큐브"
+                className="h-4 w-auto shrink-0 justify-self-center"
+              />
+            </TooltipTrigger>
+            <TooltipContent>메멘토 실버 큐브</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <img
+                src={CUBE_ICON.gold}
+                alt="메멘토 골드 큐브"
+                className="h-4 w-auto shrink-0 justify-self-center"
+              />
+            </TooltipTrigger>
+            <TooltipContent>메멘토 골드 큐브</TooltipContent>
+          </Tooltip>
 
-        {bossPlans.map((plan) => {
-          const cubes = calculateCubes(plan);
-          const revenue = calculateRevenue(plan);
-          const monthlyRevenue = calculateMonthlyRevenue(plan);
-          const weeklyDelta = showComparison
-            ? formatDelta(revenue - calculatePreviousRevenue(plan))
-            : null;
-          const monthlyDelta = showComparison
-            ? formatDelta(monthlyRevenue - calculatePreviousMonthlyRevenue(plan))
-            : null;
-          const previousCubes = showComparison ? calculatePreviousCubes(plan) : null;
-          const silverDelta = previousCubes ? formatDelta(cubes.silver - previousCubes.silver) : null;
-          const goldDelta = previousCubes ? formatDelta(cubes.gold - previousCubes.gold) : null;
+          {bossPlans.map((plan) => {
+            const cubes = calculateCubes(plan);
+            const revenue = calculateRevenue(plan);
+            const monthlyRevenue = calculateMonthlyRevenue(plan);
+            const weeklyDelta = showComparison
+              ? formatDelta(revenue - calculatePreviousRevenue(plan))
+              : null;
+            const monthlyDelta = showComparison
+              ? formatDelta(monthlyRevenue - calculatePreviousMonthlyRevenue(plan))
+              : null;
+            const previousCubes = showComparison ? calculatePreviousCubes(plan) : null;
+            const silverDelta = previousCubes ? formatDelta(cubes.silver - previousCubes.silver) : null;
+            const goldDelta = previousCubes ? formatDelta(cubes.gold - previousCubes.gold) : null;
 
-          return (
-            <div key={"summary-" + plan.name} className="contents">
-              <span className="truncate">{plan.name}</span>
-              <span className="text-right">{countWeeklyBoss(plan)}</span>
-              <DeltaValue value={formatNumber(revenue)} delta={weeklyDelta} />
-              <DeltaValue value={formatNumber(monthlyRevenue)} delta={monthlyDelta} />
-              <DeltaValue value={cubes.silver} delta={silverDelta} align="center" />
-              <DeltaValue value={cubes.gold} delta={goldDelta} align="center" />
-            </div>
-          );
-        })}
+            return (
+              <div key={"summary-" + plan.name} className="contents">
+                <span className="truncate">{plan.name}</span>
+                <span className="text-right">{countWeeklyBoss(plan)}</span>
+                <DeltaValue value={formatNumber(revenue)} delta={weeklyDelta} />
+                <DeltaValue value={formatNumber(monthlyRevenue)} delta={monthlyDelta} />
+                <DeltaValue value={cubes.silver} delta={silverDelta} align="center" />
+                <DeltaValue value={cubes.gold} delta={goldDelta} align="center" />
+              </div>
+            );
+          })}
 
-        <div className="col-span-6 border-t" />
+          <div className="col-span-6 border-t" />
 
-        <span className="font-medium">총합</span>
-        <span className="text-right font-medium">{totalCrystals}</span>
-        <span className="font-medium">
-          <DeltaValue value={formatNumber(totalWeekly)} delta={totalWeeklyDelta} />
-        </span>
-        <span className="font-medium">
-          <DeltaValue value={formatNumber(totalMonthly)} delta={totalMonthlyDelta} />
-        </span>
-        <span className="font-medium">
-          <DeltaValue value={totalCubes.silver} delta={totalSilverDelta} align="center" />
-        </span>
-        <span className="font-medium">
-          <DeltaValue value={totalCubes.gold} delta={totalGoldDelta} align="center" />
-        </span>
+          <span className="font-medium">총합</span>
+          <span className="text-right font-medium">{totalCrystals}</span>
+          <span className="font-medium">
+            <DeltaValue value={formatNumber(totalWeekly)} delta={totalWeeklyDelta} />
+          </span>
+          <span className="font-medium">
+            <DeltaValue value={formatNumber(totalMonthly)} delta={totalMonthlyDelta} />
+          </span>
+          <span className="font-medium">
+            <DeltaValue value={totalCubes.silver} delta={totalSilverDelta} align="center" />
+          </span>
+          <span className="font-medium">
+            <DeltaValue value={totalCubes.gold} delta={totalGoldDelta} align="center" />
+          </span>
+        </div>
       </div>
     </>
   );
