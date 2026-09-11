@@ -14,13 +14,12 @@ import { ShareDialog } from "@/pages/boss-revenue/share-dialog";
 
 const SECTION_TITLE = "text-xs font-medium uppercase tracking-wide text-muted-foreground";
 
-const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-const IS_WITHIN_A_WEEK_OF_PRICE_CHANGE = Date.now() - PRICE_CHANGE_DATE.getTime() < ONE_WEEK_MS;
+const IS_BEFORE_PRICE_CHANGE = Date.now() < PRICE_CHANGE_DATE.getTime();
 
 export function BossRevenuePage() {
   const bossPlans = useBossStore((state) => state.bossPlans);
   const [selected, setSelected] = useState(-1);
-  const [showComparison, setShowComparison] = useState(IS_WITHIN_A_WEEK_OF_PRICE_CHANGE);
+  const [showComparison, setShowComparison] = useState(IS_BEFORE_PRICE_CHANGE);
 
   const handleShare = async () => {
     if (!bossPlans.length) {

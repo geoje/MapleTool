@@ -1,5 +1,5 @@
-import { ChevronDown, ChevronUp, Copy, Loader2, Search, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { Check, ChevronDown, ChevronUp, Copy, Loader2, Pencil, Search, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import crystalPurple from "@/assets/crystal/purple.png";
 import crystalYellow from "@/assets/crystal/yellow.png";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +48,7 @@ function BossIcon({ item }: { item?: BossPlanItem }) {
       <div className="flex flex-col items-center gap-1">
         <div className="box-content size-6 border-2 border-dashed border-muted-foreground/20" />
         <div className="flex items-center gap-0.5">
-          <span className="invisible rounded-b-[2px] px-1 text-[10px] leading-tight">-</span>
+          <span className="invisible rounded-[2px] px-1 text-[10px] leading-tight">-</span>
         </div>
       </div>
     );
@@ -64,13 +64,13 @@ function BossIcon({ item }: { item?: BossPlanItem }) {
       </div>
       <div className="flex items-center gap-0.5">
         <span
-          className="rounded-b-[2px] px-1 text-[10px] leading-tight"
+          className="rounded-[2px] px-1 text-[10px] leading-tight"
           style={{ color: color?.text, backgroundColor: color?.back }}
         >
           {item.difficulty.charAt(0)}
         </span>
         {item.members >= 2 && (
-          <span className="rounded-b-[2px] bg-secondary px-0.5 text-[10px] leading-tight text-secondary-foreground">
+          <span className="rounded-[2px] bg-secondary px-0.5 text-[10px] leading-tight text-secondary-foreground">
             {item.members}
           </span>
         )}
@@ -192,8 +192,94 @@ function StatTooltip({
           )}
         </div>
       </TooltipTrigger>
-      <TooltipContent side="bottom">{label}</TooltipContent>
+      <TooltipContent side="top">{label}</TooltipContent>
     </Tooltip>
+  );
+}
+
+function CharacterNameField({
+  name,
+  readOnly,
+  onRename,
+  isFetching,
+}: {
+  name: string;
+  readOnly?: boolean;
+  onRename?: (name: string) => void;
+  isFetching?: boolean;
+}) {
+  const [value, setValue] = useState(name);
+  const [isFocused, setIsFocused] = useState(false);
+  const isComposing = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setValue(name);
+  }, [name]);
+
+  if (readOnly || !onRename) {
+    return (
+      <div className="flex items-center gap-1.5">
+        <Badge className="rounded-full bg-muted text-xs font-medium text-foreground">{name}</Badge>
+        {isFetching && <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />}
+      </div>
+    );
+  }
+
+  const submit = () => {
+    const trimmed = value.trim();
+    if (trimmed && trimmed != name) onRename(trimmed);
+    else setValue(name);
+  };
+
+  return (
+    <div className="relative w-[100px] shrink-0">
+      <Input
+        ref={inputRef}
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => {
+          setIsFocused(false);
+          submit();
+        }}
+        onClick={(event) => event.stopPropagation()}
+        onCompositionStart={() => (isComposing.current = true)}
+        onCompositionEnd={() => (isComposing.current = false)}
+        onKeyDown={(event) => {
+          if (event.key == "Escape") {
+            setValue(name);
+            inputRef.current?.blur();
+            return;
+          }
+          if (event.key != "Enter") return;
+          if (isComposing.current || event.nativeEvent.isComposing) return;
+          inputRef.current?.blur();
+        }}
+        className="h-6 rounded-full border-transparent bg-muted px-1 py-0 text-center text-xs font-medium"
+      />
+      <button
+        type="button"
+        tabIndex={-1}
+        disabled={isFetching}
+        aria-label={isFocused ? "이름 수정 완료" : "이름 수정"}
+        className="absolute right-0.5 top-0.5 flex size-5 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground disabled:pointer-events-none"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (isFocused) inputRef.current?.blur();
+          else inputRef.current?.focus();
+        }}
+      >
+        {isFetching ? (
+          <Loader2 className="size-3 animate-spin" />
+        ) : isFocused ? (
+          <Check className="size-3" />
+        ) : (
+          <Pencil className="size-3" />
+        )}
+      </button>
+    </div>
   );
 }
 
@@ -206,6 +292,7 @@ function CharacterFieldContent({
   onDuplicate,
   onMoveUp,
   onMoveDown,
+  onRename,
 }: {
   bossPlan: BossPlan;
   radio?: React.ReactNode;
@@ -215,6 +302,7 @@ function CharacterFieldContent({
   onDuplicate?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
+  onRename?: (name: string) => void;
 }) {
   const { data, isFetching } = useCharacterBasic(bossPlan.name);
   const [imageFailed, setImageFailed] = useState(false);
@@ -253,12 +341,12 @@ function CharacterFieldContent({
           )}
         </div>
 
-        <div className="flex items-center gap-1.5">
-          <Badge className="rounded-full bg-muted text-xs font-medium text-foreground">
-            {bossPlan.name}
-          </Badge>
-          {isFetching && <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />}
-        </div>
+        <CharacterNameField
+          name={bossPlan.name}
+          readOnly={readOnly}
+          onRename={onRename}
+          isFetching={isFetching}
+        />
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5">
@@ -285,7 +373,7 @@ function CharacterFieldContent({
 
         <BossRows bossPlan={bossPlan} />
 
-        <div className="flex flex-wrap items-start gap-4 text-xs -mt-1 sm:mt-1">
+        <div className="flex flex-wrap items-start gap-4 text-xs mt-0 sm:mt-2">
           <div className="flex flex-col gap-1">
             <StatTooltip
               icon={crystalPurple}
@@ -360,6 +448,7 @@ export function CharacterList({
   const moveBossPlan = useBossStore((state) => state.moveBossPlan);
   const deleteBossPlan = useBossStore((state) => state.deleteBossPlan);
   const duplicateBossPlan = useBossStore((state) => state.duplicateBossPlan);
+  const renameBossPlan = useBossStore((state) => state.renameBossPlan);
 
   if (!bossPlans.length) return null;
 
@@ -393,6 +482,7 @@ export function CharacterList({
                     }}
                   />
                 }
+                onRename={(name) => renameBossPlan(i, name)}
                 onDelete={() => {
                   deleteBossPlan(i);
                   if (selected == i) setSelected(-1);

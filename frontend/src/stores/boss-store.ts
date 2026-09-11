@@ -8,6 +8,7 @@ interface BossStore {
   bossPlans: BossPlan[];
   setBossPlans: (plans: BossPlan[]) => void;
   addBossPlan: (name: string) => void;
+  renameBossPlan: (index: number, name: string) => void;
   duplicateBossPlan: (index: number) => void;
   moveBossPlan: (from: number, to: number) => void;
   deleteBossPlan: (index: number) => void;
@@ -35,6 +36,17 @@ export const useBossStore = create<BossStore>()(
 
           return {
             bossPlans: [...state.bossPlans, { name, order: "", boss: [] }],
+          };
+        }),
+
+      renameBossPlan: (index, name) =>
+        set((state) => {
+          if (!name.trim()) return state;
+
+          return {
+            bossPlans: state.bossPlans.map((plan, i) =>
+              i == index ? { ...plan, name: name.trim() } : plan
+            ),
           };
         }),
 
