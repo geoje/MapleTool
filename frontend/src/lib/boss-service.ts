@@ -1,5 +1,13 @@
-import { BOSS, BOSS_CODE, BossDifficulty, BossType, DIFFICULTY_CODE, MAX_BOSS_SELECTABLE } from "@/constants/boss";
-import type { BossPlan } from "@/types";
+import {
+  BOSS,
+  BOSS_CODE,
+  BossDifficulty,
+  BossType,
+  DIFFICULTY_CODE,
+  MAX_BOSS_SELECTABLE,
+  NAME_TO_BOSS_TYPE,
+} from "@/constants/boss";
+import type { BossContent, BossPlan, BossPlanItem } from "@/types";
 
 const DIFFICULTY_ORDER = Object.keys(BossDifficulty) as BossDifficulty[];
 
@@ -152,6 +160,20 @@ function convertPlanToCode(bossPlan: BossPlan) {
   return bossPlan.boss
     .map((b) => `${BOSS_CODE[b.type]}-${DIFFICULTY_CODE[b.difficulty]}-${b.members}`)
     .join(".");
+}
+
+// Maps the boss contents registered in the character's in-game scheduler to selectable boss items.
+export function resolveScheduledBoss(bossContents: BossContent[]): BossPlanItem[] {
+  return bossContents
+    .filter((content) => content.registration_flag == "true")
+    .map((content): BossPlanItem | undefined => {
+      const type = NAME_TO_BOSS_TYPE[content.content_name];
+      const difficulty = content.difficulty.toUpperCase() as BossDifficulty;
+      if (!type || !(difficulty in BossDifficulty)) return;
+
+      return { type, difficulty, members: 1, complete_flag: content.complete_flag == "true" };
+    })
+    .filter((item): item is BossPlanItem => item != undefined);
 }
 
 export function parsePlansFromParams(searchParams: URLSearchParams) {

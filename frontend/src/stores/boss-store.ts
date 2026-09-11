@@ -18,7 +18,8 @@ interface BossStore {
     index: number,
     type: BossType,
     difficulty?: BossDifficulty,
-    members?: number
+    members?: number,
+    complete_flag?: boolean
   ) => void;
   removeBossItem: (index: number, type: BossType) => void;
 }
@@ -92,7 +93,7 @@ export const useBossStore = create<BossStore>()(
           ),
         })),
 
-      putBossItem: (index, type, difficulty, members) =>
+      putBossItem: (index, type, difficulty, members, complete_flag) =>
         set((state) => {
           const plan = state.bossPlans[index];
           if (!plan) return state;
@@ -105,6 +106,7 @@ export const useBossStore = create<BossStore>()(
                     ...item,
                     difficulty: difficulty ?? item.difficulty,
                     members: members ?? item.members,
+                    complete_flag: complete_flag ?? item.complete_flag,
                   }
                 : item
             );
@@ -119,7 +121,7 @@ export const useBossStore = create<BossStore>()(
           if (!difficulty) return state;
 
           const types = Object.values(BossType);
-          const boss = [...plan.boss, { type, difficulty, members: members ?? 1 }].sort(
+          const boss = [...plan.boss, { type, difficulty, members: members ?? 1, complete_flag }].sort(
             (a, b) => types.indexOf(a.type) - types.indexOf(b.type)
           );
 

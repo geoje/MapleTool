@@ -1,5 +1,6 @@
 package kr.ygh.maple.common.feign;
 
+import kr.ygh.maple.boss.dto.CharacterSchedule;
 import kr.ygh.maple.character.dto.basic.Basic;
 import kr.ygh.maple.character.dto.itemEquipment.ItemEquipment;
 import kr.ygh.maple.character.dto.ocid.Ocid;
@@ -25,4 +26,7 @@ public interface OpenApiClient {
 
     @GetMapping("/user/union-artifact")
     Artifact getUnionArtifact(@RequestParam("ocid") String ocid);
+
+    @GetMapping("/scheduler/character-state")
+    CharacterSchedule getSchedulerCharacterState(@RequestParam("ocid") String ocid);
 }

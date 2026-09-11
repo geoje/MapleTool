@@ -377,6 +377,10 @@ export const BOSS: Record<BossType, Boss> = {
   },
 };
 
+export const NAME_TO_BOSS_TYPE: Partial<Record<string, BossType>> = Object.fromEntries(
+  Object.entries(BOSS).map(([type, boss]) => [boss.name, type as BossType])
+);
+
 const BOSS_TYPE_ORDER = Object.keys(BOSS) as BossType[];
 const FIRST_HALF_SPLIT_INDEX = BOSS_TYPE_ORDER.indexOf(BossType.DARKNELL);
 
