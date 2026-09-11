@@ -64,6 +64,46 @@ export const BossDifficulty = {
 } as const;
 export type BossDifficulty = (typeof BossDifficulty)[keyof typeof BossDifficulty];
 
+// 공유 링크에 쓰이는 난이도 코드. 순서/인덱스가 아니라 고정 알파벳이라 난이도가 추가돼도 안 꼬임.
+export const DIFFICULTY_CODE: Record<BossDifficulty, string> = {
+  EASY: "e",
+  NORMAL: "n",
+  HARD: "h",
+  CHAOS: "c",
+  EXTREME: "ex",
+};
+
+// 공유 링크에 쓰이는 보스 코드. 보스 스펠링에서 겹치지 않을 때까지 최소 글자만 뽑은 고정 값이라
+// 목록 중간에 새 보스가 추가돼도 기존 링크가 깨지지 않는다. 새 보스를 추가할 때는 기존 코드와
+// 겹치지 않는 코드를 새로 만들어서 여기에 추가만 하면 됨 (기존 값은 절대 바꾸지 말 것).
+export const BOSS_CODE: Record<BossType, string> = {
+  ZZAKUM: "z",
+  MAGNUS: "m",
+  PAPULATUS: "pa",
+  PIERRE: "pi",
+  VON_BON: "vo",
+  CRIMSON_QUEEN: "cr",
+  VELLUM: "vel",
+  LOTUS: "lo",
+  DAMIEN: "da",
+  GUARDIAN_ANGEL_SLIME: "gu",
+  LUCID: "lu",
+  WILL: "w",
+  GLOOM: "gl",
+  VERUS_HILLA: "ver",
+  DARKNELL: "dar",
+  CHOSEN_SEREN: "ch",
+  KALOS_THE_GUARDIAN: "kalo",
+  THE_FIRST_ADVERSARY: "f",
+  KALING: "kali",
+  BELLONA: "be",
+  RADIANT_MALEFIC_STAR: "r",
+  LIMBO: "li",
+  BALDRIX: "ba",
+  JUPITER: "j",
+  BLACK_MAGE: "bl",
+};
+
 export const MAX_BOSS_SELECTABLE = 12;
 
 interface ColorSet {

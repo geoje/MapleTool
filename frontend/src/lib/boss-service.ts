@@ -1,10 +1,14 @@
-import { BOSS, BossDifficulty, BossType } from "@/constants/boss";
+import { BOSS, BOSS_CODE, BossDifficulty, BossType, DIFFICULTY_CODE } from "@/constants/boss";
 import type { BossPlan } from "@/types";
 
-const FORMATION62 =
-  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
 const DIFFICULTY_ORDER = Object.keys(BossDifficulty) as BossDifficulty[];
+
+const CODE_TO_BOSS_TYPE: Record<string, BossType> = Object.fromEntries(
+  Object.entries(BOSS_CODE).map(([type, code]) => [code, type as BossType])
+);
+const CODE_TO_DIFFICULTY: Record<string, BossDifficulty> = Object.fromEntries(
+  Object.entries(DIFFICULTY_CODE).map(([difficulty, code]) => [code, difficulty as BossDifficulty])
+);
 
 export function getPrice(bossType: BossType, difficulty: BossDifficulty) {
   return BOSS[bossType].prices[difficulty] ?? 0;
@@ -98,7 +102,7 @@ export function getMaxMembers(bossType: BossType, difficulty?: BossDifficulty) {
 export function convertPlansToParams(bossPlans: BossPlan[]) {
   const params: Record<string, string> = {};
 
-  for (const bossPlan of bossPlans) params[bossPlan.name] = convertPlanToBits(bossPlan);
+  for (const bossPlan of bossPlans) params[bossPlan.name] = convertPlanToCode(bossPlan);
 
   const originPath =
     window.location.origin + window.location.pathname.replace(/\/$/, "");
@@ -107,36 +111,12 @@ export function convertPlansToParams(bossPlans: BossPlan[]) {
   return originPath + "?" + search;
 }
 
-// 000     000        00000
-// members difficulty type
-function convertPlanToBits(bossPlan: BossPlan) {
-  const BOSS_TYPE_KEYS = Object.keys(BossType);
-  const BOSS_DIFFICULTY_KEYS = Object.keys(BossDifficulty);
-
-  return String(
-    bossPlan.boss
-      .map((b) => {
-        const typeIndex = BOSS_TYPE_KEYS.indexOf(b.type);
-        const difficultyIndex = BOSS_DIFFICULTY_KEYS.indexOf(b.difficulty);
-        const num = typeIndex | (difficultyIndex << 5) | (b.members << 8);
-
-        return formatNumberTo62(num);
-      })
-      .join(".")
-  );
-}
-
-function formatNumberTo62(num: number) {
-  let result = "";
-
-  if (!num) return FORMATION62[0];
-
-  while (num) {
-    result = FORMATION62[num % FORMATION62.length] + result;
-    num = Math.floor(num / FORMATION62.length);
-  }
-
-  return result;
+// bossCode-difficultyCode-members(.bossCode-difficultyCode-members)*
+// 예: z-e-3.m-h-2  ->  자쿰 이지 3인, 매그너스 하드 2인
+function convertPlanToCode(bossPlan: BossPlan) {
+  return bossPlan.boss
+    .map((b) => `${BOSS_CODE[b.type]}-${DIFFICULTY_CODE[b.difficulty]}-${b.members}`)
+    .join(".");
 }
 
 export function parsePlansFromParams(searchParams: URLSearchParams) {
@@ -151,13 +131,11 @@ function parsePlanFromParam(key: string, value: string): BossPlan {
   const boss = value
     .split(".")
     .map((formatted) => {
-      const num = parseNumberFrom62(formatted);
-      const typeIndex = num & 31;
-      const difficultyIndex = (num >> 5) & 7;
-      const members = (num >> 8) & 7;
+      const [bossCode, difficultyCode, membersRaw] = formatted.split("-");
 
-      const type = Object.keys(BossType)[typeIndex] as BossType;
-      const difficulty = Object.keys(BossDifficulty)[difficultyIndex] as BossDifficulty;
+      const type = CODE_TO_BOSS_TYPE[bossCode];
+      const difficulty = CODE_TO_DIFFICULTY[difficultyCode];
+      const members = Number(membersRaw);
 
       if (!type || !difficulty || !members) return;
 
@@ -166,16 +144,4 @@ function parsePlanFromParam(key: string, value: string): BossPlan {
     .filter((b) => b != undefined);
 
   return { name: key, order: "", boss };
-}
-
-function parseNumberFrom62(formatted: string) {
-  let result = 0;
-
-  for (let i = 0; i < formatted.length; i++) {
-    const char = formatted[i];
-    const index = FORMATION62.indexOf(char);
-    result = result * FORMATION62.length + (index == -1 ? 0 : index);
-  }
-
-  return result;
 }
