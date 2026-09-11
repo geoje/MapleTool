@@ -145,7 +145,7 @@ export function BossTable({ selected }: { selected: number }) {
   if (!bossPlan) return null;
 
   return (
-    <div className="grid grid-cols-[max-content_1fr_max-content_max-content]">
+    <div className="grid select-none grid-cols-[max-content_1fr_max-content_max-content]">
       <HeadCell>보스</HeadCell>
       <HeadCell>난이도</HeadCell>
       <HeadCell className="text-center">파티원</HeadCell>

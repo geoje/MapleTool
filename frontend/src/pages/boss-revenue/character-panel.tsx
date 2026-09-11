@@ -539,7 +539,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
       <Separator />
 
       <div className="w-full overflow-x-auto">
-        <div className="grid grid-cols-[max-content_1fr_repeat(9,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
+        <div className="grid select-none grid-cols-[max-content_1fr_repeat(9,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
           <div
             className="w-px self-stretch bg-border"
             style={{ gridColumn: 3, gridRow: `1 / ${lastRowEnd}` }}
