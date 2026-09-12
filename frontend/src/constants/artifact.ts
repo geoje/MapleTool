@@ -71,16 +71,16 @@ export const CRYSTALS_BY_LEVEL: {
   [],
   [
     { level: 4, effects: [[1, 2, 3]] }, // 14, 15
-    { level: 3, effects: [[1, 2, 3]] },
-    { level: 3, effects: [[1, 2, 3]] },
     { level: 4, effects: [[4, 5, 6]] },
+    { level: 3, effects: [[1, 2, 3]] },
+    { level: 3, effects: [[1, 2, 3]] },
   ],
   [],
   [
-    { level: 4, effects: [[1, 2, 3]] }, // 16, 17, 18
+    { level: 5, effects: [[4, 5, 6]] }, // 16, 17, 18
+    { level: 4, effects: [[1, 2, 3]] },
     { level: 3, effects: [[1, 2, 3]] },
     { level: 3, effects: [[1, 2, 3]] },
-    { level: 5, effects: [[4, 5, 6]] },
   ],
   [],
   [],
