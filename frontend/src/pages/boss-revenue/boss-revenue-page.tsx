@@ -44,51 +44,51 @@ export function BossRevenuePage() {
 
   return (
     <div className="flex flex-wrap items-start gap-4">
-      <div className="flex w-full flex-col gap-4 md:w-auto">
-        <Card className="w-full md:w-auto">
-          <CardHeader>
-            <div className="flex flex-1 items-center gap-3">
-              <CardTitle className={cn(SECTION_TITLE, "shrink-0")}>캐릭터</CardTitle>
-              <NameInput setSelected={setSelected} />
-            </div>
-            <CardAction className="flex items-center gap-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    aria-label="compare"
-                    variant={showComparison ? "secondary" : "ghost"}
-                    size="icon"
-                    className={cn("size-7", !showComparison && "text-muted-foreground hover:text-foreground")}
-                    onClick={() => setShowComparison((prev) => !prev)}
-                  >
-                    <Scale className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {PRICE_CHANGE_DATE.getMonth() + 1}월 {PRICE_CHANGE_DATE.getDate()}일 수익 변화 표시
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    aria-label="share"
-                    variant="ghost"
-                    size="icon"
-                    className="size-7 text-muted-foreground hover:text-foreground"
-                    onClick={handleShare}
-                  >
-                    <Share2 className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>공유</TooltipContent>
-              </Tooltip>
-            </CardAction>
-          </CardHeader>
-          <CardContent className="flex w-full flex-col gap-3 md:w-auto md:min-w-80">
-            <CharacterList selected={selected} setSelected={setSelected} showComparison={showComparison} />
-          </CardContent>
-        </Card>
+      <Card className="w-full md:w-auto">
+        <CardHeader>
+          <div className="flex flex-1 items-center gap-3">
+            <CardTitle className={cn(SECTION_TITLE, "shrink-0")}>캐릭터</CardTitle>
+            <NameInput setSelected={setSelected} />
+          </div>
+          <CardAction className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  aria-label="compare"
+                  variant={showComparison ? "secondary" : "ghost"}
+                  size="icon"
+                  className={cn("size-7", !showComparison && "text-muted-foreground hover:text-foreground")}
+                  onClick={() => setShowComparison((prev) => !prev)}
+                >
+                  <Scale className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {PRICE_CHANGE_DATE.getMonth() + 1}월 {PRICE_CHANGE_DATE.getDate()}일 수익 변화 표시
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  aria-label="share"
+                  variant="ghost"
+                  size="icon"
+                  className="size-7 text-muted-foreground hover:text-foreground"
+                  onClick={handleShare}
+                >
+                  <Share2 className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>공유</TooltipContent>
+            </Tooltip>
+          </CardAction>
+        </CardHeader>
+        <CardContent className="flex w-full flex-col gap-3 md:w-auto md:min-w-80">
+          <CharacterList selected={selected} setSelected={setSelected} showComparison={showComparison} />
+        </CardContent>
+      </Card>
 
+      <div className="flex w-full flex-col gap-4 md:w-auto">
         {bossPlans.length > 0 && (
           <Card className="w-full md:w-auto">
             <CardHeader>
@@ -99,21 +99,21 @@ export function BossRevenuePage() {
             </CardContent>
           </Card>
         )}
-      </div>
 
-      {selected >= 0 && (
-        <Card className="w-full md:w-auto">
-          <CardHeader>
-            <CardTitle className={SECTION_TITLE}>보스</CardTitle>
-            <CardAction>
-              <BossTableActions selected={selected} />
-            </CardAction>
-          </CardHeader>
-          <CardContent className="w-full">
-            <BossTable selected={selected} />
-          </CardContent>
-        </Card>
-      )}
+        {selected >= 0 && (
+          <Card className="w-full md:w-auto">
+            <CardHeader>
+              <CardTitle className={SECTION_TITLE}>보스</CardTitle>
+              <CardAction>
+                <BossTableActions selected={selected} />
+              </CardAction>
+            </CardHeader>
+            <CardContent className="w-full">
+              <BossTable selected={selected} />
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
       <ShareDialog />
     </div>

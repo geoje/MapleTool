@@ -4,7 +4,7 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import crystalPurple from "@/assets/crystal/purple.png";
 import meso from "@/assets/enhance/meso.png";
-import artifactNavIcon from "@/assets/union-artifact/nav-icon.svg";
+import artifactNavIcon from "@/assets/union-artifact/point.png";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/theme-toggle";
