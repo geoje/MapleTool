@@ -67,7 +67,7 @@ export function UnionArtifactPage() {
       <div className="flex w-full flex-col gap-4 md:w-80">
         <Card>
           <CardHeader>
-            <CardTitle className={SECTION_TITLE}>아티팩트 레벨</CardTitle>
+            <CardTitle className={SECTION_TITLE}>① 아티팩트 레벨</CardTitle>
             <CardAction>
               {isFetchingBasic && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
             </CardAction>
@@ -91,7 +91,7 @@ export function UnionArtifactPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className={SECTION_TITLE}>효과 레벨</CardTitle>
+            <CardTitle className={SECTION_TITLE}>② 효과 레벨</CardTitle>
             <CardAction>
               {isFetchingArtifact && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
             </CardAction>
@@ -110,21 +110,17 @@ export function UnionArtifactPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className={SECTION_TITLE}>효과 선택</CardTitle>
+            <CardTitle className={SECTION_TITLE}>③ 효과</CardTitle>
           </CardHeader>
           <CardContent>
-            <SelectEffect
-              effectLevels={effectLevels}
-              effectNamesByLevel={effectNamesByLevel}
-              setEffectNamesByLevel={setEffectNamesByLevel}
-            />
+            <SelectEffect effectNamesByLevel={effectNamesByLevel} />
           </CardContent>
         </Card>
       </div>
 
       <Card className="w-full md:w-auto">
         <CardHeader>
-          <CardTitle className={SECTION_TITLE}>배치도</CardTitle>
+          <CardTitle className={SECTION_TITLE}>④ 배치도</CardTitle>
           <CardAction>
             <Badge variant="outline">남은 AP {remainPoint(artifactLevel)}</Badge>
           </CardAction>

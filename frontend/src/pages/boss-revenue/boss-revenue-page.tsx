@@ -47,7 +47,7 @@ export function BossRevenuePage() {
       <Card className="w-full md:w-auto">
         <CardHeader>
           <div className="flex flex-1 items-center gap-3">
-            <CardTitle className={cn(SECTION_TITLE, "shrink-0")}>캐릭터</CardTitle>
+            <CardTitle className={cn(SECTION_TITLE, "shrink-0")}>① 캐릭터</CardTitle>
             <NameInput setSelected={setSelected} />
           </div>
           <CardAction className="flex items-center gap-1">
@@ -92,7 +92,7 @@ export function BossRevenuePage() {
         {bossPlans.length > 0 && (
           <Card className="w-full md:w-auto">
             <CardHeader>
-              <CardTitle className={SECTION_TITLE}>통계</CardTitle>
+              <CardTitle className={SECTION_TITLE}>③ 통계</CardTitle>
             </CardHeader>
             <CardContent className="w-full">
               <SummaryTable showComparison={showComparison} />
@@ -103,7 +103,7 @@ export function BossRevenuePage() {
         {selected >= 0 && (
           <Card className="w-full md:w-auto">
             <CardHeader>
-              <CardTitle className={SECTION_TITLE}>보스</CardTitle>
+              <CardTitle className={SECTION_TITLE}>② 보스</CardTitle>
               <CardAction>
                 <BossTableActions selected={selected} />
               </CardAction>
