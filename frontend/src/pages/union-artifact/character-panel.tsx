@@ -18,6 +18,7 @@ export function NameInput({ isFetching }: { isFetching?: boolean }) {
     <div className="relative min-w-40 flex-1">
       <Input
         placeholder="캐릭터명을 입력하세요."
+        enterKeyHint="go"
         value={value}
         onChange={(event) => setValue(event.target.value)}
         onCompositionStart={() => (isComposing.current = true)}
