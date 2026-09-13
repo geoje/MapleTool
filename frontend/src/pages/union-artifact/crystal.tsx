@@ -39,8 +39,8 @@ export function Crystal({
           />
         ))}
       </div>
-      <div className="my-auto flex justify-center">
-        <img src={icon} alt="" />
+      <div className="my-auto flex h-32 w-32 items-center justify-center">
+        <img src={icon} alt="" className="h-full w-full object-contain" />
       </div>
       {effects.map((effect, i) => (
         <button
