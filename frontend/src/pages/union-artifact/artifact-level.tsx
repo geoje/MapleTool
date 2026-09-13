@@ -22,20 +22,30 @@ export function ArtifactLevel({
   }, [artifactLevel]);
 
   return (
-    <div className="flex max-w-48 items-center gap-1">
+    <div className="flex items-center gap-1">
       <Button
         type="button"
         variant="outline"
-        size="icon-sm"
+        size="sm"
+        aria-label="decrease by 10"
+        disabled={artifactLevel <= MIN_ARTIFACT_LEVEL}
+        onClick={() => onChange(clamp(artifactLevel - 10))}
+      >
+        -10
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
         aria-label="decrease"
         disabled={artifactLevel <= MIN_ARTIFACT_LEVEL}
         onClick={() => onChange(clamp(artifactLevel - 1))}
       >
-        -
+        -1
       </Button>
       <Input
         inputMode="numeric"
-        className="text-center"
+        className="min-w-0 flex-1 text-center"
         value={text}
         onFocus={() => {
           isFocused.current = true;
@@ -53,12 +63,22 @@ export function ArtifactLevel({
       <Button
         type="button"
         variant="outline"
-        size="icon-sm"
+        size="sm"
         aria-label="increase"
         disabled={artifactLevel >= MAX_ARTIFACT_LEVEL}
         onClick={() => onChange(clamp(artifactLevel + 1))}
       >
-        +
+        +1
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        aria-label="increase by 10"
+        disabled={artifactLevel >= MAX_ARTIFACT_LEVEL}
+        onClick={() => onChange(clamp(artifactLevel + 10))}
+      >
+        +10
       </Button>
     </div>
   );

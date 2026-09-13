@@ -13,6 +13,7 @@ export function ResultGrid({
   effectNames: string[];
 }) {
   const [hoverEffect, setHoverEffect] = useState("");
+  const [pinnedEffect, setPinnedEffect] = useState("");
 
   const levels = crystals(artifactLevel).map((crystal) => crystal.level);
   const effectNamesByButton = crystalEffectIndexes(artifactLevel, effectIndex).map((indexes) =>
@@ -32,6 +33,8 @@ export function ResultGrid({
           icon={getArtifactIcon(i, level)}
           hoverEffect={hoverEffect}
           setHoverEffect={setHoverEffect}
+          pinnedEffect={pinnedEffect}
+          setPinnedEffect={setPinnedEffect}
         />
       ))}
     </div>

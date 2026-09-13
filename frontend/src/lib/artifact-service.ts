@@ -106,6 +106,55 @@ export function remapEffectNamesByLevel(
   return result;
 }
 
+export function nextEffectLevel(effectNamesByLevel: Record<number, Set<string>>, effectLevels: number[]): number | undefined {
+  const effectLevelsCount = groupEffectLevelsCount(effectLevels);
+
+  for (const level of [...new Set(effectLevels)]) {
+    const count = effectLevelsCount[level] ?? 0;
+    const assignedCount = effectNamesByLevel[level]?.size ?? 0;
+    if (assignedCount >= count) continue;
+
+    return level;
+  }
+
+  return undefined;
+}
+
+export function isExcessEffectLevel(effectLevels: number[], entryLevel: number, names: Set<string>, full: string): boolean {
+  const exactCount = effectLevels.filter((level) => level === entryLevel).length;
+  const index = [...names].indexOf(full);
+  return index >= exactCount;
+}
+
+export function toggleEffectName(
+  effectNamesByLevel: Record<number, Set<string>>,
+  effectLevels: number[],
+  full: string
+): Record<number, Set<string>> {
+  const result: Record<number, Set<string>> = {};
+  let hadName = false;
+
+  for (const level of Object.keys(effectNamesByLevel).map(Number)) {
+    const names = new Set(effectNamesByLevel[level]);
+    if (names.delete(full)) hadName = true;
+    if (names.size) result[level] = names;
+  }
+
+  if (hadName) return result;
+
+  const effectLevelsCount = groupEffectLevelsCount(effectLevels);
+  for (const level of [...new Set(effectLevels)]) {
+    const count = effectLevelsCount[level] ?? 0;
+    const assignedCount = result[level]?.size ?? 0;
+    if (assignedCount >= count) continue;
+
+    result[level] = new Set([...(result[level] ?? []), full]);
+    break;
+  }
+
+  return result;
+}
+
 export function flatEffectNamesByLevel(
   effectLevels: number[],
   effectNamesByLevel: Record<number, Set<string>>

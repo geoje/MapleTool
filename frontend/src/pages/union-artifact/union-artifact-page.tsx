@@ -1,4 +1,3 @@
-import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +5,13 @@ import { Separator } from "@/components/ui/separator";
 import { EFFECT_INFOS } from "@/constants/artifact";
 import { useUnionArtifact } from "@/hooks/use-union-artifact";
 import { useUnionBasic } from "@/hooks/use-union-basic";
-import { calcEffectLevelGrid, flatEffectNamesByLevel, remainPoint, remapEffectNamesByLevel } from "@/lib/artifact-service";
+import {
+  calcEffectLevelGrid,
+  flatEffectNamesByLevel,
+  remainPoint,
+  remapEffectNamesByLevel,
+  toggleEffectName,
+} from "@/lib/artifact-service";
 import { useArtifactStore } from "@/stores/artifact-store";
 import { ArtifactLevel } from "@/pages/union-artifact/artifact-level";
 import { NameInput } from "@/pages/union-artifact/character-panel";
@@ -68,12 +73,9 @@ export function UnionArtifactPage() {
         <Card>
           <CardHeader>
             <CardTitle className={SECTION_TITLE}>① 아티팩트 레벨</CardTitle>
-            <CardAction>
-              {isFetchingBasic && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
-            </CardAction>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
-            <NameInput />
+            <NameInput isFetching={isFetchingBasic || isFetchingArtifact} />
             <div className="relative h-5 text-xs">
               <Separator className="absolute inset-0 top-1/2" />
               <span className="relative mx-auto block w-fit bg-card px-2 text-muted-foreground">또는</span>
@@ -92,9 +94,6 @@ export function UnionArtifactPage() {
         <Card>
           <CardHeader>
             <CardTitle className={SECTION_TITLE}>② 효과 레벨</CardTitle>
-            <CardAction>
-              {isFetchingArtifact && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
-            </CardAction>
           </CardHeader>
           <CardContent>
             <EffectLevel
@@ -113,7 +112,11 @@ export function UnionArtifactPage() {
             <CardTitle className={SECTION_TITLE}>③ 효과</CardTitle>
           </CardHeader>
           <CardContent>
-            <SelectEffect effectNamesByLevel={effectNamesByLevel} />
+            <SelectEffect
+              effectNamesByLevel={effectNamesByLevel}
+              effectLevels={effectLevels}
+              onChange={(full) => setEffectNamesByLevel((prev) => toggleEffectName(prev, effectLevels, full))}
+            />
           </CardContent>
         </Card>
       </div>

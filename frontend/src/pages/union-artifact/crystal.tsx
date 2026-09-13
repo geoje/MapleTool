@@ -8,12 +8,16 @@ export function Crystal({
   icon,
   hoverEffect,
   setHoverEffect,
+  pinnedEffect,
+  setPinnedEffect,
 }: {
   level: number;
   effects: string[];
   icon: string;
   hoverEffect: string;
   setHoverEffect: (value: string) => void;
+  pinnedEffect: string;
+  setPinnedEffect: (value: string) => void;
 }) {
   const isMaxLevel = level == MAX_CRYSTAL_LEVEL;
 
@@ -47,12 +51,13 @@ export function Crystal({
             isMaxLevel
               ? "bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/60 dark:hover:bg-purple-800"
               : "bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/60 dark:hover:bg-blue-800",
-            hoverEffect &&
-              hoverEffect == effect &&
+            effect &&
+              (hoverEffect == effect || pinnedEffect == effect) &&
               (isMaxLevel ? "bg-purple-200 dark:bg-purple-800" : "bg-blue-200 dark:bg-blue-800")
           )}
           onMouseEnter={() => setHoverEffect(effect)}
           onMouseLeave={() => setHoverEffect("")}
+          onClick={() => effect && setPinnedEffect(pinnedEffect == effect ? "" : effect)}
         >
           {effect}
         </button>

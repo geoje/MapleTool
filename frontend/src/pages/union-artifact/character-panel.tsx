@@ -1,10 +1,10 @@
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useArtifactStore } from "@/stores/artifact-store";
 
-export function NameInput() {
+export function NameInput({ isFetching }: { isFetching?: boolean }) {
   const name = useArtifactStore((state) => state.name);
   const setName = useArtifactStore((state) => state.setName);
   const [value, setValue] = useState(name);
@@ -35,10 +35,11 @@ export function NameInput() {
         size="icon"
         variant="ghost"
         aria-label="search"
+        disabled={isFetching}
         className="absolute top-0.5 right-0.5 size-7 rounded-full text-muted-foreground hover:bg-transparent hover:text-foreground"
         onClick={handleSubmit}
       >
-        <Search className="size-4" />
+        {isFetching ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
       </Button>
     </div>
   );
