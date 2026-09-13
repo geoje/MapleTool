@@ -29,6 +29,7 @@ export function UnionArtifactPage() {
   const [artifactLevel, setArtifactLevel] = useState(1);
   const [effectIndex, setEffectIndex] = useState(0);
   const [effectNamesByLevel, setEffectNamesByLevel] = useState<Record<number, Set<string>>>({});
+  const [inGameEffectIndex, setInGameEffectIndex] = useState<number>();
 
   const availableEffectLevelGrid = calcEffectLevelGrid(artifactLevel);
 
@@ -36,16 +37,19 @@ export function UnionArtifactPage() {
     setArtifactLevel(Math.max(dataBasic?.union_artifact_level ?? 1, 1));
     setEffectIndex(0);
     setEffectNamesByLevel({});
+    setInGameEffectIndex(undefined);
   }, [dataBasic]);
 
   useEffect(() => {
-    if (!dataArtifact) return;
+    if (!dataArtifact || !dataBasic) return;
+
+    const matchingEffectLevelGrid = calcEffectLevelGrid(Math.max(dataBasic.union_artifact_level ?? 1, 1));
 
     const dataArtifactEffects = dataArtifact.union_artifact_effect
       .map((effect) => effect.level)
       .sort((a, b) => b - a);
 
-    const levelsIndex = availableEffectLevelGrid.findIndex(
+    const levelsIndex = matchingEffectLevelGrid.findIndex(
       (availableEffectLevels) =>
         availableEffectLevels.length == dataArtifactEffects.length &&
         availableEffectLevels.every((level, i) => level == dataArtifactEffects[i])
@@ -62,8 +66,8 @@ export function UnionArtifactPage() {
     }
     setEffectIndex(levelsIndex);
     setEffectNamesByLevel(namesByLevel);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataArtifact]);
+    setInGameEffectIndex(levelsIndex);
+  }, [dataArtifact, dataBasic]);
 
   const effectLevels = availableEffectLevelGrid[effectIndex] ?? [];
 
@@ -99,6 +103,7 @@ export function UnionArtifactPage() {
             <EffectLevel
               artifactLevel={artifactLevel}
               effectIndex={effectIndex}
+              inGameEffectIndex={inGameEffectIndex}
               onChange={(index) => {
                 setEffectIndex(index);
                 setEffectNamesByLevel((prev) => remapEffectNamesByLevel(prev, availableEffectLevelGrid[index] ?? []));

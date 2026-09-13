@@ -11,7 +11,6 @@ export function NameInput({ isFetching }: { isFetching?: boolean }) {
   const isComposing = useRef(false);
 
   const handleSubmit = () => {
-    if (!value.trim()) return;
     setName(value);
   };
 
