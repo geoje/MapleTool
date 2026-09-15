@@ -84,7 +84,7 @@ export function AppLayout() {
         <div className="flex-1" />
         <ThemeToggle />
       </header>
-      <main className="flex flex-1 flex-col gap-4 p-4">
+      <main className="flex flex-1 flex-col gap-4 px-4 pt-2 pb-4">
         <Outlet />
       </main>
     </div>

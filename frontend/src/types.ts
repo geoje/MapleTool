@@ -58,3 +58,17 @@ export interface UnionArtifact {
   union_artifact_crystal: ArtifactCrystal[];
   union_artifact_remain_ap: number;
 }
+
+export interface ItemEquipmentDetail {
+  item_equipment_slot: string;
+  item_name: string;
+  item_icon: string;
+  potential_option_grade: string;
+  additional_potential_option_grade: string;
+}
+
+export interface ItemEquipment {
+  item_equipment_preset_1: ItemEquipmentDetail[];
+  item_equipment_preset_2: ItemEquipmentDetail[];
+  item_equipment_preset_3: ItemEquipmentDetail[];
+}
