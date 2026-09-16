@@ -65,6 +65,9 @@ export interface ItemEquipmentDetail {
   item_icon: string;
   potential_option_grade: string;
   additional_potential_option_grade: string;
+  item_base_option: {
+    base_equipment_level: number;
+  };
 }
 
 export interface ItemEquipment {

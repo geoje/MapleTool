@@ -29,6 +29,15 @@ export const SET_INFOS: Record<SetType, { name: string; icon: string }> = {
   [SetType.RADIANCE]: { name: "광휘의 보스", icon: radiance },
 };
 
+// Each pair's armor set and accessory set never use the same equipment slot,
+// so their items can be shown together on one grid.
+export const SET_COMBOS: [SetType, SetType][] = [
+  [SetType.ROOTABIS, SetType.BOSS],
+  [SetType.ABSOLABS, SetType.DAWN],
+  [SetType.ARCANEUMBRA, SetType.PITCHED],
+  [SetType.ETERNAL, SetType.RADIANCE],
+];
+
 export enum PotentialGrade {
   RARE = "RARE",
   EPIC = "EPIC",

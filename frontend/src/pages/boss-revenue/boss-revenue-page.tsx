@@ -1,8 +1,9 @@
 import { Scale, Share2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { SectionTitle } from "@/components/section-title";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { PRICE_CHANGE_DATE } from "@/constants/boss";
 import { convertPlansToParams } from "@/lib/boss-service";
@@ -11,8 +12,6 @@ import { useBossStore } from "@/stores/boss-store";
 import { BossTable, BossTableActions } from "@/pages/boss-revenue/boss-table";
 import { CharacterList, NameInput, SummaryTable } from "@/pages/boss-revenue/character-panel";
 import { ShareDialog } from "@/pages/boss-revenue/share-dialog";
-
-const SECTION_TITLE = "text-xs font-medium uppercase tracking-wide text-muted-foreground";
 
 const IS_BEFORE_PRICE_CHANGE = Date.now() < PRICE_CHANGE_DATE.getTime();
 
@@ -47,7 +46,9 @@ export function BossRevenuePage() {
       <Card className="w-full md:w-auto">
         <CardHeader>
           <div className="flex flex-1 items-center gap-3">
-            <CardTitle className={cn(SECTION_TITLE, "shrink-0")}>① 캐릭터</CardTitle>
+            <SectionTitle step={1} className="shrink-0">
+              캐릭터
+            </SectionTitle>
             <NameInput setSelected={setSelected} />
           </div>
           <CardAction className="flex items-center gap-1">
@@ -92,7 +93,7 @@ export function BossRevenuePage() {
         {bossPlans.length > 0 && (
           <Card className="w-full md:w-auto">
             <CardHeader>
-              <CardTitle className={SECTION_TITLE}>③ 통계</CardTitle>
+              <SectionTitle step={3}>통계</SectionTitle>
             </CardHeader>
             <CardContent className="w-full">
               <SummaryTable showComparison={showComparison} />
@@ -103,7 +104,7 @@ export function BossRevenuePage() {
         {selected >= 0 && (
           <Card className="w-full md:w-auto">
             <CardHeader>
-              <CardTitle className={SECTION_TITLE}>② 보스</CardTitle>
+              <SectionTitle step={2}>보스</SectionTitle>
               <CardAction>
                 <BossTableActions selected={selected} />
               </CardAction>

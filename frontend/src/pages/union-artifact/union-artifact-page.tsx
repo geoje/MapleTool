@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { SectionTitle } from "@/components/section-title";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { EFFECT_INFOS } from "@/constants/artifact";
 import { useUnionArtifact } from "@/hooks/use-union-artifact";
@@ -18,8 +19,6 @@ import { NameInput } from "@/pages/union-artifact/character-panel";
 import { EffectLevel } from "@/pages/union-artifact/effect-level";
 import { ResultGrid } from "@/pages/union-artifact/result-grid";
 import { SelectEffect } from "@/pages/union-artifact/select-effect";
-
-const SECTION_TITLE = "text-xs font-medium uppercase tracking-wide text-muted-foreground";
 
 export function UnionArtifactPage() {
   const name = useArtifactStore((state) => state.name);
@@ -76,7 +75,7 @@ export function UnionArtifactPage() {
       <div className="flex w-full flex-col gap-4 md:w-80">
         <Card>
           <CardHeader>
-            <CardTitle className={SECTION_TITLE}>① 아티팩트 레벨</CardTitle>
+            <SectionTitle step={1}>아티팩트 레벨</SectionTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <NameInput isFetching={isFetchingBasic || isFetchingArtifact} />
@@ -97,7 +96,7 @@ export function UnionArtifactPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className={SECTION_TITLE}>② 효과 레벨</CardTitle>
+            <SectionTitle step={2}>효과 레벨</SectionTitle>
           </CardHeader>
           <CardContent>
             <EffectLevel
@@ -114,7 +113,7 @@ export function UnionArtifactPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className={SECTION_TITLE}>③ 효과</CardTitle>
+            <SectionTitle step={3}>효과</SectionTitle>
           </CardHeader>
           <CardContent>
             <SelectEffect
@@ -128,7 +127,7 @@ export function UnionArtifactPage() {
 
       <Card className="w-full md:w-auto">
         <CardHeader>
-          <CardTitle className={SECTION_TITLE}>④ 배치도</CardTitle>
+          <SectionTitle step={4}>배치도</SectionTitle>
           <CardAction>
             <Badge variant="outline">남은 AP {remainPoint(artifactLevel)}</Badge>
           </CardAction>

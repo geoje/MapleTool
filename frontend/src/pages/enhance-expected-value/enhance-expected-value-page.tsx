@@ -1,9 +1,11 @@
 import { AlertTriangle, X } from "lucide-react";
 import { useState } from "react";
+import { SectionTitle } from "@/components/section-title";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SetType } from "@/constants/enhance";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { SET_COMBOS } from "@/constants/enhance";
+import { SET_ITEMS } from "@/constants/enhance-set-items";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
 import {
@@ -14,22 +16,28 @@ import {
 } from "@/pages/enhance-expected-value/equipment-panel";
 import { useEnhanceStore } from "@/stores/enhance-store";
 
-const SECTION_TITLE = "text-xs font-medium uppercase tracking-wide text-muted-foreground";
+type Selection = { type: "character"; preset: 1 | 2 | 3 } | { type: "set"; comboIndex: number };
 
 export function EnhanceExpectedValuePage() {
   const name = useEnhanceStore((state) => state.name);
   const { data: basic, isFetching: isFetchingBasic } = useCharacterBasic(name);
   const { data: equipment, isFetching: isFetchingEquipment } = useItemEquipment(name);
-  const [characterPreset, setCharacterPreset] = useState<1 | 2 | 3>(1);
-  const [defaultSet, setDefaultSet] = useState<SetType>();
+  const [selection, setSelection] = useState<Selection>({ type: "character", preset: 1 });
   const [showNotice, setShowNotice] = useState(true);
 
+  const characterItems =
+    selection.type != "character"
+      ? undefined
+      : selection.preset == 3
+        ? equipment?.item_equipment_preset_3
+        : selection.preset == 2
+          ? equipment?.item_equipment_preset_2
+          : equipment?.item_equipment_preset_1;
+
   const items =
-    characterPreset == 3
-      ? equipment?.item_equipment_preset_3
-      : characterPreset == 2
-        ? equipment?.item_equipment_preset_2
-        : equipment?.item_equipment_preset_1;
+    selection.type == "set"
+      ? SET_COMBOS[selection.comboIndex].flatMap((set) => SET_ITEMS[set])
+      : (characterItems ?? []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -55,20 +63,26 @@ export function EnhanceExpectedValuePage() {
       <div className="flex flex-wrap items-start gap-4">
         <Card className="w-full md:w-auto">
           <CardHeader>
-            <CardTitle className={SECTION_TITLE}>① 장비</CardTitle>
+            <div className="flex items-center justify-between gap-3">
+              <SectionTitle step={1}>장비</SectionTitle>
+              <PresetButtons
+                preset={selection.type == "set" ? selection.comboIndex : undefined}
+                onChange={(comboIndex) => setSelection({ type: "set", comboIndex })}
+              />
+            </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <div className="flex items-center gap-1">
               <NameInput isFetching={isFetchingBasic || isFetchingEquipment} />
-              <CharacterPresetButtons preset={characterPreset} onChange={setCharacterPreset} />
+              <CharacterPresetButtons
+                preset={selection.type == "character" ? selection.preset : undefined}
+                onChange={(preset) => setSelection({ type: "character", preset })}
+              />
             </div>
 
-            <PresetButtons preset={defaultSet} onChange={setDefaultSet} />
-
             <EquipmentGrid
-              defaultSet={defaultSet}
-              characterImage={basic?.character_image}
-              items={items ?? []}
+              characterImage={selection.type == "character" ? basic?.character_image : undefined}
+              items={items}
             />
           </CardContent>
         </Card>
