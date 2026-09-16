@@ -7,16 +7,18 @@ import pitched from "@/assets/enhance/set/pitched.webp";
 import radiance from "@/assets/enhance/set/radiance.webp";
 import rootabis from "@/assets/enhance/set/rootabis.webp";
 
-export enum SetType {
-  ROOTABIS = "ROOTABIS",
-  ABSOLABS = "ABSOLABS",
-  ARCANEUMBRA = "ARCANEUMBRA",
-  ETERNAL = "ETERNAL",
-  BOSS = "BOSS",
-  DAWN = "DAWN",
-  PITCHED = "PITCHED",
-  RADIANCE = "RADIANCE",
-}
+export const SetType = {
+  ROOTABIS: "ROOTABIS",
+  ABSOLABS: "ABSOLABS",
+  ARCANEUMBRA: "ARCANEUMBRA",
+  ETERNAL: "ETERNAL",
+  BOSS: "BOSS",
+  DAWN: "DAWN",
+  PITCHED: "PITCHED",
+  RADIANCE: "RADIANCE",
+} as const;
+
+export type SetType = (typeof SetType)[keyof typeof SetType];
 
 export const SET_INFOS: Record<SetType, { name: string; icon: string }> = {
   [SetType.ROOTABIS]: { name: "루타비스", icon: rootabis },
@@ -38,12 +40,14 @@ export const SET_COMBOS: [SetType, SetType][] = [
   [SetType.ETERNAL, SetType.RADIANCE],
 ];
 
-export enum PotentialGrade {
-  RARE = "RARE",
-  EPIC = "EPIC",
-  UNIQUE = "UNIQUE",
-  LEGENDARY = "LEGENDARY",
-}
+export const PotentialGrade = {
+  RARE: "RARE",
+  EPIC: "EPIC",
+  UNIQUE: "UNIQUE",
+  LEGENDARY: "LEGENDARY",
+} as const;
+
+export type PotentialGrade = (typeof PotentialGrade)[keyof typeof PotentialGrade];
 
 // Highest grade first: getMaxPotentialGrade walks this order to find the best match.
 export const POTENTIAL_GRADE_INFOS: Record<PotentialGrade, { name: string; borderColor: string }> = {
