@@ -1,29 +1,36 @@
 import { AlertTriangle, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SectionTitle } from "@/components/section-title";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { SET_COMBOS } from "@/constants/enhance";
+import { SET_COMBOS, SetType } from "@/constants/enhance";
 import { SET_ITEMS } from "@/constants/enhance-set-items";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
-import {
-  CharacterPresetButtons,
-  EquipmentGrid,
-  NameInput,
-  PresetButtons,
-} from "@/pages/enhance-expected-value/equipment-panel";
+import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-expected-value/equipment-panel";
 import { useEnhanceStore } from "@/stores/enhance-store";
 
 type Selection = { type: "character"; preset: 1 | 2 | 3 } | { type: "set"; comboIndex: number };
+
+const DEFAULT_COMBO_INDEX = SET_COMBOS.findIndex(
+  (combo) => combo.includes(SetType.ETERNAL) && combo.includes(SetType.RADIANCE)
+);
+
+function getDefaultSelection(characterAvailable: boolean): Selection {
+  return characterAvailable ? { type: "character", preset: 1 } : { type: "set", comboIndex: DEFAULT_COMBO_INDEX };
+}
 
 export function EnhanceExpectedValuePage() {
   const name = useEnhanceStore((state) => state.name);
   const { data: basic, isFetching: isFetchingBasic } = useCharacterBasic(name);
   const { data: equipment, isFetching: isFetchingEquipment } = useItemEquipment(name);
-  const [selection, setSelection] = useState<Selection>({ type: "character", preset: 1 });
+  const [selection, setSelection] = useState<Selection>(() => getDefaultSelection(!!equipment));
   const [showNotice, setShowNotice] = useState(true);
+
+  useEffect(() => {
+    setSelection(getDefaultSelection(!!equipment));
+  }, [equipment]);
 
   const characterItems =
     selection.type != "character"
@@ -65,20 +72,17 @@ export function EnhanceExpectedValuePage() {
           <CardHeader>
             <div className="flex items-center justify-between gap-3">
               <SectionTitle step={1}>장비</SectionTitle>
-              <PresetButtons
-                preset={selection.type == "set" ? selection.comboIndex : undefined}
-                onChange={(comboIndex) => setSelection({ type: "set", comboIndex })}
-              />
+              <NameInput isFetching={isFetchingBasic || isFetchingEquipment} />
             </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
-            <div className="flex items-center gap-1">
-              <NameInput isFetching={isFetchingBasic || isFetchingEquipment} />
-              <CharacterPresetButtons
-                preset={selection.type == "character" ? selection.preset : undefined}
-                onChange={(preset) => setSelection({ type: "character", preset })}
-              />
-            </div>
+            <PresetTabs
+              characterPreset={selection.type == "character" ? selection.preset : undefined}
+              comboIndex={selection.type == "set" ? selection.comboIndex : undefined}
+              characterDisabled={!equipment}
+              onSelectCharacterPreset={(preset) => setSelection({ type: "character", preset })}
+              onSelectCombo={(comboIndex) => setSelection({ type: "set", comboIndex })}
+            />
 
             <EquipmentGrid
               characterImage={selection.type == "character" ? basic?.character_image : undefined}

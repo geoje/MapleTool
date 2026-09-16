@@ -10,7 +10,7 @@ import { useEnhanceStore } from "@/stores/enhance-store";
 import type { ItemEquipmentDetail } from "@/types";
 
 const CELL = 40;
-const GRID_COLUMNS = { gridTemplateColumns: `repeat(7, minmax(${CELL}px, 1fr))` };
+const GRID_COLUMNS = { gridTemplateColumns: `repeat(7, ${CELL}px)` };
 
 export function NameInput({ isFetching }: { isFetching?: boolean }) {
   const name = useEnhanceStore((state) => state.name);
@@ -53,28 +53,58 @@ export function NameInput({ isFetching }: { isFetching?: boolean }) {
   );
 }
 
-export function CharacterPresetButtons({
-  preset,
-  onChange,
+export function PresetTabs({
+  characterPreset,
+  comboIndex,
+  characterDisabled,
+  onSelectCharacterPreset,
+  onSelectCombo,
 }: {
-  preset?: 1 | 2 | 3;
-  onChange: (preset: 1 | 2 | 3) => void;
+  characterPreset?: 1 | 2 | 3;
+  comboIndex?: number;
+  characterDisabled?: boolean;
+  onSelectCharacterPreset: (preset: 1 | 2 | 3) => void;
+  onSelectCombo: (comboIndex: number) => void;
 }) {
+  const value = characterPreset != null ? `char-${characterPreset}` : comboIndex != null ? `set-${comboIndex}` : "";
+
+  const handleChange = (next: string) => {
+    if (next.startsWith("char-")) {
+      onSelectCharacterPreset(Number(next.slice(5)) as 1 | 2 | 3);
+    } else {
+      onSelectCombo(Number(next.slice(4)));
+    }
+  };
+
   return (
-    <Tabs value={preset != null ? String(preset) : undefined} onValueChange={(value) => onChange(Number(value) as 1 | 2 | 3)}>
-      <TabsList>
-        {([1, 2, 3] as const).map((no) => (
-          <Tooltip key={no}>
-            <TooltipTrigger asChild>
-              <span className="contents">
-                <TabsTrigger value={String(no)} className="w-7 flex-none px-0">
+    <Tabs value={value} onValueChange={handleChange}>
+      <TabsList className="w-full flex-wrap justify-between">
+        <div className="flex flex-wrap items-center gap-0.5">
+          {SET_COMBOS.map((combo, index) => (
+            <Tooltip key={`set-${index}`}>
+              <TooltipTrigger asChild>
+                <TabsTrigger value={`set-${index}`} className="flex-none gap-0.5 px-1.5">
+                  {combo.map((type) => (
+                    <img key={type} src={SET_INFOS[type].icon} alt={SET_INFOS[type].name} className="size-5 object-contain" />
+                  ))}
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent side="top">{combo.map((type) => SET_INFOS[type].name).join(" + ")}</TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+        <div className="flex items-center gap-0.5">
+          {([1, 2, 3] as const).map((no) => (
+            <Tooltip key={`char-${no}`}>
+              <TooltipTrigger asChild>
+                <TabsTrigger value={`char-${no}`} disabled={characterDisabled} className="w-7 flex-none px-0">
                   {no}
                 </TabsTrigger>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top">프리셋 {no}</TooltipContent>
-          </Tooltip>
-        ))}
+              </TooltipTrigger>
+              <TooltipContent side="top">프리셋 {no}</TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
       </TabsList>
     </Tabs>
   );
@@ -108,13 +138,7 @@ function EquipmentSlot({ item }: { item?: ItemEquipmentDetail }) {
       className="relative flex size-10 items-center justify-center justify-self-center overflow-hidden border bg-muted"
       style={grade ? { borderColor: POTENTIAL_GRADE_INFOS[grade].borderColor } : undefined}
     >
-      {item && (
-        <img
-          src={item.item_icon}
-          alt=""
-          className="pointer-events-none absolute top-1/2 left-1/2 max-w-none -translate-x-1/2 -translate-y-1/2"
-        />
-      )}
+      {item && <img src={item.item_icon} alt="" className="pointer-events-none" />}
     </div>
   );
 
@@ -139,7 +163,7 @@ export function EquipmentGrid({
   items: ItemEquipmentDetail[];
 }) {
   return (
-    <div className="grid gap-1" style={GRID_COLUMNS}>
+    <div className="grid justify-center gap-1" style={GRID_COLUMNS}>
       {EQUIPMENT_SLOT_GRID.flatMap((row, i) =>
         row.map((cell, j) => {
           if (cell == "character") {
@@ -153,34 +177,5 @@ export function EquipmentGrid({
         })
       )}
     </div>
-  );
-}
-
-export function PresetButtons({
-  preset,
-  onChange,
-}: {
-  preset?: number;
-  onChange: (comboIndex: number) => void;
-}) {
-  return (
-    <Tabs value={preset != null ? String(preset) : undefined} onValueChange={(value) => onChange(Number(value))}>
-      <TabsList className="flex-wrap">
-        {SET_COMBOS.map((combo, index) => (
-          <Tooltip key={index}>
-            <TooltipTrigger asChild>
-              <span className="contents">
-                <TabsTrigger value={String(index)} className="flex-none gap-0.5 px-1.5">
-                  {combo.map((type) => (
-                    <img key={type} src={SET_INFOS[type].icon} alt={SET_INFOS[type].name} className="size-5 object-contain" />
-                  ))}
-                </TabsTrigger>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top">{combo.map((type) => SET_INFOS[type].name).join(" + ")}</TooltipContent>
-          </Tooltip>
-        ))}
-      </TabsList>
-    </Tabs>
   );
 }

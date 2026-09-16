@@ -28,15 +28,24 @@ export function UnionArtifactPage() {
   const [artifactLevel, setArtifactLevel] = useState(1);
   const [effectIndex, setEffectIndex] = useState(0);
   const [effectNamesByLevel, setEffectNamesByLevel] = useState<Record<number, Set<string>>>({});
-  const [inGameEffectIndex, setInGameEffectIndex] = useState<number>();
 
   const availableEffectLevelGrid = calcEffectLevelGrid(artifactLevel);
+
+  const dataArtifactEffects = dataArtifact?.union_artifact_effect.map((effect) => effect.level).sort((a, b) => b - a);
+
+  const inGameLevelsIndex = dataArtifactEffects
+    ? availableEffectLevelGrid.findIndex(
+        (availableEffectLevels) =>
+          availableEffectLevels.length == dataArtifactEffects.length &&
+          availableEffectLevels.every((level, i) => level == dataArtifactEffects[i])
+      )
+    : -1;
+  const inGameEffectIndex = inGameLevelsIndex == -1 ? undefined : inGameLevelsIndex;
 
   useEffect(() => {
     setArtifactLevel(Math.max(dataBasic?.union_artifact_level ?? 1, 1));
     setEffectIndex(0);
     setEffectNamesByLevel({});
-    setInGameEffectIndex(undefined);
   }, [dataBasic]);
 
   useEffect(() => {
@@ -44,14 +53,14 @@ export function UnionArtifactPage() {
 
     const matchingEffectLevelGrid = calcEffectLevelGrid(Math.max(dataBasic.union_artifact_level ?? 1, 1));
 
-    const dataArtifactEffects = dataArtifact.union_artifact_effect
+    const sortedDataArtifactEffects = dataArtifact.union_artifact_effect
       .map((effect) => effect.level)
       .sort((a, b) => b - a);
 
     const levelsIndex = matchingEffectLevelGrid.findIndex(
       (availableEffectLevels) =>
-        availableEffectLevels.length == dataArtifactEffects.length &&
-        availableEffectLevels.every((level, i) => level == dataArtifactEffects[i])
+        availableEffectLevels.length == sortedDataArtifactEffects.length &&
+        availableEffectLevels.every((level, i) => level == sortedDataArtifactEffects[i])
     );
     if (levelsIndex == -1) return;
 
@@ -65,7 +74,6 @@ export function UnionArtifactPage() {
     }
     setEffectIndex(levelsIndex);
     setEffectNamesByLevel(namesByLevel);
-    setInGameEffectIndex(levelsIndex);
   }, [dataArtifact, dataBasic]);
 
   const effectLevels = availableEffectLevelGrid[effectIndex] ?? [];
