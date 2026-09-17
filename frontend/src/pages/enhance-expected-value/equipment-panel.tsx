@@ -1,3 +1,4 @@
+import { cn } from "cn";
 import { Loader2, Search } from "lucide-react";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -135,7 +136,10 @@ function EquipmentSlot({ item, label }: { item?: ItemEquipmentDetail; label: str
 
   const box = (
     <div
-      className="relative flex size-10 items-center justify-center justify-self-center overflow-hidden border bg-muted"
+      className={cn(
+        "relative flex size-10 items-center justify-center justify-self-center overflow-hidden border bg-muted",
+        !grade && "rounded-sm"
+      )}
       style={grade ? { borderColor: POTENTIAL_GRADE_INFOS[grade].borderColor } : undefined}
     >
       {item && <img src={item.item_icon} alt="" className="pointer-events-none" />}
