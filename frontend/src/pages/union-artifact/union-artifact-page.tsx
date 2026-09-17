@@ -22,8 +22,9 @@ import { SelectEffect } from "@/pages/union-artifact/select-effect";
 
 export function UnionArtifactPage() {
   const name = useArtifactStore((state) => state.name);
-  const { data: dataBasic, isFetching: isFetchingBasic } = useUnionBasic(name);
-  const { data: dataArtifact, isFetching: isFetchingArtifact } = useUnionArtifact(name);
+  const searchToken = useArtifactStore((state) => state.searchToken);
+  const { data: dataBasic, isFetching: isFetchingBasic } = useUnionBasic(name, searchToken);
+  const { data: dataArtifact, isFetching: isFetchingArtifact } = useUnionArtifact(name, searchToken);
 
   const [artifactLevel, setArtifactLevel] = useState(1);
   const [effectIndex, setEffectIndex] = useState(0);

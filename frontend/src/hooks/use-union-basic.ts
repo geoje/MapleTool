@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { UnionBasic } from "@/types";
 
-export function useUnionBasic(name: string) {
+export function useUnionBasic(name: string, searchToken?: number) {
   const [data, setData] = useState<UnionBasic>();
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    setData(undefined);
-    if (!name) return;
+    if (!name) {
+      setData(undefined);
+      return;
+    }
 
     const controller = new AbortController();
     setIsFetching(true);
@@ -34,7 +36,7 @@ export function useUnionBasic(name: string) {
       });
 
     return () => controller.abort();
-  }, [name]);
+  }, [name, searchToken]);
 
   return { data, isFetching };
 }

@@ -3,7 +3,6 @@ import absolabsGloves from "@/assets/enhance/equipment/absolabs/gloves.webp";
 import absolabsHat from "@/assets/enhance/equipment/absolabs/hat.webp";
 import absolabsOverall from "@/assets/enhance/equipment/absolabs/overall.webp";
 import absolabsShoes from "@/assets/enhance/equipment/absolabs/shoes.webp";
-import absolabsSecondaryWeapon from "@/assets/enhance/equipment/absolabs/secondary-weapon.png";
 import absolabsShoulder from "@/assets/enhance/equipment/absolabs/shoulder.webp";
 import absolabsWeapon from "@/assets/enhance/equipment/absolabs/weapon.png";
 import arcaneumbraCape from "@/assets/enhance/equipment/arcaneumbra/cape.webp";
@@ -34,7 +33,6 @@ import eternalBottom from "@/assets/enhance/equipment/eternal/bottom.webp";
 import eternalCape from "@/assets/enhance/equipment/eternal/cape.png";
 import eternalGloves from "@/assets/enhance/equipment/eternal/gloves.png";
 import eternalHat from "@/assets/enhance/equipment/eternal/hat.webp";
-import eternalSecondaryWeapon from "@/assets/enhance/equipment/eternal/secondary-weapon.png";
 import eternalShoes from "@/assets/enhance/equipment/eternal/shoes.png";
 import eternalShoulder from "@/assets/enhance/equipment/eternal/shoulder.webp";
 import eternalTop from "@/assets/enhance/equipment/eternal/top.webp";
@@ -56,6 +54,7 @@ import originalSinOfPride from "@/assets/enhance/equipment/radiance/original-sin
 import starvingBloodRedVengefulSpirit from "@/assets/enhance/equipment/radiance/starving-blood-red-vengeful-spirit.png";
 import whispersOfTheSource from "@/assets/enhance/equipment/radiance/whispers-of-the-source.webp";
 import rootabisBottom from "@/assets/enhance/equipment/rootabis/bottom.webp";
+import rootabisEmblem from "@/assets/enhance/equipment/rootabis/emblem.png";
 import rootabisHat from "@/assets/enhance/equipment/rootabis/hat.webp";
 import rootabisSecondaryWeapon from "@/assets/enhance/equipment/rootabis/secondary-weapon.png";
 import rootabisTop from "@/assets/enhance/equipment/rootabis/top.webp";
@@ -84,6 +83,7 @@ export const SET_ITEMS: Record<SetType, ItemEquipmentDetail[]> = {
     item("하의", "트릭스터 워리어팬츠", rootabisBottom, 150),
     item("무기", "파프니르 용천검", rootabisWeapon, 150),
     item("보조무기", "자색 여의보주", rootabisSecondaryWeapon, 100),
+    item("엠블렘", "금빛 검수 엠블렘", rootabisEmblem, 100),
   ],
   [SetType.ABSOLABS]: [
     item("모자", "앱솔랩스 나이트헬름", absolabsHat, 160),
@@ -93,7 +93,6 @@ export const SET_ITEMS: Record<SetType, ItemEquipmentDetail[]> = {
     item("망토", "앱솔랩스 나이트케이프", absolabsCape, 160),
     item("어깨장식", "앱솔랩스 나이트숄더", absolabsShoulder, 160),
     item("무기", "앱솔랩스 폭검", absolabsWeapon, 160),
-    item("보조무기", "자색 여의보주", absolabsSecondaryWeapon, 100),
   ],
   [SetType.ARCANEUMBRA]: [
     item("모자", "아케인셰이드 나이트햇", arcaneumbraHat, 200),
@@ -114,7 +113,6 @@ export const SET_ITEMS: Record<SetType, ItemEquipmentDetail[]> = {
     item("망토", "에테르넬 나이트케이프", eternalCape, 250),
     item("어깨장식", "에테르넬 나이트숄더", eternalShoulder, 250),
     item("무기", "데스티니 초극검", eternalWeapon, 250),
-    item("보조무기", "아스트라 여의보주", eternalSecondaryWeapon, 200),
   ],
   // Accessory sets aren't job-specific, but several offer more options than the
   // grid has slots for (e.g. 3 rings, 4 pendants); only the first per slot is shown.

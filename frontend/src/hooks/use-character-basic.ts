@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { CharacterBasic } from "@/types";
 
-export function useCharacterBasic(name: string) {
+export function useCharacterBasic(name: string, searchToken?: number) {
   const [data, setData] = useState<CharacterBasic>();
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    setData(undefined);
-    if (!name) return;
+    if (!name) {
+      setData(undefined);
+      return;
+    }
 
     const controller = new AbortController();
     setIsFetching(true);
@@ -34,7 +36,7 @@ export function useCharacterBasic(name: string) {
       });
 
     return () => controller.abort();
-  }, [name]);
+  }, [name, searchToken]);
 
   return { data, isFetching };
 }

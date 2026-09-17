@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { ItemEquipment } from "@/types";
 
-export function useItemEquipment(name: string) {
+export function useItemEquipment(name: string, searchToken?: number) {
   const [data, setData] = useState<ItemEquipment>();
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    setData(undefined);
-    if (!name) return;
+    if (!name) {
+      setData(undefined);
+      return;
+    }
 
     const controller = new AbortController();
     setIsFetching(true);
@@ -34,7 +36,7 @@ export function useItemEquipment(name: string) {
       });
 
     return () => controller.abort();
-  }, [name]);
+  }, [name, searchToken]);
 
   return { data, isFetching };
 }

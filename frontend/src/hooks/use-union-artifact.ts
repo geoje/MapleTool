@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { UnionArtifact } from "@/types";
 
-export function useUnionArtifact(name: string) {
+export function useUnionArtifact(name: string, searchToken?: number) {
   const [data, setData] = useState<UnionArtifact>();
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    setData(undefined);
-    if (!name) return;
+    if (!name) {
+      setData(undefined);
+      return;
+    }
 
     const controller = new AbortController();
     setIsFetching(true);
@@ -34,7 +36,7 @@ export function useUnionArtifact(name: string) {
       });
 
     return () => controller.abort();
-  }, [name]);
+  }, [name, searchToken]);
 
   return { data, isFetching };
 }

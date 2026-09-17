@@ -23,8 +23,9 @@ function getDefaultSelection(characterAvailable: boolean): Selection {
 
 export function EnhanceExpectedValuePage() {
   const name = useEnhanceStore((state) => state.name);
-  const { data: basic, isFetching: isFetchingBasic } = useCharacterBasic(name);
-  const { data: equipment, isFetching: isFetchingEquipment } = useItemEquipment(name);
+  const searchToken = useEnhanceStore((state) => state.searchToken);
+  const { data: basic, isFetching: isFetchingBasic } = useCharacterBasic(name, searchToken);
+  const { data: equipment, isFetching: isFetchingEquipment } = useItemEquipment(name, searchToken);
   const [selection, setSelection] = useState<Selection>(() => getDefaultSelection(!!equipment));
   const [showNotice, setShowNotice] = useState(true);
 
