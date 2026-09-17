@@ -46,6 +46,11 @@ import genesisBadge from "@/assets/enhance/equipment/pitched/genesis-badge.webp"
 import magicEyepatch from "@/assets/enhance/equipment/pitched/magic-eyepatch.webp";
 import mitrasRageWarrior from "@/assets/enhance/equipment/pitched/mitras-rage-warrior.webp";
 import sourceOfSuffering from "@/assets/enhance/equipment/pitched/source-of-suffering.webp";
+import blissfulNightmare from "@/assets/enhance/equipment/radiance/blissful-nightmare.png";
+import immortalLegacy from "@/assets/enhance/equipment/radiance/immortal-legacy.png";
+import oathOfDeath from "@/assets/enhance/equipment/radiance/oath-of-death.png";
+import originalSinOfPride from "@/assets/enhance/equipment/radiance/original-sin-of-pride.png";
+import starvingBloodRedVengefulSpirit from "@/assets/enhance/equipment/radiance/starving-blood-red-vengeful-spirit.png";
 import whispersOfTheSource from "@/assets/enhance/equipment/radiance/whispers-of-the-source.webp";
 import rootabisBottom from "@/assets/enhance/equipment/rootabis/bottom.webp";
 import rootabisHat from "@/assets/enhance/equipment/rootabis/hat.webp";
@@ -137,5 +142,12 @@ export const SET_ITEMS: Record<SetType, ItemEquipmentDetail[]> = {
     item("포켓 아이템", "저주받은 적의 마도서", cursedRedSpellbook, 160),
     item("엠블렘", "미트라의 분노 : 전사", mitrasRageWarrior, 200),
   ],
-  [SetType.RADIANCE]: [item("반지1", "근원의 속삭임", whispersOfTheSource, 250)],
+  [SetType.RADIANCE]: [
+    item("얼굴장식", "오만의 원죄", originalSinOfPride, 250),
+    item("눈장식", "굶주리는 핏빛 원혼", starvingBloodRedVengefulSpirit, 250),
+    item("반지1", "근원의 속삭임", whispersOfTheSource, 250),
+    item("반지2", "황홀한 악몽", blissfulNightmare, 250),
+    item("펜던트", "죽음의 맹세", oathOfDeath, 250),
+    item("훈장", "불멸의 유산", immortalLegacy, 250),
+  ],
 };
