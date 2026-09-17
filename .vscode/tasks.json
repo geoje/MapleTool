@@ -4,9 +4,9 @@
     {
       "label": "Dev",
       "type": "shell",
-      "command": "export $(cat .settings | xargs) && ./gradlew compileJava --continuous & ./gradlew bootRun --console=plain & cd ../frontend && eval \"$(fnm env --shell bash)\" && npm run dev",
+      "command": "(cd proxy && eval \"$(fnm env --shell bash)\" && fnm use && npm run dev) & (cd frontend && eval \"$(fnm env --shell bash)\" && fnm use && npm run dev)",
       "options": {
-        "cwd": "${workspaceFolder}/backend"
+        "cwd": "${workspaceFolder}"
       },
       "group": {
         "kind": "build",
@@ -21,7 +21,7 @@
       "isBackground": true,
       "problemMatcher": [
         {
-          "owner": "spring-boot",
+          "owner": "mapletool-proxy",
           "pattern": {
             "regexp": "^.*$",
             "file": 1,
@@ -29,8 +29,8 @@
           },
           "background": {
             "activeOnStart": true,
-            "beginsPattern": "Starting MapleToolApplication",
-            "endsPattern": "Started MapleToolApplication"
+            "beginsPattern": "tsx watch",
+            "endsPattern": "listening on"
           }
         },
         {

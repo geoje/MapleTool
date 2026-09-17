@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
-      backend: ${{ steps.filter.outputs.backend }}
+      proxy: ${{ steps.filter.outputs.proxy }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -29,11 +29,10 @@ jobs:
               - frontend/**
               - .github/workflows/cd.yaml
               - docker-compose-fe.yaml
-            backend:
-              - backend/**
+            proxy:
+              - proxy/**
               - .github/workflows/cd.yaml
-              - docker-compose-be.yaml
-              - docker-compose-db.yaml
+              - docker-compose-prx.yaml
 
   frontend:
     needs: filter
@@ -82,35 +81,41 @@ jobs:
             docker stack deploy --with-registry-auth --detach=${EXISTS} -c docker-compose-fe.yaml "${STACK}"
             [ "${EXISTS}" = "true" ] && docker service update --force --detach=false "${STACK}_fe" || true
 
-  backend:
+  proxy:
     needs: filter
-    if: ${{ needs.filter.outputs.backend == 'true' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.filter.outputs.proxy == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup JDK 21
-        uses: actions/setup-java@v5
+      - name: Setup Nodejs 24
+        uses: actions/setup-node@v6
         with:
-          java-version: 21
-          distribution: temurin
-          cache: gradle
+          node-version: 24
+          cache: npm
+          cache-dependency-path: proxy/package-lock.json
+
+      - name: Install modules
+        working-directory: proxy
+        run: npm ci
 
       - name: Build
-        working-directory: backend
-        run: |
-          chmod +x gradlew
-          ./gradlew build -x test
+        working-directory: proxy
+        run: npm run build
 
-      - name: Copy jar
+      - name: Prune dev dependencies
+        working-directory: proxy
+        run: npm prune --omit=dev
+
+      - name: Copy dist
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          source: backend/build/libs/, backend/Dockerfile, docker-compose-be.yaml, docker-compose-db.yaml
+          source: proxy/dist/, proxy/node_modules/, proxy/package.json, proxy/Dockerfile, docker-compose-prx.yaml
           target: ~/${{ github.event.repository.name }}
 
       - name: Setup environment variables
@@ -122,24 +127,10 @@ jobs:
           script: |
             cd ~/${{ github.event.repository.name }}
             cat > .env << 'EOF'
-            JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}
-            GRAFANA_PASSWORD=${{ secrets.GRAFANA_PASSWORD }}
-            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            NEXON_API_KEY=${{ secrets.NEXON_API_KEY }}
             EOF
 
-      - name: Update db
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          script: |
-            cd ~/${{ github.event.repository.name }}
-            export $(cat .env)
-            docker compose -f docker-compose-db.yaml pull
-            docker compose -f docker-compose-db.yaml up -d
-
-      - name: Update be
+      - name: Update prx
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
@@ -149,7 +140,7 @@ jobs:
             cd ~/${{ github.event.repository.name }}
             export $(cat .env)
             STACK=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
-            docker compose -f docker-compose-be.yaml build
-            docker service ls | grep -qw "${STACK}_be" && EXISTS="true" || EXISTS="false"
-            docker stack deploy --with-registry-auth --detach=${EXISTS} -c docker-compose-be.yaml "${STACK}"
-            [ "${EXISTS}" = "true" ] && docker service update --force --detach=false "${STACK}_be" || true
+            docker compose -f docker-compose-prx.yaml build
+            docker service ls | grep -qw "${STACK}_prx" && EXISTS="true" || EXISTS="false"
+            docker stack deploy --with-registry-auth --detach=${EXISTS} -c docker-compose-prx.yaml "${STACK}"
+            [ "${EXISTS}" = "true" ] && docker service update --force --detach=false "${STACK}_prx" || true
