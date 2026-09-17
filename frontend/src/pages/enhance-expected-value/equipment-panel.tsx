@@ -130,7 +130,7 @@ function CharacterCell({ image }: { image?: string }) {
   );
 }
 
-function EquipmentSlot({ item }: { item?: ItemEquipmentDetail }) {
+function EquipmentSlot({ item, label }: { item?: ItemEquipmentDetail; label: string }) {
   const grade = item ? getMaxPotentialGrade(item) : undefined;
 
   const box = (
@@ -145,11 +145,13 @@ function EquipmentSlot({ item }: { item?: ItemEquipmentDetail }) {
   if (!item) return box;
 
   return (
-    <Tooltip disableHoverableContent delayDuration={150}>
+    <Tooltip>
       <TooltipTrigger asChild>{box}</TooltipTrigger>
       <TooltipContent side="top" className="flex flex-col items-center gap-0.5">
         <span>{item.item_name}</span>
-        <span className="text-[10px] text-background/70">Lv. {item.item_base_option.base_equipment_level}</span>
+        <span className="text-[10px] text-background/70">
+          Lv. {item.item_base_option.base_equipment_level} {label.replace(/\d+$/, "")}
+        </span>
       </TooltipContent>
     </Tooltip>
   );
@@ -173,7 +175,7 @@ export function EquipmentGrid({
           if (!cell) return <div key={`${i}-${j}`} />;
 
           const item = items.find((item) => item.item_equipment_slot == cell.apiSlot);
-          return <EquipmentSlot key={`${i}-${j}`} item={item} />;
+          return <EquipmentSlot key={`${i}-${j}`} item={item} label={cell.label} />;
         })
       )}
     </div>

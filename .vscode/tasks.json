@@ -4,7 +4,7 @@
     {
       "label": "Dev",
       "type": "shell",
-      "command": "(cd proxy && eval \"$(fnm env --shell bash)\" && fnm use && npm run dev) & (cd frontend && eval \"$(fnm env --shell bash)\" && fnm use && npm run dev)",
+      "command": "open http://localhost:5173 & (cd proxy && eval \"$(fnm env --shell bash)\" && fnm use && npm run dev) & (cd frontend && eval \"$(fnm env --shell bash)\" && fnm use && npm run dev)",
       "options": {
         "cwd": "${workspaceFolder}"
       },
