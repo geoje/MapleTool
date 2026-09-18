@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { SET_COMBOS, SetType } from "@/constants/enhance";
 import { SET_ITEMS } from "@/constants/enhance-set-items";
+import { DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-expected-value/equipment-panel";
+import { StarforceCard } from "@/pages/enhance-expected-value/starforce-panel";
 import { useEnhanceStore } from "@/stores/enhance-store";
 
 type Selection = { type: "character"; preset: 1 | 2 | 3 } | { type: "set"; comboIndex: number };
@@ -28,6 +30,8 @@ export function EnhanceExpectedValuePage() {
   const { data: equipment, isFetching: isFetchingEquipment } = useItemEquipment(name, searchToken);
   const [selection, setSelection] = useState<Selection>(() => getDefaultSelection(!!equipment));
   const [showNotice, setShowNotice] = useState(true);
+  const [starforceCollapsed, setStarforceCollapsed] = useState(false);
+  const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
 
   useEffect(() => {
     setSelection(getDefaultSelection(!!equipment));
@@ -88,9 +92,18 @@ export function EnhanceExpectedValuePage() {
             <EquipmentGrid
               characterImage={selection.type == "character" ? basic?.character_image : undefined}
               items={items}
+              onSelectLevel={setStarforceLevel}
             />
           </CardContent>
         </Card>
+
+        <StarforceCard
+          collapsed={starforceCollapsed}
+          level={starforceLevel}
+          onCollapse={() => setStarforceCollapsed(true)}
+          onExpand={() => setStarforceCollapsed(false)}
+          onLevelChange={setStarforceLevel}
+        />
       </div>
     </div>
   );

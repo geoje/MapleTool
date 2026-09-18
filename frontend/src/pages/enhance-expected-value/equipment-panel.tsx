@@ -131,22 +131,35 @@ function CharacterCell({ image }: { image?: string }) {
   );
 }
 
-function EquipmentSlot({ item, label }: { item?: ItemEquipmentDetail; label: string }) {
+function EquipmentSlot({
+  item,
+  label,
+  onSelectLevel,
+}: {
+  item?: ItemEquipmentDetail;
+  label: string;
+  onSelectLevel?: (level: number) => void;
+}) {
   const grade = item ? getMaxPotentialGrade(item) : undefined;
 
-  const box = (
-    <div
-      className={cn(
-        "relative flex size-10 items-center justify-center justify-self-center overflow-hidden border bg-muted",
-        !grade && "rounded-sm"
-      )}
-      style={grade ? { borderColor: POTENTIAL_GRADE_INFOS[grade].borderColor } : undefined}
-    >
-      {item && <img src={item.item_icon} alt="" className="pointer-events-none" />}
-    </div>
+  const boxClassName = cn(
+    "relative flex size-10 items-center justify-center justify-self-center overflow-hidden border bg-muted",
+    !grade && "rounded-sm"
   );
+  const boxStyle = grade ? { borderColor: POTENTIAL_GRADE_INFOS[grade].borderColor } : undefined;
 
-  if (!item) return box;
+  if (!item) return <div className={boxClassName} style={boxStyle} />;
+
+  const box = (
+    <button
+      type="button"
+      className={boxClassName}
+      style={boxStyle}
+      onClick={() => onSelectLevel?.(item.item_base_option.base_equipment_level)}
+    >
+      <img src={item.item_icon} alt="" className="pointer-events-none" />
+    </button>
+  );
 
   return (
     <Tooltip>
@@ -164,9 +177,11 @@ function EquipmentSlot({ item, label }: { item?: ItemEquipmentDetail; label: str
 export function EquipmentGrid({
   characterImage,
   items,
+  onSelectLevel,
 }: {
   characterImage?: string;
   items: ItemEquipmentDetail[];
+  onSelectLevel?: (level: number) => void;
 }) {
   return (
     <div className="grid justify-center gap-1" style={GRID_COLUMNS}>
@@ -179,7 +194,7 @@ export function EquipmentGrid({
           if (!cell) return <div key={`${i}-${j}`} />;
 
           const item = items.find((item) => item.item_equipment_slot == cell.apiSlot);
-          return <EquipmentSlot key={`${i}-${j}`} item={item} label={cell.label} />;
+          return <EquipmentSlot key={`${i}-${j}`} item={item} label={cell.label} onSelectLevel={onSelectLevel} />;
         })
       )}
     </div>

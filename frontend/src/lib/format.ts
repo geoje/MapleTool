@@ -49,6 +49,32 @@ export function formatCubeCount(value: number): string {
   return formatTruncated(truncateToOneDecimal(value));
 }
 
+// Rounds to the nearest 천만(10,000,000) and drops anything below that, per product spec.
+export function formatCostRounded(value: number): string {
+  const rounded = Math.round(value / 10_000_000) * 10_000_000;
+  if (rounded === 0) return "0";
+  if (rounded < 100_000_000) return `${rounded / 10_000_000}천만`;
+
+  const eok = (rounded / 100_000_000).toFixed(1).replace(/\.0$/, "");
+  return `${eok}억`;
+}
+
+export function formatCostExact(value: number): string {
+  if (value === 0) return "0";
+
+  const eok = Math.floor(value / 100_000_000);
+  const remainder = value % 100_000_000;
+  const man = Math.floor(remainder / 10_000);
+  const rest = remainder % 10_000;
+
+  const parts = [];
+  if (eok > 0) parts.push(`${eok}억`);
+  if (man > 0) parts.push(`${man}만`);
+  if (rest > 0 || parts.length === 0) parts.push(`${rest}`);
+
+  return parts.join(" ");
+}
+
 export function formatCountDelta(delta: number): string | null {
   const truncated = truncateToOneDecimal(delta);
   if (truncated == 0) return null;
