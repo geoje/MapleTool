@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { MAX_STARFORCE_LEVEL, MIN_STARFORCE_LEVEL, STARFORCE_LEVEL_PRESETS } from "@/constants/starforce";
 import { cn } from "@/lib/utils";
 
@@ -19,21 +19,36 @@ export function StarforceLevelInput({ level, onChange }: { level: number; onChan
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-1">
-        <span className="mr-1 text-xs font-medium text-muted-foreground whitespace-nowrap">장비 레벨</span>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          aria-label="decrease by 10"
-          disabled={level <= MIN_STARFORCE_LEVEL}
-          onClick={() => onChange(clamp(level - 10))}
-        >
-          -10
-        </Button>
-        <Input
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">장비 레벨</span>
+        <ButtonGroup>
+          {STARFORCE_LEVEL_PRESETS.map((preset) => (
+            <Button
+              key={preset}
+              type="button"
+              variant="outline"
+              size="sm"
+              className={cn(level == preset && "bg-muted text-foreground")}
+              onClick={() => onChange(preset)}
+            >
+              {preset}
+            </Button>
+          ))}
+        </ButtonGroup>
+      </div>
+      <InputGroup className="rounded-full border-0 bg-muted has-disabled:bg-muted has-disabled:opacity-100">
+        <InputGroupAddon align="inline-start">
+          <InputGroupButton
+            aria-label="decrease by 10"
+            disabled={level <= MIN_STARFORCE_LEVEL}
+            onClick={() => onChange(clamp(level - 10))}
+          >
+            -10
+          </InputGroupButton>
+        </InputGroupAddon>
+        <InputGroupInput
           inputMode="numeric"
-          className="min-w-0 flex-1 text-center"
+          className="text-center"
           value={text}
           onFocus={() => {
             isFocused.current = true;
@@ -48,31 +63,16 @@ export function StarforceLevelInput({ level, onChange }: { level: number; onChan
             onChange(digits ? clamp(Number(digits)) : MIN_STARFORCE_LEVEL);
           }}
         />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          aria-label="increase by 10"
-          disabled={level >= MAX_STARFORCE_LEVEL}
-          onClick={() => onChange(clamp(level + 10))}
-        >
-          +10
-        </Button>
-      </div>
-      <ButtonGroup className="w-full">
-        {STARFORCE_LEVEL_PRESETS.map((preset) => (
-          <Button
-            key={preset}
-            type="button"
-            variant="outline"
-            size="sm"
-            className={cn("flex-1", level == preset && "bg-muted text-foreground")}
-            onClick={() => onChange(preset)}
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            aria-label="increase by 10"
+            disabled={level >= MAX_STARFORCE_LEVEL}
+            onClick={() => onChange(clamp(level + 10))}
           >
-            {preset}
-          </Button>
-        ))}
-      </ButtonGroup>
+            +10
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
     </div>
   );
 }

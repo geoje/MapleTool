@@ -4,7 +4,7 @@ import boss from "@/assets/enhance/set/boss.webp";
 import dawn from "@/assets/enhance/set/dawn.webp";
 import eternal from "@/assets/enhance/set/eternal.webp";
 import pitched from "@/assets/enhance/set/pitched.webp";
-import radiance from "@/assets/enhance/set/radiance.webp";
+import radiance from "@/assets/enhance/equipment/radiance/original-sin-of-pride.png";
 import rootabis from "@/assets/enhance/set/rootabis.webp";
 
 export const SetType = {

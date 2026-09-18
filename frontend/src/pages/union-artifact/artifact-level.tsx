@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { MAX_ARTIFACT_LEVEL, MIN_ARTIFACT_LEVEL } from "@/constants/artifact";
 
 function clamp(value: number) {
@@ -23,32 +21,26 @@ export function ArtifactLevel({
   }, [artifactLevel]);
 
   return (
-    <div className="flex items-center gap-1">
-      <ButtonGroup>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
+    <InputGroup className="rounded-full border-0 bg-muted has-disabled:bg-muted has-disabled:opacity-100">
+      <InputGroupAddon align="inline-start">
+        <InputGroupButton
           aria-label="decrease by 10"
           disabled={artifactLevel <= MIN_ARTIFACT_LEVEL}
           onClick={() => onChange(clamp(artifactLevel - 10))}
         >
           -10
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
+        </InputGroupButton>
+        <InputGroupButton
           aria-label="decrease"
           disabled={artifactLevel <= MIN_ARTIFACT_LEVEL}
           onClick={() => onChange(clamp(artifactLevel - 1))}
         >
           -1
-        </Button>
-      </ButtonGroup>
-      <Input
+        </InputGroupButton>
+      </InputGroupAddon>
+      <InputGroupInput
         inputMode="numeric"
-        className="min-w-0 flex-1 text-center"
+        className="text-center"
         value={text}
         onFocus={() => {
           isFocused.current = true;
@@ -63,28 +55,22 @@ export function ArtifactLevel({
           onChange(digits ? clamp(Number(digits)) : MIN_ARTIFACT_LEVEL);
         }}
       />
-      <ButtonGroup>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
+      <InputGroupAddon align="inline-end">
+        <InputGroupButton
           aria-label="increase"
           disabled={artifactLevel >= MAX_ARTIFACT_LEVEL}
           onClick={() => onChange(clamp(artifactLevel + 1))}
         >
           +1
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
+        </InputGroupButton>
+        <InputGroupButton
           aria-label="increase by 10"
           disabled={artifactLevel >= MAX_ARTIFACT_LEVEL}
           onClick={() => onChange(clamp(artifactLevel + 10))}
         >
           +10
-        </Button>
-      </ButtonGroup>
-    </div>
+        </InputGroupButton>
+      </InputGroupAddon>
+    </InputGroup>
   );
 }
