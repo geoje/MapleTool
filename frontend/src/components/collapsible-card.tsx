@@ -32,7 +32,7 @@ export function CollapsibleCard({
             type="button"
             aria-label="확장"
             onClick={onExpand}
-            className="flex w-full items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-muted"
+            className="flex w-full items-center gap-1.5 px-4 py-4 transition-colors hover:bg-muted"
           >
             <SectionTitle step={step}>{title}</SectionTitle>
             <PanelTopOpen className="size-4 text-muted-foreground" />
@@ -48,7 +48,7 @@ export function CollapsibleCard({
             type="button"
             aria-label="확장"
             onClick={onExpand}
-            className="flex w-full items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-muted"
+            className="flex w-full items-center gap-1.5 px-4 py-4 transition-colors hover:bg-muted"
           >
             <SectionTitle step={step}>{title}</SectionTitle>
             <PanelTopOpen className="size-4 text-muted-foreground" />
