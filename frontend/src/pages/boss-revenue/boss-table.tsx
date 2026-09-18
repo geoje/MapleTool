@@ -11,6 +11,7 @@ import { countWeeklyBoss, getMaxDifficulty, getMaxMembers } from "@/lib/boss-ser
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -42,7 +43,9 @@ function getFirstHalfMaxCandidates(): BossCandidate[] {
 }
 
 function getHaSeiKalCandidates(): BossCandidate[] {
-  const base = getFirstHalfMaxCandidates().slice(0, MAX_BOSS_SELECTABLE - 2);
+  const base = getFirstHalfMaxCandidates()
+    .filter((candidate) => candidate.type != BossType.VELLUM)
+    .slice(0, MAX_BOSS_SELECTABLE - 3);
   return [
     ...base,
     {
@@ -55,6 +58,11 @@ function getHaSeiKalCandidates(): BossCandidate[] {
       difficulty: BossDifficulty.EASY,
       price: BOSS.KALOS_THE_GUARDIAN.prices.EASY ?? 0,
     },
+    {
+      type: BossType.THE_FIRST_ADVERSARY,
+      difficulty: BossDifficulty.EASY,
+      price: BOSS.THE_FIRST_ADVERSARY.prices.EASY ?? 0,
+    },
   ];
 }
 
@@ -65,25 +73,27 @@ const BLACK_MAGE_CANDIDATE: BossCandidate = {
 };
 
 function getNoJeokNoKalCandidates(): BossCandidate[] {
-  const haSeiKal = getHaSeiKalCandidates();
-  const cheapest = haSeiKal.reduce((min, cur) => (cur.price < min.price ? cur : min));
-
-  return haSeiKal
-    .filter((candidate) => candidate.type != cheapest.type)
+  return getHaSeiKalCandidates()
+    .filter((candidate) => candidate.type != BossType.PAPULATUS && candidate.type != BossType.DAMIEN)
     .map((candidate) =>
       candidate.type == BossType.KALOS_THE_GUARDIAN
-        ? {
-            ...candidate,
-            difficulty: BossDifficulty.NORMAL,
-            price: BOSS.KALOS_THE_GUARDIAN.prices.NORMAL ?? 0,
-          }
-        : candidate
+        ? { ...candidate, difficulty: BossDifficulty.NORMAL, price: BOSS.KALOS_THE_GUARDIAN.prices.NORMAL ?? 0 }
+        : candidate.type == BossType.THE_FIRST_ADVERSARY
+          ? { ...candidate, difficulty: BossDifficulty.NORMAL, price: BOSS.THE_FIRST_ADVERSARY.prices.NORMAL ?? 0 }
+          : candidate
     )
-    .concat({
-      type: BossType.THE_FIRST_ADVERSARY,
-      difficulty: BossDifficulty.NORMAL,
-      price: BOSS.THE_FIRST_ADVERSARY.prices.NORMAL ?? 0,
-    });
+    .concat(
+      {
+        type: BossType.KALING,
+        difficulty: BossDifficulty.EASY,
+        price: BOSS.KALING.prices.EASY ?? 0,
+      },
+      {
+        type: BossType.BELLONA,
+        difficulty: BossDifficulty.EASY,
+        price: BOSS.BELLONA.prices.EASY ?? 0,
+      }
+    );
 }
 
 export function BossTableActions({ selected }: { selected: number }) {
@@ -110,15 +120,17 @@ export function BossTableActions({ selected }: { selected: number }) {
 
   return (
     <div className="flex items-center gap-1">
-      <Button size="sm" variant="outline" className="h-7" onClick={handleSelectFirstHalfMax}>
-        검밑솔
-      </Button>
-      <Button size="sm" variant="outline" className="h-7" onClick={handleSelectHaSeiKal}>
-        하세이칼
-      </Button>
-      <Button size="sm" variant="outline" className="h-7" onClick={handleSelectNoJeokNoKal}>
-        노적노칼
-      </Button>
+      <ButtonGroup>
+        <Button size="sm" variant="outline" className="h-7" onClick={handleSelectFirstHalfMax}>
+          검밑솔
+        </Button>
+        <Button size="sm" variant="outline" className="h-7" onClick={handleSelectHaSeiKal}>
+          하세이칼
+        </Button>
+        <Button size="sm" variant="outline" className="h-7" onClick={handleSelectNoJeokNoKal}>
+          노적노칼
+        </Button>
+      </ButtonGroup>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button

@@ -7,20 +7,17 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils";
 import { formatCostExact, formatCostRounded } from "@/lib/format";
 import { getMaxStar, getStarforceCost } from "@/lib/starforce-service";
-import { StarforceLevelInput } from "@/pages/enhance-expected-value/starforce-level-input";
 
 export function StarforceCard({
   collapsed,
   level,
   onCollapse,
   onExpand,
-  onLevelChange,
 }: {
   collapsed: boolean;
   level: number;
   onCollapse: () => void;
   onExpand: () => void;
-  onLevelChange: (level: number) => void;
 }) {
   const [currentStar, setCurrentStar] = useState(0);
 
@@ -41,7 +38,7 @@ export function StarforceCard({
             onClick={onExpand}
             className="flex w-full items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-muted"
           >
-            <SectionTitle step={2}>스타포스</SectionTitle>
+            <SectionTitle step={3}>스타포스</SectionTitle>
             <PanelTopOpen className="size-4 text-muted-foreground" />
           </button>
         </Card>
@@ -54,7 +51,7 @@ export function StarforceCard({
             className="absolute inset-0 flex items-center justify-center transition-colors hover:bg-muted"
           >
             <span className="flex -rotate-90 items-center gap-1.5 whitespace-nowrap text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              <span className="font-bold normal-case text-muted-foreground/40 tabular-nums">02</span>
+              <span className="font-bold normal-case text-muted-foreground/40 tabular-nums">03</span>
               스타포스
               <PanelTopOpen className="size-4" />
             </span>
@@ -73,14 +70,12 @@ export function StarforceCard({
           onClick={onCollapse}
           className="-m-1 flex w-fit items-center gap-1.5 rounded-md p-1 transition-colors hover:bg-muted"
         >
-          <SectionTitle step={2}>스타포스</SectionTitle>
+          <SectionTitle step={3}>스타포스</SectionTitle>
           <PanelTopClose className="size-4 text-muted-foreground md:hidden" />
           <PanelLeftClose className="hidden size-4 text-muted-foreground md:block" />
         </button>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        <StarforceLevelInput level={level} onChange={onLevelChange} />
-
         <RadioGroup
           className="contents"
           value={String(currentStar)}

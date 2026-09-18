@@ -11,6 +11,7 @@ import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-expected-value/equipment-panel";
 import { StarforceCard } from "@/pages/enhance-expected-value/starforce-panel";
+import { StarforceLevelInput } from "@/pages/enhance-expected-value/starforce-level-input";
 import { useEnhanceStore } from "@/stores/enhance-store";
 
 type Selection = { type: "character"; preset: 1 | 2 | 3 } | { type: "set"; comboIndex: number };
@@ -73,36 +74,46 @@ export function EnhanceExpectedValuePage() {
       )}
 
       <div className="flex flex-wrap items-start gap-4">
-        <Card className="w-full md:w-auto">
-          <CardHeader>
-            <div className="flex items-center justify-between gap-3">
-              <SectionTitle step={1}>장비</SectionTitle>
-              <NameInput isFetching={isFetchingBasic || isFetchingEquipment} />
-            </div>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            <PresetTabs
-              characterPreset={selection.type == "character" ? selection.preset : undefined}
-              comboIndex={selection.type == "set" ? selection.comboIndex : undefined}
-              characterDisabled={!equipment}
-              onSelectCharacterPreset={(preset) => setSelection({ type: "character", preset })}
-              onSelectCombo={(comboIndex) => setSelection({ type: "set", comboIndex })}
-            />
+        <div className="flex w-full flex-col gap-4 md:w-auto">
+          <Card className="w-full md:w-auto">
+            <CardHeader>
+              <div className="flex items-center justify-between gap-3">
+                <SectionTitle step={1}>장비</SectionTitle>
+                <NameInput isFetching={isFetchingBasic || isFetchingEquipment} />
+              </div>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <PresetTabs
+                characterPreset={selection.type == "character" ? selection.preset : undefined}
+                comboIndex={selection.type == "set" ? selection.comboIndex : undefined}
+                characterDisabled={!equipment}
+                onSelectCharacterPreset={(preset) => setSelection({ type: "character", preset })}
+                onSelectCombo={(comboIndex) => setSelection({ type: "set", comboIndex })}
+              />
 
-            <EquipmentGrid
-              characterImage={selection.type == "character" ? basic?.character_image : undefined}
-              items={items}
-              onSelectLevel={setStarforceLevel}
-            />
-          </CardContent>
-        </Card>
+              <EquipmentGrid
+                characterImage={selection.type == "character" ? basic?.character_image : undefined}
+                items={items}
+                onSelectLevel={setStarforceLevel}
+              />
+            </CardContent>
+          </Card>
+
+          <Card className="w-full md:w-auto">
+            <CardHeader>
+              <SectionTitle step={2}>옵션</SectionTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <StarforceLevelInput level={starforceLevel} onChange={setStarforceLevel} />
+            </CardContent>
+          </Card>
+        </div>
 
         <StarforceCard
           collapsed={starforceCollapsed}
           level={starforceLevel}
           onCollapse={() => setStarforceCollapsed(true)}
           onExpand={() => setStarforceCollapsed(false)}
-          onLevelChange={setStarforceLevel}
         />
       </div>
     </div>
