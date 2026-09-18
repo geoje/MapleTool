@@ -126,7 +126,11 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
       }
     }
 
-    results.push({ star, expectedCost: bestCost, expectedSpareCount: bestSpareCount, useSafeguard, useRestore });
+    // expectedCost is shown to the user as the full economic cost (meso + spare count valued at
+    // spareValue), so it moves with the 노작 가격 input even when the chosen option doesn't change.
+    // cumulativeCost/cumulativeSpareCount must keep tracking the pure meso/spare figures, though,
+    // since that's what a future destroy-and-retry actually has to repay.
+    results.push({ star, expectedCost: bestTotal, expectedSpareCount: bestSpareCount, useSafeguard, useRestore });
     cumulativeCost += bestCost;
     cumulativeSpareCount += bestSpareCount;
   }

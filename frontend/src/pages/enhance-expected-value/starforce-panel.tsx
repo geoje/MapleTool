@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { MEMBERSHIP_GRADES, PC_ROOM_DISCOUNT_RATE } from "@/constants/starforce";
 import { cn } from "@/lib/utils";
-import { formatCostExact, formatCostRounded, formatCubeCount } from "@/lib/format";
+import { formatCostExact, formatCostRounded, formatSpareCount } from "@/lib/format";
 import { computeStarforceTable, getMaxStar } from "@/lib/starforce-service";
 import { StarforceDiscountPanel } from "@/pages/enhance-expected-value/discount-panel";
 import { SparePriceInput } from "@/pages/enhance-expected-value/spare-price-input";
@@ -40,16 +40,31 @@ export function StarforceCard({
 
   const starforceTable = useMemo(
     () =>
-      computeStarforceTable({
-        level,
-        spareValue,
-        costDiscountRate,
-        destroyReductionActive: activeSundayKeys.has("destructionReduction"),
-        restoreMesoDiscountActive: activeSundayKeys.has("restoreDiscount"),
-      }),
-    [level, spareValue, costDiscountRate, activeSundayKeys],
+      computeStarforceTable(
+        {
+          level,
+          spareValue,
+          costDiscountRate,
+          destroyReductionActive: activeSundayKeys.has("destructionReduction"),
+          restoreMesoDiscountActive: activeSundayKeys.has("restoreDiscount"),
+        },
+        maxStar,
+      ),
+    [level, spareValue, costDiscountRate, activeSundayKeys, maxStar],
   );
   const starLevels = Array.from({ length: maxStar + 1 }, (_, star) => star);
+
+  // Prefix sums so each row can show the cumulative expected cost/spare-count from the selected
+  // "현재" star up to that row's target, instead of just that one isolated step.
+  const cumulativeFromZero = useMemo(() => {
+    const cost = [0];
+    const spareCount = [0];
+    for (const step of starforceTable) {
+      cost.push(cost[cost.length - 1] + step.expectedCost);
+      spareCount.push(spareCount[spareCount.length - 1] + step.expectedSpareCount);
+    }
+    return { cost, spareCount };
+  }, [starforceTable]);
 
   useEffect(() => {
     setCurrentStar((prev) => (prev > maxStar ? maxStar : prev));
@@ -97,10 +112,16 @@ export function StarforceCard({
           </thead>
           <tbody>
             {starLevels.map((star) => {
-              const step = star < maxStar ? starforceTable[star] : undefined;
               const target = star < maxStar ? star + 1 : null;
               const isSelected = currentStar === star;
               const isFaded = target != null && target <= currentStar;
+              const step = star < maxStar && star >= currentStar ? starforceTable[star] : undefined;
+              const cumulativeCost =
+                step != null ? cumulativeFromZero.cost[star + 1] - cumulativeFromZero.cost[currentStar] : undefined;
+              const cumulativeSpareCount =
+                step != null
+                  ? cumulativeFromZero.spareCount[star + 1] - cumulativeFromZero.spareCount[currentStar]
+                  : undefined;
               return (
                 <tr
                   key={star}
@@ -118,17 +139,17 @@ export function StarforceCard({
                   </td>
                   <td className="border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">{target}</td>
                   <td className="w-32 border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                    {step != null && (
+                    {cumulativeCost != null && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span>{formatCostRounded(step.expectedCost)}</span>
+                          <span>{formatCostRounded(cumulativeCost)}</span>
                         </TooltipTrigger>
-                        <TooltipContent side="top">{formatCostExact(step.expectedCost)}</TooltipContent>
+                        <TooltipContent side="top">{formatCostExact(cumulativeCost)}</TooltipContent>
                       </Tooltip>
                     )}
                   </td>
                   <td className="w-24 border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                    {step != null && formatCubeCount(step.expectedSpareCount)}
+                    {cumulativeSpareCount != null && formatSpareCount(cumulativeSpareCount)}
                   </td>
                   <td className="border-r px-3 py-1 text-center">
                     {step?.useSafeguard && <Check className="mx-auto size-3.5" />}
