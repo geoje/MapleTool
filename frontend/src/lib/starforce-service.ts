@@ -64,13 +64,13 @@ export interface StarforceStepResult {
 const SAFEGUARD_STAR_SET = new Set<number>(SAFEGUARD_STARS);
 const RESTORE_STAR_SET = new Set<number>(RESTORE_AVAILABLE_STARS);
 
-// 성 n에서 n+1로 강화를 "성공시키는 데" 필요한 기대 메소/기대 노작(스페어) 개수를 계산한다.
-// 파괴 시 선택지는 세 가지이며, 매 성마다 총 기대비용이 가장 낮은 선택을 그리디하게 고른다:
-//  - 그냥 재도전: 새 노작으로 0성부터 이 성까지 다시 강화 (지금까지의 누적비용을 다시 지불)
-//  - 파괴방지(15~17성): 파괴가 유지로 흡수되지만 강화비용이 3배
-//  - 파괴복구(15~22성, 특정 레벨): 고정 메소+장비를 지불하고 같은 성에서 바로 재도전
-// 앞 단계의 누적비용이 작아질수록 이후 모든 단계의 "재도전" 비용도 함께 작아지므로,
-// 매 단계에서의 로컬 최적 선택이 곧 전체 구간의 최적 선택이 된다 (역행 참조가 없어 DP 한 번으로 충분).
+// Computes the expected meso / expected spare (fodder) count needed to "succeed" enhancing from star n to n+1.
+// On destroy there are three choices, and at each star we greedily pick whichever has the lowest total expected cost:
+//  - Plain retry: re-enhance from star 0 up to this star with a new spare (paying the accumulated cost again)
+//  - Safeguard (stars 15-17): destroy is absorbed into maintain, but the enhancement cost triples
+//  - Destroy restore (stars 15-22, specific levels): pay a fixed meso + equipment cost to retry immediately at the same star
+// Since a smaller accumulated cost at an earlier step also shrinks the "retry" cost of every later step,
+// the locally optimal choice at each step is also globally optimal (no backward references, so a single DP pass suffices).
 export function computeStarforceTable(options: StarforceStepOptions, starCount = 29): StarforceStepResult[] {
   const { level, spareValue, costDiscountRate, destroyReductionActive, restoreMesoDiscountActive } = options;
   const results: StarforceStepResult[] = [];
@@ -88,14 +88,14 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
     const baseCost = getStarforceCost(level, star) ?? 0;
     const cost = baseCost * (1 - costDiscountRate);
 
-    // 옵션 1: 그냥 재도전
+    // Option 1: plain retry
     let bestCost = (cost + destroy * cumulativeCost) / success;
     let bestSpareCount = (destroy * (1 + cumulativeSpareCount)) / success;
     let bestTotal = bestCost + bestSpareCount * spareValue;
     let useSafeguard = false;
     let useRestore = false;
 
-    // 옵션 2: 파괴방지
+    // Option 2: safeguard
     if (SAFEGUARD_STAR_SET.has(star) && destroy > 0) {
       const safeguardCost = (cost * SAFEGUARD_COST_MULTIPLIER) / success;
       if (safeguardCost < bestTotal) {
@@ -107,7 +107,7 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
       }
     }
 
-    // 옵션 3: 파괴복구
+    // Option 3: destroy restore
     if (RESTORE_STAR_SET.has(star) && destroy > 0) {
       const restoreInfo = RESTORE_TABLE[level]?.[star];
       if (restoreInfo && restoreInfo[0] > 0 && restoreInfo[1] > 0) {

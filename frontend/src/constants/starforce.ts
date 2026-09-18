@@ -43,11 +43,11 @@ export const MEMBERSHIP_GRADES: MembershipGrade[] = [
 
 export const PC_ROOM_DISCOUNT_RATE = 5;
 
-// 파괴방지: 15~17성에서만 사용 가능, 사용 시 해당 강화비용이 3배가 됨 (파괴 확률은 유지 확률로 흡수).
+// Safeguard: usable only at stars 15-17; triples the enhancement cost for that attempt (destroy chance is absorbed into maintain chance).
 export const SAFEGUARD_STARS = [15, 16, 17] as const;
 export const SAFEGUARD_COST_MULTIPLIER = 3;
 
-// 성별 [성공, 유지(하락 없음), 파괴] 확률. 15성 미만은 파괴가 없어 실패 시 무조건 유지.
+// Per-star [success, maintain (no drop), destroy] probabilities. Below star 15 there is no destroy, so failure always maintains.
 export const STARFORCE_PROBABILITIES: readonly [number, number, number][] = [
   [0.9975, 0.0025, 0],
   [0.945, 0.055, 0],
@@ -81,8 +81,8 @@ export const STARFORCE_PROBABILITIES: readonly [number, number, number][] = [
   [0.0105, 0.7916, 0.1979],
 ];
 
-// 흔적복구(확정복구): 15~22성, 특정 장비 레벨에서만 사용 가능.
-// 파괴 직전 성으로 복구되며(제자리 유지), 레벨별로 [필요 흔적 장비 개수, 복구 메소비용(억)]이 고정되어 있음.
+// Trace restore (guaranteed restore): usable only at stars 15-22, and only for specific equipment levels.
+// Restores to the star right before destruction (stays in place); per level, [required spare equipment count, restore cost in meso (100M units)] is fixed.
 export const RESTORE_AVAILABLE_STARS = [15, 16, 17, 18, 19, 20, 21, 22] as const;
 export const RESTORE_AVAILABLE_LEVELS = [130, 135, 140, 145, 150, 160, 200, 250] as const;
 

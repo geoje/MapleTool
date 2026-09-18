@@ -49,8 +49,8 @@ export function formatCubeCount(value: number): string {
   return formatTruncated(truncateToOneDecimal(value));
 }
 
-// Rounds to the nearest 천만(10,000,000) and drops anything below that, per product spec.
-// Falls back to 만 단위, then the raw value, when the amount is too small to show at that precision.
+// Rounds to the nearest 10,000,000 (cheonman) and drops anything below that, per product spec.
+// Falls back to units of 10,000 (man), then the raw value, when the amount is too small to show at that precision.
 export function formatCostRounded(value: number): string {
   const rounded = Math.round(value / 10_000_000) * 10_000_000;
   if (rounded >= 100_000_000) {
