@@ -53,7 +53,6 @@ export function StarforceCard({
                   onClick={() => setCurrentStar(star)}
                   className={cn(
                     "border-b last:border-b-0 hover:bg-muted/30",
-                    isSelected && "bg-muted/50",
                     isFaded && "text-muted-foreground/40",
                   )}
                 >

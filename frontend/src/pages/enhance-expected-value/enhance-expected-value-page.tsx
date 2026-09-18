@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { SET_COMBOS, SetType } from "@/constants/enhance";
 import { SET_ITEMS } from "@/constants/enhance-set-items";
-import { DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
+import { DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
+import { EquipmentCategorySelect } from "@/pages/enhance-expected-value/equipment-category-select";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-expected-value/equipment-panel";
 import { StarforceCard } from "@/pages/enhance-expected-value/starforce-panel";
 import { StarforceLevelInput } from "@/pages/enhance-expected-value/starforce-level-input";
+import { SundayMaplePanel } from "@/pages/enhance-expected-value/sunday-maple-panel";
 import { useEnhanceStore } from "@/stores/enhance-store";
 
 type Selection = { type: "character"; preset: 1 | 2 | 3 } | { type: "set"; comboIndex: number };
@@ -34,6 +36,7 @@ export function EnhanceExpectedValuePage() {
   const [showNotice, setShowNotice] = useState(true);
   const [starforceCollapsed, setStarforceCollapsed] = useState(false);
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
+  const [equipmentCategory, setEquipmentCategory] = useState(DEFAULT_EQUIPMENT_CATEGORY);
   const [potentialCollapsed, setPotentialCollapsed] = useState(false);
   const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = useState(false);
 
@@ -107,7 +110,9 @@ export function EnhanceExpectedValuePage() {
               <SectionTitle step={2}>옵션</SectionTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
+              <EquipmentCategorySelect category={equipmentCategory} onChange={setEquipmentCategory} />
               <StarforceLevelInput level={starforceLevel} onChange={setStarforceLevel} />
+              <SundayMaplePanel />
             </CardContent>
           </Card>
         </div>

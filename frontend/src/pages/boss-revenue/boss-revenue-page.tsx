@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { SectionTitle } from "@/components/section-title";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Card, CardAction, CardContent, CardHeader } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { PRICE_CHANGE_DATE } from "@/constants/boss";
@@ -51,37 +52,42 @@ export function BossRevenuePage() {
             </SectionTitle>
             <NameInput setSelected={setSelected} />
           </div>
-          <CardAction className="flex items-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  aria-label="compare"
-                  variant={showComparison ? "secondary" : "ghost"}
-                  size="icon"
-                  className={cn("size-7", !showComparison && "text-muted-foreground hover:text-foreground")}
-                  onClick={() => setShowComparison((prev) => !prev)}
-                >
-                  <Scale className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {PRICE_CHANGE_DATE.getMonth() + 1}월 {PRICE_CHANGE_DATE.getDate()}일 수익 변화 표시
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  aria-label="share"
-                  variant="ghost"
-                  size="icon"
-                  className="size-7 text-muted-foreground hover:text-foreground"
-                  onClick={handleShare}
-                >
-                  <Share2 className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>공유</TooltipContent>
-            </Tooltip>
+          <CardAction>
+            <ButtonGroup>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    aria-label="compare"
+                    variant="outline"
+                    size="icon"
+                    className={cn(
+                      "size-7",
+                      showComparison ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"
+                    )}
+                    onClick={() => setShowComparison((prev) => !prev)}
+                  >
+                    <Scale className="size-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {PRICE_CHANGE_DATE.getMonth() + 1}월 {PRICE_CHANGE_DATE.getDate()}일 수익 변화 표시
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    aria-label="share"
+                    variant="outline"
+                    size="icon"
+                    className="size-7 text-muted-foreground hover:text-foreground"
+                    onClick={handleShare}
+                  >
+                    <Share2 className="size-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>공유</TooltipContent>
+              </Tooltip>
+            </ButtonGroup>
           </CardAction>
         </CardHeader>
         <CardContent className="flex w-full flex-col gap-3 md:w-auto md:min-w-80">

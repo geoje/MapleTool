@@ -138,7 +138,9 @@ export function UnionArtifactPage() {
         <CardHeader>
           <SectionTitle step={4}>배치도</SectionTitle>
           <CardAction>
-            <Badge variant="outline">남은 AP {remainPoint(artifactLevel)}</Badge>
+            <Badge variant="secondary" className="text-muted-foreground">
+              남은 AP {remainPoint(artifactLevel)}
+            </Badge>
           </CardAction>
         </CardHeader>
         <CardContent>
