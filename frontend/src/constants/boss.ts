@@ -314,7 +314,7 @@ export const BOSS: Record<BossType, Boss> = {
     icon: kaling,
     prices: {
       EASY: 320_000_000,
-      NORMAL: 576_000_000,
+      NORMAL: 593_000_000,
       HARD: 1_560_000_000,
       EXTREME: 5_387_000_000,
     },
@@ -330,7 +330,7 @@ export const BOSS: Record<BossType, Boss> = {
     name: "찬란한 흉성",
     abbreviate: "흉성",
     icon: radiantMaleficStar,
-    prices: { NORMAL: 593_000_000, HARD: 2_678_000_000 },
+    prices: { NORMAL: 576_000_000, HARD: 2_678_000_000 },
     previousPrices: { NORMAL: 625_000_000 },
     cubes: { NORMAL: { gold: 3 } },
     previousCubes: { NORMAL: { gold: 0 } },
