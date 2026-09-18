@@ -2,13 +2,24 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { UnionBasic } from "@/types";
 
+let cachedKey: string | undefined;
+let cachedData: UnionBasic | undefined;
+
 export function useUnionBasic(name: string, searchToken?: number) {
-  const [data, setData] = useState<UnionBasic>();
+  const [data, setData] = useState<UnionBasic | undefined>(() =>
+    cachedKey === `${name}:${searchToken ?? 0}` ? cachedData : undefined
+  );
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     if (!name) {
       setData(undefined);
+      return;
+    }
+
+    const key = `${name}:${searchToken ?? 0}`;
+    if (cachedKey === key) {
+      setData(cachedData);
       return;
     }
 
@@ -26,7 +37,11 @@ export function useUnionBasic(name: string, searchToken?: number) {
 
         return response.json() as Promise<UnionBasic>;
       })
-      .then(setData)
+      .then((result) => {
+        cachedKey = key;
+        cachedData = result;
+        setData(result);
+      })
       .catch((error) => {
         if (controller.signal.aborted) return;
         toast.warning(error.message);
