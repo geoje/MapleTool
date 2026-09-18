@@ -36,7 +36,7 @@ export function EnhanceExpectedValuePage() {
   const [showNotice, setShowNotice] = useState(true);
   const [starforceCollapsed, setStarforceCollapsed] = useState(false);
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
-  const [equipmentCategory, setEquipmentCategory] = useState(DEFAULT_EQUIPMENT_CATEGORY);
+  const [equipmentCategory, setEquipmentCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
   const [potentialCollapsed, setPotentialCollapsed] = useState(false);
   const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = useState(false);
 
