@@ -1,5 +1,6 @@
 import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { CollapsibleCard } from "@/components/collapsible-card";
 import { SectionTitle } from "@/components/section-title";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,8 @@ export function EnhanceExpectedValuePage() {
   const [showNotice, setShowNotice] = useState(true);
   const [starforceCollapsed, setStarforceCollapsed] = useState(false);
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
+  const [potentialCollapsed, setPotentialCollapsed] = useState(false);
+  const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = useState(false);
 
   useEffect(() => {
     setSelection(getDefaultSelection(!!equipment));
@@ -115,6 +118,32 @@ export function EnhanceExpectedValuePage() {
           onCollapse={() => setStarforceCollapsed(true)}
           onExpand={() => setStarforceCollapsed(false)}
         />
+
+        <div className="flex w-full flex-col gap-4 md:w-auto">
+          <CollapsibleCard
+            step={4}
+            title="잠재능력"
+            collapsed={potentialCollapsed}
+            onCollapse={() => setPotentialCollapsed(true)}
+            onExpand={() => setPotentialCollapsed(false)}
+            collapseVariant={additionalPotentialCollapsed ? "left" : "top"}
+            contentClassName="min-h-48 items-center justify-center px-8"
+          >
+            <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
+          </CollapsibleCard>
+
+          <CollapsibleCard
+            step={5}
+            title="에디잠재"
+            collapsed={additionalPotentialCollapsed}
+            onCollapse={() => setAdditionalPotentialCollapsed(true)}
+            onExpand={() => setAdditionalPotentialCollapsed(false)}
+            collapseVariant={potentialCollapsed ? "left" : "top"}
+            contentClassName="min-h-48 items-center justify-center px-8"
+          >
+            <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
+          </CollapsibleCard>
+        </div>
       </div>
     </div>
   );
