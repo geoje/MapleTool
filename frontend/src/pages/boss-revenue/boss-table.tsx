@@ -66,6 +66,15 @@ function getHaSeiKalCandidates(): BossCandidate[] {
   ];
 }
 
+function isCandidatesSelected(bossPlan: BossPlan, candidates: BossCandidate[]): boolean {
+  return (
+    bossPlan.boss.length == candidates.length &&
+    candidates.every(({ type, difficulty }) =>
+      bossPlan.boss.some((item) => item.type == type && item.difficulty == difficulty)
+    )
+  );
+}
+
 const BLACK_MAGE_CANDIDATE: BossCandidate = {
   type: BossType.BLACK_MAGE,
   difficulty: BossDifficulty.HARD,
@@ -111,23 +120,39 @@ export function BossTableActions({ selected }: { selected: number }) {
     }
   };
 
-  const handleSelectFirstHalfMax = () =>
-    applyCandidates(getFirstHalfMaxCandidates().slice(0, MAX_BOSS_SELECTABLE));
-  const handleSelectHaSeiKal = () =>
-    applyCandidates([...getHaSeiKalCandidates(), BLACK_MAGE_CANDIDATE]);
-  const handleSelectNoJeokNoKal = () =>
-    applyCandidates([...getNoJeokNoKalCandidates(), BLACK_MAGE_CANDIDATE]);
+  const firstHalfMaxCandidates = getFirstHalfMaxCandidates().slice(0, MAX_BOSS_SELECTABLE);
+  const haSeiKalCandidates = [...getHaSeiKalCandidates(), BLACK_MAGE_CANDIDATE];
+  const noJeokNoKalCandidates = [...getNoJeokNoKalCandidates(), BLACK_MAGE_CANDIDATE];
+
+  const handleSelectFirstHalfMax = () => applyCandidates(firstHalfMaxCandidates);
+  const handleSelectHaSeiKal = () => applyCandidates(haSeiKalCandidates);
+  const handleSelectNoJeokNoKal = () => applyCandidates(noJeokNoKalCandidates);
 
   return (
     <div className="flex items-center gap-1">
       <ButtonGroup>
-        <Button size="sm" variant="outline" className="h-7" onClick={handleSelectFirstHalfMax}>
+        <Button
+          size="sm"
+          variant="outline"
+          className={cn("h-7", isCandidatesSelected(bossPlan, firstHalfMaxCandidates) && "bg-muted text-foreground")}
+          onClick={handleSelectFirstHalfMax}
+        >
           검밑솔
         </Button>
-        <Button size="sm" variant="outline" className="h-7" onClick={handleSelectHaSeiKal}>
+        <Button
+          size="sm"
+          variant="outline"
+          className={cn("h-7", isCandidatesSelected(bossPlan, haSeiKalCandidates) && "bg-muted text-foreground")}
+          onClick={handleSelectHaSeiKal}
+        >
           하세이칼
         </Button>
-        <Button size="sm" variant="outline" className="h-7" onClick={handleSelectNoJeokNoKal}>
+        <Button
+          size="sm"
+          variant="outline"
+          className={cn("h-7", isCandidatesSelected(bossPlan, noJeokNoKalCandidates) && "bg-muted text-foreground")}
+          onClick={handleSelectNoJeokNoKal}
+        >
           노적노칼
         </Button>
       </ButtonGroup>
