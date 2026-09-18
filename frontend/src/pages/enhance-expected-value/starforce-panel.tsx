@@ -5,19 +5,27 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils";
 import { formatCostExact, formatCostRounded } from "@/lib/format";
 import { getMaxStar, getStarforceCost } from "@/lib/starforce-service";
+import { StarforceDiscountPanel } from "@/pages/enhance-expected-value/discount-panel";
+import { StarforceLevelInput } from "@/pages/enhance-expected-value/starforce-level-input";
+import { SundayStarforcePanel } from "@/pages/enhance-expected-value/sunday-maple-panel";
 
 export function StarforceCard({
   collapsed,
   level,
+  onLevelChange,
   onCollapse,
   onExpand,
 }: {
   collapsed: boolean;
   level: number;
+  onLevelChange: (value: number) => void;
   onCollapse: () => void;
   onExpand: () => void;
 }) {
   const [currentStar, setCurrentStar] = useState(0);
+  const [activeSundayKeys, setActiveSundayKeys] = useState<Set<string>>(new Set());
+  const [membershipGrade, setMembershipGrade] = useState<string | null>(null);
+  const [pcRoom, setPcRoom] = useState(false);
 
   const maxStar = getMaxStar(level);
   const starLevels = Array.from({ length: maxStar + 1 }, (_, star) => star);
@@ -26,8 +34,29 @@ export function StarforceCard({
     setCurrentStar((prev) => (prev > maxStar ? maxStar : prev));
   }, [maxStar]);
 
+  const toggleSundayEffect = (key: string) => {
+    setActiveSundayKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const selectMembershipGrade = (key: string) => {
+    setMembershipGrade((prev) => (prev === key ? null : key));
+  };
+
   return (
-    <CollapsibleCard step={3} title="스타포스" collapsed={collapsed} onCollapse={onCollapse} onExpand={onExpand}>
+    <CollapsibleCard step={2} title="스타포스" collapsed={collapsed} onCollapse={onCollapse} onExpand={onExpand}>
+      <StarforceLevelInput level={level} onChange={onLevelChange} />
+      <SundayStarforcePanel activeKeys={activeSundayKeys} onToggle={toggleSundayEffect} />
+      <StarforceDiscountPanel
+        membershipGrade={membershipGrade}
+        onSelectMembershipGrade={selectMembershipGrade}
+        pcRoom={pcRoom}
+        onTogglePcRoom={() => setPcRoom((prev) => !prev)}
+      />
       <RadioGroup
         className="contents"
         value={String(currentStar)}

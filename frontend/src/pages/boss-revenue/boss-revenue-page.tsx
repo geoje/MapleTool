@@ -8,7 +8,6 @@ import { Card, CardAction, CardContent, CardHeader } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { PRICE_CHANGE_DATE } from "@/constants/boss";
 import { convertPlansToParams } from "@/lib/boss-service";
-import { cn } from "@/lib/utils";
 import { useBossStore } from "@/stores/boss-store";
 import { BossTable, BossTableActions } from "@/pages/boss-revenue/boss-table";
 import { CharacterList, NameInput, SummaryTable } from "@/pages/boss-revenue/character-panel";
@@ -52,18 +51,15 @@ export function BossRevenuePage() {
             </SectionTitle>
             <NameInput setSelected={setSelected} />
           </div>
-          <CardAction>
+          <CardAction className="flex items-center gap-2">
             <ButtonGroup>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     aria-label="compare"
-                    variant="outline"
+                    variant={showComparison ? "default" : "outline"}
                     size="icon"
-                    className={cn(
-                      "size-7",
-                      showComparison ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"
-                    )}
+                    className="size-7"
                     onClick={() => setShowComparison((prev) => !prev)}
                   >
                     <Scale className="size-4" />
@@ -73,6 +69,8 @@ export function BossRevenuePage() {
                   {PRICE_CHANGE_DATE.getMonth() + 1}월 {PRICE_CHANGE_DATE.getDate()}일 수익 변화 표시
                 </TooltipContent>
               </Tooltip>
+            </ButtonGroup>
+            <ButtonGroup>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button

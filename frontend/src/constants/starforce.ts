@@ -1,7 +1,7 @@
 export const MIN_STARFORCE_LEVEL = 0;
 export const MAX_STARFORCE_LEVEL = 300;
 export const DEFAULT_STARFORCE_LEVEL = 140;
-export const STARFORCE_LEVEL_PRESETS = [140, 160, 200, 250];
+export const STARFORCE_LEVEL_PRESETS = [160, 200, 250];
 export const MAX_STAR = 30;
 
 export const EQUIPMENT_CATEGORIES = [
@@ -28,3 +28,17 @@ export const EQUIPMENT_CATEGORIES = [
 ] as const;
 
 export const DEFAULT_EQUIPMENT_CATEGORY = EQUIPMENT_CATEGORIES[0];
+
+export interface MembershipGrade {
+  key: string;
+  label: string;
+  discountRate: number;
+}
+
+export const MEMBERSHIP_GRADES: MembershipGrade[] = [
+  { key: "silver", label: "실버", discountRate: 3 },
+  { key: "gold", label: "골드", discountRate: 5 },
+  { key: "diamond", label: "다이아", discountRate: 10 },
+];
+
+export const PC_ROOM_DISCOUNT_RATE = 5;

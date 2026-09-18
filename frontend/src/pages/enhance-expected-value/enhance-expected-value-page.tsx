@@ -10,11 +10,9 @@ import { SET_ITEMS } from "@/constants/enhance-set-items";
 import { DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
-import { EquipmentCategorySelect } from "@/pages/enhance-expected-value/equipment-category-select";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-expected-value/equipment-panel";
+import { PotentialCommonControls } from "@/pages/enhance-expected-value/potential-common-controls";
 import { StarforceCard } from "@/pages/enhance-expected-value/starforce-panel";
-import { StarforceLevelInput } from "@/pages/enhance-expected-value/starforce-level-input";
-import { SundayMaplePanel } from "@/pages/enhance-expected-value/sunday-maple-panel";
 import { useEnhanceStore } from "@/stores/enhance-store";
 
 type Selection = { type: "character"; preset: 1 | 2 | 3 } | { type: "set"; comboIndex: number };
@@ -39,6 +37,7 @@ export function EnhanceExpectedValuePage() {
   const [equipmentCategory, setEquipmentCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
   const [potentialCollapsed, setPotentialCollapsed] = useState(false);
   const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = useState(false);
+  const [miracleTime, setMiracleTime] = useState(false);
 
   useEffect(() => {
     setSelection(getDefaultSelection(!!equipment));
@@ -104,49 +103,55 @@ export function EnhanceExpectedValuePage() {
               />
             </CardContent>
           </Card>
-
-          <Card className="w-full md:w-auto">
-            <CardHeader>
-              <SectionTitle step={2}>옵션</SectionTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-3">
-              <EquipmentCategorySelect category={equipmentCategory} onChange={setEquipmentCategory} />
-              <StarforceLevelInput level={starforceLevel} onChange={setStarforceLevel} />
-              <SundayMaplePanel />
-            </CardContent>
-          </Card>
         </div>
 
         <StarforceCard
           collapsed={starforceCollapsed}
           level={starforceLevel}
+          onLevelChange={setStarforceLevel}
           onCollapse={() => setStarforceCollapsed(true)}
           onExpand={() => setStarforceCollapsed(false)}
         />
 
         <div className="flex w-full flex-col gap-4 md:w-auto">
           <CollapsibleCard
-            step={4}
+            step={3}
             title="잠재능력"
             collapsed={potentialCollapsed}
             onCollapse={() => setPotentialCollapsed(true)}
             onExpand={() => setPotentialCollapsed(false)}
             collapseVariant={additionalPotentialCollapsed ? "left" : "top"}
-            contentClassName="min-h-48 items-center justify-center px-8"
+            contentClassName="min-h-48"
           >
-            <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
+            <PotentialCommonControls
+              category={equipmentCategory}
+              onCategoryChange={setEquipmentCategory}
+              miracleTime={miracleTime}
+              onToggleMiracleTime={() => setMiracleTime((prev) => !prev)}
+            />
+            <div className="flex flex-1 items-center justify-center">
+              <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
+            </div>
           </CollapsibleCard>
 
           <CollapsibleCard
-            step={5}
+            step={4}
             title="에디잠재"
             collapsed={additionalPotentialCollapsed}
             onCollapse={() => setAdditionalPotentialCollapsed(true)}
             onExpand={() => setAdditionalPotentialCollapsed(false)}
             collapseVariant={potentialCollapsed ? "left" : "top"}
-            contentClassName="min-h-48 items-center justify-center px-8"
+            contentClassName="min-h-48"
           >
-            <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
+            <PotentialCommonControls
+              category={equipmentCategory}
+              onCategoryChange={setEquipmentCategory}
+              miracleTime={miracleTime}
+              onToggleMiracleTime={() => setMiracleTime((prev) => !prev)}
+            />
+            <div className="flex flex-1 items-center justify-center">
+              <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
+            </div>
           </CollapsibleCard>
         </div>
       </div>

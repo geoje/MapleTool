@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { MAX_STARFORCE_LEVEL, MIN_STARFORCE_LEVEL, STARFORCE_LEVEL_PRESETS } from "@/constants/starforce";
-import { cn } from "@/lib/utils";
 
 function clamp(value: number) {
   return Math.min(MAX_STARFORCE_LEVEL, Math.max(MIN_STARFORCE_LEVEL, value));
@@ -26,9 +25,8 @@ export function StarforceLevelInput({ level, onChange }: { level: number; onChan
             <Button
               key={preset}
               type="button"
-              variant="outline"
+              variant={level == preset ? "default" : "outline"}
               size="sm"
-              className={cn(level == preset && "bg-muted text-foreground")}
               onClick={() => onChange(preset)}
             >
               {preset}
