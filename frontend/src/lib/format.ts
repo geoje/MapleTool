@@ -50,13 +50,19 @@ export function formatCubeCount(value: number): string {
 }
 
 // Rounds to the nearest 천만(10,000,000) and drops anything below that, per product spec.
+// Falls back to 만 단위, then the raw value, when the amount is too small to show at that precision.
 export function formatCostRounded(value: number): string {
   const rounded = Math.round(value / 10_000_000) * 10_000_000;
-  if (rounded === 0) return "0";
-  if (rounded < 100_000_000) return `${rounded / 10_000_000}천만`;
+  if (rounded >= 100_000_000) {
+    const eok = (rounded / 100_000_000).toFixed(1).replace(/\.0$/, "");
+    return `${eok}억`;
+  }
+  if (rounded > 0) return `${rounded / 10_000_000}천만`;
 
-  const eok = (rounded / 100_000_000).toFixed(1).replace(/\.0$/, "");
-  return `${eok}억`;
+  const man = Math.round(value / 10_000);
+  if (man > 0) return `${man}만`;
+
+  return String(value);
 }
 
 export function formatCostExact(value: number): string {

@@ -1,6 +1,5 @@
 import { PanelLeftClose, PanelTopClose, PanelTopOpen } from "lucide-react";
 import { SectionTitle } from "@/components/section-title";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatCostExact, formatCostRounded } from "@/lib/format";
@@ -58,13 +57,16 @@ export function StarforceCard({
   return (
     <Card className="w-full md:w-auto">
       <CardHeader>
-        <div className="flex items-center justify-between gap-3">
+        <button
+          type="button"
+          aria-label="축소"
+          onClick={onCollapse}
+          className="-m-1 flex w-fit items-center gap-1.5 rounded-md p-1 transition-colors hover:bg-muted"
+        >
           <SectionTitle step={2}>스타포스</SectionTitle>
-          <Button type="button" variant="ghost" size="icon-sm" aria-label="축소" onClick={onCollapse}>
-            <PanelTopClose className="size-4 md:hidden" />
-            <PanelLeftClose className="hidden size-4 md:block" />
-          </Button>
-        </div>
+          <PanelTopClose className="size-4 text-muted-foreground md:hidden" />
+          <PanelLeftClose className="hidden size-4 text-muted-foreground md:block" />
+        </button>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <StarforceLevelInput level={level} onChange={onLevelChange} />
