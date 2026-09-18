@@ -32,3 +32,13 @@ export function getStarforceCost(level: number, star: number): number | undefine
 
   return 100 * Math.round(10 + (level ** 3 * (star + 1) ** 2.7) / HIGH_STAR_DIVISORS[star]);
 }
+
+// Max achievable star by equip level bracket.
+export function getMaxStar(level: number): number {
+  if (level <= 94) return 5;
+  if (level <= 107) return 8;
+  if (level <= 117) return 10;
+  if (level <= 127) return 15;
+  if (level <= 137) return 20;
+  return 30;
+}

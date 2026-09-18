@@ -1,12 +1,13 @@
 import { PanelLeftClose, PanelTopClose, PanelTopOpen } from "lucide-react";
+import { useEffect, useState } from "react";
 import { SectionTitle } from "@/components/section-title";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import { formatCostExact, formatCostRounded } from "@/lib/format";
-import { getStarforceCost } from "@/lib/starforce-service";
+import { getMaxStar, getStarforceCost } from "@/lib/starforce-service";
 import { StarforceLevelInput } from "@/pages/enhance-expected-value/starforce-level-input";
-
-const STAR_LEVELS = Array.from({ length: 31 }, (_, star) => star);
 
 export function StarforceCard({
   collapsed,
@@ -21,6 +22,15 @@ export function StarforceCard({
   onExpand: () => void;
   onLevelChange: (level: number) => void;
 }) {
+  const [currentStar, setCurrentStar] = useState(0);
+
+  const maxStar = getMaxStar(level);
+  const starLevels = Array.from({ length: maxStar + 1 }, (_, star) => star);
+
+  useEffect(() => {
+    setCurrentStar((prev) => (prev > maxStar ? maxStar : prev));
+  }, [maxStar]);
+
   if (collapsed) {
     return (
       <>
@@ -71,34 +81,58 @@ export function StarforceCard({
       <CardContent className="flex flex-col gap-3">
         <StarforceLevelInput level={level} onChange={onLevelChange} />
 
-        <table className="border-collapse text-xs">
-          <thead>
-            <tr className="border-b">
-              <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">단계</th>
-              <th className="w-32 px-3 py-1 text-right font-medium text-muted-foreground">단일 비용</th>
-            </tr>
-          </thead>
-          <tbody>
-            {STAR_LEVELS.map((star) => {
-              const cost = getStarforceCost(level, star);
-              return (
-                <tr key={star} className="border-b last:border-b-0">
-                  <td className="border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">{star}</td>
-                  <td className="w-32 px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                    {cost != null && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span>{formatCostRounded(cost)}</span>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">{formatCostExact(cost)}</TooltipContent>
-                      </Tooltip>
+        <RadioGroup
+          className="contents"
+          value={String(currentStar)}
+          onValueChange={(value) => setCurrentStar(Number(value))}
+        >
+          <table className="border-collapse text-xs">
+            <thead>
+              <tr className="border-b">
+                <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">현재</th>
+                <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">목표</th>
+                <th className="w-32 px-3 py-1 text-right font-medium text-muted-foreground">단일 비용</th>
+              </tr>
+            </thead>
+            <tbody>
+              {starLevels.map((star) => {
+                const cost = getStarforceCost(level, star);
+                const target = star < maxStar ? star + 1 : null;
+                const isSelected = currentStar === star;
+                const isFaded = target != null && target <= currentStar;
+                return (
+                  <tr
+                    key={star}
+                    onClick={() => setCurrentStar(star)}
+                    className={cn(
+                      "border-b last:border-b-0 hover:bg-muted/30",
+                      isSelected && "bg-muted/50",
+                      isFaded && "text-muted-foreground/40",
                     )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  >
+                    <td className="border-r px-3 py-1">
+                      <div className="flex items-center justify-between gap-2 whitespace-nowrap tabular-nums">
+                        <RadioGroupItem value={String(star)} aria-label={`현재 ${star}`} />
+                        <span className={cn(!isSelected && "text-muted-foreground/40")}>{star}</span>
+                      </div>
+                    </td>
+                    <td className="border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">{target}</td>
+                    <td className="w-32 px-3 py-1 text-right whitespace-nowrap tabular-nums">
+                      {cost != null && target != null && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span>{formatCostRounded(cost)}</span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">{formatCostExact(cost)}</TooltipContent>
+                        </Tooltip>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </RadioGroup>
       </CardContent>
     </Card>
   );
