@@ -57,6 +57,20 @@ export const POTENTIAL_GRADE_INFOS: Record<PotentialGrade, { name: string; borde
   [PotentialGrade.RARE]: { name: "레어", borderColor: "#66ffff" },
 };
 
+export const EquipmentLevelTier = {
+  LOW: "LOW",
+  HIGH: "HIGH",
+} as const;
+
+export type EquipmentLevelTier = (typeof EquipmentLevelTier)[keyof typeof EquipmentLevelTier];
+
+export const EQUIPMENT_LEVEL_TIERS: { key: EquipmentLevelTier; label: string }[] = [
+  { key: EquipmentLevelTier.LOW, label: "120~200" },
+  { key: EquipmentLevelTier.HIGH, label: "201~250" },
+];
+
+export const DEFAULT_EQUIPMENT_LEVEL_TIER: EquipmentLevelTier = EquipmentLevelTier.LOW;
+
 export type SlotCell = { label: string; apiSlot: string } | "character" | null;
 
 // 7 columns x 6 rows. The 3x4 "character" block (cols 3-5, rows 1-4) renders one

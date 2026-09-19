@@ -43,6 +43,13 @@ export function StarforceLevelInput({ level, onChange }: { level: number; onChan
           >
             -10
           </InputGroupButton>
+          <InputGroupButton
+            aria-label="decrease by 5"
+            disabled={level <= MIN_STARFORCE_LEVEL}
+            onClick={() => onChange(clamp(level - 5))}
+          >
+            -5
+          </InputGroupButton>
         </InputGroupAddon>
         <InputGroupInput
           inputMode="numeric"
@@ -62,6 +69,13 @@ export function StarforceLevelInput({ level, onChange }: { level: number; onChan
           }}
         />
         <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            aria-label="increase by 5"
+            disabled={level >= MAX_STARFORCE_LEVEL}
+            onClick={() => onChange(clamp(level + 5))}
+          >
+            +5
+          </InputGroupButton>
           <InputGroupButton
             aria-label="increase by 10"
             disabled={level >= MAX_STARFORCE_LEVEL}

@@ -1,4 +1,5 @@
 import {
+  BASE_RESTORE_TARGET_STAR,
   RESTORE_AVAILABLE_STARS,
   RESTORE_TABLE,
   SAFEGUARD_COST_MULTIPLIER,
@@ -68,7 +69,8 @@ const RESTORE_STAR_SET = new Set<number>(RESTORE_AVAILABLE_STARS);
 
 // Computes the expected meso / expected spare (fodder) count needed to "succeed" enhancing from star n to n+1.
 // On destroy there are three choices, and at each star we greedily pick whichever has the lowest total expected cost:
-//  - Plain retry: re-enhance from star 0 up to this star with a new spare (paying the accumulated cost again)
+//  - Base restore: consume one spare and drop back to BASE_RESTORE_TARGET_STAR (12), then re-climb from there.
+//    This is a guaranteed game mechanic, not an optional purchase, so it's always the fallback.
 //  - Safeguard (stars 15-17): destroy is absorbed into maintain, but the enhancement cost triples
 //  - Destroy restore (stars 15-22, specific levels): pay a fixed meso + equipment cost to retry immediately at the same star
 // Since a smaller accumulated cost at an earlier step also shrinks the "retry" cost of every later step,
@@ -79,8 +81,16 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
 
   let cumulativeCost = 0;
   let cumulativeSpareCount = 0;
+  // Cost to reach BASE_RESTORE_TARGET_STAR from 0, snapshotted once the loop reaches that star.
+  // No matching spare-count snapshot is needed: destroy is 0 for every star below 15 (see
+  // STARFORCE_PROBABILITIES), so the expected spare count accumulated by star 12 is always 0.
+  let cumulativeCostAtBaseRestore = 0;
 
   for (let star = 0; star < starCount; star++) {
+    if (star === BASE_RESTORE_TARGET_STAR) {
+      cumulativeCostAtBaseRestore = cumulativeCost;
+    }
+
     const [success, , baseDestroy] = STARFORCE_PROBABILITIES[star];
     let destroy = baseDestroy;
     if (destroyReductionActive && star <= 21 && destroy > 0) {
@@ -90,8 +100,9 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
     const baseCost = getStarforceCost(level, star) ?? 0;
     const cost = baseCost * (1 - costDiscountRate);
 
-    // Option 1: plain retry
-    let bestCost = (cost + destroy * cumulativeCost) / success;
+    // Option 1: base restore (drop to star 12 on destroy, re-climbing only the cost accrued since then)
+    const costSinceBaseRestore = cumulativeCost - cumulativeCostAtBaseRestore;
+    let bestCost = (cost + destroy * costSinceBaseRestore) / success;
     let bestSpareCount = (destroy * (1 + cumulativeSpareCount)) / success;
     let bestTotal = bestCost + bestSpareCount * spareValue;
     const plainTotal = bestTotal;

@@ -5,7 +5,7 @@ import { SectionTitle } from "@/components/section-title";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { SET_COMBOS, SetType } from "@/constants/enhance";
+import { DEFAULT_EQUIPMENT_LEVEL_TIER, EquipmentLevelTier, SET_COMBOS, SetType } from "@/constants/enhance";
 import { SET_ITEMS } from "@/constants/enhance-set-items";
 import { DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
@@ -35,6 +35,7 @@ export function EnhanceExpectedValuePage() {
   const [starforceCollapsed, setStarforceCollapsed] = useState(false);
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
   const [equipmentCategory, setEquipmentCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
+  const [equipmentLevelTier, setEquipmentLevelTier] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
   const [potentialCollapsed, setPotentialCollapsed] = useState(false);
   const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = useState(false);
   const [miracleTime, setMiracleTime] = useState(false);
@@ -126,6 +127,8 @@ export function EnhanceExpectedValuePage() {
             <PotentialCommonControls
               category={equipmentCategory}
               onCategoryChange={setEquipmentCategory}
+              equipmentLevelTier={equipmentLevelTier}
+              onEquipmentLevelTierChange={setEquipmentLevelTier}
               miracleTime={miracleTime}
               onToggleMiracleTime={() => setMiracleTime((prev) => !prev)}
             />
@@ -143,12 +146,6 @@ export function EnhanceExpectedValuePage() {
             collapseVariant={potentialCollapsed ? "left" : "top"}
             contentClassName="min-h-48"
           >
-            <PotentialCommonControls
-              category={equipmentCategory}
-              onCategoryChange={setEquipmentCategory}
-              miracleTime={miracleTime}
-              onToggleMiracleTime={() => setMiracleTime((prev) => !prev)}
-            />
             <div className="flex flex-1 items-center justify-center">
               <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
             </div>

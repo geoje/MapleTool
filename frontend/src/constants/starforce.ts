@@ -1,7 +1,7 @@
 export const MIN_STARFORCE_LEVEL = 0;
 export const MAX_STARFORCE_LEVEL = 300;
 export const DEFAULT_STARFORCE_LEVEL = 140;
-export const STARFORCE_LEVEL_PRESETS = [160, 200, 250];
+export const STARFORCE_LEVEL_PRESETS = [140, 160, 200, 250];
 export const MAX_STAR = 30;
 
 export const EQUIPMENT_CATEGORIES = [
@@ -46,6 +46,11 @@ export const PC_ROOM_DISCOUNT_RATE = 5;
 // Safeguard: usable only at stars 15-17; triples the enhancement cost for that attempt (destroy chance is absorbed into maintain chance).
 export const SAFEGUARD_STARS = [15, 16, 17] as const;
 export const SAFEGUARD_COST_MULTIPLIER = 3;
+
+// Base destroy recovery (always available, no purchase needed): on destroy, consuming one spare equipment
+// resets the item to this star instead of losing all progress. This is the guaranteed fallback whenever no
+// paid restore/safeguard option is used or available.
+export const BASE_RESTORE_TARGET_STAR = 12;
 
 // Per-star [success, maintain (no drop), destroy] probabilities. Below star 15 there is no destroy, so failure always maintains.
 export const STARFORCE_PROBABILITIES: readonly [number, number, number][] = [
