@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { MEMBERSHIP_GRADES, PC_ROOM_DISCOUNT_RATE } from "@/constants/starforce";
 import { cn } from "@/lib/utils";
-import { formatCostExact, formatCostRounded, formatSpareCount } from "@/lib/format";
+import { formatCostExact, formatCostRounded, formatSpareCountExact, formatSpareCountRounded } from "@/lib/format";
 import { computeStarforceTable, getMaxStar } from "@/lib/starforce-service";
 import { StarforceDiscountPanel } from "@/pages/enhance-expected-value/discount-panel";
 import { SparePriceInput } from "@/pages/enhance-expected-value/spare-price-input";
@@ -104,10 +104,24 @@ export function StarforceCard({
             <tr className="border-b">
               <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">현재</th>
               <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">목표</th>
-              <th className="w-32 border-r px-3 py-1 text-right font-medium text-muted-foreground">기대값</th>
-              <th className="w-24 border-r px-3 py-1 text-right font-medium text-muted-foreground">기대 노작 개수</th>
-              <th className="border-r px-3 py-1 text-center font-medium text-muted-foreground">파괴방지</th>
-              <th className="px-3 py-1 text-center font-medium text-muted-foreground">파괴복구</th>
+              <th className="w-32 border-r px-3 py-1 text-right font-medium text-muted-foreground">평균값</th>
+              <th className="w-24 border-r px-3 py-1 text-right font-medium text-muted-foreground">노작개수</th>
+              <th className="border-r px-3 py-1 text-center font-medium text-muted-foreground">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span>파방</span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">파괴방지</TooltipContent>
+                </Tooltip>
+              </th>
+              <th className="px-3 py-1 text-center font-medium text-muted-foreground">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span>파복</span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">파괴복구</TooltipContent>
+                </Tooltip>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -149,12 +163,35 @@ export function StarforceCard({
                     )}
                   </td>
                   <td className="w-24 border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                    {cumulativeSpareCount != null && formatSpareCount(cumulativeSpareCount)}
+                    {cumulativeSpareCount != null && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>{formatSpareCountRounded(cumulativeSpareCount)}</span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">{formatSpareCountExact(cumulativeSpareCount)}</TooltipContent>
+                      </Tooltip>
+                    )}
                   </td>
                   <td className="border-r px-3 py-1 text-center">
-                    {step?.useSafeguard && <Check className="mx-auto size-3.5" />}
+                    {step?.useSafeguard && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Check className="mx-auto size-3.5" />
+                        </TooltipTrigger>
+                        <TooltipContent side="top">{formatCostRounded(step.protectionSavings)} 절약</TooltipContent>
+                      </Tooltip>
+                    )}
                   </td>
-                  <td className="px-3 py-1 text-center">{step?.useRestore && <Check className="mx-auto size-3.5" />}</td>
+                  <td className="px-3 py-1 text-center">
+                    {step?.useRestore && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Check className="mx-auto size-3.5" />
+                        </TooltipTrigger>
+                        <TooltipContent side="top">{formatCostRounded(step.protectionSavings)} 절약</TooltipContent>
+                      </Tooltip>
+                    )}
+                  </td>
                 </tr>
               );
             })}

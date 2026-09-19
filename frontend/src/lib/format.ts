@@ -57,8 +57,12 @@ export function formatCubeCount(value: number): string {
   return formatFixedPoint(truncateToOneDecimal(value), 1);
 }
 
-export function formatSpareCount(value: number): string {
-  return formatFixedPoint(roundToTwoDecimals(value), 2);
+export function formatSpareCountRounded(value: number): string {
+  return Math.round(value).toLocaleString("en-US");
+}
+
+export function formatSpareCountExact(value: number): string {
+  return roundToTwoDecimals(value).toLocaleString("en-US", { maximumFractionDigits: 2 });
 }
 
 // Rounds to the nearest 10,000,000 (cheonman) and drops anything below that, per product spec.
@@ -101,7 +105,8 @@ export function formatCostExact(value: number): string {
   if (jo > 0) parts.push(`${jo}조`);
   if (eok > 0) parts.push(`${eok}억`);
   if (man > 0) parts.push(`${man}만`);
-  if (rest > 0 || parts.length === 0) parts.push(`${rest}`);
+  // Below 1만, drop the sub-만 remainder entirely per product spec.
+  if (truncated < 10_000) parts.push(`${rest}`);
 
   return parts.join(" ");
 }

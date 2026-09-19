@@ -59,6 +59,8 @@ export interface StarforceStepResult {
   expectedSpareCount: number;
   useSafeguard: boolean;
   useRestore: boolean;
+  // Meso saved at this step versus a plain retry, only meaningful when useSafeguard/useRestore is true.
+  protectionSavings: number;
 }
 
 const SAFEGUARD_STAR_SET = new Set<number>(SAFEGUARD_STARS);
@@ -92,6 +94,7 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
     let bestCost = (cost + destroy * cumulativeCost) / success;
     let bestSpareCount = (destroy * (1 + cumulativeSpareCount)) / success;
     let bestTotal = bestCost + bestSpareCount * spareValue;
+    const plainTotal = bestTotal;
     let useSafeguard = false;
     let useRestore = false;
 
@@ -130,7 +133,15 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
     // spareValue), so it moves with the 노작 가격 input even when the chosen option doesn't change.
     // cumulativeCost/cumulativeSpareCount must keep tracking the pure meso/spare figures, though,
     // since that's what a future destroy-and-retry actually has to repay.
-    results.push({ star, expectedCost: bestTotal, expectedSpareCount: bestSpareCount, useSafeguard, useRestore });
+    const protectionSavings = useSafeguard || useRestore ? plainTotal - bestTotal : 0;
+    results.push({
+      star,
+      expectedCost: bestTotal,
+      expectedSpareCount: bestSpareCount,
+      useSafeguard,
+      useRestore,
+      protectionSavings,
+    });
     cumulativeCost += bestCost;
     cumulativeSpareCount += bestSpareCount;
   }
