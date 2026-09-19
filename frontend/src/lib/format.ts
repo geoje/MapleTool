@@ -74,7 +74,7 @@ export function formatCostRounded(value: number): string {
   if (rounded === 0) {
     const man = Math.round(value / 10_000);
     if (man > 0) return `${man}만`;
-    return String(value);
+    return String(Math.ceil(value));
   }
 
   const jo = Math.floor(rounded / 1_000_000_000_000);

@@ -83,7 +83,7 @@ const BLACK_MAGE_CANDIDATE: BossCandidate = {
 
 function getNoJeokNoKalCandidates(): BossCandidate[] {
   return getHaSeiKalCandidates()
-    .filter((candidate) => candidate.type != BossType.PAPULATUS && candidate.type != BossType.DAMIEN)
+    .filter((candidate) => candidate.type != BossType.PAPULATUS && candidate.type != BossType.LOTUS)
     .map((candidate) =>
       candidate.type == BossType.KALOS_THE_GUARDIAN
         ? { ...candidate, difficulty: BossDifficulty.NORMAL, price: BOSS.KALOS_THE_GUARDIAN.prices.NORMAL ?? 0 }
@@ -339,7 +339,12 @@ function BossRow({
         <span className="hidden text-sm sm:inline">{label}</span>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 border-t py-1 pr-4 md:flex-nowrap">
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-2 border-t py-1 pr-4 md:flex-nowrap",
+          isDisabled && "opacity-40"
+        )}
+      >
         {difficulties.map((difficulty, i) => {
           const color = DIFFICULTY_COLOR[difficulty];
           return (

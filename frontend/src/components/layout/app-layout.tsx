@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { to: "/boss-revenue", label: "보스 수익", icon: crystalPurple },
-  { to: "/enhance-expected-value", label: "강화 기대값", icon: meso },
+  { to: "/enhance-cost", label: "강화 비용", icon: meso },
   { to: "/union-artifact", label: "유니온 아티팩트", icon: artifactNavIcon },
 ];
 
 const TITLES: Record<string, string> = {
   "/boss-revenue": "보스 수익",
-  "/enhance-expected-value": "강화 기대값",
+  "/enhance-cost": "강화 비용",
   "/union-artifact": "유니온 아티팩트",
 };
 
