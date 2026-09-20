@@ -1,4 +1,5 @@
-import { CubeDataResponse, CubeType } from "@/constants/enhance";
+import { CubeType } from "@/constants/enhance";
+import type { CubeDataResponse } from "@/constants/enhance";
 
 export const CUBE_PROBABILITIES: Record<CubeType, CubeDataResponse> = {
   [CubeType.BLACK]: {
