@@ -7,10 +7,10 @@ import { MEMBERSHIP_GRADES, PC_ROOM_DISCOUNT_RATE } from "@/constants/starforce"
 import { cn } from "@/lib/utils";
 import { formatCostExact, formatCostRounded, formatSpareCountExact, formatSpareCountRounded } from "@/lib/format";
 import { computeStarforceTable, getMaxStar } from "@/lib/starforce-service";
-import { StarforceDiscountPanel } from "@/pages/enhance-expected-value/discount-panel";
-import { SparePriceInput } from "@/pages/enhance-expected-value/spare-price-input";
-import { StarforceLevelInput } from "@/pages/enhance-expected-value/starforce-level-input";
-import { SundayStarforcePanel } from "@/pages/enhance-expected-value/sunday-maple-panel";
+import { StarforceDiscountPanel } from "@/pages/enhance-cost/discount-panel";
+import { SparePriceInput } from "@/pages/enhance-cost/spare-price-input";
+import { StarforceLevelInput } from "@/pages/enhance-cost/starforce-level-input";
+import { SundayStarforcePanel } from "@/pages/enhance-cost/sunday-maple-panel";
 
 export function StarforceCard({
   collapsed,

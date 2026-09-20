@@ -51,10 +51,10 @@ export type PotentialGrade = (typeof PotentialGrade)[keyof typeof PotentialGrade
 
 // Highest grade first: getMaxPotentialGrade walks this order to find the best match.
 export const POTENTIAL_GRADE_INFOS: Record<PotentialGrade, { name: string; borderColor: string }> = {
-  [PotentialGrade.LEGENDARY]: { name: "레전드리", borderColor: "#01ff00" },
-  [PotentialGrade.UNIQUE]: { name: "유니크", borderColor: "#ffcc00" },
-  [PotentialGrade.EPIC]: { name: "에픽", borderColor: "#cc66ff" },
-  [PotentialGrade.RARE]: { name: "레어", borderColor: "#66ffff" },
+  [PotentialGrade.LEGENDARY]: { name: "레전드리", borderColor: "#cbfe01" },
+  [PotentialGrade.UNIQUE]: { name: "유니크", borderColor: "#fbcc01" },
+  [PotentialGrade.EPIC]: { name: "에픽", borderColor: "#b777fb" },
+  [PotentialGrade.RARE]: { name: "레어", borderColor: "#64fdf9" },
 };
 
 export const EquipmentLevelTier = {
@@ -131,3 +131,71 @@ export const EQUIPMENT_SLOT_GRID: SlotCell[][] = [
     { label: "뱃지", apiSlot: "뱃지" },
   ],
 ];
+
+
+export const CubeType = {
+  BLACK: "black",
+  MASTER: "master",
+  ARTISAN: "artisan",
+  ADDI: "addi",
+  STRANGE_ADDI: "strangeAddi",
+} as const;
+
+export type CubeType = (typeof CubeType)[keyof typeof CubeType];
+
+export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: string }> = {
+  [CubeType.BLACK]: {
+    displayName: "블랙",
+    fullName: "잠재능력 재설정 / 블랙 큐브 / 프라임 큐브",
+  },
+  [CubeType.MASTER]: {
+    displayName: "실버",
+    fullName: "장인의 큐브 / 실버 큐브",
+  },
+  [CubeType.ARTISAN]: {
+    displayName: "골드",
+    fullName: "명장의 큐브 / 골드 큐브",
+  },
+  [CubeType.ADDI]: {
+    displayName: "화이트",
+    fullName: "에디셔널 잠재능력 재설정 / 에디셔널 큐브 / 화이트 에디셔널 큐브 / 프라임 에디셔널 큐브",
+  },
+  [CubeType.STRANGE_ADDI]: {
+    displayName: "브론즈",
+    fullName: "수상한 에디셔널 큐브 / 브론즈 에디셔널 큐브",
+  },
+};
+
+export const POTENTIAL_CUBES = [CubeType.BLACK, CubeType.MASTER, CubeType.ARTISAN] as const;
+export const ADDITIONAL_POTENTIAL_CUBES = [CubeType.ADDI, CubeType.STRANGE_ADDI] as const;
+
+export interface GradeUpRow {
+  from: string;
+  to: string;
+  probability: number;
+  cubeType?: string;
+}
+
+export interface GuaranteeRow {
+  from: string;
+  to: string;
+  count: number;
+  cubeType?: string;
+}
+
+export interface OptionProbability {
+  optionNumber: number;
+  grade: string;
+  items: Array<{
+    name: string;
+    probability: number;
+  }>;
+}
+
+export interface CubeDataResponse {
+  maxGrade?: string;
+  gradeUp: GradeUpRow[];
+  guarantee?: GuaranteeRow[];
+  optionProbability?: OptionProbability[];
+}
+

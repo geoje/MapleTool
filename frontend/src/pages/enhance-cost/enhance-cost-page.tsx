@@ -1,18 +1,18 @@
-import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CollapsibleCard } from "@/components/collapsible-card";
 import { SectionTitle } from "@/components/section-title";
-import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { DEFAULT_EQUIPMENT_LEVEL_TIER, EquipmentLevelTier, SET_COMBOS, SetType } from "@/constants/enhance";
+import { SET_COMBOS, SetType, CubeType, POTENTIAL_CUBES, EquipmentLevelTier, DEFAULT_EQUIPMENT_LEVEL_TIER } from "@/constants/enhance";
+import { CUBE_PROBABILITIES } from "@/constants/cube-probabilities";
 import { SET_ITEMS } from "@/constants/enhance-set-items";
 import { DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
-import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-expected-value/equipment-panel";
-import { PotentialCommonControls } from "@/pages/enhance-expected-value/potential-common-controls";
-import { StarforceCard } from "@/pages/enhance-expected-value/starforce-panel";
+import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-cost/equipment-panel";
+import { PotentialCommonControls } from "@/pages/enhance-cost/potential-common-controls";
+import { AdditionalPotentialControls } from "@/pages/enhance-cost/additional-potential-controls";
+import { PotentialTable } from "@/pages/enhance-cost/potential-table";
+import { StarforceCard } from "@/pages/enhance-cost/starforce-panel";
 import { useEnhanceStore } from "@/stores/enhance-store";
 
 type Selection = { type: "character"; preset: 1 | 2 | 3 } | { type: "set"; comboIndex: number };
@@ -25,24 +25,49 @@ function getDefaultSelection(characterAvailable: boolean): Selection {
   return characterAvailable ? { type: "character", preset: 1 } : { type: "set", comboIndex: DEFAULT_COMBO_INDEX };
 }
 
-export function EnhanceExpectedValuePage() {
+export function EnhanceCostPage() {
   const name = useEnhanceStore((state) => state.name);
   const searchToken = useEnhanceStore((state) => state.searchToken);
   const { data: basic, isFetching: isFetchingBasic } = useCharacterBasic(name, searchToken);
   const { data: equipment, isFetching: isFetchingEquipment } = useItemEquipment(name, searchToken);
   const [selection, setSelection] = useState<Selection>(() => getDefaultSelection(!!equipment));
-  const [showNotice, setShowNotice] = useState(true);
   const [starforceCollapsed, setStarforceCollapsed] = useState(false);
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
-  const [equipmentCategory, setEquipmentCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
-  const [equipmentLevelTier, setEquipmentLevelTier] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
   const [potentialCollapsed, setPotentialCollapsed] = useState(false);
   const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = useState(false);
-  const [miracleTime, setMiracleTime] = useState(false);
+  const [selectedCube, setSelectedCube] = useState<CubeType>(POTENTIAL_CUBES[0]);
+  const [selectedAdditionalCube, setSelectedAdditionalCube] = useState<CubeType | null>(null);
+  const [potentialCategory, setPotentialCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
+  const [potentialLevel, setPotentialLevel] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
+  const [additionalCategory, setAdditionalCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
+  const [additionalLevel, setAdditionalLevel] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
+  const [isLinked, setIsLinked] = useState(true);
+
+  const actualAdditionalCategory = isLinked ? potentialCategory : additionalCategory;
+  const actualAdditionalLevel = isLinked ? potentialLevel : additionalLevel;
+
+  const handleAdditionalCategoryChange = (val: string) => {
+    if (isLinked) {
+      setPotentialCategory(val);
+    } else {
+      setAdditionalCategory(val);
+    }
+  };
+
+  const handleAdditionalLevelChange = (val: EquipmentLevelTier) => {
+    if (isLinked) {
+      setPotentialLevel(val);
+    } else {
+      setAdditionalLevel(val);
+    }
+  };
 
   useEffect(() => {
     setSelection(getDefaultSelection(!!equipment));
   }, [equipment]);
+
+  const potentialData = CUBE_PROBABILITIES[selectedCube];
+  const additionalPotentialData = selectedAdditionalCube ? CUBE_PROBABILITIES[selectedAdditionalCube] : null;
 
   const characterItems =
     selection.type != "character"
@@ -60,25 +85,6 @@ export function EnhanceExpectedValuePage() {
 
   return (
     <div className="flex flex-col gap-4">
-      {showNotice && (
-        <Alert variant="warning">
-          <AlertTriangle />
-          <AlertDescription>이 페이지는 현재 개발중입니다.</AlertDescription>
-          <AlertAction>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label="닫기"
-              className="size-6 text-current hover:bg-transparent hover:opacity-70"
-              onClick={() => setShowNotice(false)}
-            >
-              <X className="size-4" />
-            </Button>
-          </AlertAction>
-        </Alert>
-      )}
-
       <div className="flex flex-wrap items-start gap-4">
         <div className="flex w-full flex-col gap-4 md:w-auto">
           <Card className="w-full md:w-auto">
@@ -125,16 +131,16 @@ export function EnhanceExpectedValuePage() {
             contentClassName="min-h-48"
           >
             <PotentialCommonControls
-              category={equipmentCategory}
-              onCategoryChange={setEquipmentCategory}
-              equipmentLevelTier={equipmentLevelTier}
-              onEquipmentLevelTierChange={setEquipmentLevelTier}
-              miracleTime={miracleTime}
-              onToggleMiracleTime={() => setMiracleTime((prev) => !prev)}
+              category={potentialCategory}
+              onCategoryChange={setPotentialCategory}
+              equipmentLevelTier={potentialLevel}
+              onEquipmentLevelTierChange={setPotentialLevel}
+              selectedCube={selectedCube}
+              onCubeChange={setSelectedCube}
+              isLinked={isLinked}
+              onToggleLink={() => setIsLinked(!isLinked)}
             />
-            <div className="flex flex-1 items-center justify-center">
-              <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
-            </div>
+            <PotentialTable optionData={potentialData} isLoading={false} />
           </CollapsibleCard>
 
           <CollapsibleCard
@@ -146,9 +152,17 @@ export function EnhanceExpectedValuePage() {
             collapseVariant={potentialCollapsed ? "left" : "top"}
             contentClassName="min-h-48"
           >
-            <div className="flex flex-1 items-center justify-center">
-              <p className="text-sm text-muted-foreground/40">준비 중입니다.</p>
-            </div>
+            <AdditionalPotentialControls
+              category={actualAdditionalCategory}
+              onCategoryChange={handleAdditionalCategoryChange}
+              equipmentLevelTier={actualAdditionalLevel}
+              onEquipmentLevelTierChange={handleAdditionalLevelChange}
+              selectedCube={selectedAdditionalCube}
+              onCubeChange={setSelectedAdditionalCube}
+              isLinked={isLinked}
+              onToggleLink={() => setIsLinked(!isLinked)}
+            />
+            <PotentialTable optionData={additionalPotentialData} isLoading={false} />
           </CollapsibleCard>
         </div>
       </div>
