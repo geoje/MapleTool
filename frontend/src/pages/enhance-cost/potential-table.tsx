@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
 import type { CubeGrade, CubeProbabilityData } from "@/hooks/use-cube-probability";
+import { extractPotentialOptionValue } from "@/lib/potential-option";
 
 const GRADE_ORDER: CubeGrade[] = ["rare", "epic", "unique", "legendary"];
 
@@ -61,18 +62,23 @@ export function PotentialTable({
                   <thead>
                     <tr className="border-b">
                       <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">결과</th>
+                      <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">값</th>
                       <th className="px-3 py-1 text-right font-medium text-muted-foreground">확률</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {option.items.map((item, index) => (
-                      <tr key={index} className="border-b last:border-b-0 hover:bg-muted/30">
-                        <td className="border-r px-3 py-1">{item.name}</td>
-                        <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                          {(item.probability * 100).toFixed(4)}%
-                        </td>
-                      </tr>
-                    ))}
+                    {option.items.map((item, index) => {
+                      const { name, value } = extractPotentialOptionValue(item.name);
+                      return (
+                        <tr key={index} className="border-b last:border-b-0 hover:bg-muted/30">
+                          <td className="border-r px-3 py-1">{name}</td>
+                          <td className="border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">{value}</td>
+                          <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
+                            {(item.probability * 100).toFixed(4)}%
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
