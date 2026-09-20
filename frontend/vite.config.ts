@@ -16,6 +16,7 @@ export default defineConfig({
   },
   server: {
     host: true,
+    allowedHosts: ["vite.womosoft.com"],
     watch: {
       usePolling: true,
     },

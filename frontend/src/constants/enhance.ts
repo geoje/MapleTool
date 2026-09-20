@@ -66,7 +66,7 @@ export type EquipmentLevelTier = (typeof EquipmentLevelTier)[keyof typeof Equipm
 
 export const EQUIPMENT_LEVEL_TIERS: { key: EquipmentLevelTier; label: string }[] = [
   { key: EquipmentLevelTier.LOW, label: "120~200" },
-  { key: EquipmentLevelTier.HIGH, label: "201~250" },
+  { key: EquipmentLevelTier.HIGH, label: "250" },
 ];
 
 export const DEFAULT_EQUIPMENT_LEVEL_TIER: EquipmentLevelTier = EquipmentLevelTier.LOW;
