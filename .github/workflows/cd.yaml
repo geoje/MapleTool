@@ -139,6 +139,7 @@ jobs:
           script: |
             cd ~/${{ github.event.repository.name }}
             export $(cat .env)
+            mkdir -p proxy/data
             STACK=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')
             docker compose -f docker-compose-prx.yaml build
             docker service ls | grep -qw "${STACK}_prx" && EXISTS="true" || EXISTS="false"
