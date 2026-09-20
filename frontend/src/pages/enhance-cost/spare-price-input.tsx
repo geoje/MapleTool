@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatCostExact } from "@/lib/format";
+import { describeDaysAgo, type ItemPriceInfo } from "@/lib/price-service";
 
 const EOK = 100_000_000;
 const CHEONMAN = 10_000_000;
@@ -9,7 +12,15 @@ function clamp(value: number) {
   return Math.max(0, value);
 }
 
-export function SparePriceInput({ value, onChange }: { value: number; onChange: (value: number) => void }) {
+export function SparePriceInput({
+  value,
+  onChange,
+  priceInfo,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+  priceInfo?: ItemPriceInfo | null;
+}) {
   const [text, setText] = useState(String(value));
   const isFocused = useRef(false);
 
@@ -20,7 +31,17 @@ export function SparePriceInput({ value, onChange }: { value: number; onChange: 
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">노작 가격</span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">노작 가격</span>
+          {priceInfo && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="secondary">{priceInfo.itemName}</Badge>
+              </TooltipTrigger>
+              <TooltipContent side="top">{describeDaysAgo(priceInfo.date)}</TooltipContent>
+            </Tooltip>
+          )}
+        </div>
         <span className="text-xs whitespace-nowrap tabular-nums text-muted-foreground">
           {value !== 0 && formatCostExact(value)}
         </span>

@@ -1,6 +1,6 @@
 export const MIN_STARFORCE_LEVEL = 0;
 export const MAX_STARFORCE_LEVEL = 300;
-export const DEFAULT_STARFORCE_LEVEL = 140;
+export const DEFAULT_STARFORCE_LEVEL = 250;
 export const STARFORCE_LEVEL_PRESETS = [140, 160, 200, 250];
 export const MAX_STAR = 30;
 
@@ -27,7 +27,8 @@ export const EQUIPMENT_CATEGORIES = [
   "기계심장",
 ] as const;
 
-export const DEFAULT_EQUIPMENT_CATEGORY = EQUIPMENT_CATEGORIES[0];
+// Matches the default equipped item (에테르넬 나이트헬름, a 모자).
+export const DEFAULT_EQUIPMENT_CATEGORY: (typeof EQUIPMENT_CATEGORIES)[number] = "모자";
 
 export interface MembershipGrade {
   key: string;

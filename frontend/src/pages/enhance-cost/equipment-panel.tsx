@@ -134,11 +134,11 @@ function CharacterCell({ image }: { image?: string }) {
 function EquipmentSlot({
   item,
   label,
-  onSelectLevel,
+  onSelectItem,
 }: {
   item?: ItemEquipmentDetail;
   label: string;
-  onSelectLevel?: (level: number) => void;
+  onSelectItem?: (item: ItemEquipmentDetail) => void;
 }) {
   const grade = item ? getMaxPotentialGrade(item) : undefined;
 
@@ -155,7 +155,7 @@ function EquipmentSlot({
       type="button"
       className={boxClassName}
       style={boxStyle}
-      onClick={() => onSelectLevel?.(item.item_base_option.base_equipment_level)}
+      onClick={() => onSelectItem?.(item)}
     >
       <img src={item.item_icon} alt="" className="pointer-events-none" />
     </button>
@@ -177,11 +177,11 @@ function EquipmentSlot({
 export function EquipmentGrid({
   characterImage,
   items,
-  onSelectLevel,
+  onSelectItem,
 }: {
   characterImage?: string;
   items: ItemEquipmentDetail[];
-  onSelectLevel?: (level: number) => void;
+  onSelectItem?: (item: ItemEquipmentDetail) => void;
 }) {
   return (
     <div className="grid justify-center gap-1" style={GRID_COLUMNS}>
@@ -194,7 +194,7 @@ export function EquipmentGrid({
           if (!cell) return <div key={`${i}-${j}`} />;
 
           const item = items.find((item) => item.item_equipment_slot == cell.apiSlot);
-          return <EquipmentSlot key={`${i}-${j}`} item={item} label={cell.label} onSelectLevel={onSelectLevel} />;
+          return <EquipmentSlot key={`${i}-${j}`} item={item} label={cell.label} onSelectItem={onSelectItem} />;
         })
       )}
     </div>

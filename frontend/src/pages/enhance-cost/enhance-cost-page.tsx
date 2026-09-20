@@ -20,18 +20,24 @@ import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useCubeProbability } from "@/hooks/use-cube-probability";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
 import { usePersistedBoolean } from "@/hooks/use-persisted-boolean";
+import { fetchItemPrice, type ItemPriceInfo } from "@/lib/price-service";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-cost/equipment-panel";
 import { PotentialCommonControls } from "@/pages/enhance-cost/potential-common-controls";
 import { AdditionalPotentialControls } from "@/pages/enhance-cost/additional-potential-controls";
 import { PotentialTable } from "@/pages/enhance-cost/potential-table";
 import { StarforceCard } from "@/pages/enhance-cost/starforce-panel";
 import { useEnhanceStore } from "@/stores/enhance-store";
+import type { ItemEquipmentDetail } from "@/types";
 
 type Selection = { type: "character"; preset: 1 | 2 | 3 } | { type: "set"; comboIndex: number };
 
 const DEFAULT_COMBO_INDEX = SET_COMBOS.findIndex(
   (combo) => combo.includes(SetType.ETERNAL) && combo.includes(SetType.RADIANCE)
 );
+
+// The 모자 item from the default combo above - matches DEFAULT_EQUIPMENT_CATEGORY
+// and DEFAULT_EQUIPMENT_LEVEL_TIER/DEFAULT_STARFORCE_LEVEL (모자, 250).
+const DEFAULT_EQUIPPED_ITEM_NAME = "에테르넬 나이트헬름";
 
 function getDefaultSelection(characterAvailable: boolean): Selection {
   return characterAvailable ? { type: "character", preset: 1 } : { type: "set", comboIndex: DEFAULT_COMBO_INDEX };
@@ -45,6 +51,8 @@ export function EnhanceCostPage() {
   const [selection, setSelection] = useState<Selection>(() => getDefaultSelection(!!equipment));
   const [starforceCollapsed, setStarforceCollapsed] = usePersistedBoolean("enhance-cost:starforce-collapsed", false);
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
+  const [spareValue, setSpareValue] = useState(0);
+  const [spareValuePriceInfo, setSpareValuePriceInfo] = useState<ItemPriceInfo | null>(null);
   const [potentialCollapsed, setPotentialCollapsed] = usePersistedBoolean("enhance-cost:potential-collapsed", false);
   const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = usePersistedBoolean(
     "enhance-cost:additional-potential-collapsed",
@@ -103,6 +111,27 @@ export function EnhanceCostPage() {
   useEffect(() => {
     setSelection(getDefaultSelection(!!equipment));
   }, [equipment]);
+
+  const applyItemPrice = (itemName: string) => {
+    fetchItemPrice(itemName).then((priceInfo) => {
+      if (!priceInfo) return;
+      setSpareValue(priceInfo.price);
+      setSpareValuePriceInfo(priceInfo);
+    });
+  };
+
+  // Clicking an equipped item both jumps the starforce level to that item's
+  // level and, if the item has a known market price, fills in 노작 가격.
+  const handleSelectItem = (item: ItemEquipmentDetail) => {
+    setStarforceLevel(item.item_base_option.base_equipment_level);
+    applyItemPrice(item.item_name);
+  };
+
+  // The page defaults to 에테르넬 나이트헬름 (모자, 250 레벨) as if it were
+  // already clicked, so 노작 가격 is preloaded without requiring a click.
+  useEffect(() => {
+    applyItemPrice(DEFAULT_EQUIPPED_ITEM_NAME);
+  }, []);
 
   const { data: potentialData, isFetching: isFetchingPotential } = useCubeProbability(
     selectedCube,
@@ -171,7 +200,7 @@ export function EnhanceCostPage() {
               <EquipmentGrid
                 characterImage={selection.type == "character" ? basic?.character_image : undefined}
                 items={items}
-                onSelectLevel={setStarforceLevel}
+                onSelectItem={handleSelectItem}
               />
             </CardContent>
           </Card>
@@ -181,6 +210,9 @@ export function EnhanceCostPage() {
           collapsed={starforceCollapsed}
           level={starforceLevel}
           onLevelChange={setStarforceLevel}
+          spareValue={spareValue}
+          onSpareValueChange={setSpareValue}
+          spareValuePriceInfo={spareValuePriceInfo}
           onCollapse={() => setStarforceCollapsed(true)}
           onExpand={() => setStarforceCollapsed(false)}
         />

@@ -7,6 +7,7 @@ import { MEMBERSHIP_GRADES, PC_ROOM_DISCOUNT_RATE } from "@/constants/starforce"
 import { cn } from "@/lib/utils";
 import { formatCostExact, formatCostRounded, formatSpareCountExact, formatSpareCountRounded } from "@/lib/format";
 import { computeStarforceTable, getMaxStar } from "@/lib/starforce-service";
+import type { ItemPriceInfo } from "@/lib/price-service";
 import { StarforceDiscountPanel } from "@/pages/enhance-cost/discount-panel";
 import { SparePriceInput } from "@/pages/enhance-cost/spare-price-input";
 import { StarforceLevelInput } from "@/pages/enhance-cost/starforce-level-input";
@@ -16,12 +17,18 @@ export function StarforceCard({
   collapsed,
   level,
   onLevelChange,
+  spareValue,
+  onSpareValueChange,
+  spareValuePriceInfo,
   onCollapse,
   onExpand,
 }: {
   collapsed: boolean;
   level: number;
   onLevelChange: (value: number) => void;
+  spareValue: number;
+  onSpareValueChange: (value: number) => void;
+  spareValuePriceInfo?: ItemPriceInfo | null;
   onCollapse: () => void;
   onExpand: () => void;
 }) {
@@ -29,7 +36,6 @@ export function StarforceCard({
   const [activeSundayKeys, setActiveSundayKeys] = useState<Set<string>>(new Set());
   const [membershipGrade, setMembershipGrade] = useState<string | null>(null);
   const [pcRoom, setPcRoom] = useState(false);
-  const [spareValue, setSpareValue] = useState(0);
 
   const maxStar = getMaxStar(level);
 
@@ -86,7 +92,7 @@ export function StarforceCard({
   return (
     <CollapsibleCard step={2} title="스타포스" collapsed={collapsed} onCollapse={onCollapse} onExpand={onExpand}>
       <StarforceLevelInput level={level} onChange={onLevelChange} />
-      <SparePriceInput value={spareValue} onChange={setSpareValue} />
+      <SparePriceInput value={spareValue} onChange={onSpareValueChange} priceInfo={spareValuePriceInfo} />
       <SundayStarforcePanel activeKeys={activeSundayKeys} onToggle={toggleSundayEffect} />
       <StarforceDiscountPanel
         membershipGrade={membershipGrade}

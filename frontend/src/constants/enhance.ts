@@ -69,7 +69,8 @@ export const EQUIPMENT_LEVEL_TIERS: { key: EquipmentLevelTier; label: string }[]
   { key: EquipmentLevelTier.HIGH, label: "250" },
 ];
 
-export const DEFAULT_EQUIPMENT_LEVEL_TIER: EquipmentLevelTier = EquipmentLevelTier.LOW;
+// Matches the default equipped item (에테르넬 나이트헬름, level 250).
+export const DEFAULT_EQUIPMENT_LEVEL_TIER: EquipmentLevelTier = EquipmentLevelTier.HIGH;
 
 export type SlotCell = { label: string; apiSlot: string } | "character" | null;
 
