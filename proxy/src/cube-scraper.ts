@@ -98,20 +98,17 @@ async function fetchOptionTables(ajaxUrl: string, body: URLSearchParams, referer
   return parseOptionSearchResult($);
 }
 
-// Generic: fills in whichever of `grades` are missing from `existing`, one
-// grade at a time through the shared queue, and returns the merged result.
-// `requestFor(grade)` builds the per-grade POST request; everything else
-// (queueing, dedup, parsing) is shared between cube and soul.
-async function fetchMissingGrades(
+// Generic: fetches every grade in `grades`, one at a time through the shared
+// queue. `requestFor(grade)` builds the per-grade POST request; everything
+// else (queueing, dedup, parsing) is shared between cube and soul.
+async function fetchAllGrades(
   grades: GradeSlug[],
-  existing: GradedOptionResponse | null,
   dedupeKeyPrefix: string,
   requestFor: (grade: GradeSlug) => { ajaxUrl: string; body: URLSearchParams; referer: string },
 ): Promise<GradedOptionResponse> {
-  const result: GradedOptionResponse = { ...existing };
+  const result: GradedOptionResponse = {};
 
   for (const grade of grades) {
-    if (result[grade]) continue;
     const key = `${dedupeKeyPrefix}:${grade}`;
     const { ajaxUrl, body, referer } = requestFor(grade);
     const data = await dedupe(key, () => enqueue(() => fetchOptionTables(ajaxUrl, body, referer)));
@@ -179,17 +176,12 @@ export const PARTS_TYPES: Array<{ slug: string; label: string }> = [
 // results, 201-250 give another. 200 and 250 are the representative inputs.
 export const OPTION_LEVELS = [200, 250] as const;
 
-export function fetchMissingCubeGrades(
-  cubeType: string,
-  partsSlug: string,
-  level: number,
-  existing: GradedOptionResponse | null,
-): Promise<GradedOptionResponse> {
+export function fetchCubeGrades(cubeType: string, partsSlug: string, level: number): Promise<GradedOptionResponse> {
   const cubeItemId = CUBE_ITEM_IDS[cubeType] ?? "";
   const partsIndex = PARTS_TYPES.findIndex((p) => p.slug === partsSlug);
   const grades = CUBE_GRADES[cubeType] ?? [];
 
-  return fetchMissingGrades(grades, existing, `cube:${cubeType}:${partsSlug}:${level}`, (grade) => ({
+  return fetchAllGrades(grades, `cube:${cubeType}:${partsSlug}:${level}`, (grade) => ({
     ajaxUrl: CUBE_SEARCH_URL,
     referer: CUBE_URLS[cubeType] ?? "",
     body: new URLSearchParams({
@@ -209,11 +201,8 @@ export const SOUL_SEARCH_URL = "https://maplestory.nexon.com/Guide/OtherProbabil
 export const SOUL_AMPLIFY_LEVELS = [1, 2, 3, 4] as const;
 export const SOUL_GRADES: GradeSlug[] = ["rare", "epic", "unique", "legendary"];
 
-export function fetchMissingSoulGrades(
-  amplifyLevel: number,
-  existing: GradedOptionResponse | null,
-): Promise<GradedOptionResponse> {
-  return fetchMissingGrades(SOUL_GRADES, existing, `soul:${amplifyLevel}`, (grade) => ({
+export function fetchSoulGrades(amplifyLevel: number): Promise<GradedOptionResponse> {
+  return fetchAllGrades(SOUL_GRADES, `soul:${amplifyLevel}`, (grade) => ({
     ajaxUrl: SOUL_SEARCH_URL,
     referer: SOUL_URL,
     body: new URLSearchParams({

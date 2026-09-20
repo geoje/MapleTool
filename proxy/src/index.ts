@@ -22,9 +22,7 @@ app.route("/api/probability", probability);
 app.notFound((c) => c.json({ title: "Not Found", status: 400, detail: "잘못된 요청입니다." }, 400));
 
 serve({ fetch: app.fetch, port: config.port }, (info) => {
-  console.log(`mapletool-proxy listening on :${info.port}`);
+  console.log(`[src/index.ts] mapletool-proxy listening on :${info.port}`);
 });
 
-// Fire-and-forget: don't block startup on this. Checks what's already on
-// disk and scrapes only what's missing (5s-spaced requests to Nexon).
-scrapeAll().catch((error) => console.error("[Scrape] Fatal error:", error));
+scrapeAll().catch((error) => console.error("[src/index.ts] Fatal error:", error));

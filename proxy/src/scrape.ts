@@ -1,35 +1,29 @@
-import { readDataFile, writeDataFile } from "./data-manager.js";
+import { dataFileExists, writeDataFile } from "./data-manager.js";
 import {
-  CUBE_GRADES,
   CUBE_URLS,
   OPTION_LEVELS,
   PARTS_TYPES,
   SOUL_AMPLIFY_LEVELS,
-  SOUL_GRADES,
-  fetchMissingCubeGrades,
-  fetchMissingSoulGrades,
-  type GradedOptionResponse,
+  fetchCubeGrades,
+  fetchSoulGrades,
 } from "./cube-scraper.js";
 
-function isComplete(existing: GradedOptionResponse | null, grades: readonly string[]): boolean {
-  return !!existing && grades.every((grade) => existing[grade as keyof GradedOptionResponse]);
-}
-
+// A file on disk means that combination is already done, no matter what's in
+// it - every field gets read in one pass before the file is ever written, so
+// there's nothing left to fill in later.
 async function scrapeCubes(): Promise<void> {
   for (const cubeType of Object.keys(CUBE_URLS)) {
-    const grades = CUBE_GRADES[cubeType] ?? [];
     for (const parts of PARTS_TYPES) {
       for (const level of OPTION_LEVELS) {
         const key = `cube/${cubeType}/${parts.slug}/${level}`;
-        const existing = readDataFile<GradedOptionResponse>(key);
-        if (isComplete(existing, grades)) continue;
+        if (dataFileExists(key)) continue;
 
         try {
-          const merged = await fetchMissingCubeGrades(cubeType, parts.slug, level, existing);
-          writeDataFile(key, merged);
-          console.log(`[Scrape] ${key} -> saved`);
+          const data = await fetchCubeGrades(cubeType, parts.slug, level);
+          writeDataFile(key, data);
+          console.log(`[src/scrape.ts] ${key} -> saved`);
         } catch (error) {
-          console.error(`[Scrape] Failed ${key}:`, error);
+          console.error(`[src/scrape.ts] Failed ${key}:`, error);
         }
       }
     }
@@ -39,15 +33,14 @@ async function scrapeCubes(): Promise<void> {
 async function scrapeSoul(): Promise<void> {
   for (const amplifyLevel of SOUL_AMPLIFY_LEVELS) {
     const key = `soul/${amplifyLevel}`;
-    const existing = readDataFile<GradedOptionResponse>(key);
-    if (isComplete(existing, SOUL_GRADES)) continue;
+    if (dataFileExists(key)) continue;
 
     try {
-      const merged = await fetchMissingSoulGrades(amplifyLevel, existing);
-      writeDataFile(key, merged);
-      console.log(`[Scrape] ${key} -> saved`);
+      const data = await fetchSoulGrades(amplifyLevel);
+      writeDataFile(key, data);
+      console.log(`[src/scrape.ts] ${key} -> saved`);
     } catch (error) {
-      console.error(`[Scrape] Failed ${key}:`, error);
+      console.error(`[src/scrape.ts] Failed ${key}:`, error);
     }
   }
 }
@@ -56,9 +49,9 @@ async function scrapeSoul(): Promise<void> {
 // then soul - both share the same 5s-spaced request queue in cube-scraper.ts,
 // so this never overlaps with itself.
 export async function scrapeAll(): Promise<void> {
-  console.log("[Scrape] Checking cube option data...");
+  console.log("[src/scrape.ts] Checking cube option data...");
   await scrapeCubes();
-  console.log("[Scrape] Checking soul option data...");
+  console.log("[src/scrape.ts] Checking soul option data...");
   await scrapeSoul();
-  console.log("[Scrape] Done.");
+  console.log("[src/scrape.ts] Done.");
 }
