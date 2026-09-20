@@ -8,6 +8,8 @@ services:
     image: mapletool-prx
     build:
       context: proxy
+    volumes:
+      - ./proxy/data:/opt/app/data
     deploy:
       update_config:
         order: start-first
