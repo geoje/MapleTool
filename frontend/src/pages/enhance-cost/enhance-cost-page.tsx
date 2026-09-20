@@ -112,7 +112,16 @@ export function EnhanceCostPage() {
     setSelection(getDefaultSelection(!!equipment));
   }, [equipment]);
 
+  // Manually editing 노작 가격 detaches it from whatever item's price was last
+  // applied, so the badge no longer claims to reflect that item's market price.
+  const handleSpareValueChange = (nextValue: number) => {
+    setSpareValue(nextValue);
+    setSpareValuePriceInfo(null);
+  };
+
   const applyItemPrice = (itemName: string) => {
+    setSpareValue(0);
+    setSpareValuePriceInfo(null);
     fetchItemPrice(itemName).then((priceInfo) => {
       if (!priceInfo) return;
       setSpareValue(priceInfo.price);
@@ -211,7 +220,7 @@ export function EnhanceCostPage() {
           level={starforceLevel}
           onLevelChange={setStarforceLevel}
           spareValue={spareValue}
-          onSpareValueChange={setSpareValue}
+          onSpareValueChange={handleSpareValueChange}
           spareValuePriceInfo={spareValuePriceInfo}
           onCollapse={() => setStarforceCollapsed(true)}
           onExpand={() => setStarforceCollapsed(false)}

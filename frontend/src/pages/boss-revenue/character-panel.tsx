@@ -1,4 +1,4 @@
-import { Check, ChevronDown, ChevronUp, Copy, Loader2, Pencil, Search, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Copy, Loader2, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import crystalPurple from "@/assets/crystal/purple.png";
 import crystalYellow from "@/assets/crystal/yellow.png";
@@ -209,7 +209,6 @@ function CharacterNameField({
   isFetching?: boolean;
 }) {
   const [value, setValue] = useState(name);
-  const [isFocused, setIsFocused] = useState(false);
   const isComposing = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -238,11 +237,7 @@ function CharacterNameField({
         ref={inputRef}
         value={value}
         onChange={(event) => setValue(event.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => {
-          setIsFocused(false);
-          submit();
-        }}
+        onBlur={submit}
         onClick={(event) => event.stopPropagation()}
         onCompositionStart={() => (isComposing.current = true)}
         onCompositionEnd={() => (isComposing.current = false)}
@@ -258,27 +253,9 @@ function CharacterNameField({
         }}
         className="h-6 rounded-full border-transparent bg-muted px-1 py-0 text-center text-xs font-medium"
       />
-      <button
-        type="button"
-        tabIndex={-1}
-        disabled={isFetching}
-        aria-label={isFocused ? "이름 수정 완료" : "이름 수정"}
-        className="absolute right-0.5 top-0.5 flex size-5 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground disabled:pointer-events-none"
-        onMouseDown={(event) => event.preventDefault()}
-        onClick={(event) => {
-          event.stopPropagation();
-          if (isFocused) inputRef.current?.blur();
-          else inputRef.current?.focus();
-        }}
-      >
-        {isFetching ? (
-          <Loader2 className="size-3 animate-spin" />
-        ) : isFocused ? (
-          <Check className="size-3" />
-        ) : (
-          <Pencil className="size-3" />
-        )}
-      </button>
+      {isFetching && (
+        <Loader2 className="absolute top-1/2 right-1.5 size-3 -translate-y-1/2 animate-spin text-muted-foreground" />
+      )}
     </div>
   );
 }
