@@ -1,6 +1,9 @@
+import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CollapsibleCard } from "@/components/collapsible-card";
 import { SectionTitle } from "@/components/section-title";
+import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   SET_COMBOS,
@@ -14,7 +17,6 @@ import {
 import { SET_ITEMS } from "@/constants/enhance-set-items";
 import { DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
-import { useCubeProbability } from "@/hooks/use-cube-probability";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
 import { usePersistedBoolean } from "@/hooks/use-persisted-boolean";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-cost/equipment-panel";
@@ -54,6 +56,7 @@ export function EnhanceCostPage() {
   const [additionalCategory, setAdditionalCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
   const [additionalLevel, setAdditionalLevel] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
   const [isLinked, setIsLinked] = useState(true);
+  const [showNotice, setShowNotice] = useState(true);
 
   const actualAdditionalCategory = isLinked ? potentialCategory : additionalCategory;
   const actualAdditionalLevel = isLinked ? potentialLevel : additionalLevel;
@@ -78,17 +81,6 @@ export function EnhanceCostPage() {
     setSelection(getDefaultSelection(!!equipment));
   }, [equipment]);
 
-  const { data: potentialData, isFetching: isFetchingPotential } = useCubeProbability(
-    selectedCube,
-    potentialCategory,
-    potentialLevel
-  );
-  const { data: additionalPotentialData, isFetching: isFetchingAdditionalPotential } = useCubeProbability(
-    selectedAdditionalCube,
-    actualAdditionalCategory,
-    actualAdditionalLevel
-  );
-
   const characterItems =
     selection.type != "character"
       ? undefined
@@ -105,6 +97,25 @@ export function EnhanceCostPage() {
 
   return (
     <div className="flex flex-col gap-4">
+      {showNotice && (
+        <Alert variant="warning">
+          <AlertTriangle />
+          <AlertDescription>이 페이지는 현재 개발중입니다.</AlertDescription>
+          <AlertAction>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="닫기"
+              className="size-6 text-current hover:bg-transparent hover:opacity-70"
+              onClick={() => setShowNotice(false)}
+            >
+              <X className="size-4" />
+            </Button>
+          </AlertAction>
+        </Alert>
+      )}
+
       <div className="flex flex-wrap items-start gap-4">
         <div className="flex w-full flex-col gap-4 md:w-auto">
           <Card className="w-full md:w-auto">
@@ -160,7 +171,7 @@ export function EnhanceCostPage() {
               isLinked={isLinked}
               onToggleLink={() => setIsLinked(!isLinked)}
             />
-            <PotentialTable optionData={potentialData} isLoading={isFetchingPotential} />
+            <PotentialTable />
           </CollapsibleCard>
 
           <CollapsibleCard
@@ -182,7 +193,7 @@ export function EnhanceCostPage() {
               isLinked={isLinked}
               onToggleLink={() => setIsLinked(!isLinked)}
             />
-            <PotentialTable optionData={additionalPotentialData} isLoading={isFetchingAdditionalPotential} />
+            <PotentialTable />
           </CollapsibleCard>
         </div>
       </div>
