@@ -72,10 +72,10 @@ export function PotentialCommonControls({
                 <Button
                   type="button"
                   variant={selectedCube === cube ? "default" : "outline"}
-                  size="sm"
+                  size="icon-sm"
                   onClick={() => onCubeChange(cube)}
                 >
-                  {CUBE_INFOS[cube].displayName}
+                  <img src={CUBE_INFOS[cube].icon} alt={CUBE_INFOS[cube].displayName} className="size-5 object-contain" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">

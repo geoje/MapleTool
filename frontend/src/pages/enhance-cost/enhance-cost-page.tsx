@@ -17,6 +17,7 @@ import {
 import { SET_ITEMS } from "@/constants/enhance-set-items";
 import { DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
+import { useCubeProbability } from "@/hooks/use-cube-probability";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
 import { usePersistedBoolean } from "@/hooks/use-persisted-boolean";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-cost/equipment-panel";
@@ -58,28 +59,61 @@ export function EnhanceCostPage() {
   const [isLinked, setIsLinked] = useState(true);
   const [showNotice, setShowNotice] = useState(true);
 
-  const actualAdditionalCategory = isLinked ? potentialCategory : additionalCategory;
-  const actualAdditionalLevel = isLinked ? potentialLevel : additionalLevel;
+  // While linked, editing either side writes through to both so they never
+  // drift apart. Unlinking freezes both at their current (equal) values;
+  // re-linking then adopts whichever side's button triggered the re-link.
+  const handlePotentialCategoryChange = (val: string) => {
+    setPotentialCategory(val);
+    if (isLinked) setAdditionalCategory(val);
+  };
+
+  const handlePotentialLevelChange = (val: EquipmentLevelTier) => {
+    setPotentialLevel(val);
+    if (isLinked) setAdditionalLevel(val);
+  };
 
   const handleAdditionalCategoryChange = (val: string) => {
-    if (isLinked) {
-      setPotentialCategory(val);
-    } else {
-      setAdditionalCategory(val);
-    }
+    setAdditionalCategory(val);
+    if (isLinked) setPotentialCategory(val);
   };
 
   const handleAdditionalLevelChange = (val: EquipmentLevelTier) => {
-    if (isLinked) {
-      setPotentialLevel(val);
-    } else {
-      setAdditionalLevel(val);
+    setAdditionalLevel(val);
+    if (isLinked) setPotentialLevel(val);
+  };
+
+  const togglePotentialLink = () => {
+    const next = !isLinked;
+    if (next) {
+      setAdditionalCategory(potentialCategory);
+      setAdditionalLevel(potentialLevel);
     }
+    setIsLinked(next);
+  };
+
+  const toggleAdditionalLink = () => {
+    const next = !isLinked;
+    if (next) {
+      setPotentialCategory(additionalCategory);
+      setPotentialLevel(additionalLevel);
+    }
+    setIsLinked(next);
   };
 
   useEffect(() => {
     setSelection(getDefaultSelection(!!equipment));
   }, [equipment]);
+
+  const { data: potentialData, isFetching: isFetchingPotential } = useCubeProbability(
+    selectedCube,
+    potentialCategory,
+    potentialLevel
+  );
+  const { data: additionalPotentialData, isFetching: isFetchingAdditionalPotential } = useCubeProbability(
+    selectedAdditionalCube,
+    additionalCategory,
+    additionalLevel
+  );
 
   const characterItems =
     selection.type != "character"
@@ -151,51 +185,55 @@ export function EnhanceCostPage() {
           onExpand={() => setStarforceCollapsed(false)}
         />
 
-        <div className="flex w-full flex-col gap-4 md:w-auto">
-          <CollapsibleCard
-            step={3}
-            title="잠재능력"
-            collapsed={potentialCollapsed}
-            onCollapse={() => setPotentialCollapsed(true)}
-            onExpand={() => setPotentialCollapsed(false)}
-            collapseVariant={additionalPotentialCollapsed ? "left" : "top"}
-            contentClassName="min-h-48"
-          >
-            <PotentialCommonControls
-              category={potentialCategory}
-              onCategoryChange={setPotentialCategory}
-              equipmentLevelTier={potentialLevel}
-              onEquipmentLevelTierChange={setPotentialLevel}
-              selectedCube={selectedCube}
-              onCubeChange={setSelectedCube}
-              isLinked={isLinked}
-              onToggleLink={() => setIsLinked(!isLinked)}
-            />
-            <PotentialTable />
-          </CollapsibleCard>
+        <CollapsibleCard
+          step={3}
+          title="잠재능력"
+          collapsed={potentialCollapsed}
+          onCollapse={() => setPotentialCollapsed(true)}
+          onExpand={() => setPotentialCollapsed(false)}
+        >
+          <PotentialCommonControls
+            category={potentialCategory}
+            onCategoryChange={handlePotentialCategoryChange}
+            equipmentLevelTier={potentialLevel}
+            onEquipmentLevelTierChange={handlePotentialLevelChange}
+            selectedCube={selectedCube}
+            onCubeChange={setSelectedCube}
+            isLinked={isLinked}
+            onToggleLink={togglePotentialLink}
+          />
+          <PotentialTable
+            data={potentialData}
+            isLoading={isFetchingPotential}
+            cubeType={selectedCube}
+            excludedGrades={["rare", "epic"]}
+          />
+        </CollapsibleCard>
 
-          <CollapsibleCard
-            step={4}
-            title="에디잠재"
-            collapsed={additionalPotentialCollapsed}
-            onCollapse={() => setAdditionalPotentialCollapsed(true)}
-            onExpand={() => setAdditionalPotentialCollapsed(false)}
-            collapseVariant={potentialCollapsed ? "left" : "top"}
-            contentClassName="min-h-48"
-          >
-            <AdditionalPotentialControls
-              category={actualAdditionalCategory}
-              onCategoryChange={handleAdditionalCategoryChange}
-              equipmentLevelTier={actualAdditionalLevel}
-              onEquipmentLevelTierChange={handleAdditionalLevelChange}
-              selectedCube={selectedAdditionalCube}
-              onCubeChange={setSelectedAdditionalCube}
-              isLinked={isLinked}
-              onToggleLink={() => setIsLinked(!isLinked)}
-            />
-            <PotentialTable />
-          </CollapsibleCard>
-        </div>
+        <CollapsibleCard
+          step={4}
+          title="에디잠재"
+          collapsed={additionalPotentialCollapsed}
+          onCollapse={() => setAdditionalPotentialCollapsed(true)}
+          onExpand={() => setAdditionalPotentialCollapsed(false)}
+        >
+          <AdditionalPotentialControls
+            category={additionalCategory}
+            onCategoryChange={handleAdditionalCategoryChange}
+            equipmentLevelTier={additionalLevel}
+            onEquipmentLevelTierChange={handleAdditionalLevelChange}
+            selectedCube={selectedAdditionalCube}
+            onCubeChange={setSelectedAdditionalCube}
+            isLinked={isLinked}
+            onToggleLink={toggleAdditionalLink}
+          />
+          <PotentialTable
+            data={additionalPotentialData}
+            isLoading={isFetchingAdditionalPotential}
+            cubeType={selectedAdditionalCube}
+            excludedGrades={["rare"]}
+          />
+        </CollapsibleCard>
       </div>
     </div>
   );

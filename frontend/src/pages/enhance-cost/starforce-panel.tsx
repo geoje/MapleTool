@@ -136,12 +136,14 @@ export function StarforceCard({
                 step != null
                   ? cumulativeFromZero.spareCount[star + 1] - cumulativeFromZero.spareCount[currentStar]
                   : undefined;
+              const isOddBracket = Math.floor(star / 5) % 2 === 1;
               return (
                 <tr
                   key={star}
                   onClick={() => setCurrentStar(star)}
                   className={cn(
                     "border-b last:border-b-0 hover:bg-muted/30",
+                    isOddBracket && "bg-muted",
                     isFaded && "text-muted-foreground/40",
                   )}
                 >

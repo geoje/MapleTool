@@ -21,7 +21,9 @@ export function SparePriceInput({ value, onChange }: { value: number; onChange: 
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between gap-2">
         <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">노작 가격</span>
-        <span className="text-xs whitespace-nowrap tabular-nums text-muted-foreground">{formatCostExact(value)}</span>
+        <span className="text-xs whitespace-nowrap tabular-nums text-muted-foreground">
+          {value !== 0 && formatCostExact(value)}
+        </span>
       </div>
       <InputGroup className="rounded-full border-0 bg-muted has-disabled:bg-muted has-disabled:opacity-100">
         <InputGroupAddon align="inline-start">

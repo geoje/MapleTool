@@ -1,22 +1,393 @@
-const TABLE_ROW_COUNT = 4;
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { CubeType, PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
+import type { CubeGrade, CubeOptionGroup, CubeProbabilityData } from "@/hooks/use-cube-probability";
+import { extractPotentialOptionValue } from "@/lib/potential-option";
 
-export function PotentialTable() {
+const GRADE_ORDER: CubeGrade[] = ["rare", "epic", "unique", "legendary"];
+
+const GRADE_LABELS: Record<CubeGrade, string> = {
+  rare: POTENTIAL_GRADE_INFOS[PotentialGrade.RARE].name,
+  epic: POTENTIAL_GRADE_INFOS[PotentialGrade.EPIC].name,
+  unique: POTENTIAL_GRADE_INFOS[PotentialGrade.UNIQUE].name,
+  legendary: POTENTIAL_GRADE_INFOS[PotentialGrade.LEGENDARY].name,
+};
+
+const GRADE_BADGE_LETTERS: Record<CubeGrade, string> = {
+  rare: "R",
+  epic: "E",
+  unique: "U",
+  legendary: "L",
+};
+
+// Tailwind's standard palette, matching each grade's real in-game color
+// (rare cyan, epic purple, unique yellow, legendary green) via shadcn's usual
+// light/dark color-pair convention (see Alert's "warning" variant).
+const GRADE_BADGE_COLORS: Record<CubeGrade, string> = {
+  rare: "border-cyan-500/50 bg-cyan-50 text-cyan-900 dark:border-cyan-500/30 dark:bg-cyan-950/30 dark:text-cyan-300",
+  epic: "border-purple-500/50 bg-purple-50 text-purple-900 dark:border-purple-500/30 dark:bg-purple-950/30 dark:text-purple-300",
+  unique: "border-yellow-500/50 bg-yellow-50 text-yellow-900 dark:border-yellow-500/30 dark:bg-yellow-950/30 dark:text-yellow-300",
+  legendary: "border-green-500/50 bg-green-50 text-green-900 dark:border-green-500/30 dark:bg-green-950/30 dark:text-green-300",
+};
+
+function GradeBadge({ grade }: { grade: CubeGrade }) {
   return (
-    <table className="border-collapse w-full text-xs">
-      <thead>
-        <tr className="border-b">
-          <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">옵션</th>
-          <th className="px-3 py-1 text-left font-medium text-muted-foreground">평균값</th>
-        </tr>
-      </thead>
-      <tbody>
-        {Array.from({ length: TABLE_ROW_COUNT }).map((_, index) => (
-          <tr key={index} className="border-b last:border-b-0">
-            <td className="border-r px-3 py-1">&nbsp;</td>
-            <td className="px-3 py-1">&nbsp;</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <Badge variant="outline" className={cn("h-4 min-w-4 justify-center rounded-sm px-1 text-[10px]", GRADE_BADGE_COLORS[grade])}>
+      {GRADE_BADGE_LETTERS[grade]}
+    </Badge>
+  );
+}
+
+type GradeUpFromGrade = Exclude<CubeGrade, "legendary">;
+
+interface GradeUpStep {
+  probability: number;
+  // Guaranteed-success try count ("등급 상승 보장 횟수"); undefined = no guarantee.
+  pity?: number;
+}
+
+// From-grade -> chance of moving up one tier, per cube. Source: Nexon's official
+// "등급 상승 확률표" / "등급 상승 보장 시스템" (게임산업법 시행령 공시).
+// ADDI ("화이트") uses the "에디셔널 큐브 / 화이트 에디셔널 큐브" column, not the
+// separate "에디셔널 잠재능력 재설정" column - that's a different, non-cube reset
+// mechanic this app doesn't expose, and the two cube columns match exactly anyway.
+// MASTER/ARTISAN/STRANGE_ADDI have no guarantee system.
+const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpStep>>> = {
+  [CubeType.BLACK]: {
+    rare: { probability: 0.15, pity: 10 },
+    epic: { probability: 0.035, pity: 42 },
+    unique: { probability: 0.014, pity: 107 },
+  },
+  [CubeType.MASTER]: {
+    rare: { probability: 0.047619 },
+    epic: { probability: 0.011858 },
+  },
+  [CubeType.ARTISAN]: {
+    rare: { probability: 0.079994 },
+    epic: { probability: 0.016959 },
+    unique: { probability: 0.001996 },
+  },
+  [CubeType.ADDI]: {
+    rare: { probability: 0.047619, pity: 31 },
+    epic: { probability: 0.019608, pity: 76 },
+    unique: { probability: 0.007, pity: 214 },
+  },
+  [CubeType.STRANGE_ADDI]: {
+    rare: { probability: 0.004 },
+  },
+};
+
+// Expected try count for a Bernoulli(probability) event, where reaching `pity`
+// consecutive failures forces a success on that attempt.
+function expectedGradeUpTries(probability: number, pity?: number): number {
+  if (!pity) return Math.ceil(1 / probability);
+
+  let expected = 0;
+  let survivalProbability = 1;
+  for (let attempt = 1; attempt < pity; attempt++) {
+    expected += attempt * survivalProbability * probability;
+    survivalProbability *= 1 - probability;
+  }
+  expected += pity * survivalProbability;
+  return Math.ceil(expected);
+}
+
+interface OptionRow {
+  label: string;
+  averageTries: number;
+}
+
+type Distribution = Map<number, number>; // value -> probability
+
+// All 3 option lines roll independently, and any of them can land a matching
+// option - so a slot's distribution is "one of the matching values" plus a
+// bucket at 0 for "this line rolled something else entirely".
+function buildSlotDistribution(items: CubeOptionGroup["items"], templates: string[]): Distribution {
+  const distribution: Distribution = new Map();
+  let matchedProbability = 0;
+  for (const item of items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (!templates.includes(name)) continue;
+    distribution.set(value, (distribution.get(value) ?? 0) + item.probability);
+    matchedProbability += item.probability;
+  }
+  const otherProbability = 1 - matchedProbability;
+  if (otherProbability > 0) {
+    distribution.set(0, (distribution.get(0) ?? 0) + otherProbability);
+  }
+  return distribution;
+}
+
+function convolve(a: Distribution, b: Distribution): Distribution {
+  const result: Distribution = new Map();
+  for (const [aValue, aProbability] of a) {
+    for (const [bValue, bProbability] of b) {
+      const total = aValue + bValue;
+      result.set(total, (result.get(total) ?? 0) + aProbability * bProbability);
+    }
+  }
+  return result;
+}
+
+// A row labeled "n%" means "n% or more" (e.g. hitting 21% also satisfies the
+// 18% row), so its probability is the tail sum from that total upward - this
+// guarantees a higher total never needs fewer tries than a lower one.
+function toAtLeastDistribution(distribution: Distribution): Distribution {
+  const descendingTotals = [...distribution.keys()].sort((a, b) => b - a);
+  const cumulative: Distribution = new Map();
+  let runningProbability = 0;
+  for (const total of descendingTotals) {
+    runningProbability += distribution.get(total) ?? 0;
+    cumulative.set(total, runningProbability);
+  }
+  return cumulative;
+}
+
+// The 1st option line only ever rolls the single strongest tier of a given
+// option (lines 2/3 draw from the full range) - so it sets a floor below which
+// a total is just a weaker line rolling alone and isn't worth showing.
+function slotOneMinimum(groups: CubeOptionGroup[], templates: string[]): number {
+  const firstSlot = groups.find((group) => group.optionNumber === 1);
+  if (!firstSlot) return 0;
+
+  let minimum: number | null = null;
+  for (const item of firstSlot.items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (!templates.includes(name)) continue;
+    if (minimum === null || value < minimum) minimum = value;
+  }
+  return minimum ?? 0;
+}
+
+// `templates` are the "n"-substituted name shapes from extractPotentialOptionValue
+// (e.g. "STR +n%") that should be treated as the same option for this row group.
+// Since all 3 lines can independently roll a matching option, the row for a given
+// total is the sum across every combination of per-line values that adds up to it
+// (e.g. 12+9+9 and 15+9+6 both count toward a "30%" row, if both are possible).
+function buildOptionRows(groups: CubeOptionGroup[], templates: string[], formatLabel: (value: number) => string): OptionRow[] {
+  const slotDistributions = groups.map((group) => buildSlotDistribution(group.items, templates));
+  const combined = slotDistributions.reduce<Distribution>((acc, slot) => convolve(acc, slot), new Map([[0, 1]]));
+  const atLeast = toAtLeastDistribution(combined);
+  const floor = slotOneMinimum(groups, templates);
+
+  const rows: OptionRow[] = [];
+  for (const [total, probability] of atLeast) {
+    if (total <= 0 || total < floor || probability <= 0) continue;
+    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / probability) });
+  }
+  return rows.sort((a, b) => a.averageTries - b.averageTries);
+}
+
+interface WeightedSlotValue {
+  value: number;
+  probability: number;
+  isPrimary: boolean;
+}
+
+// A slot rolls at most one option: a `primaryTemplates` match, a `bonusTemplates`
+// match, or something unrelated (contributes 0, counted in the leftover entry).
+function buildWeightedSlot(
+  items: CubeOptionGroup["items"],
+  primaryTemplates: string[],
+  bonusTemplates: string[]
+): WeightedSlotValue[] {
+  const entries: WeightedSlotValue[] = [];
+  let matchedProbability = 0;
+  for (const item of items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (primaryTemplates.includes(name)) {
+      entries.push({ value, probability: item.probability, isPrimary: true });
+      matchedProbability += item.probability;
+    } else if (bonusTemplates.includes(name)) {
+      entries.push({ value, probability: item.probability, isPrimary: false });
+      matchedProbability += item.probability;
+    }
+  }
+  entries.push({ value: 0, probability: 1 - matchedProbability, isPrimary: false });
+  return entries;
+}
+
+// Same "sum across the 3 lines" idea as buildOptionRows, but a bonus-template
+// line (올스탯) only counts toward the total when at least one line actually
+// rolled a primary-template option (STR) - a lone 올스탯 line with no STR line
+// anywhere isn't treated as satisfying "주스탯" on its own.
+function buildPrimaryWithBonusRows(
+  groups: CubeOptionGroup[],
+  primaryTemplates: string[],
+  bonusTemplates: string[],
+  formatLabel: (value: number) => string
+): OptionRow[] {
+  const slots = groups.map((group) => buildWeightedSlot(group.items, primaryTemplates, bonusTemplates));
+  // Floor from the primary (STR) template only - the 1st line's 올스탯 value
+  // (if any) is often lower, and blending it in would let weaker totals through.
+  const floor = slotOneMinimum(groups, primaryTemplates);
+
+  // State key encodes the running total plus whether a primary-template line
+  // has appeared yet, since only the latter qualifies a total for output.
+  let states = new Map<string, number>([["0:0", 1]]);
+  for (const slot of slots) {
+    const next = new Map<string, number>();
+    for (const [key, probability] of states) {
+      const [totalPart, hasPrimaryPart] = key.split(":");
+      const total = Number(totalPart);
+      const hasPrimary = hasPrimaryPart === "1";
+      for (const entry of slot) {
+        const newKey = `${total + entry.value}:${hasPrimary || entry.isPrimary ? 1 : 0}`;
+        next.set(newKey, (next.get(newKey) ?? 0) + probability * entry.probability);
+      }
+    }
+    states = next;
+  }
+
+  // Only outcomes with a genuine primary line qualify at all; everything else
+  // (bonus-only or no match) is dropped before converting to "n% or more".
+  const qualifying: Distribution = new Map();
+  for (const [key, probability] of states) {
+    const [totalPart, hasPrimaryPart] = key.split(":");
+    if (hasPrimaryPart !== "1") continue;
+    const total = Number(totalPart);
+    qualifying.set(total, (qualifying.get(total) ?? 0) + probability);
+  }
+  const atLeast = toAtLeastDistribution(qualifying);
+
+  const rows: OptionRow[] = [];
+  for (const [total, probability] of atLeast) {
+    if (total <= 0 || total < floor || probability <= 0) continue;
+    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / probability) });
+  }
+  return rows.sort((a, b) => a.averageTries - b.averageTries);
+}
+
+// Only the "%" variants are shown - flat (non-percent) stat bumps are excluded.
+// 주스탯 = STR/DEX/INT/LUK % (all four are symmetric, so STR alone represents them),
+// with 올스탯 % riding along on top whenever a real STR line is also present.
+// HP % and 올스탯 % (standalone) are their own independent options.
+// Groups always render in this fixed order (주스탯 -> 올스탯 -> HP), each already
+// sorted by average tries ascending - never interleaved across groups. Empty
+// groups (e.g. a grade with no HP option at all) are dropped entirely.
+function buildGradeRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
+  return [
+    buildPrimaryWithBonusRows(groups, ["STR +n%"], ["올스탯 +n%"], (value) => `주스탯 ${value}%`),
+    buildOptionRows(groups, ["올스탯 +n%"], (value) => `올스탯 ${value}%`),
+    buildOptionRows(groups, ["최대 HP +n%"], (value) => `HP ${value}%`),
+  ].filter((rows) => rows.length > 0);
+}
+
+export function PotentialTable({
+  data,
+  isLoading,
+  cubeType,
+  excludedGrades,
+}: {
+  data: CubeProbabilityData | null;
+  isLoading: boolean;
+  cubeType: CubeType | null;
+  excludedGrades?: CubeGrade[];
+}) {
+  const grades = GRADE_ORDER.filter(
+    (grade) => (data?.[grade]?.length ?? 0) > 0 && !excludedGrades?.includes(grade)
+  );
+
+  const [expandedGrades, setExpandedGrades] = useState<Set<CubeGrade>>(new Set());
+  const hasInitializedRef = useRef(false);
+
+  // Default to only the highest grade expanded, but only the very first time
+  // data actually arrives - never again afterward. Switching cube/category can
+  // make a grade disappear and later reappear (e.g. 골드 -> 실버 -> 골드), and
+  // when it does, it should come back exactly as the user left it rather than
+  // snapping back to the "only the max grade" default.
+  useEffect(() => {
+    if (hasInitializedRef.current || grades.length === 0) return;
+    hasInitializedRef.current = true;
+    setExpandedGrades(new Set([grades[grades.length - 1]]));
+  }, [grades]);
+
+  const toggleGrade = (grade: CubeGrade) => {
+    setExpandedGrades((prev) => {
+      const next = new Set(prev);
+      if (next.has(grade)) next.delete(grade);
+      else next.add(grade);
+      return next;
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <p className="text-sm text-muted-foreground">로딩 중...</p>
+      </div>
+    );
+  }
+
+  if (!data || grades.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <p className="text-sm text-muted-foreground">데이터를 불러올 수 없습니다</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      {grades.map((grade, gradeIndex) => {
+        const isExpanded = expandedGrades.has(grade);
+        const isLastGrade = gradeIndex === grades.length - 1;
+        const optionRowGroups = buildGradeRowGroups(data[grade]!);
+
+        const gradeUpStep = !isLastGrade && cubeType ? GRADE_UP_STEPS[cubeType][grade as GradeUpFromGrade] : undefined;
+        const rowGroups = gradeUpStep
+          ? [[{ label: "등급업", averageTries: expectedGradeUpTries(gradeUpStep.probability, gradeUpStep.pity) }], ...optionRowGroups]
+          : optionRowGroups;
+
+        return (
+          <div key={grade} className={cn("rounded-md border", isExpanded && "rounded-b-none")}>
+            <button
+              type="button"
+              onClick={() => toggleGrade(grade)}
+              className={cn(
+                "flex w-full items-center justify-between gap-2 rounded-md bg-muted/50 px-3 py-1.5 text-left text-xs font-medium transition-colors hover:bg-muted",
+                isExpanded && "rounded-b-none"
+              )}
+            >
+              <span className="flex items-center gap-1.5">
+                <GradeBadge grade={grade} />
+                {GRADE_LABELS[grade]}
+              </span>
+              {isExpanded ? (
+                <ChevronUp className="size-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="size-4 text-muted-foreground" />
+              )}
+            </button>
+
+            {isExpanded && (
+              <table className="border-collapse w-full text-xs">
+                <thead>
+                  <tr className="border-b">
+                    <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">옵션</th>
+                    <th className="px-3 py-1 text-right font-medium text-muted-foreground">평균 횟수</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rowGroups.flatMap((groupRows, groupIndex) => {
+                    const isGroupMuted = groupIndex % 2 === 1;
+                    return groupRows.map((row) => (
+                      <tr key={row.label} className={cn("border-b last:border-b-0", isGroupMuted && "bg-muted")}>
+                        <td className="border-r px-3 py-1">{row.label}</td>
+                        <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
+                          {row.averageTries.toLocaleString("en-US")}회
+                        </td>
+                      </tr>
+                    ));
+                  })}
+                </tbody>
+              </table>
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 }

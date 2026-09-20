@@ -133,6 +133,12 @@ export const EQUIPMENT_SLOT_GRID: SlotCell[][] = [
 ];
 
 
+import blackCubeIcon from "@/assets/cube/black.webp";
+import silverCubeIcon from "@/assets/cube/silver.webp";
+import goldCubeIcon from "@/assets/cube/gold.webp";
+import whiteCubeIcon from "@/assets/cube/white.webp";
+import bronzeCubeIcon from "@/assets/cube/bronze.webp";
+
 export const CubeType = {
   BLACK: "black",
   MASTER: "master",
@@ -143,26 +149,31 @@ export const CubeType = {
 
 export type CubeType = (typeof CubeType)[keyof typeof CubeType];
 
-export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: string }> = {
+export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: string; icon: string }> = {
   [CubeType.BLACK]: {
     displayName: "블랙",
     fullName: "잠재능력 재설정 / 블랙 큐브 / 프라임 큐브",
+    icon: blackCubeIcon,
   },
   [CubeType.MASTER]: {
     displayName: "실버",
     fullName: "장인의 큐브 / 실버 큐브",
+    icon: silverCubeIcon,
   },
   [CubeType.ARTISAN]: {
     displayName: "골드",
     fullName: "명장의 큐브 / 골드 큐브",
+    icon: goldCubeIcon,
   },
   [CubeType.ADDI]: {
     displayName: "화이트",
     fullName: "에디셔널 잠재능력 재설정 / 에디셔널 큐브 / 화이트 에디셔널 큐브 / 프라임 에디셔널 큐브",
+    icon: whiteCubeIcon,
   },
   [CubeType.STRANGE_ADDI]: {
     displayName: "브론즈",
     fullName: "수상한 에디셔널 큐브 / 브론즈 에디셔널 큐브",
+    icon: bronzeCubeIcon,
   },
 };
 
