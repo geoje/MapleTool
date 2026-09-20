@@ -2,12 +2,21 @@ import { useEffect, useState } from "react";
 import { CollapsibleCard } from "@/components/collapsible-card";
 import { SectionTitle } from "@/components/section-title";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { SET_COMBOS, SetType, CubeType, POTENTIAL_CUBES, EquipmentLevelTier, DEFAULT_EQUIPMENT_LEVEL_TIER } from "@/constants/enhance";
-import { CUBE_PROBABILITIES } from "@/constants/cube-probabilities";
+import {
+  SET_COMBOS,
+  SetType,
+  CubeType,
+  POTENTIAL_CUBES,
+  ADDITIONAL_POTENTIAL_CUBES,
+  EquipmentLevelTier,
+  DEFAULT_EQUIPMENT_LEVEL_TIER,
+} from "@/constants/enhance";
 import { SET_ITEMS } from "@/constants/enhance-set-items";
 import { DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
+import { useCubeProbability } from "@/hooks/use-cube-probability";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
+import { usePersistedBoolean } from "@/hooks/use-persisted-boolean";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-cost/equipment-panel";
 import { PotentialCommonControls } from "@/pages/enhance-cost/potential-common-controls";
 import { AdditionalPotentialControls } from "@/pages/enhance-cost/additional-potential-controls";
@@ -31,12 +40,15 @@ export function EnhanceCostPage() {
   const { data: basic, isFetching: isFetchingBasic } = useCharacterBasic(name, searchToken);
   const { data: equipment, isFetching: isFetchingEquipment } = useItemEquipment(name, searchToken);
   const [selection, setSelection] = useState<Selection>(() => getDefaultSelection(!!equipment));
-  const [starforceCollapsed, setStarforceCollapsed] = useState(false);
+  const [starforceCollapsed, setStarforceCollapsed] = usePersistedBoolean("enhance-cost:starforce-collapsed", false);
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
-  const [potentialCollapsed, setPotentialCollapsed] = useState(false);
-  const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = useState(false);
+  const [potentialCollapsed, setPotentialCollapsed] = usePersistedBoolean("enhance-cost:potential-collapsed", false);
+  const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = usePersistedBoolean(
+    "enhance-cost:additional-potential-collapsed",
+    false
+  );
   const [selectedCube, setSelectedCube] = useState<CubeType>(POTENTIAL_CUBES[0]);
-  const [selectedAdditionalCube, setSelectedAdditionalCube] = useState<CubeType | null>(null);
+  const [selectedAdditionalCube, setSelectedAdditionalCube] = useState<CubeType | null>(ADDITIONAL_POTENTIAL_CUBES[0]);
   const [potentialCategory, setPotentialCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
   const [potentialLevel, setPotentialLevel] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
   const [additionalCategory, setAdditionalCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
@@ -66,8 +78,16 @@ export function EnhanceCostPage() {
     setSelection(getDefaultSelection(!!equipment));
   }, [equipment]);
 
-  const potentialData = CUBE_PROBABILITIES[selectedCube];
-  const additionalPotentialData = selectedAdditionalCube ? CUBE_PROBABILITIES[selectedAdditionalCube] : null;
+  const { data: potentialData, isFetching: isFetchingPotential } = useCubeProbability(
+    selectedCube,
+    potentialCategory,
+    potentialLevel
+  );
+  const { data: additionalPotentialData, isFetching: isFetchingAdditionalPotential } = useCubeProbability(
+    selectedAdditionalCube,
+    actualAdditionalCategory,
+    actualAdditionalLevel
+  );
 
   const characterItems =
     selection.type != "character"
@@ -140,7 +160,7 @@ export function EnhanceCostPage() {
               isLinked={isLinked}
               onToggleLink={() => setIsLinked(!isLinked)}
             />
-            <PotentialTable optionData={potentialData} isLoading={false} />
+            <PotentialTable optionData={potentialData} isLoading={isFetchingPotential} />
           </CollapsibleCard>
 
           <CollapsibleCard
@@ -162,7 +182,7 @@ export function EnhanceCostPage() {
               isLinked={isLinked}
               onToggleLink={() => setIsLinked(!isLinked)}
             />
-            <PotentialTable optionData={additionalPotentialData} isLoading={false} />
+            <PotentialTable optionData={additionalPotentialData} isLoading={isFetchingAdditionalPotential} />
           </CollapsibleCard>
         </div>
       </div>

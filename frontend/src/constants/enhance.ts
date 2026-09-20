@@ -169,33 +169,3 @@ export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: strin
 export const POTENTIAL_CUBES = [CubeType.BLACK, CubeType.MASTER, CubeType.ARTISAN] as const;
 export const ADDITIONAL_POTENTIAL_CUBES = [CubeType.ADDI, CubeType.STRANGE_ADDI] as const;
 
-export interface GradeUpRow {
-  from: string;
-  to: string;
-  probability: number;
-  cubeType?: string;
-}
-
-export interface GuaranteeRow {
-  from: string;
-  to: string;
-  count: number;
-  cubeType?: string;
-}
-
-export interface OptionProbability {
-  optionNumber: number;
-  grade: string;
-  items: Array<{
-    name: string;
-    probability: number;
-  }>;
-}
-
-export interface CubeDataResponse {
-  maxGrade?: string;
-  gradeUp: GradeUpRow[];
-  guarantee?: GuaranteeRow[];
-  optionProbability?: OptionProbability[];
-}
-
