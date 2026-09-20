@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { CubeType, PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
 import type { CubeGrade, CubeOptionGroup, CubeProbabilityData } from "@/hooks/use-cube-probability";
@@ -275,6 +276,60 @@ function buildGradeRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
   ].filter((rows) => rows.length > 0);
 }
 
+// How many placeholder rows to guess when there's no previous table shape to
+// borrow from yet (very first load, before any grade/category has ever
+// resolved data).
+const SKELETON_ROW_COUNT = 4;
+
+// Overrides Skeleton's default bg-muted, which is invisible on rows that
+// already have a bg-muted background (every other option group).
+function SkeletonCell({ className }: { className: string }) {
+  return <Skeleton className={cn("bg-muted-foreground/20", className)} />;
+}
+
+function SkeletonRows({ count }: { count: number }) {
+  return (
+    <>
+      {Array.from({ length: count }).map((_, index) => (
+        <tr key={index} className="border-b last:border-b-0">
+          <td className="border-r px-3 py-1">
+            <SkeletonCell className="h-4 w-20" />
+          </td>
+          <td className="px-3 py-1 text-right">
+            <SkeletonCell className="ml-auto h-4 w-10" />
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
+// Shown only when there's no known table shape yet (first load with nothing
+// cached). Once any data has ever resolved, the real grade sections below
+// take over and skeletonize their own cells instead, keeping the same
+// section/row count while a new fetch is in flight.
+function GenericLoadingSkeleton() {
+  return (
+    <div className="rounded-md border">
+      <div className="flex items-center gap-1.5 rounded-t-md bg-muted/50 px-3 py-1.5">
+        <Skeleton className="h-4 w-4 rounded-sm bg-muted-foreground/20" />
+        <Skeleton className="h-4 w-12 bg-muted-foreground/20" />
+      </div>
+      <table className="border-collapse w-full text-xs">
+        <thead>
+          <tr className="border-b">
+            <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">옵션</th>
+            <th className="px-3 py-1 text-right font-medium text-muted-foreground">평균 횟수</th>
+          </tr>
+        </thead>
+        <tbody>
+          <SkeletonRows count={SKELETON_ROW_COUNT} />
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function PotentialTable({
   data,
   isLoading,
@@ -313,15 +368,12 @@ export function PotentialTable({
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <p className="text-sm text-muted-foreground">로딩 중...</p>
-      </div>
-    );
-  }
-
+  // `grades` is empty both on a genuine "no data" result and on the very
+  // first load before anything has ever resolved (data is still null) - in
+  // the latter case there's no previous shape to skeletonize, so fall back
+  // to a generic guessed skeleton instead of collapsing to an empty state.
   if (!data || grades.length === 0) {
+    if (isLoading) return <GenericLoadingSkeleton />;
     return (
       <div className="flex items-center justify-center py-8">
         <p className="text-sm text-muted-foreground">데이터를 불러올 수 없습니다</p>
@@ -337,9 +389,9 @@ export function PotentialTable({
         const optionRowGroups = buildGradeRowGroups(data[grade]!);
 
         const gradeUpStep = !isLastGrade && cubeType ? GRADE_UP_STEPS[cubeType][grade as GradeUpFromGrade] : undefined;
-        const rowGroups = gradeUpStep
-          ? [[{ label: "등급업", averageTries: expectedGradeUpTries(gradeUpStep.probability, gradeUpStep.pity) }], ...optionRowGroups]
-          : optionRowGroups;
+        const gradeUpRow: OptionRow | undefined = gradeUpStep
+          ? { label: "등급업", averageTries: expectedGradeUpTries(gradeUpStep.probability, gradeUpStep.pity) }
+          : undefined;
 
         return (
           <div key={grade} className={cn("rounded-md border", isExpanded && "rounded-b-none")}>
@@ -371,13 +423,33 @@ export function PotentialTable({
                   </tr>
                 </thead>
                 <tbody>
-                  {rowGroups.flatMap((groupRows, groupIndex) => {
+                  {gradeUpRow && (
+                    <tr className={cn("border-b bg-muted", optionRowGroups.length === 0 && "border-b-0")}>
+                      <td className="border-r px-3 py-1">
+                        {isLoading ? <SkeletonCell className="h-4 w-20" /> : gradeUpRow.label}
+                      </td>
+                      <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
+                        {isLoading ? (
+                          <SkeletonCell className="ml-auto h-4 w-10" />
+                        ) : (
+                          `${gradeUpRow.averageTries.toLocaleString("en-US")}회`
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                  {optionRowGroups.flatMap((groupRows, groupIndex) => {
                     const isGroupMuted = groupIndex % 2 === 1;
                     return groupRows.map((row) => (
                       <tr key={row.label} className={cn("border-b last:border-b-0", isGroupMuted && "bg-muted")}>
-                        <td className="border-r px-3 py-1">{row.label}</td>
+                        <td className="border-r px-3 py-1">
+                          {isLoading ? <SkeletonCell className="h-4 w-20" /> : row.label}
+                        </td>
                         <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                          {row.averageTries.toLocaleString("en-US")}회
+                          {isLoading ? (
+                            <SkeletonCell className="ml-auto h-4 w-10" />
+                          ) : (
+                            `${row.averageTries.toLocaleString("en-US")}회`
+                          )}
                         </td>
                       </tr>
                     ));

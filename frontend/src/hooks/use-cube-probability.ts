@@ -30,12 +30,15 @@ export function useCubeProbability(cubeType: CubeType | null, category: string, 
     const cached = cache.get(key);
     if (cached) {
       setData(cached);
+      setIsFetching(false);
       return;
     }
 
     const controller = new AbortController();
     setIsFetching(true);
-    setData(null);
+    // Deliberately keep the previous key's data in state instead of clearing
+    // it here - the table renders it as a same-shaped skeleton while this
+    // fetch is in flight, rather than collapsing to an empty loading state.
 
     fetch(`/api/probability/${key}`, { signal: controller.signal })
       .then((response) => {
