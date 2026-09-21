@@ -117,8 +117,8 @@ export function StarforceCard({
             <tr className="border-b">
               <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">현재</th>
               <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">목표</th>
-              <th className="w-32 border-r px-3 py-1 text-right font-medium text-muted-foreground">평균값</th>
-              <th className="w-24 border-r px-3 py-1 text-right font-medium text-muted-foreground">노작개수</th>
+              <th className="w-32 border-r px-3 py-1 text-right font-medium text-muted-foreground">평균 비용</th>
+              <th className="w-24 border-r px-3 py-1 text-right font-medium text-muted-foreground">노작 개수</th>
               <th className="border-r px-3 py-1 text-center font-medium text-muted-foreground">
                 <Tooltip>
                   <TooltipTrigger asChild>

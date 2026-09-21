@@ -99,19 +99,26 @@ function expectedGradeUpTries(probability: number, pity?: number): number {
   return Math.ceil(expected);
 }
 
-// Usually a single "등급업" row. When a cube type's guarantee count differs by
-// mechanic (ADDI's 재설정 vs 큐브 - see `resetPity`), splits into two rows so
-// neither number is silently averaged away or mislabeled as the other.
+const MIRACLE_TIME_PROBABILITY_MULTIPLIER = 2;
+
 function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
   if (!step) return [];
+  const miracleProbability = step.probability * MIRACLE_TIME_PROBABILITY_MULTIPLIER;
   const cubeTries = expectedGradeUpTries(step.probability, step.pity);
-  if (step.resetPity === undefined || step.resetPity === step.pity) {
-    return [{ label: "등급업", averageTries: cubeTries }];
-  }
-  return [
-    { label: "등급업 (재설정)", averageTries: expectedGradeUpTries(step.probability, step.resetPity) },
-    { label: "등급업 (큐브)", averageTries: cubeTries },
-  ];
+  const miracleCubeTries = expectedGradeUpTries(miracleProbability, step.pity);
+  const rows: OptionRow[] =
+    step.resetPity === undefined || step.resetPity === step.pity
+      ? [
+          { label: "등급업", averageTries: cubeTries },
+          { label: "등급업 (미라클)", averageTries: miracleCubeTries },
+        ]
+      : [
+          { label: "등급업 (재설정)", averageTries: expectedGradeUpTries(step.probability, step.resetPity) },
+          { label: "등급업 (미라클+재설정)", averageTries: expectedGradeUpTries(miracleProbability, step.resetPity) },
+          { label: "등급업 (큐브)", averageTries: cubeTries },
+          { label: "등급업 (미라클+큐브)", averageTries: miracleCubeTries },
+        ];
+  return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
 
 interface OptionRow {
