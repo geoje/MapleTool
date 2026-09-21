@@ -60,7 +60,7 @@ export function StarforceCard({
       ),
     [level, spareValue, costDiscountRate, activeSundayKeys, maxStar],
   );
-  const starLevels = Array.from({ length: maxStar + 1 }, (_, star) => star);
+  const starLevels = Array.from({ length: maxStar }, (_, star) => star);
 
   // Prefix sums so each row can show the cumulative expected cost/spare-count from the selected
   // "현재" star up to that row's target, instead of just that one isolated step.
