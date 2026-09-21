@@ -51,10 +51,10 @@ export type PotentialGrade = (typeof PotentialGrade)[keyof typeof PotentialGrade
 
 // Highest grade first: getMaxPotentialGrade walks this order to find the best match.
 export const POTENTIAL_GRADE_INFOS: Record<PotentialGrade, { name: string; borderColor: string }> = {
-  [PotentialGrade.LEGENDARY]: { name: "레전드리", borderColor: "#cbfe01" },
-  [PotentialGrade.UNIQUE]: { name: "유니크", borderColor: "#fbcc01" },
-  [PotentialGrade.EPIC]: { name: "에픽", borderColor: "#b777fb" },
-  [PotentialGrade.RARE]: { name: "레어", borderColor: "#64fdf9" },
+  [PotentialGrade.LEGENDARY]: { name: "레전드리", borderColor: "#01ff00" },
+  [PotentialGrade.UNIQUE]: { name: "유니크", borderColor: "#ffcc00" },
+  [PotentialGrade.EPIC]: { name: "에픽", borderColor: "#cc66ff" },
+  [PotentialGrade.RARE]: { name: "레어", borderColor: "#66ffff" },
 };
 
 export const EquipmentLevelTier = {

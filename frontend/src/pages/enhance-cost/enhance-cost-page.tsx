@@ -53,6 +53,7 @@ export function EnhanceCostPage() {
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
   const [spareValue, setSpareValue] = useState(0);
   const [spareValuePriceInfo, setSpareValuePriceInfo] = useState<ItemPriceInfo | null>(null);
+  const [isFetchingSpareValuePrice, setIsFetchingSpareValuePrice] = useState(false);
   const [potentialCollapsed, setPotentialCollapsed] = usePersistedBoolean("enhance-cost:potential-collapsed", false);
   const [additionalPotentialCollapsed, setAdditionalPotentialCollapsed] = usePersistedBoolean(
     "enhance-cost:additional-potential-collapsed",
@@ -122,11 +123,14 @@ export function EnhanceCostPage() {
   const applyItemPrice = (itemName: string) => {
     setSpareValue(0);
     setSpareValuePriceInfo(null);
-    fetchItemPrice(itemName).then((priceInfo) => {
-      if (!priceInfo) return;
-      setSpareValue(priceInfo.price);
-      setSpareValuePriceInfo(priceInfo);
-    });
+    setIsFetchingSpareValuePrice(true);
+    fetchItemPrice(itemName)
+      .then((priceInfo) => {
+        if (!priceInfo) return;
+        setSpareValue(priceInfo.price);
+        setSpareValuePriceInfo(priceInfo);
+      })
+      .finally(() => setIsFetchingSpareValuePrice(false));
   };
 
   // Clicking an equipped item both jumps the starforce level to that item's
@@ -222,6 +226,7 @@ export function EnhanceCostPage() {
           spareValue={spareValue}
           onSpareValueChange={handleSpareValueChange}
           spareValuePriceInfo={spareValuePriceInfo}
+          isFetchingSpareValuePrice={isFetchingSpareValuePrice}
           onCollapse={() => setStarforceCollapsed(true)}
           onExpand={() => setStarforceCollapsed(false)}
         />

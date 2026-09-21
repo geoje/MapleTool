@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
@@ -41,10 +42,12 @@ export function SparePriceInput({
   value,
   onChange,
   priceInfo,
+  isLoadingPriceInfo,
 }: {
   value: number;
   onChange: (value: number) => void;
   priceInfo?: ItemPriceInfo | null;
+  isLoadingPriceInfo?: boolean;
 }) {
   const [text, setText] = useState(String(value));
   const [isFocused, setIsFocused] = useState(false);
@@ -70,7 +73,11 @@ export function SparePriceInput({
     <div className="flex items-center justify-between gap-2">
       <div className="flex items-center gap-1.5">
         <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">노작 가격</span>
-        {priceInfo && <Badge variant="secondary">{priceInfo.itemName}</Badge>}
+        {priceInfo ? (
+          <Badge variant="secondary">{priceInfo.itemName}</Badge>
+        ) : (
+          isLoadingPriceInfo && <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />
+        )}
       </div>
       <InputGroup className="w-auto flex-none rounded-full border-0 bg-muted has-disabled:bg-muted has-disabled:opacity-100">
         <InputGroupInput

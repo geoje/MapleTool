@@ -29,7 +29,7 @@ export function StarforceLevelInput({ level, onChange }: { level: number; onChan
         </InputGroupAddon>
         <InputGroupInput
           inputMode="numeric"
-          className="w-10 flex-none px-1 text-center"
+          className="w-auto min-w-4 flex-none field-sizing-content px-1 text-center"
           value={text}
           onFocus={() => {
             isFocused.current = true;

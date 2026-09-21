@@ -20,6 +20,7 @@ export function StarforceCard({
   spareValue,
   onSpareValueChange,
   spareValuePriceInfo,
+  isFetchingSpareValuePrice,
   onCollapse,
   onExpand,
 }: {
@@ -29,6 +30,7 @@ export function StarforceCard({
   spareValue: number;
   onSpareValueChange: (value: number) => void;
   spareValuePriceInfo?: ItemPriceInfo | null;
+  isFetchingSpareValuePrice?: boolean;
   onCollapse: () => void;
   onExpand: () => void;
 }) {
@@ -92,7 +94,12 @@ export function StarforceCard({
   return (
     <CollapsibleCard step={2} title="스타포스" collapsed={collapsed} onCollapse={onCollapse} onExpand={onExpand}>
       <StarforceLevelInput level={level} onChange={onLevelChange} />
-      <SparePriceInput value={spareValue} onChange={onSpareValueChange} priceInfo={spareValuePriceInfo} />
+      <SparePriceInput
+        value={spareValue}
+        onChange={onSpareValueChange}
+        priceInfo={spareValuePriceInfo}
+        isLoadingPriceInfo={isFetchingSpareValuePrice}
+      />
       <SundayStarforcePanel activeKeys={activeSundayKeys} onToggle={toggleSundayEffect} />
       <StarforceDiscountPanel
         membershipGrade={membershipGrade}

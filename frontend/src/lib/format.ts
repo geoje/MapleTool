@@ -68,7 +68,8 @@ export function formatSpareCountExact(value: number): string {
 // Rounds to the nearest 10,000,000 (cheonman) and drops anything below that, per product spec.
 // Shown as a 조/억/천만 breakdown (no decimals) once the value reaches 1천만; falls back to units
 // of 10,000 (man), then the raw value, when the amount is too small to show at that precision.
-// Once 조 shows up, 천만 is dropped too — only 조/억 precision is shown.
+// Once the value reaches 100억 (whether via 조 or a large 억 amount), 천만 is dropped too — only
+// 조/억 precision is shown.
 export function formatCostRounded(value: number): string {
   const rounded = Math.round(value / 10_000_000) * 10_000_000;
   if (rounded === 0) {
@@ -81,11 +82,12 @@ export function formatCostRounded(value: number): string {
   const afterJo = rounded % 1_000_000_000_000;
   const eok = Math.floor(afterJo / 100_000_000);
   const cheonman = Math.floor((afterJo % 100_000_000) / 10_000_000);
+  const hidesCheonman = jo > 0 || eok >= 100;
 
   const parts = [];
   if (jo > 0) parts.push(`${jo}조`);
   if (eok > 0) parts.push(`${eok}억`);
-  if (jo === 0 && cheonman > 0) parts.push(`${cheonman}천만`);
+  if (!hidesCheonman && cheonman > 0) parts.push(`${cheonman}천만`);
 
   return parts.join(" ");
 }
