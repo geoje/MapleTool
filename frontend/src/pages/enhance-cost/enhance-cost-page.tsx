@@ -198,15 +198,17 @@ export function EnhanceCostPage() {
             <CardHeader>
               <div className="flex items-center justify-between gap-3">
                 <SectionTitle step={1}>장비</SectionTitle>
-                <NameInput isFetching={isFetchingBasic || isFetchingEquipment} />
+                <NameInput
+                  isFetching={isFetchingBasic || isFetchingEquipment}
+                  characterPreset={selection.type == "character" ? selection.preset : undefined}
+                  characterDisabled={!equipment}
+                  onSelectCharacterPreset={(preset) => setSelection({ type: "character", preset })}
+                />
               </div>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <PresetTabs
-                characterPreset={selection.type == "character" ? selection.preset : undefined}
                 comboIndex={selection.type == "set" ? selection.comboIndex : undefined}
-                characterDisabled={!equipment}
-                onSelectCharacterPreset={(preset) => setSelection({ type: "character", preset })}
                 onSelectCombo={(comboIndex) => setSelection({ type: "set", comboIndex })}
               />
 

@@ -13,7 +13,17 @@ import type { ItemEquipmentDetail } from "@/types";
 const CELL = 40;
 const GRID_COLUMNS = { gridTemplateColumns: `repeat(7, ${CELL}px)` };
 
-export function NameInput({ isFetching }: { isFetching?: boolean }) {
+export function NameInput({
+  isFetching,
+  characterPreset,
+  characterDisabled,
+  onSelectCharacterPreset,
+}: {
+  isFetching?: boolean;
+  characterPreset?: 1 | 2 | 3;
+  characterDisabled?: boolean;
+  onSelectCharacterPreset: (preset: 1 | 2 | 3) => void;
+}) {
   const name = useEnhanceStore((state) => state.name);
   const setName = useEnhanceStore((state) => state.setName);
   const [value, setValue] = useState(name);
@@ -49,65 +59,54 @@ export function NameInput({ isFetching }: { isFetching?: boolean }) {
       >
         {isFetching ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
       </Button>
+      {([1, 2, 3] as const).map((no) => (
+        <Tooltip key={`char-${no}`}>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant={characterPreset === no ? "default" : "outline"}
+              disabled={characterDisabled}
+              className="w-7 px-0"
+              onClick={() => onSelectCharacterPreset(no)}
+            >
+              {no}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top">프리셋 {no}</TooltipContent>
+        </Tooltip>
+      ))}
     </ButtonGroup>
   );
 }
 
 export function PresetTabs({
-  characterPreset,
   comboIndex,
-  characterDisabled,
-  onSelectCharacterPreset,
   onSelectCombo,
 }: {
-  characterPreset?: 1 | 2 | 3;
   comboIndex?: number;
-  characterDisabled?: boolean;
-  onSelectCharacterPreset: (preset: 1 | 2 | 3) => void;
   onSelectCombo: (comboIndex: number) => void;
 }) {
   return (
-    <div className="flex w-full flex-wrap items-center justify-between gap-2">
-      <ButtonGroup>
-        {SET_COMBOS.map((combo, index) => (
-          <Tooltip key={`set-${index}`}>
-            <TooltipTrigger asChild>
-              <Button
-                type="button"
-                variant={comboIndex === index ? "default" : "outline"}
-                size="sm"
-                className="gap-0.5 px-1.5"
-                onClick={() => onSelectCombo(index)}
-              >
-                {combo.map((type) => (
-                  <img key={type} src={SET_INFOS[type].icon} alt={SET_INFOS[type].name} className="size-5 object-contain" />
-                ))}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">{combo.map((type) => SET_INFOS[type].name).join(" + ")}</TooltipContent>
-          </Tooltip>
-        ))}
-      </ButtonGroup>
-      <ButtonGroup>
-        {([1, 2, 3] as const).map((no) => (
-          <Tooltip key={`char-${no}`}>
-            <TooltipTrigger asChild>
-              <Button
-                type="button"
-                variant={characterPreset === no ? "default" : "outline"}
-                size="sm"
-                disabled={characterDisabled}
-                className="w-7 px-0"
-                onClick={() => onSelectCharacterPreset(no)}
-              >
-                {no}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">프리셋 {no}</TooltipContent>
-          </Tooltip>
-        ))}
-      </ButtonGroup>
-    </div>
+    <ButtonGroup>
+      {SET_COMBOS.map((combo, index) => (
+        <Tooltip key={`set-${index}`}>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant={comboIndex === index ? "default" : "outline"}
+              size="sm"
+              className={cn("gap-0.5 px-1.5", index === SET_COMBOS.length - 1 && "pr-2.5")}
+              onClick={() => onSelectCombo(index)}
+            >
+              {combo.map((type) => (
+                <img key={type} src={SET_INFOS[type].icon} alt={SET_INFOS[type].name} className="size-5 object-contain" />
+              ))}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top">{combo.map((type) => SET_INFOS[type].name).join(" + ")}</TooltipContent>
+        </Tooltip>
+      ))}
+    </ButtonGroup>
   );
 }
 
