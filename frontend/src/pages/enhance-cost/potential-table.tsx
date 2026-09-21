@@ -689,12 +689,11 @@ const DROP_MESO_TEMPLATES = ["아이템 드롭률 +n%", "메소 획득량 +n%"];
 const countDropMesoLine = (): number => 1;
 
 // 무기/보조무기/포스실드,소울링/엠블렘 only ever matter for 공격력%, 보스 몬스터
-// 데미지%, 몬스터 방어율 무시% - 주스탯/올스탯/HP rows are irrelevant here and are
-// replaced entirely by the "방무 1줄 포함" 유효 N줄 rows (방무가 섞인 조합은 구체적
-// %보다 몇 줄이 유효한지가 더 중요) plus the "공 n% + 보공 m%" combo rows (방무가
-// 없는 조합은 정확한 % 조합이 더 중요) below. 엠블렘 never rolls 보스 몬스터
-// 데미지 in-game, so it only ever gets a plain "공 n%" section instead of a
-// combo (buildEmblemRowGroups).
+// 데미지%, 몬스터 방어율 무시% (roughly interchangeable in value, so real builds
+// just care how many lines land on any of them) - 주스탯/올스탯/HP rows are
+// irrelevant here and are replaced entirely by the "유효 N줄" rows below.
+// 엠블렘 never rolls 보스 몬스터 데미지 in-game, so it only ever considers
+// 공격력/방어율무시.
 const SOUL_RING_WEAPON_CATEGORIES: string[] = [
   "무기",
   "보조무기(포스실드, 소울링 제외)",
@@ -897,64 +896,44 @@ function dropOverCappedStates(states: Map<string, number>, capLimit: number): Ma
 // be 1 or 2 depending on whether line 1 is one of the 2 valid lines); 3줄
 // splits all 3 possibilities since line 1 always counts as one of the 3 and
 // never deviates, leaving exactly 0/1/2 deviated among lines 2-3.
-// Returns 2줄급/3줄급 as separate groups (rather than one flat row list) so
-// the table can shade them with alternating backgrounds like any other
-// top-level group - see PotentialTable's `isGroupMuted`.
 function buildSoulRingRows(
   groups: CubeOptionGroup[],
   templates: string[],
   labelPrefix: string,
   capTemplate?: string
-): OptionRow[][] {
+): OptionRow[] {
   let states = buildSoulRingJointDistribution(groups, templates, capTemplate);
   if (capTemplate) states = dropOverCappedStates(states, 1);
-  const specGroups: { suffix: string; validCount: number; predicate: (validCount: number, deviatedCount: number) => boolean }[][] = [
-    [{ suffix: "유효 2줄 (정옵)", validCount: 2, predicate: (v, d) => v === 2 && d === 0 }],
-    [
-      { suffix: "유효 3줄 (정옵)", validCount: 3, predicate: (v, d) => v === 3 && d === 0 },
-      { suffix: "유효 3줄 (1줄 이탈)", validCount: 3, predicate: (v, d) => v === 3 && d === 1 },
-      { suffix: "유효 3줄 (올이탈)", validCount: 3, predicate: (v, d) => v === 3 && d >= 2 },
-    ],
+  const specs: { suffix: string; validCount: number; predicate: (validCount: number, deviatedCount: number) => boolean }[] = [
+    { suffix: "유효 2줄 (정옵)", validCount: 2, predicate: (v, d) => v === 2 && d === 0 },
+    { suffix: "유효 3줄 (정옵)", validCount: 3, predicate: (v, d) => v === 3 && d === 0 },
+    { suffix: "유효 3줄 (1줄 이탈)", validCount: 3, predicate: (v, d) => v === 3 && d === 1 },
+    { suffix: "유효 3줄 (올이탈)", validCount: 3, predicate: (v, d) => v === 3 && d >= 2 },
   ];
 
-  return specGroups
-    .map((specs) => {
-      const rows: OptionRow[] = [];
-      for (const spec of specs) {
-        const probability = soulRingOutcomeProbability(states, spec.predicate);
-        if (probability <= 0) continue;
-        rows.push({
-          label: `${labelPrefix} ${spec.suffix}`,
-          averageTries: Math.ceil(1 / probability),
-          rawTries: 1 / probability,
-          tooltip: buildSoulRingComboTooltip(templates, spec.validCount, capTemplate),
-        });
-      }
-      return rows;
-    })
-    .filter((rows) => rows.length > 0);
+  const rows: OptionRow[] = [];
+  for (const spec of specs) {
+    const probability = soulRingOutcomeProbability(states, spec.predicate);
+    if (probability <= 0) continue;
+    rows.push({
+      label: `${labelPrefix} ${spec.suffix}`,
+      averageTries: Math.ceil(1 / probability),
+      rawTries: 1 / probability,
+      tooltip: buildSoulRingComboTooltip(templates, spec.validCount, capTemplate),
+    });
+  }
+  return rows;
 }
 
-// 공 n% + 보공 m% - both a 공격력 line and a 보스 몬스터 데미지 line must appear
-// together (같은 joint-distribution 방식은 쿨감+주스탯/드메+주스탯 조합과 동일 -
-// see buildStatSecondaryComboRows), 방무X 대신 실제 % 조합을 그대로 보여준다.
-function buildAttackBossDamageComboRows(groups: CubeOptionGroup[]): OptionRow[] {
-  return buildStatSecondaryComboRows(
-    groups,
-    [ATTACK_TEMPLATE],
-    [],
-    [BOSS_DAMAGE_TEMPLATE],
-    (value) => value,
-    (attackValue, bossDamageValue) => `공 ${attackValue}% + 보공 ${bossDamageValue}%`
-  ).sort((a, b) => a.averageTries - b.averageTries);
-}
-
-// 방무 1줄 포함 그룹(2줄급/3줄급 각각 별도 그룹)을 먼저, 공+보공 조합 행을 그
-// 아래에 배치.
-function buildSoulRingRowGroups(groups: CubeOptionGroup[], includeIgnoreDefenseTemplates: string[]): OptionRow[][] {
+// 방무 1줄 포함 그룹(2줄/3줄)을 항상 먼저, 방무X 그룹(2줄/3줄)을 그 아래에 배치.
+function buildSoulRingRowGroups(
+  groups: CubeOptionGroup[],
+  includeIgnoreDefenseTemplates: string[],
+  excludeIgnoreDefenseTemplates: string[]
+): OptionRow[][] {
   return [
-    ...buildSoulRingRows(groups, includeIgnoreDefenseTemplates, "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
-    buildAttackBossDamageComboRows(groups),
+    buildSoulRingRows(groups, includeIgnoreDefenseTemplates, "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
+    buildSoulRingRows(groups, excludeIgnoreDefenseTemplates, "방무X"),
   ].filter((rows) => rows.length > 0);
 }
 
@@ -968,7 +947,7 @@ function buildAttackOnlyRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
 // 동일한 의미라, 유효 N줄 표기 대신 다른 부위처럼 공 n% 합산 표기로 보여준다.
 function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
   return [
-    ...buildSoulRingRows(groups, [ATTACK_TEMPLATE, IGNORE_DEFENSE_TEMPLATE], "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
+    buildSoulRingRows(groups, [ATTACK_TEMPLATE, IGNORE_DEFENSE_TEMPLATE], "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
     buildOptionRows(groups, [ATTACK_TEMPLATE], (value) => `공 ${value}%`),
   ].filter((rows) => rows.length > 0);
 }
@@ -1003,7 +982,11 @@ function buildGradeRowGroups(
 ): OptionRow[][] {
   if (SOUL_RING_WEAPON_CATEGORIES.includes(category)) {
     if (!includeDropMeso) return buildAttackOnlyRowGroups(groups);
-    return buildSoulRingRowGroups(groups, [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE, IGNORE_DEFENSE_TEMPLATE]);
+    return buildSoulRingRowGroups(
+      groups,
+      [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE, IGNORE_DEFENSE_TEMPLATE],
+      [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE]
+    );
   }
   if (category === SOUL_RING_EMBLEM_CATEGORY) {
     if (!includeDropMeso) return buildAttackOnlyRowGroups(groups);
