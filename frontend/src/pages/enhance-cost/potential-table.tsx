@@ -47,14 +47,18 @@ interface GradeUpStep {
   probability: number;
   // Guaranteed-success try count ("등급 상승 보장 횟수"); undefined = no guarantee.
   pity?: number;
+  // ADDI only: separate guarantee count for "에디셔널 잠재능력 재설정", which Nexon
+  // discloses as its own column and does NOT match the 에디셔널/화이트 에디셔널 큐브
+  // column (verified against the live disclosure page - rare/epic differ, unique matches).
+  resetPity?: number;
 }
 
 // From-grade -> chance of moving up one tier, per cube. Source: Nexon's official
 // "등급 상승 확률표" / "등급 상승 보장 시스템" (게임산업법 시행령 공시).
-// ADDI ("화이트") uses the "에디셔널 큐브 / 화이트 에디셔널 큐브" column, not the
-// separate "에디셔널 잠재능력 재설정" column - that's a different, non-cube reset
-// mechanic this app doesn't expose, and the two cube columns match exactly anyway.
-// MASTER/ARTISAN/STRANGE_ADDI have no guarantee system.
+// BLACK's page discloses one merged "잠재능력 재설정/블랙 큐브" table, so no split
+// is needed there. ADDI's page discloses two separate tables (재설정 vs
+// 에디셔널/화이트 에디셔널 큐브) with different rare/epic guarantee counts - see
+// `resetPity` below. MASTER/ARTISAN/STRANGE_ADDI have no guarantee system.
 const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpStep>>> = {
   [CubeType.BLACK]: {
     rare: { probability: 0.15, pity: 10 },
@@ -71,9 +75,9 @@ const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpS
     unique: { probability: 0.001996 },
   },
   [CubeType.ADDI]: {
-    rare: { probability: 0.047619, pity: 31 },
-    epic: { probability: 0.019608, pity: 76 },
-    unique: { probability: 0.007, pity: 214 },
+    rare: { probability: 0.047619, pity: 31, resetPity: 62 },
+    epic: { probability: 0.019608, pity: 76, resetPity: 152 },
+    unique: { probability: 0.007, pity: 214, resetPity: 214 },
   },
   [CubeType.STRANGE_ADDI]: {
     rare: { probability: 0.004 },
@@ -93,6 +97,21 @@ function expectedGradeUpTries(probability: number, pity?: number): number {
   }
   expected += pity * survivalProbability;
   return Math.ceil(expected);
+}
+
+// Usually a single "등급업" row. When a cube type's guarantee count differs by
+// mechanic (ADDI's 재설정 vs 큐브 - see `resetPity`), splits into two rows so
+// neither number is silently averaged away or mislabeled as the other.
+function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
+  if (!step) return [];
+  const cubeTries = expectedGradeUpTries(step.probability, step.pity);
+  if (step.resetPity === undefined || step.resetPity === step.pity) {
+    return [{ label: "등급업", averageTries: cubeTries }];
+  }
+  return [
+    { label: "등급업 (재설정)", averageTries: expectedGradeUpTries(step.probability, step.resetPity) },
+    { label: "등급업 (큐브)", averageTries: cubeTries },
+  ];
 }
 
 interface OptionRow {
@@ -389,9 +408,7 @@ export function PotentialTable({
         const optionRowGroups = buildGradeRowGroups(data[grade]!);
 
         const gradeUpStep = !isLastGrade && cubeType ? GRADE_UP_STEPS[cubeType][grade as GradeUpFromGrade] : undefined;
-        const gradeUpRow: OptionRow | undefined = gradeUpStep
-          ? { label: "등급업", averageTries: expectedGradeUpTries(gradeUpStep.probability, gradeUpStep.pity) }
-          : undefined;
+        const gradeUpRows = buildGradeUpRows(gradeUpStep);
 
         return (
           <div key={grade} className={cn("rounded-md border", isExpanded && "rounded-b-none")}>
@@ -423,8 +440,14 @@ export function PotentialTable({
                   </tr>
                 </thead>
                 <tbody>
-                  {gradeUpRow && (
-                    <tr className={cn("border-b bg-muted", optionRowGroups.length === 0 && "border-b-0")}>
+                  {gradeUpRows.map((gradeUpRow, rowIndex) => (
+                    <tr
+                      key={gradeUpRow.label}
+                      className={cn(
+                        "border-b bg-muted",
+                        rowIndex === gradeUpRows.length - 1 && optionRowGroups.length === 0 && "border-b-0"
+                      )}
+                    >
                       <td className="border-r px-3 py-1">
                         {isLoading ? <SkeletonCell className="h-4 w-20" /> : gradeUpRow.label}
                       </td>
@@ -436,7 +459,7 @@ export function PotentialTable({
                         )}
                       </td>
                     </tr>
-                  )}
+                  ))}
                   {optionRowGroups.flatMap((groupRows, groupIndex) => {
                     const isGroupMuted = groupIndex % 2 === 1;
                     return groupRows.map((row) => (
