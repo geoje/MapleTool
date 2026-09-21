@@ -21,7 +21,7 @@ export function ArtifactLevel({
   }, [artifactLevel]);
 
   return (
-    <InputGroup className="rounded-full border-0 bg-muted has-disabled:bg-muted has-disabled:opacity-100">
+    <InputGroup className="rounded-full">
       <InputGroupAddon align="inline-start">
         <InputGroupButton
           aria-label="decrease by 10"

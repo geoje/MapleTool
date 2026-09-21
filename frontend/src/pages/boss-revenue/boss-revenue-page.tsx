@@ -8,6 +8,7 @@ import { Card, CardAction, CardContent, CardHeader } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { PRICE_CHANGE_DATE } from "@/constants/boss";
 import { convertPlansToParams } from "@/lib/boss-service";
+import { cn } from "@/lib/utils";
 import { useBossStore } from "@/stores/boss-store";
 import { BossTable, BossTableActions } from "@/pages/boss-revenue/boss-table";
 import { CharacterList, NameInput, SummaryTable } from "@/pages/boss-revenue/character-panel";
@@ -44,14 +45,14 @@ export function BossRevenuePage() {
   return (
     <div className="flex flex-wrap items-start gap-4">
       <Card className="w-full md:w-auto">
-        <CardHeader>
+        <CardHeader className="flex items-center">
           <div className="flex flex-1 items-center gap-3">
             <SectionTitle step={1} className="shrink-0">
               캐릭터
             </SectionTitle>
             <NameInput setSelected={setSelected} />
           </div>
-          <CardAction className="flex items-center gap-2">
+          <CardAction className="flex items-center gap-2 self-center">
             <ButtonGroup>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -59,7 +60,7 @@ export function BossRevenuePage() {
                     aria-label="compare"
                     variant={showComparison ? "default" : "outline"}
                     size="icon"
-                    className="size-7"
+                    className={cn("size-7", !showComparison && "text-muted-foreground hover:text-foreground")}
                     onClick={() => setShowComparison((prev) => !prev)}
                   >
                     <Scale className="size-4" />

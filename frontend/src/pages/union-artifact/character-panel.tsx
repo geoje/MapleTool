@@ -1,6 +1,7 @@
 import { Loader2, Search } from "lucide-react";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 import { useArtifactStore } from "@/stores/artifact-store";
 
@@ -15,8 +16,9 @@ export function NameInput({ isFetching }: { isFetching?: boolean }) {
   };
 
   return (
-    <div className="relative min-w-40 flex-1">
+    <ButtonGroup className="w-full">
       <Input
+        variant="outline"
         placeholder="캐릭터명을 입력하세요."
         enterKeyHint="go"
         value={value}
@@ -28,19 +30,17 @@ export function NameInput({ isFetching }: { isFetching?: boolean }) {
           if (isComposing.current || event.nativeEvent.isComposing) return;
           handleSubmit();
         }}
-        className="pr-9"
       />
       <Button
         type="button"
-        size="icon"
-        variant="ghost"
+        variant="outline"
         aria-label="search"
         disabled={isFetching}
-        className="absolute top-0.5 right-0.5 size-7 rounded-full text-muted-foreground hover:bg-transparent hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground"
         onClick={handleSubmit}
       >
         {isFetching ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
       </Button>
-    </div>
+    </ButtonGroup>
   );
 }

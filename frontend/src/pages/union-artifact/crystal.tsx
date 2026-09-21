@@ -47,10 +47,10 @@ export function Crystal({
           key={"effect-" + i}
           type="button"
           className={cn(
-            "flex h-6 w-full items-center justify-center rounded-full px-2 text-xs transition-colors",
+            "flex h-6 w-full items-center justify-center rounded-full border px-2 text-xs transition-colors",
             isMaxLevel
-              ? "bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/60 dark:hover:bg-purple-800"
-              : "bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/60 dark:hover:bg-blue-800",
+              ? "border-purple-300 bg-purple-100 hover:bg-purple-200 dark:border-purple-700 dark:bg-purple-900/60 dark:hover:bg-purple-800"
+              : "border-blue-300 bg-blue-100 hover:bg-blue-200 dark:border-blue-700 dark:bg-blue-900/60 dark:hover:bg-blue-800",
             effect &&
               (hoverEffect == effect || pinnedEffect == effect) &&
               (isMaxLevel ? "bg-purple-200 dark:bg-purple-800" : "bg-blue-200 dark:bg-blue-800")

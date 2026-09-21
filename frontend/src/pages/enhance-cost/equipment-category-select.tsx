@@ -10,7 +10,7 @@ export function EquipmentCategorySelect({
 }) {
   return (
     <Select value={category} onValueChange={onChange}>
-      <SelectTrigger size="sm" className="w-48">
+      <SelectTrigger size="sm" variant="outline" className="w-48">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

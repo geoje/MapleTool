@@ -375,7 +375,7 @@ function BossRow({
           onValueChange={(value) => onMembersChange(Number(value))}
           disabled={isDisabled}
         >
-          <SelectTrigger size="sm" className="h-7 w-16">
+          <SelectTrigger size="sm" variant="outline" className="h-7 w-16">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

@@ -17,7 +17,7 @@ export function StarforceLevelInput({ level, onChange }: { level: number; onChan
   return (
     <div className="flex items-center justify-between gap-2">
       <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">장비 레벨</span>
-      <InputGroup className="w-auto rounded-full border-0 bg-muted has-disabled:bg-muted has-disabled:opacity-100">
+      <InputGroup className="w-auto rounded-full">
         <InputGroupAddon align="inline-start">
           <InputGroupButton
             aria-label="decrease by 5"

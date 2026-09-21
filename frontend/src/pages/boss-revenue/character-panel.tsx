@@ -4,6 +4,7 @@ import crystalPurple from "@/assets/crystal/purple.png";
 import crystalYellow from "@/assets/crystal/yellow.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -115,8 +116,9 @@ export function NameInput({ setSelected }: { setSelected: (index: number) => voi
   };
 
   return (
-    <div className="relative min-w-40 flex-1">
+    <ButtonGroup>
       <Input
+        variant="outline"
         placeholder="캐릭터명을 입력하세요."
         value={name}
         onChange={(event) => setName(event.target.value)}
@@ -127,19 +129,17 @@ export function NameInput({ setSelected }: { setSelected: (index: number) => voi
           if (isComposing.current || event.nativeEvent.isComposing) return;
           handleSubmit();
         }}
-        className="pr-9"
       />
       <Button
         type="button"
-        size="icon"
-        variant="ghost"
+        variant="outline"
         aria-label="search"
-        className="absolute right-0.5 top-0.5 size-7 rounded-full text-muted-foreground hover:bg-transparent hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground"
         onClick={handleSubmit}
       >
         <Search className="size-4" />
       </Button>
-    </div>
+    </ButtonGroup>
   );
 }
 
@@ -235,6 +235,7 @@ function CharacterNameField({
     <div className="relative w-[100px] shrink-0">
       <Input
         ref={inputRef}
+        variant="outline"
         value={value}
         onChange={(event) => setValue(event.target.value)}
         onBlur={submit}
@@ -251,7 +252,7 @@ function CharacterNameField({
           if (isComposing.current || event.nativeEvent.isComposing) return;
           inputRef.current?.blur();
         }}
-        className="h-6 rounded-full border-transparent bg-muted px-1 py-0 text-center text-xs font-medium"
+        className="h-6 rounded-full px-1 py-0 text-center text-xs font-medium"
       />
       {isFetching && (
         <Loader2 className="absolute top-1/2 right-1.5 size-3 -translate-y-1/2 animate-spin text-muted-foreground" />

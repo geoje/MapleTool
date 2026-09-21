@@ -2,8 +2,8 @@ import { cn } from "cn";
 import { Loader2, Search } from "lucide-react";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { EQUIPMENT_SLOT_GRID, POTENTIAL_GRADE_INFOS, SET_COMBOS, SET_INFOS } from "@/constants/enhance";
 import { getMaxPotentialGrade } from "@/lib/enhance-service";
@@ -24,8 +24,9 @@ export function NameInput({ isFetching }: { isFetching?: boolean }) {
   };
 
   return (
-    <div className="relative min-w-40 flex-1">
+    <ButtonGroup className="min-w-40 flex-1">
       <Input
+        variant="outline"
         placeholder="캐릭터명을 입력하세요."
         enterKeyHint="go"
         value={value}
@@ -37,20 +38,18 @@ export function NameInput({ isFetching }: { isFetching?: boolean }) {
           if (isComposing.current || event.nativeEvent.isComposing) return;
           handleSubmit();
         }}
-        className="pr-9"
       />
       <Button
         type="button"
-        size="icon"
-        variant="ghost"
+        variant="outline"
         aria-label="search"
         disabled={isFetching}
-        className="absolute top-0.5 right-0.5 size-7 rounded-full text-muted-foreground hover:bg-transparent hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground"
         onClick={handleSubmit}
       >
         {isFetching ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
       </Button>
-    </div>
+    </ButtonGroup>
   );
 }
 
@@ -67,47 +66,48 @@ export function PresetTabs({
   onSelectCharacterPreset: (preset: 1 | 2 | 3) => void;
   onSelectCombo: (comboIndex: number) => void;
 }) {
-  const value = characterPreset != null ? `char-${characterPreset}` : comboIndex != null ? `set-${comboIndex}` : "";
-
-  const handleChange = (next: string) => {
-    if (next.startsWith("char-")) {
-      onSelectCharacterPreset(Number(next.slice(5)) as 1 | 2 | 3);
-    } else {
-      onSelectCombo(Number(next.slice(4)));
-    }
-  };
-
   return (
-    <Tabs value={value} onValueChange={handleChange}>
-      <TabsList className="w-full flex-wrap justify-between">
-        <div className="flex flex-wrap items-center gap-0.5">
-          {SET_COMBOS.map((combo, index) => (
-            <Tooltip key={`set-${index}`}>
-              <TooltipTrigger asChild>
-                <TabsTrigger value={`set-${index}`} className="flex-none gap-0.5 px-1.5">
-                  {combo.map((type) => (
-                    <img key={type} src={SET_INFOS[type].icon} alt={SET_INFOS[type].name} className="size-5 object-contain" />
-                  ))}
-                </TabsTrigger>
-              </TooltipTrigger>
-              <TooltipContent side="top">{combo.map((type) => SET_INFOS[type].name).join(" + ")}</TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
-        <div className="flex items-center gap-0.5">
-          {([1, 2, 3] as const).map((no) => (
-            <Tooltip key={`char-${no}`}>
-              <TooltipTrigger asChild>
-                <TabsTrigger value={`char-${no}`} disabled={characterDisabled} className="w-7 flex-none px-0">
-                  {no}
-                </TabsTrigger>
-              </TooltipTrigger>
-              <TooltipContent side="top">프리셋 {no}</TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
-      </TabsList>
-    </Tabs>
+    <div className="flex w-full flex-wrap items-center justify-between gap-2">
+      <ButtonGroup>
+        {SET_COMBOS.map((combo, index) => (
+          <Tooltip key={`set-${index}`}>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant={comboIndex === index ? "default" : "outline"}
+                size="sm"
+                className="gap-0.5 px-1.5"
+                onClick={() => onSelectCombo(index)}
+              >
+                {combo.map((type) => (
+                  <img key={type} src={SET_INFOS[type].icon} alt={SET_INFOS[type].name} className="size-5 object-contain" />
+                ))}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">{combo.map((type) => SET_INFOS[type].name).join(" + ")}</TooltipContent>
+          </Tooltip>
+        ))}
+      </ButtonGroup>
+      <ButtonGroup>
+        {([1, 2, 3] as const).map((no) => (
+          <Tooltip key={`char-${no}`}>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant={characterPreset === no ? "default" : "outline"}
+                size="sm"
+                disabled={characterDisabled}
+                className="w-7 px-0"
+                onClick={() => onSelectCharacterPreset(no)}
+              >
+                {no}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">프리셋 {no}</TooltipContent>
+          </Tooltip>
+        ))}
+      </ButtonGroup>
+    </div>
   );
 }
 

@@ -44,7 +44,7 @@ export function EffectLevel({
                   ))}
                   {i == inGameEffectIndex && (
                     <Badge variant="outline" className="border-green-500/40 bg-green-500/10 text-green-600 dark:text-green-400">
-                      인게임
+                      적용중
                     </Badge>
                   )}
                 </div>
