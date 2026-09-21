@@ -408,19 +408,293 @@ function buildAnyStatRows(
   return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
 
+// Some potential options only ever roll on one equipment category and are
+// worth their own "pure" section plus "secondary + 주스탯/올스탯/HP" combo rows
+// merged into each stat section - 스킬 재사용 대기시간 감소 ("쿨감") on 모자, and
+// 크리티컬 데미지 (잠재능력 전용 8% tier, not the 에디셔널 common +1%/+3% one - see
+// CRIT_DAMAGE_TEMPLATE) on 장갑. Confirmed by there being no matching item in
+// any other category's 잠재능력 cube data.
+const COOLDOWN_TEMPLATE = "스킬 재사용 대기시간 -n초";
+const HAT_CATEGORY = "모자";
+const CRIT_DAMAGE_TEMPLATE = "크리티컬 데미지 +n%";
+const GLOVE_CATEGORY = "장갑";
+
+interface SecondaryStatOption {
+  template: string;
+  formatPure: (value: number) => string;
+}
+
+const SECONDARY_STAT_OPTIONS: Record<string, SecondaryStatOption> = {
+  [HAT_CATEGORY]: { template: COOLDOWN_TEMPLATE, formatPure: (value) => `쿨 ${value}초` },
+  [GLOVE_CATEGORY]: { template: CRIT_DAMAGE_TEMPLATE, formatPure: (value) => `크뎀 ${value}%` },
+};
+
+interface JointSlotEntry {
+  statValue: number;
+  isPrimaryStat: boolean;
+  secondaryValue: number;
+  probability: number;
+}
+
+// Like buildWeightedSlot, but a slot can independently land a primary-stat
+// match, a bonus-stat (올스탯) match, a secondary-option match, or neither -
+// never two at once, since a line only ever rolls a single option.
+// `secondaryValueOf` maps a secondary match's extracted number to its
+// contribution: identity for value-summed options (쿨감 seconds, 크뎀 %), or a
+// constant 1 for count-only options (드메, where the % on the line doesn't
+// matter - only that a drop/meso line landed at all).
+function buildJointSlot(
+  items: CubeOptionGroup["items"],
+  primaryTemplates: string[],
+  bonusTemplates: string[],
+  secondaryTemplates: string[],
+  secondaryValueOf: (value: number) => number
+): JointSlotEntry[] {
+  const entries: JointSlotEntry[] = [];
+  let matchedProbability = 0;
+  for (const item of items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (primaryTemplates.includes(name)) {
+      entries.push({ statValue: value, isPrimaryStat: true, secondaryValue: 0, probability: item.probability });
+      matchedProbability += item.probability;
+    } else if (bonusTemplates.includes(name)) {
+      entries.push({ statValue: value, isPrimaryStat: false, secondaryValue: 0, probability: item.probability });
+      matchedProbability += item.probability;
+    } else if (secondaryTemplates.includes(name)) {
+      entries.push({
+        statValue: 0,
+        isPrimaryStat: false,
+        secondaryValue: secondaryValueOf(value),
+        probability: item.probability,
+      });
+      matchedProbability += item.probability;
+    }
+  }
+  const otherProbability = 1 - matchedProbability;
+  if (otherProbability > 0) {
+    entries.push({ statValue: 0, isPrimaryStat: false, secondaryValue: 0, probability: otherProbability });
+  }
+  return entries;
+}
+
+// Joint (statTotal, hasPrimaryStat, secondaryTotal) distribution across the 3
+// lines - same "hasPrimaryStat" qualifying idea as
+// buildPrimaryQualifyingAtLeastDistribution (a bonus-only total doesn't
+// qualify), extended with an independent secondaryTotal tally. When
+// `bonusTemplates` is empty (올스탯/HP combos have no separate bonus line),
+// every matched stat line is primary, which collapses this back to a plain
+// sum - matching buildOptionRows' semantics for those two groups.
+function buildStatSecondaryJointStates(
+  groups: CubeOptionGroup[],
+  primaryTemplates: string[],
+  bonusTemplates: string[],
+  secondaryTemplates: string[],
+  secondaryValueOf: (value: number) => number
+): Map<string, number> {
+  const slots = groups.map((group) =>
+    buildJointSlot(group.items, primaryTemplates, bonusTemplates, secondaryTemplates, secondaryValueOf)
+  );
+  let states = new Map<string, number>([["0:0:0", 1]]);
+  for (const slot of slots) {
+    const next = new Map<string, number>();
+    for (const [key, probability] of states) {
+      const [statPart, hasPrimaryPart, secondaryPart] = key.split(":");
+      const statTotal = Number(statPart);
+      const hasPrimary = hasPrimaryPart === "1";
+      const secondaryTotal = Number(secondaryPart);
+      for (const entry of slot) {
+        const nextHasPrimary = hasPrimary || entry.isPrimaryStat;
+        const nextKey = `${statTotal + entry.statValue}:${nextHasPrimary ? 1 : 0}:${secondaryTotal + entry.secondaryValue}`;
+        next.set(nextKey, (next.get(nextKey) ?? 0) + probability * entry.probability);
+      }
+    }
+    states = next;
+  }
+  return states;
+}
+
+interface StatSecondaryPair {
+  statTotal: number;
+  secondaryTotal: number;
+  probability: number;
+}
+
+// Every (statTotal, secondaryTotal, probability) outcome where a qualifying
+// stat line and a secondary-option line both appear (statTotal>0 &&
+// secondaryTotal>0) - a secondary-only or stat-only outcome is already
+// covered by the plain sections these combo rows get merged into. Shared by
+// buildStatSecondaryComboRows (single stat) and buildAnyStatSecondaryComboRows
+// (summed across STR/DEX/INT/LUK).
+function buildQualifyingStatSecondaryPairs(
+  groups: CubeOptionGroup[],
+  primaryTemplates: string[],
+  bonusTemplates: string[],
+  secondaryTemplates: string[],
+  secondaryValueOf: (value: number) => number
+): StatSecondaryPair[] {
+  const states = buildStatSecondaryJointStates(groups, primaryTemplates, bonusTemplates, secondaryTemplates, secondaryValueOf);
+
+  const qualifying: StatSecondaryPair[] = [];
+  for (const [key, probability] of states) {
+    const [statPart, hasPrimaryPart, secondaryPart] = key.split(":");
+    if (hasPrimaryPart !== "1" || probability <= 0) continue;
+    const statTotal = Number(statPart);
+    const secondaryTotal = Number(secondaryPart);
+    if (statTotal <= 0 || secondaryTotal <= 0) continue;
+    qualifying.push({ statTotal, secondaryTotal, probability });
+  }
+  return qualifying;
+}
+
+// Rows for "secondary + 주스탯/올스탯/HP" combos (쿨감/크뎀/드메 + a single stat).
+// For each achievable (statTarget, secondaryTarget) pair, the row's
+// probability is the tail sum over every qualifying outcome that clears both
+// targets at once - the 2-D analogue of toAtLeastDistribution.
+//
+// Unlike the plain single-stat rows, this intentionally skips the
+// slotOneMinimum floor (see buildOptionRows/buildPrimaryWithBonusRows): that
+// floor hides totals reachable only via lines 2/3 without line 1's help, but
+// a combo already needs the stat and the secondary option to land on
+// different lines, so a "weak" stat total paired with it is exactly the kind
+// of split this section exists to surface (e.g. 쿨 1초 + 주스탯 9%).
+function buildStatSecondaryComboRows(
+  groups: CubeOptionGroup[],
+  primaryTemplates: string[],
+  bonusTemplates: string[],
+  secondaryTemplates: string[],
+  secondaryValueOf: (value: number) => number,
+  formatLabel: (statValue: number, secondaryValue: number) => string
+): OptionRow[] {
+  const qualifying = buildQualifyingStatSecondaryPairs(
+    groups,
+    primaryTemplates,
+    bonusTemplates,
+    secondaryTemplates,
+    secondaryValueOf
+  );
+
+  const statTargets = [...new Set(qualifying.map((q) => q.statTotal))];
+  const secondaryTargets = [...new Set(qualifying.map((q) => q.secondaryTotal))];
+
+  const rows: OptionRow[] = [];
+  for (const statTarget of statTargets) {
+    for (const secondaryTarget of secondaryTargets) {
+      const probability = qualifying
+        .filter((q) => q.statTotal >= statTarget && q.secondaryTotal >= secondaryTarget)
+        .reduce((sum, q) => sum + q.probability, 0);
+      if (probability <= 0) continue;
+      rows.push({
+        label: formatLabel(statTarget, secondaryTarget),
+        averageTries: Math.ceil(1 / probability),
+        rawTries: 1 / probability,
+      });
+    }
+  }
+  return rows;
+}
+
+// 아무스탯 version of buildStatSecondaryComboRows - same "sum the 4 stats'
+// probabilities, clamp to 1" approximation as buildAnyStatRows (see its
+// comment), just extended with the secondary-option axis.
+function buildAnyStatSecondaryComboRows(
+  groups: CubeOptionGroup[],
+  statTemplates: string[][],
+  bonusTemplates: string[],
+  secondaryTemplates: string[],
+  secondaryValueOf: (value: number) => number,
+  formatLabel: (statValue: number, secondaryValue: number) => string
+): OptionRow[] {
+  const perStatQualifying = statTemplates.map((primaryTemplates) =>
+    buildQualifyingStatSecondaryPairs(groups, primaryTemplates, bonusTemplates, secondaryTemplates, secondaryValueOf)
+  );
+
+  const statTargets = new Set<number>();
+  const secondaryTargets = new Set<number>();
+  for (const qualifying of perStatQualifying) {
+    for (const q of qualifying) {
+      statTargets.add(q.statTotal);
+      secondaryTargets.add(q.secondaryTotal);
+    }
+  }
+
+  const rows: OptionRow[] = [];
+  for (const statTarget of statTargets) {
+    for (const secondaryTarget of secondaryTargets) {
+      let probability = 0;
+      for (const qualifying of perStatQualifying) {
+        probability += qualifying
+          .filter((q) => q.statTotal >= statTarget && q.secondaryTotal >= secondaryTarget)
+          .reduce((sum, q) => sum + q.probability, 0);
+      }
+      const clampedProbability = Math.min(probability, 1);
+      if (clampedProbability <= 0) continue;
+      rows.push({
+        label: formatLabel(statTarget, secondaryTarget),
+        averageTries: Math.ceil(1 / clampedProbability),
+        rawTries: 1 / clampedProbability,
+      });
+    }
+  }
+  return rows;
+}
+
+// Merges a section's plain rows with its combo rows (if any) and re-sorts by
+// average tries, so the combo rows land wherever they naturally belong among
+// the plain rows rather than being appended at the end.
+function mergeComboRows(rows: OptionRow[], comboRows: OptionRow[]): OptionRow[] {
+  if (comboRows.length === 0) return rows;
+  return [...rows, ...comboRows].sort((a, b) => a.averageTries - b.averageTries);
+}
+
+// A stat section (주스탯/올스탯/HP) plus, when this category has a
+// SECONDARY_STAT_OPTIONS entry, its "secondary + stat" combo rows merged in -
+// see mergeComboRows. Other combo sources (e.g. 드메 on accessories) are
+// merged separately by the caller with the same helper.
+function buildStatSectionRows(
+  groups: CubeOptionGroup[],
+  primaryTemplates: string[],
+  bonusTemplates: string[],
+  statLabel: string,
+  secondaryOption: SecondaryStatOption | undefined
+): OptionRow[] {
+  const plainRows =
+    bonusTemplates.length > 0
+      ? buildPrimaryWithBonusRows(groups, primaryTemplates, bonusTemplates, (value) => `${statLabel} ${value}%`)
+      : buildOptionRows(groups, primaryTemplates, (value) => `${statLabel} ${value}%`);
+  if (!secondaryOption) return plainRows;
+
+  const comboRows = buildStatSecondaryComboRows(
+    groups,
+    primaryTemplates,
+    bonusTemplates,
+    [secondaryOption.template],
+    (value) => value,
+    (statValue, secondaryValue) => `${secondaryOption.formatPure(secondaryValue)} + ${statLabel} ${statValue}%`
+  );
+  return mergeComboRows(plainRows, comboRows);
+}
+
 // 아무스탯/드메 are only meaningful on these accessory categories - other
 // categories (weapons, armor, ...) can coincidentally match the same
 // STR/DEX/INT/LUK templates and would otherwise leak these sections in too.
 // Category strings match EQUIPMENT_CATEGORIES (frontend/src/constants/starforce.ts).
 const ANY_STAT_CATEGORIES: string[] = ["얼굴장식", "눈장식", "귀고리", "펜던트", "벨트", "반지"];
 const DROP_MESO_CATEGORIES: string[] = ANY_STAT_CATEGORIES.filter((category) => category !== "벨트");
+const DROP_MESO_TEMPLATES = ["아이템 드롭률 +n%", "메소 획득량 +n%"];
+// 드메's per-line % doesn't matter for the combo axis, only whether a line
+// landed drop rate or meso obtain at all - so every matching line counts as
+// exactly 1 toward the "드메 n줄" total, regardless of its rolled value.
+// (3 lines total means a stat/아무스탯 combo, which needs >=1 non-드메 line,
+// can only ever pair with 1 or 2 드메 lines; 3 always leaves 0 for the stat.)
+const countDropMesoLine = (): number => 1;
 
 // 무기/보조무기/포스실드,소울링/엠블렘 only ever matter for 공격력%, 보스 몬스터
-// 데미지%, 몬스터 방어율 무시% (roughly interchangeable in value, so real builds
-// just care how many lines land on any of them) - 주스탯/올스탯/HP rows are
-// irrelevant here and are replaced entirely by the "유효 N줄" rows below.
-// 엠블렘 never rolls 보스 몬스터 데미지 in-game, so it only ever considers
-// 공격력/방어율무시.
+// 데미지%, 몬스터 방어율 무시% - 주스탯/올스탯/HP rows are irrelevant here and are
+// replaced entirely by the "방무 1줄 포함" 유효 N줄 rows (방무가 섞인 조합은 구체적
+// %보다 몇 줄이 유효한지가 더 중요) plus the "공 n% + 보공 m%" combo rows (방무가
+// 없는 조합은 정확한 % 조합이 더 중요) below. 엠블렘 never rolls 보스 몬스터
+// 데미지 in-game, so it only ever gets a plain "공 n%" section instead of a
+// combo (buildEmblemRowGroups).
 const SOUL_RING_WEAPON_CATEGORIES: string[] = [
   "무기",
   "보조무기(포스실드, 소울링 제외)",
@@ -623,44 +897,64 @@ function dropOverCappedStates(states: Map<string, number>, capLimit: number): Ma
 // be 1 or 2 depending on whether line 1 is one of the 2 valid lines); 3줄
 // splits all 3 possibilities since line 1 always counts as one of the 3 and
 // never deviates, leaving exactly 0/1/2 deviated among lines 2-3.
+// Returns 2줄급/3줄급 as separate groups (rather than one flat row list) so
+// the table can shade them with alternating backgrounds like any other
+// top-level group - see PotentialTable's `isGroupMuted`.
 function buildSoulRingRows(
   groups: CubeOptionGroup[],
   templates: string[],
   labelPrefix: string,
   capTemplate?: string
-): OptionRow[] {
+): OptionRow[][] {
   let states = buildSoulRingJointDistribution(groups, templates, capTemplate);
   if (capTemplate) states = dropOverCappedStates(states, 1);
-  const specs: { suffix: string; validCount: number; predicate: (validCount: number, deviatedCount: number) => boolean }[] = [
-    { suffix: "유효 2줄 (정옵)", validCount: 2, predicate: (v, d) => v === 2 && d === 0 },
-    { suffix: "유효 3줄 (정옵)", validCount: 3, predicate: (v, d) => v === 3 && d === 0 },
-    { suffix: "유효 3줄 (1줄 이탈)", validCount: 3, predicate: (v, d) => v === 3 && d === 1 },
-    { suffix: "유효 3줄 (올이탈)", validCount: 3, predicate: (v, d) => v === 3 && d >= 2 },
+  const specGroups: { suffix: string; validCount: number; predicate: (validCount: number, deviatedCount: number) => boolean }[][] = [
+    [{ suffix: "유효 2줄 (정옵)", validCount: 2, predicate: (v, d) => v === 2 && d === 0 }],
+    [
+      { suffix: "유효 3줄 (정옵)", validCount: 3, predicate: (v, d) => v === 3 && d === 0 },
+      { suffix: "유효 3줄 (1줄 이탈)", validCount: 3, predicate: (v, d) => v === 3 && d === 1 },
+      { suffix: "유효 3줄 (올이탈)", validCount: 3, predicate: (v, d) => v === 3 && d >= 2 },
+    ],
   ];
 
-  const rows: OptionRow[] = [];
-  for (const spec of specs) {
-    const probability = soulRingOutcomeProbability(states, spec.predicate);
-    if (probability <= 0) continue;
-    rows.push({
-      label: `${labelPrefix} ${spec.suffix}`,
-      averageTries: Math.ceil(1 / probability),
-      rawTries: 1 / probability,
-      tooltip: buildSoulRingComboTooltip(templates, spec.validCount, capTemplate),
-    });
-  }
-  return rows;
+  return specGroups
+    .map((specs) => {
+      const rows: OptionRow[] = [];
+      for (const spec of specs) {
+        const probability = soulRingOutcomeProbability(states, spec.predicate);
+        if (probability <= 0) continue;
+        rows.push({
+          label: `${labelPrefix} ${spec.suffix}`,
+          averageTries: Math.ceil(1 / probability),
+          rawTries: 1 / probability,
+          tooltip: buildSoulRingComboTooltip(templates, spec.validCount, capTemplate),
+        });
+      }
+      return rows;
+    })
+    .filter((rows) => rows.length > 0);
 }
 
-// 방무 1줄 포함 그룹(2줄/3줄)을 항상 먼저, 방무X 그룹(2줄/3줄)을 그 아래에 배치.
-function buildSoulRingRowGroups(
-  groups: CubeOptionGroup[],
-  includeIgnoreDefenseTemplates: string[],
-  excludeIgnoreDefenseTemplates: string[]
-): OptionRow[][] {
+// 공 n% + 보공 m% - both a 공격력 line and a 보스 몬스터 데미지 line must appear
+// together (같은 joint-distribution 방식은 쿨감+주스탯/드메+주스탯 조합과 동일 -
+// see buildStatSecondaryComboRows), 방무X 대신 실제 % 조합을 그대로 보여준다.
+function buildAttackBossDamageComboRows(groups: CubeOptionGroup[]): OptionRow[] {
+  return buildStatSecondaryComboRows(
+    groups,
+    [ATTACK_TEMPLATE],
+    [],
+    [BOSS_DAMAGE_TEMPLATE],
+    (value) => value,
+    (attackValue, bossDamageValue) => `공 ${attackValue}% + 보공 ${bossDamageValue}%`
+  ).sort((a, b) => a.averageTries - b.averageTries);
+}
+
+// 방무 1줄 포함 그룹(2줄급/3줄급 각각 별도 그룹)을 먼저, 공+보공 조합 행을 그
+// 아래에 배치.
+function buildSoulRingRowGroups(groups: CubeOptionGroup[], includeIgnoreDefenseTemplates: string[]): OptionRow[][] {
   return [
-    buildSoulRingRows(groups, includeIgnoreDefenseTemplates, "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
-    buildSoulRingRows(groups, excludeIgnoreDefenseTemplates, "방무X"),
+    ...buildSoulRingRows(groups, includeIgnoreDefenseTemplates, "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
+    buildAttackBossDamageComboRows(groups),
   ].filter((rows) => rows.length > 0);
 }
 
@@ -674,7 +968,7 @@ function buildAttackOnlyRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
 // 동일한 의미라, 유효 N줄 표기 대신 다른 부위처럼 공 n% 합산 표기로 보여준다.
 function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
   return [
-    buildSoulRingRows(groups, [ATTACK_TEMPLATE, IGNORE_DEFENSE_TEMPLATE], "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
+    ...buildSoulRingRows(groups, [ATTACK_TEMPLATE, IGNORE_DEFENSE_TEMPLATE], "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
     buildOptionRows(groups, [ATTACK_TEMPLATE], (value) => `공 ${value}%`),
   ].filter((rows) => rows.length > 0);
 }
@@ -688,11 +982,20 @@ function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
 // HP % and 올스탯 % (standalone) are their own independent options.
 // 드메 n줄 (아이템 드롭률/메소 획득량, either one counting toward the line count)
 // only applies to the 잠재능력 table (not 에디셔널, per `includeDropMeso`) and
-// only to DROP_MESO_CATEGORIES (ANY_STAT_CATEGORIES minus 벨트).
-// Groups always render in this fixed order (아무스탯 -> 주스탯 -> 올스탯 -> HP ->
-// 드메), each already sorted by average tries ascending - never interleaved
-// across groups. Empty groups (e.g. a grade with no HP option at all) are
-// dropped entirely.
+// only to DROP_MESO_CATEGORIES (ANY_STAT_CATEGORIES minus 벨트). Its pure 2/3줄
+// section is shown first (above 아무스탯), and its 1/2줄 variants additionally
+// ride along as "드메 n줄 + 아무스탯/주스탯/올스탯/HP" combo rows merged into each
+// of those sections (드메 3줄 has no combo - it uses all 3 lines, leaving none
+// for a stat). SECONDARY_STAT_OPTIONS-listed categories (모자 -> 쿨감, 장갑 ->
+// 크뎀) similarly get an extra pure section (주스탯 위) plus their own
+// "secondary + 주스탯/올스탯/HP" combo rows - see buildStatSectionRows. Both
+// combo sources use mergeComboRows, re-sorting by average tries so they land
+// wherever they naturally belong among the plain stat rows.
+// Groups always render in this fixed order (드메 2/3줄(해당 부위만) -> 아무스탯 ->
+// 순수 쿨감/크뎀(해당 부위만) -> 주스탯 -> 올스탯 -> HP), each already sorted by
+// average tries ascending - never interleaved across groups (except the combo
+// rows merged inside their own section). Empty groups (e.g. a grade with no
+// HP option at all) are dropped entirely.
 function buildGradeRowGroups(
   groups: CubeOptionGroup[],
   category: string,
@@ -700,41 +1003,73 @@ function buildGradeRowGroups(
 ): OptionRow[][] {
   if (SOUL_RING_WEAPON_CATEGORIES.includes(category)) {
     if (!includeDropMeso) return buildAttackOnlyRowGroups(groups);
-    return buildSoulRingRowGroups(
-      groups,
-      [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE, IGNORE_DEFENSE_TEMPLATE],
-      [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE]
-    );
+    return buildSoulRingRowGroups(groups, [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE, IGNORE_DEFENSE_TEMPLATE]);
   }
   if (category === SOUL_RING_EMBLEM_CATEGORY) {
     if (!includeDropMeso) return buildAttackOnlyRowGroups(groups);
     return buildEmblemRowGroups(groups);
   }
 
+  const secondaryOption = SECONDARY_STAT_OPTIONS[category];
+  const includeDropMesoSection = includeDropMeso && DROP_MESO_CATEGORIES.includes(category);
+
+  // 드메 1/2줄 + 아무스탯/주스탯/올스탯/HP combo rows, merged into their
+  // respective section below via mergeComboRows - same joint-distribution
+  // approach as the 쿨감/크뎀 combos above (buildStatSecondaryComboRows), just
+  // with 드메's per-line count (countDropMesoLine) as the secondary axis.
+  const anyStatRows = ANY_STAT_CATEGORIES.includes(category)
+    ? buildAnyStatRows(
+        groups,
+        [["STR +n%"], ["DEX +n%"], ["INT +n%"], ["LUK +n%"]],
+        ["올스탯 +n%"],
+        (value) => `아무스탯 ${value}%`
+      )
+    : [];
+  const anyStatComboRows = includeDropMesoSection
+    ? buildAnyStatSecondaryComboRows(
+        groups,
+        [["STR +n%"], ["DEX +n%"], ["INT +n%"], ["LUK +n%"]],
+        ["올스탯 +n%"],
+        DROP_MESO_TEMPLATES,
+        countDropMesoLine,
+        (statValue, dropMesoLines) => `드메 ${dropMesoLines}줄 + 아무스탯 ${statValue}%`
+      )
+    : [];
+
+  const buildDropMesoComboRows = (
+    primaryTemplates: string[],
+    bonusTemplates: string[],
+    statLabel: string
+  ): OptionRow[] =>
+    includeDropMesoSection
+      ? buildStatSecondaryComboRows(
+          groups,
+          primaryTemplates,
+          bonusTemplates,
+          DROP_MESO_TEMPLATES,
+          countDropMesoLine,
+          (statValue, dropMesoLines) => `드메 ${dropMesoLines}줄 + ${statLabel} ${statValue}%`
+        )
+      : [];
+
   return [
-    ...(ANY_STAT_CATEGORIES.includes(category)
-      ? [
-          buildAnyStatRows(
-            groups,
-            [["STR +n%"], ["DEX +n%"], ["INT +n%"], ["LUK +n%"]],
-            ["올스탯 +n%"],
-            (value) => `아무스탯 ${value}%`
-          ),
-        ]
+    ...(includeDropMesoSection
+      ? [buildLineCountRows(groups, DROP_MESO_TEMPLATES, [2, 3], (count) => `드메 ${count}줄`)]
       : []),
-    buildPrimaryWithBonusRows(groups, ["STR +n%"], ["올스탯 +n%"], (value) => `주스탯 ${value}%`),
-    buildOptionRows(groups, ["올스탯 +n%"], (value) => `올스탯 ${value}%`),
-    buildOptionRows(groups, ["최대 HP +n%"], (value) => `HP ${value}%`),
-    ...(includeDropMeso && DROP_MESO_CATEGORIES.includes(category)
-      ? [
-          buildLineCountRows(
-            groups,
-            ["아이템 드롭률 +n%", "메소 획득량 +n%"],
-            [2, 3],
-            (count) => `드메 ${count}줄`
-          ),
-        ]
-      : []),
+    mergeComboRows(anyStatRows, anyStatComboRows),
+    ...(secondaryOption ? [buildOptionRows(groups, [secondaryOption.template], secondaryOption.formatPure)] : []),
+    mergeComboRows(
+      buildStatSectionRows(groups, ["STR +n%"], ["올스탯 +n%"], "주스탯", secondaryOption),
+      buildDropMesoComboRows(["STR +n%"], ["올스탯 +n%"], "주스탯")
+    ),
+    mergeComboRows(
+      buildStatSectionRows(groups, ["올스탯 +n%"], [], "올스탯", secondaryOption),
+      buildDropMesoComboRows(["올스탯 +n%"], [], "올스탯")
+    ),
+    mergeComboRows(
+      buildStatSectionRows(groups, ["최대 HP +n%"], [], "HP", secondaryOption),
+      buildDropMesoComboRows(["최대 HP +n%"], [], "HP")
+    ),
   ].filter((rows) => rows.length > 0);
 }
 

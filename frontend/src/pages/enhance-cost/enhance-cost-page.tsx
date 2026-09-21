@@ -58,8 +58,8 @@ export function EnhanceCostPage() {
     "enhance-cost:additional-potential-collapsed",
     false
   );
-  const [selectedCube, setSelectedCube] = useState<CubeType>(CubeType.BLACK);
-  const [selectedAdditionalCube, setSelectedAdditionalCube] = useState<CubeType | null>(CubeType.ADDI);
+  const [selectedCube, setSelectedCube] = useState<CubeType>(CubeType.RESET);
+  const [selectedAdditionalCube, setSelectedAdditionalCube] = useState<CubeType | null>(CubeType.ADDI_RESET);
   const [potentialCategory, setPotentialCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
   const [potentialLevel, setPotentialLevel] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
   const [additionalCategory, setAdditionalCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
