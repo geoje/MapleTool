@@ -377,31 +377,47 @@ function buildAnyStatRows(
   return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
 
+// 아무스탯/드메 are only meaningful on these accessory categories - other
+// categories (weapons, armor, ...) can coincidentally match the same
+// STR/DEX/INT/LUK templates and would otherwise leak these sections in too.
+// Category strings match EQUIPMENT_CATEGORIES (frontend/src/constants/starforce.ts).
+const ANY_STAT_CATEGORIES: string[] = ["얼굴장식", "눈장식", "귀고리", "펜던트", "벨트", "반지"];
+const DROP_MESO_CATEGORIES: string[] = ANY_STAT_CATEGORIES.filter((category) => category !== "벨트");
+
 // Only the "%" variants are shown - flat (non-percent) stat bumps are excluded.
 // 아무스탯 = P(STR>=n%) + P(DEX>=n%) + P(INT>=n%) + P(LUK>=n%) (see
-// buildAnyStatRows) - landing n%+ in any one of the four main stats.
+// buildAnyStatRows) - landing n%+ in any one of the four main stats. Shown
+// only for ANY_STAT_CATEGORIES.
 // 주스탯 = STR/DEX/INT/LUK % (all four are symmetric, so STR alone represents them),
 // with 올스탯 % riding along on top whenever a real STR line is also present.
 // HP % and 올스탯 % (standalone) are their own independent options.
 // 드메 n줄 (아이템 드롭률/메소 획득량, either one counting toward the line count)
-// only applies to the 잠재능력 table, not 에디셔널 - callers opt in via
-// `includeDropMeso`.
+// only applies to the 잠재능력 table (not 에디셔널, per `includeDropMeso`) and
+// only to DROP_MESO_CATEGORIES (ANY_STAT_CATEGORIES minus 벨트).
 // Groups always render in this fixed order (아무스탯 -> 주스탯 -> 올스탯 -> HP ->
 // 드메), each already sorted by average tries ascending - never interleaved
 // across groups. Empty groups (e.g. a grade with no HP option at all) are
 // dropped entirely.
-function buildGradeRowGroups(groups: CubeOptionGroup[], includeDropMeso: boolean): OptionRow[][] {
+function buildGradeRowGroups(
+  groups: CubeOptionGroup[],
+  category: string,
+  includeDropMeso: boolean
+): OptionRow[][] {
   return [
-    buildAnyStatRows(
-      groups,
-      [["STR +n%"], ["DEX +n%"], ["INT +n%"], ["LUK +n%"]],
-      ["올스탯 +n%"],
-      (value) => `아무스탯 ${value}%`
-    ),
+    ...(ANY_STAT_CATEGORIES.includes(category)
+      ? [
+          buildAnyStatRows(
+            groups,
+            [["STR +n%"], ["DEX +n%"], ["INT +n%"], ["LUK +n%"]],
+            ["올스탯 +n%"],
+            (value) => `아무스탯 ${value}%`
+          ),
+        ]
+      : []),
     buildPrimaryWithBonusRows(groups, ["STR +n%"], ["올스탯 +n%"], (value) => `주스탯 ${value}%`),
     buildOptionRows(groups, ["올스탯 +n%"], (value) => `올스탯 ${value}%`),
     buildOptionRows(groups, ["최대 HP +n%"], (value) => `HP ${value}%`),
-    ...(includeDropMeso
+    ...(includeDropMeso && DROP_MESO_CATEGORIES.includes(category)
       ? [
           buildLineCountRows(
             groups,
@@ -473,12 +489,14 @@ export function PotentialTable({
   isLoading,
   cubeType,
   excludedGrades,
+  category,
   includeDropMeso = false,
 }: {
   data: CubeProbabilityData | null;
   isLoading: boolean;
   cubeType: CubeType | null;
   excludedGrades?: CubeGrade[];
+  category: string;
   includeDropMeso?: boolean;
 }) {
   const grades = GRADE_ORDER.filter(
@@ -526,7 +544,7 @@ export function PotentialTable({
       {grades.map((grade, gradeIndex) => {
         const isExpanded = expandedGrades.has(grade);
         const isLastGrade = gradeIndex === grades.length - 1;
-        const optionRowGroups = buildGradeRowGroups(data[grade]!, includeDropMeso);
+        const optionRowGroups = buildGradeRowGroups(data[grade]!, category, includeDropMeso);
 
         const gradeUpStep = !isLastGrade && cubeType ? GRADE_UP_STEPS[cubeType][grade as GradeUpFromGrade] : undefined;
         const gradeUpRows = buildGradeUpRows(gradeUpStep);
