@@ -255,6 +255,7 @@ export function EnhanceCostPage() {
             isLoading={isFetchingPotential}
             cubeType={selectedCube}
             excludedGrades={["rare", "epic"]}
+            includeDropMeso
           />
         </CollapsibleCard>
 

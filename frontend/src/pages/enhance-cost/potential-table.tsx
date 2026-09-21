@@ -207,6 +207,49 @@ function buildOptionRows(groups: CubeOptionGroup[], templates: string[], formatL
   return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
 
+// Counts how many of the 3 lines (independently) land any option from
+// `templates`, ignoring the specific value entirely - used for "드메 n줄"
+// where all that matters is how many lines are drop-rate/meso-obtain, not
+// which one or its tier. Builds the Poisson-binomial distribution of match
+// count across the 3 slots, then reports "at least k matches" for each
+// requested `counts` entry.
+function buildLineCountRows(
+  groups: CubeOptionGroup[],
+  templates: string[],
+  counts: number[],
+  formatLabel: (count: number) => string
+): OptionRow[] {
+  const slotMatchProbabilities = groups.map((group) => {
+    let matched = 0;
+    for (const item of group.items) {
+      const { name } = extractPotentialOptionValue(item.name);
+      if (templates.includes(name)) matched += item.probability;
+    }
+    return matched;
+  });
+
+  let distribution = new Map<number, number>([[0, 1]]);
+  for (const matchProbability of slotMatchProbabilities) {
+    const next = new Map<number, number>();
+    for (const [count, probability] of distribution) {
+      next.set(count, (next.get(count) ?? 0) + probability * (1 - matchProbability));
+      next.set(count + 1, (next.get(count + 1) ?? 0) + probability * matchProbability);
+    }
+    distribution = next;
+  }
+
+  const rows: OptionRow[] = [];
+  for (const targetCount of counts) {
+    let atLeastProbability = 0;
+    for (const [count, probability] of distribution) {
+      if (count >= targetCount) atLeastProbability += probability;
+    }
+    if (atLeastProbability <= 0) continue;
+    rows.push({ label: formatLabel(targetCount), averageTries: Math.ceil(1 / atLeastProbability) });
+  }
+  return rows.sort((a, b) => a.averageTries - b.averageTries);
+}
+
 interface WeightedSlotValue {
   value: number;
   probability: number;
@@ -236,16 +279,15 @@ function buildWeightedSlot(
   return entries;
 }
 
-// Same "sum across the 3 lines" idea as buildOptionRows, but a bonus-template
-// line (올스탯) only counts toward the total when at least one line actually
-// rolled a primary-template option (STR) - a lone 올스탯 line with no STR line
-// anywhere isn't treated as satisfying "주스탯" on its own.
-function buildPrimaryWithBonusRows(
+// Core of buildPrimaryWithBonusRows, factored out so buildAnyStatRows can run
+// it once per stat (STR/DEX/INT/LUK) and combine the results - see that
+// function's comment for why a bonus-template line (올스탯) only counts
+// toward the total once a primary-template line has also appeared.
+function buildPrimaryQualifyingAtLeastDistribution(
   groups: CubeOptionGroup[],
   primaryTemplates: string[],
-  bonusTemplates: string[],
-  formatLabel: (value: number) => string
-): OptionRow[] {
+  bonusTemplates: string[]
+): { atLeast: Distribution; floor: number } {
   const slots = groups.map((group) => buildWeightedSlot(group.items, primaryTemplates, bonusTemplates));
   // Floor from the primary (STR) template only - the 1st line's 올스탯 value
   // (if any) is often lower, and blending it in would let weaker totals through.
@@ -277,7 +319,20 @@ function buildPrimaryWithBonusRows(
     const total = Number(totalPart);
     qualifying.set(total, (qualifying.get(total) ?? 0) + probability);
   }
-  const atLeast = toAtLeastDistribution(qualifying);
+  return { atLeast: toAtLeastDistribution(qualifying), floor };
+}
+
+// Same "sum across the 3 lines" idea as buildOptionRows, but a bonus-template
+// line (올스탯) only counts toward the total when at least one line actually
+// rolled a primary-template option (STR) - a lone 올스탯 line with no STR line
+// anywhere isn't treated as satisfying "주스탯" on its own.
+function buildPrimaryWithBonusRows(
+  groups: CubeOptionGroup[],
+  primaryTemplates: string[],
+  bonusTemplates: string[],
+  formatLabel: (value: number) => string
+): OptionRow[] {
+  const { atLeast, floor } = buildPrimaryQualifyingAtLeastDistribution(groups, primaryTemplates, bonusTemplates);
 
   const rows: OptionRow[] = [];
   for (const [total, probability] of atLeast) {
@@ -287,18 +342,75 @@ function buildPrimaryWithBonusRows(
   return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
 
+// 아무스탯 n% = P(STR>=n%) + P(DEX>=n%) + P(INT>=n%) + P(LUK>=n%), i.e. landing
+// n%+ in *some* main stat, approximated as a plain sum of the four
+// (mutually-exclusive-per-line, symmetric) per-stat probabilities rather than
+// an exact inclusion-exclusion union - this is the user-specified definition,
+// and it's why 아무스탯's average tries comes out roughly 4x lower than
+// 주스탯's for the same n%. Each per-stat probability still includes the
+// 올스탯 bonus rule from buildPrimaryQualifyingAtLeastDistribution.
+function buildAnyStatRows(
+  groups: CubeOptionGroup[],
+  statTemplates: string[][],
+  bonusTemplates: string[],
+  formatLabel: (value: number) => string
+): OptionRow[] {
+  let floor = Infinity;
+  const summedProbabilityByTotal = new Map<number, number>();
+  for (const primaryTemplates of statTemplates) {
+    const { atLeast, floor: statFloor } = buildPrimaryQualifyingAtLeastDistribution(
+      groups,
+      primaryTemplates,
+      bonusTemplates
+    );
+    floor = Math.min(floor, statFloor);
+    for (const [total, probability] of atLeast) {
+      summedProbabilityByTotal.set(total, (summedProbabilityByTotal.get(total) ?? 0) + probability);
+    }
+  }
+
+  const rows: OptionRow[] = [];
+  for (const [total, probability] of summedProbabilityByTotal) {
+    if (total <= 0 || total < floor || probability <= 0) continue;
+    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / Math.min(probability, 1)) });
+  }
+  return rows.sort((a, b) => a.averageTries - b.averageTries);
+}
+
 // Only the "%" variants are shown - flat (non-percent) stat bumps are excluded.
+// 아무스탯 = P(STR>=n%) + P(DEX>=n%) + P(INT>=n%) + P(LUK>=n%) (see
+// buildAnyStatRows) - landing n%+ in any one of the four main stats.
 // 주스탯 = STR/DEX/INT/LUK % (all four are symmetric, so STR alone represents them),
 // with 올스탯 % riding along on top whenever a real STR line is also present.
 // HP % and 올스탯 % (standalone) are their own independent options.
-// Groups always render in this fixed order (주스탯 -> 올스탯 -> HP), each already
-// sorted by average tries ascending - never interleaved across groups. Empty
-// groups (e.g. a grade with no HP option at all) are dropped entirely.
-function buildGradeRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
+// 드메 n줄 (아이템 드롭률/메소 획득량, either one counting toward the line count)
+// only applies to the 잠재능력 table, not 에디셔널 - callers opt in via
+// `includeDropMeso`.
+// Groups always render in this fixed order (아무스탯 -> 주스탯 -> 올스탯 -> HP ->
+// 드메), each already sorted by average tries ascending - never interleaved
+// across groups. Empty groups (e.g. a grade with no HP option at all) are
+// dropped entirely.
+function buildGradeRowGroups(groups: CubeOptionGroup[], includeDropMeso: boolean): OptionRow[][] {
   return [
+    buildAnyStatRows(
+      groups,
+      [["STR +n%"], ["DEX +n%"], ["INT +n%"], ["LUK +n%"]],
+      ["올스탯 +n%"],
+      (value) => `아무스탯 ${value}%`
+    ),
     buildPrimaryWithBonusRows(groups, ["STR +n%"], ["올스탯 +n%"], (value) => `주스탯 ${value}%`),
     buildOptionRows(groups, ["올스탯 +n%"], (value) => `올스탯 ${value}%`),
     buildOptionRows(groups, ["최대 HP +n%"], (value) => `HP ${value}%`),
+    ...(includeDropMeso
+      ? [
+          buildLineCountRows(
+            groups,
+            ["아이템 드롭률 +n%", "메소 획득량 +n%"],
+            [2, 3],
+            (count) => `드메 ${count}줄`
+          ),
+        ]
+      : []),
   ].filter((rows) => rows.length > 0);
 }
 
@@ -361,11 +473,13 @@ export function PotentialTable({
   isLoading,
   cubeType,
   excludedGrades,
+  includeDropMeso = false,
 }: {
   data: CubeProbabilityData | null;
   isLoading: boolean;
   cubeType: CubeType | null;
   excludedGrades?: CubeGrade[];
+  includeDropMeso?: boolean;
 }) {
   const grades = GRADE_ORDER.filter(
     (grade) => (data?.[grade]?.length ?? 0) > 0 && !excludedGrades?.includes(grade)
@@ -412,7 +526,7 @@ export function PotentialTable({
       {grades.map((grade, gradeIndex) => {
         const isExpanded = expandedGrades.has(grade);
         const isLastGrade = gradeIndex === grades.length - 1;
-        const optionRowGroups = buildGradeRowGroups(data[grade]!);
+        const optionRowGroups = buildGradeRowGroups(data[grade]!, includeDropMeso);
 
         const gradeUpStep = !isLastGrade && cubeType ? GRADE_UP_STEPS[cubeType][grade as GradeUpFromGrade] : undefined;
         const gradeUpRows = buildGradeUpRows(gradeUpStep);
