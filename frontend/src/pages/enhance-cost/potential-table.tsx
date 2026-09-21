@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { CubeType, PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
+import { CubeType, EquipmentLevelTier, PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
 import type { CubeGrade, CubeOptionGroup, CubeProbabilityData } from "@/hooks/use-cube-probability";
 import { extractPotentialOptionValue } from "@/lib/potential-option";
+import { formatCostExact, formatCostRounded } from "@/lib/format";
 
 const GRADE_ORDER: CubeGrade[] = ["rare", "epic", "unique", "legendary"];
 
@@ -93,10 +94,12 @@ const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpS
   },
 };
 
-// Expected try count for a Bernoulli(probability) event, where reaching `pity`
-// consecutive failures forces a success on that attempt.
-function expectedGradeUpTries(probability: number, pity?: number): number {
-  if (!pity) return Math.ceil(1 / probability);
+// Exact (un-rounded) expected try count for a Bernoulli(probability) event,
+// where reaching `pity` consecutive failures forces a success on that attempt.
+// Kept un-rounded so RESET/ADDI_RESET can multiply it by a per-try cost
+// without compounding rounding error - see buildGradeUpRows.
+function expectedGradeUpTriesRaw(probability: number, pity?: number): number {
+  if (!pity) return 1 / probability;
 
   let expected = 0;
   let survivalProbability = 1;
@@ -105,7 +108,7 @@ function expectedGradeUpTries(probability: number, pity?: number): number {
     survivalProbability *= 1 - probability;
   }
   expected += pity * survivalProbability;
-  return Math.ceil(expected);
+  return expected;
 }
 
 const MIRACLE_TIME_PROBABILITY_MULTIPLIER = 2;
@@ -113,17 +116,37 @@ const MIRACLE_TIME_PROBABILITY_MULTIPLIER = 2;
 function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
   if (!step) return [];
   const miracleProbability = step.probability * MIRACLE_TIME_PROBABILITY_MULTIPLIER;
-  const cubeTries = expectedGradeUpTries(step.probability, step.pity);
-  const miracleCubeTries = expectedGradeUpTries(miracleProbability, step.pity);
+  const cubeTriesRaw = expectedGradeUpTriesRaw(step.probability, step.pity);
+  const miracleCubeTriesRaw = expectedGradeUpTriesRaw(miracleProbability, step.pity);
   return [
-    { label: "등급업", averageTries: cubeTries },
-    { label: "등급업 (미라클)", averageTries: miracleCubeTries },
+    { label: "등급업", averageTries: Math.ceil(cubeTriesRaw), rawTries: cubeTriesRaw },
+    { label: "등급업 (미라클)", averageTries: Math.ceil(miracleCubeTriesRaw), rawTries: miracleCubeTriesRaw },
   ].sort((a, b) => a.averageTries - b.averageTries);
 }
+
+// RESET/ADDI_RESET show 평균 비용 (average cost) instead of 평균 횟수 (average
+// try count) - the reset cost per attempt depends on the item's current
+// potential grade (this table's column) and level tier, per Nexon's official
+// disclosure. BLACK/ADDI (real cube items with a market price) keep the plain
+// try-count display, since their cost depends on market price the app doesn't
+// track here.
+const RESET_COSTS: Partial<Record<CubeType, Record<EquipmentLevelTier, Record<CubeGrade, number>>>> = {
+  [CubeType.RESET]: {
+    [EquipmentLevelTier.HIGH]: { rare: 5_000_000, epic: 20_000_000, unique: 42_500_000, legendary: 50_000_000 },
+    [EquipmentLevelTier.LOW]: { rare: 4_500_000, epic: 18_000_000, unique: 38_250_000, legendary: 45_000_000 },
+  },
+  [CubeType.ADDI_RESET]: {
+    [EquipmentLevelTier.HIGH]: { rare: 12_250_000, epic: 34_300_000, unique: 83_300_000, legendary: 98_000_000 },
+    [EquipmentLevelTier.LOW]: { rare: 11_000_000, epic: 30_800_000, unique: 74_800_000, legendary: 88_000_000 },
+  },
+};
 
 interface OptionRow {
   label: string;
   averageTries: number;
+  // Exact (un-rounded) expected try count, used to compute RESET/ADDI_RESET's
+  // 평균 비용 without compounding the ceil'd averageTries's rounding error.
+  rawTries: number;
   // Hover-tooltip text for the label cell (e.g. which 공/보/방 line combinations
   // count as "유효") - only soul ring rows set this.
   tooltip?: string;
@@ -205,7 +228,7 @@ function buildOptionRows(groups: CubeOptionGroup[], templates: string[], formatL
   const rows: OptionRow[] = [];
   for (const [total, probability] of atLeast) {
     if (total <= 0 || total < floor || probability <= 0) continue;
-    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / probability) });
+    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / probability), rawTries: 1 / probability });
   }
   return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
@@ -248,7 +271,11 @@ function buildLineCountRows(
       if (count >= targetCount) atLeastProbability += probability;
     }
     if (atLeastProbability <= 0) continue;
-    rows.push({ label: formatLabel(targetCount), averageTries: Math.ceil(1 / atLeastProbability) });
+    rows.push({
+      label: formatLabel(targetCount),
+      averageTries: Math.ceil(1 / atLeastProbability),
+      rawTries: 1 / atLeastProbability,
+    });
   }
   return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
@@ -340,7 +367,7 @@ function buildPrimaryWithBonusRows(
   const rows: OptionRow[] = [];
   for (const [total, probability] of atLeast) {
     if (total <= 0 || total < floor || probability <= 0) continue;
-    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / probability) });
+    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / probability), rawTries: 1 / probability });
   }
   return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
@@ -375,7 +402,8 @@ function buildAnyStatRows(
   const rows: OptionRow[] = [];
   for (const [total, probability] of summedProbabilityByTotal) {
     if (total <= 0 || total < floor || probability <= 0) continue;
-    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / Math.min(probability, 1)) });
+    const clampedProbability = Math.min(probability, 1);
+    rows.push({ label: formatLabel(total), averageTries: Math.ceil(1 / clampedProbability), rawTries: 1 / clampedProbability });
   }
   return rows.sort((a, b) => a.averageTries - b.averageTries);
 }
@@ -393,7 +421,12 @@ const DROP_MESO_CATEGORIES: string[] = ANY_STAT_CATEGORIES.filter((category) => 
 // irrelevant here and are replaced entirely by the "유효 N줄" rows below.
 // 엠블렘 never rolls 보스 몬스터 데미지 in-game, so it only ever considers
 // 공격력/방어율무시.
-const SOUL_RING_WEAPON_CATEGORIES: string[] = ["무기", "보조무기(포스실드, 소울링 제외)", "포스실드, 소울링"];
+const SOUL_RING_WEAPON_CATEGORIES: string[] = [
+  "무기",
+  "보조무기(포스실드, 소울링 제외)",
+  "포스실드, 소울링",
+  "방패", // 보조무기 취급
+];
 const SOUL_RING_EMBLEM_CATEGORY = "엠블렘";
 
 const ATTACK_TEMPLATE = "공격력 +n%";
@@ -612,6 +645,7 @@ function buildSoulRingRows(
     rows.push({
       label: `${labelPrefix} ${spec.suffix}`,
       averageTries: Math.ceil(1 / probability),
+      rawTries: 1 / probability,
       tooltip: buildSoulRingComboTooltip(templates, spec.validCount, capTemplate),
     });
   }
@@ -628,6 +662,12 @@ function buildSoulRingRowGroups(
     buildSoulRingRows(groups, includeIgnoreDefenseTemplates, "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
     buildSoulRingRows(groups, excludeIgnoreDefenseTemplates, "방무X"),
   ].filter((rows) => rows.length > 0);
+}
+
+// 에디셔널 잠재능력의 무기류/엠블렘은 방무/유효 N줄 표기를 전부 걷어내고 다른
+// 부위처럼 공 n% 합산으로만 보여준다 (잠재능력 쪽은 그대로 유지).
+function buildAttackOnlyRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
+  return [buildOptionRows(groups, [ATTACK_TEMPLATE], (value) => `공 ${value}%`)].filter((rows) => rows.length > 0);
 }
 
 // 엠블렘은 공격력 템플릿 하나뿐이라 "방무 제외 유효 N줄"이 그냥 공격력 총합%와
@@ -659,6 +699,7 @@ function buildGradeRowGroups(
   includeDropMeso: boolean
 ): OptionRow[][] {
   if (SOUL_RING_WEAPON_CATEGORIES.includes(category)) {
+    if (!includeDropMeso) return buildAttackOnlyRowGroups(groups);
     return buildSoulRingRowGroups(
       groups,
       [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE, IGNORE_DEFENSE_TEMPLATE],
@@ -666,6 +707,7 @@ function buildGradeRowGroups(
     );
   }
   if (category === SOUL_RING_EMBLEM_CATEGORY) {
+    if (!includeDropMeso) return buildAttackOnlyRowGroups(groups);
     return buildEmblemRowGroups(groups);
   }
 
@@ -694,6 +736,25 @@ function buildGradeRowGroups(
         ]
       : []),
   ].filter((rows) => rows.length > 0);
+}
+
+// Renders either the plain try count or, when `costPerTry` is given (RESET/
+// ADDI_RESET), the average cost - row.rawTries (un-rounded) times the reset
+// cost for this grade, formatted the same way as StarforceCard's 평균 비용.
+function TriesCell({ isLoading, row, costPerTry }: { isLoading: boolean; row: OptionRow; costPerTry?: number }) {
+  if (isLoading) return <SkeletonCell className="ml-auto h-4 w-10" />;
+  if (costPerTry != null) {
+    const cost = row.rawTries * costPerTry;
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{formatCostRounded(cost)}</span>
+        </TooltipTrigger>
+        <TooltipContent side="top">{formatCostExact(cost)}</TooltipContent>
+      </Tooltip>
+    );
+  }
+  return <>{`${row.averageTries.toLocaleString("en-US")}회`}</>;
 }
 
 // How many placeholder rows to guess when there's no previous table shape to
@@ -754,6 +815,7 @@ export function PotentialTable({
   data,
   isLoading,
   cubeType,
+  levelTier,
   excludedGrades,
   category,
   includeDropMeso = false,
@@ -761,6 +823,7 @@ export function PotentialTable({
   data: CubeProbabilityData | null;
   isLoading: boolean;
   cubeType: CubeType | null;
+  levelTier: EquipmentLevelTier;
   excludedGrades?: CubeGrade[];
   category: string;
   includeDropMeso?: boolean;
@@ -768,6 +831,10 @@ export function PotentialTable({
   const grades = GRADE_ORDER.filter(
     (grade) => (data?.[grade]?.length ?? 0) > 0 && !excludedGrades?.includes(grade)
   );
+
+  // RESET/ADDI_RESET show 평균 비용 (cost) instead of 평균 횟수 (try count) - see
+  // RESET_COSTS above.
+  const costsByGrade = cubeType ? RESET_COSTS[cubeType]?.[levelTier] : undefined;
 
   const [expandedGrades, setExpandedGrades] = useState<Set<CubeGrade>>(new Set());
   const hasInitializedRef = useRef(false);
@@ -814,6 +881,7 @@ export function PotentialTable({
 
         const gradeUpStep = !isLastGrade && cubeType ? GRADE_UP_STEPS[cubeType][grade as GradeUpFromGrade] : undefined;
         const gradeUpRows = buildGradeUpRows(gradeUpStep);
+        const costPerTry = costsByGrade?.[grade];
 
         return (
           <div key={grade} className={cn("rounded-md border", isExpanded && "rounded-b-none")}>
@@ -841,7 +909,9 @@ export function PotentialTable({
                 <thead>
                   <tr className="border-b">
                     <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">옵션</th>
-                    <th className="px-3 py-1 text-right font-medium text-muted-foreground">평균 횟수</th>
+                    <th className="px-3 py-1 text-right font-medium text-muted-foreground">
+                      {costsByGrade ? "평균 비용" : "평균 횟수"}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -857,11 +927,7 @@ export function PotentialTable({
                         {isLoading ? <SkeletonCell className="h-4 w-20" /> : gradeUpRow.label}
                       </td>
                       <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                        {isLoading ? (
-                          <SkeletonCell className="ml-auto h-4 w-10" />
-                        ) : (
-                          `${gradeUpRow.averageTries.toLocaleString("en-US")}회`
-                        )}
+                        <TriesCell isLoading={isLoading} row={gradeUpRow} costPerTry={costPerTry} />
                       </td>
                     </tr>
                   ))}
@@ -884,11 +950,7 @@ export function PotentialTable({
                           )}
                         </td>
                         <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                          {isLoading ? (
-                            <SkeletonCell className="ml-auto h-4 w-10" />
-                          ) : (
-                            `${row.averageTries.toLocaleString("en-US")}회`
-                          )}
+                          <TriesCell isLoading={isLoading} row={row} costPerTry={costPerTry} />
                         </td>
                       </tr>
                     ));

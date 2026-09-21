@@ -253,6 +253,7 @@ export function EnhanceCostPage() {
             data={potentialData}
             isLoading={isFetchingPotential}
             cubeType={selectedCube}
+            levelTier={potentialLevel}
             excludedGrades={["rare", "epic"]}
             category={potentialCategory}
             includeDropMeso
@@ -280,6 +281,7 @@ export function EnhanceCostPage() {
             data={additionalPotentialData}
             isLoading={isFetchingAdditionalPotential}
             cubeType={selectedAdditionalCube}
+            levelTier={additionalLevel}
             excludedGrades={["rare"]}
             category={additionalCategory}
           />
