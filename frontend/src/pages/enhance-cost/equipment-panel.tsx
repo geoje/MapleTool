@@ -37,6 +37,7 @@ export function NameInput({
     <ButtonGroup className="w-full">
       <Input
         variant="outline"
+        className="w-0 min-w-0"
         placeholder="캐릭터명을 입력하세요."
         enterKeyHint="go"
         value={value}

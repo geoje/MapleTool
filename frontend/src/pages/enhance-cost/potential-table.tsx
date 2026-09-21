@@ -958,12 +958,15 @@ function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
 // HP %가 해당 줄의 최저치(이탈 아님)로 뜨면 0.5줄, 이탈(더 높은 값)로 뜨면 1줄,
 // 그 외 플랫 스탯(STR+15, 방어력+n, 이동속도 등)은 0줄로 계산에서 제외한다.
 // 마력 +n은 공격력 +n과 대칭(주스탯이 STR%만 보는 것과 동일한 이유)이라 제외.
+// DEX/INT/LUK% 역시 STR%와 대칭이라 제외 - 캐릭터별로 의미 있는 주스탯은 하나뿐이라
+// 나머지 셋을 OR로 묶으면 실제보다 매칭 확률이 부풀려진다(buildStatSectionRows가
+// 주스탯 섹션에서 STR%만 대표로 쓰는 것과 동일한 이유).
 const ADDITIONAL_ATTACK_FLAT_TEMPLATES = ["공격력 +n"];
-const ADDITIONAL_PERCENT_STAT_TEMPLATES = ["STR +n%", "DEX +n%", "INT +n%", "LUK +n%", "올스탯 +n%", "최대 HP +n%"];
+const ADDITIONAL_PERCENT_STAT_TEMPLATES = ["STR +n%", "올스탯 +n%", "최대 HP +n%"];
 
 // A single line 2/3's contribution distribution: 0 (irrelevant flat stat or no
-// match), 0.5 (a %-stat baseline roll, no 이탈), or 1 (공격력/마력 고정치, or a
-// %-stat 이탈 roll).
+// match), 0.5 (a %-stat baseline roll, no 이탈), or 1 (공격력 고정치, or a %-stat
+// 이탈 roll).
 function buildAdditionalLineQualityDistribution(group: CubeOptionGroup): Distribution {
   const percentBaselineByName = new Map<string, number>();
   for (const item of group.items) {
