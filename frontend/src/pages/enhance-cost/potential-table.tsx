@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { CubeType, PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
 import type { CubeGrade, CubeOptionGroup, CubeProbabilityData } from "@/hooks/use-cube-probability";
@@ -124,6 +125,9 @@ function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
 interface OptionRow {
   label: string;
   averageTries: number;
+  // Hover-tooltip text for the label cell (e.g. which 공/보/방 line combinations
+  // count as "유효") - only soul ring rows set this.
+  tooltip?: string;
 }
 
 type Distribution = Map<number, number>; // value -> probability
@@ -384,6 +388,258 @@ function buildAnyStatRows(
 const ANY_STAT_CATEGORIES: string[] = ["얼굴장식", "눈장식", "귀고리", "펜던트", "벨트", "반지"];
 const DROP_MESO_CATEGORIES: string[] = ANY_STAT_CATEGORIES.filter((category) => category !== "벨트");
 
+// 무기/보조무기/포스실드,소울링/엠블렘 only ever matter for 공격력%, 보스 몬스터
+// 데미지%, 몬스터 방어율 무시% (roughly interchangeable in value, so real builds
+// just care how many lines land on any of them) - 주스탯/올스탯/HP rows are
+// irrelevant here and are replaced entirely by the "유효 N줄" rows below.
+// 엠블렘 never rolls 보스 몬스터 데미지 in-game, so it only ever considers
+// 공격력/방어율무시.
+const SOUL_RING_WEAPON_CATEGORIES: string[] = ["무기", "보조무기(포스실드, 소울링 제외)", "포스실드, 소울링"];
+const SOUL_RING_EMBLEM_CATEGORY = "엠블렘";
+
+const ATTACK_TEMPLATE = "공격력 +n%";
+const BOSS_DAMAGE_TEMPLATE = "보스 몬스터 데미지 +n%";
+const IGNORE_DEFENSE_TEMPLATE = "몬스터 방어율 무시 +n%";
+
+// One-character shorthand used in the "옵션" tooltip, so e.g. a 3-line combo
+// of 공격력/공격력/보스 몬스터 데미지 renders as "공공보".
+const TEMPLATE_ABBREVIATIONS: Record<string, string> = {
+  [ATTACK_TEMPLATE]: "공",
+  [BOSS_DAMAGE_TEMPLATE]: "보",
+  [IGNORE_DEFENSE_TEMPLATE]: "방",
+};
+
+// Every way to split `count` lines across `templates` (order = priority, used
+// for both traversal order and label tie-breaking below). Walks each
+// template's count from high to low so the result is already in "heaviest
+// first template" order.
+function buildPlainCombinationCounts(templates: string[], count: number): number[][] {
+  const results: number[][] = [];
+
+  function recurse(index: number, remaining: number, current: number[]) {
+    if (index === templates.length - 1) {
+      results.push([...current, remaining]);
+      return;
+    }
+    for (let c = remaining; c >= 0; c--) {
+      recurse(index + 1, remaining - c, [...current, c]);
+    }
+  }
+  recurse(0, count, []);
+  return results;
+}
+
+// Same as buildPlainCombinationCounts, but grouped by how many lines land on
+// `capTemplate` (0 first, then 1, ... up to `capLimit`) rather than
+// interleaved with the other templates - this keeps every capTemplate-free
+// combination together at the front and every capped combination together at
+// the back, so a truncated preview's tail always shows capTemplate examples
+// instead of just whichever combo happened to sort last.
+function buildSoulRingCombinationCounts(
+  templates: string[],
+  count: number,
+  capTemplate?: string,
+  capLimit = 1
+): number[][] {
+  const capIndex = capTemplate ? templates.indexOf(capTemplate) : -1;
+  if (capIndex === -1) return buildPlainCombinationCounts(templates, count);
+
+  const otherTemplates = templates.filter((_, index) => index !== capIndex);
+  const results: number[][] = [];
+  for (let capCount = 0; capCount <= Math.min(capLimit, count); capCount++) {
+    for (const otherCounts of buildPlainCombinationCounts(otherTemplates, count - capCount)) {
+      const combination = [...otherCounts];
+      combination.splice(capIndex, 0, capCount);
+      results.push(combination);
+    }
+  }
+  return results;
+}
+
+// Renders one combination as its abbreviation string, grouping same-template
+// letters together and ordering groups by count descending (ties broken by
+// template priority) - e.g. counts [1, 2, 0] over [공, 보, 방] -> "보보공".
+function formatSoulRingCombination(counts: number[], templates: string[]): string {
+  return templates
+    .map((template, index) => ({ abbreviation: TEMPLATE_ABBREVIATIONS[template], count: counts[index], index }))
+    .filter((part) => part.count > 0)
+    .sort((a, b) => b.count - a.count || a.index - b.index)
+    .map((part) => part.abbreviation.repeat(part.count))
+    .join("");
+}
+
+// Above this many combinations the full list is too long to show in a
+// tooltip, so only the first/last couple are shown with a middle ellipsis.
+const MAX_VISIBLE_COMBINATIONS = 5;
+
+function buildSoulRingComboTooltip(templates: string[], count: number, capTemplate?: string): string {
+  const combinations = buildSoulRingCombinationCounts(templates, count, capTemplate).map((counts) =>
+    formatSoulRingCombination(counts, templates)
+  );
+  if (combinations.length <= MAX_VISIBLE_COMBINATIONS) return combinations.join(", ");
+  return `${combinations.slice(0, 2).join(", ")}, ... , ${combinations.slice(-2).join(", ")}`;
+}
+
+type SoulRingLineOutcome = { normal: number; deviated: number; none: number; capNormal: number; capDeviated: number };
+
+// Line 1 never "이탈"s (whatever it rolls counts as 정옵) - only lines 2/3 can
+// roll a higher-than-baseline ("이탈") value for the same template. Baseline
+// is the smallest disclosed value for that template on that line; anything
+// above it is 이탈. capTemplate additionally tracks how much of normal/deviated
+// specifically comes from that one template (used to cap 방무 lines below).
+function buildSoulRingLineOutcome(
+  group: CubeOptionGroup,
+  templates: string[],
+  capTemplate?: string
+): SoulRingLineOutcome {
+  if (group.optionNumber === 1) {
+    let matched = 0;
+    let capMatched = 0;
+    for (const item of group.items) {
+      const { name } = extractPotentialOptionValue(item.name);
+      if (!templates.includes(name)) continue;
+      matched += item.probability;
+      if (name === capTemplate) capMatched += item.probability;
+    }
+    return { normal: matched, deviated: 0, none: 1 - matched, capNormal: capMatched, capDeviated: 0 };
+  }
+
+  const baselineByTemplate = new Map<string, number>();
+  for (const item of group.items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (!templates.includes(name)) continue;
+    const current = baselineByTemplate.get(name);
+    if (current === undefined || value < current) baselineByTemplate.set(name, value);
+  }
+
+  let normal = 0;
+  let deviated = 0;
+  let capNormal = 0;
+  let capDeviated = 0;
+  for (const item of group.items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (!templates.includes(name)) continue;
+    const isNormal = value <= baselineByTemplate.get(name)!;
+    if (isNormal) normal += item.probability;
+    else deviated += item.probability;
+    if (name === capTemplate) {
+      if (isNormal) capNormal += item.probability;
+      else capDeviated += item.probability;
+    }
+  }
+  return { normal, deviated, none: 1 - normal - deviated, capNormal, capDeviated };
+}
+
+// Joint distribution of (valid line count, deviated line count, capTemplate line
+// count) across the 3 independent lines - state key is
+// `${validCount}:${deviatedCount}:${capCount}`. capCount stays 0 throughout when
+// no capTemplate is given, collapsing back to the plain (valid, deviated) case.
+function buildSoulRingJointDistribution(
+  groups: CubeOptionGroup[],
+  templates: string[],
+  capTemplate?: string
+): Map<string, number> {
+  let states = new Map<string, number>([["0:0:0", 1]]);
+  for (const group of groups) {
+    const outcome = buildSoulRingLineOutcome(group, templates, capTemplate);
+    const next = new Map<string, number>();
+    const branches: [number, number, number, number][] = [
+      [outcome.capNormal, 1, 0, 1],
+      [outcome.normal - outcome.capNormal, 1, 0, 0],
+      [outcome.capDeviated, 1, 1, 1],
+      [outcome.deviated - outcome.capDeviated, 1, 1, 0],
+      [outcome.none, 0, 0, 0],
+    ];
+    for (const [key, probability] of states) {
+      const [validPart, deviatedPart, capPart] = key.split(":").map(Number);
+      for (const [branchProbability, validDelta, deviatedDelta, capDelta] of branches) {
+        if (branchProbability <= 0) continue;
+        const nextKey = `${validPart + validDelta}:${deviatedPart + deviatedDelta}:${capPart + capDelta}`;
+        next.set(nextKey, (next.get(nextKey) ?? 0) + probability * branchProbability);
+      }
+    }
+    states = next;
+  }
+  return states;
+}
+
+function soulRingOutcomeProbability(
+  states: Map<string, number>,
+  predicate: (validCount: number, deviatedCount: number) => boolean
+): number {
+  let total = 0;
+  for (const [key, probability] of states) {
+    const [validCount, deviatedCount] = key.split(":").map(Number);
+    if (predicate(validCount, deviatedCount)) total += probability;
+  }
+  return total;
+}
+
+// 방무는 실제로는 한 아이템에 1줄까지만 나올 수 있으므로, capTemplate이 2줄 이상
+// 걸린 상태는 애초에 나올 수 없는 조합으로 보고 확률에서 제외한다(재분배하지 않음).
+function dropOverCappedStates(states: Map<string, number>, capLimit: number): Map<string, number> {
+  const filtered = new Map<string, number>();
+  for (const [key, probability] of states) {
+    const capCount = Number(key.split(":")[2]);
+    if (capCount > capLimit) continue;
+    filtered.set(key, probability);
+  }
+  return filtered;
+}
+
+// 2줄 only distinguishes "no deviation" vs "any deviation" (deviatedCount can
+// be 1 or 2 depending on whether line 1 is one of the 2 valid lines); 3줄
+// splits all 3 possibilities since line 1 always counts as one of the 3 and
+// never deviates, leaving exactly 0/1/2 deviated among lines 2-3.
+function buildSoulRingRows(
+  groups: CubeOptionGroup[],
+  templates: string[],
+  labelPrefix: string,
+  capTemplate?: string
+): OptionRow[] {
+  let states = buildSoulRingJointDistribution(groups, templates, capTemplate);
+  if (capTemplate) states = dropOverCappedStates(states, 1);
+  const specs: { suffix: string; validCount: number; predicate: (validCount: number, deviatedCount: number) => boolean }[] = [
+    { suffix: "유효 2줄 (정옵)", validCount: 2, predicate: (v, d) => v === 2 && d === 0 },
+    { suffix: "유효 3줄 (정옵)", validCount: 3, predicate: (v, d) => v === 3 && d === 0 },
+    { suffix: "유효 3줄 (1줄 이탈)", validCount: 3, predicate: (v, d) => v === 3 && d === 1 },
+    { suffix: "유효 3줄 (올이탈)", validCount: 3, predicate: (v, d) => v === 3 && d >= 2 },
+  ];
+
+  const rows: OptionRow[] = [];
+  for (const spec of specs) {
+    const probability = soulRingOutcomeProbability(states, spec.predicate);
+    if (probability <= 0) continue;
+    rows.push({
+      label: `${labelPrefix} ${spec.suffix}`,
+      averageTries: Math.ceil(1 / probability),
+      tooltip: buildSoulRingComboTooltip(templates, spec.validCount, capTemplate),
+    });
+  }
+  return rows;
+}
+
+// 방무 1줄 포함 그룹(2줄/3줄)을 항상 먼저, 방무X 그룹(2줄/3줄)을 그 아래에 배치.
+function buildSoulRingRowGroups(
+  groups: CubeOptionGroup[],
+  includeIgnoreDefenseTemplates: string[],
+  excludeIgnoreDefenseTemplates: string[]
+): OptionRow[][] {
+  return [
+    buildSoulRingRows(groups, includeIgnoreDefenseTemplates, "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
+    buildSoulRingRows(groups, excludeIgnoreDefenseTemplates, "방무X"),
+  ].filter((rows) => rows.length > 0);
+}
+
+// 엠블렘은 공격력 템플릿 하나뿐이라 "방무 제외 유효 N줄"이 그냥 공격력 총합%와
+// 동일한 의미라, 유효 N줄 표기 대신 다른 부위처럼 공 n% 합산 표기로 보여준다.
+function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
+  return [
+    buildSoulRingRows(groups, [ATTACK_TEMPLATE, IGNORE_DEFENSE_TEMPLATE], "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
+    buildOptionRows(groups, [ATTACK_TEMPLATE], (value) => `공 ${value}%`),
+  ].filter((rows) => rows.length > 0);
+}
+
 // Only the "%" variants are shown - flat (non-percent) stat bumps are excluded.
 // 아무스탯 = P(STR>=n%) + P(DEX>=n%) + P(INT>=n%) + P(LUK>=n%) (see
 // buildAnyStatRows) - landing n%+ in any one of the four main stats. Shown
@@ -403,6 +659,17 @@ function buildGradeRowGroups(
   category: string,
   includeDropMeso: boolean
 ): OptionRow[][] {
+  if (SOUL_RING_WEAPON_CATEGORIES.includes(category)) {
+    return buildSoulRingRowGroups(
+      groups,
+      [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE, IGNORE_DEFENSE_TEMPLATE],
+      [ATTACK_TEMPLATE, BOSS_DAMAGE_TEMPLATE]
+    );
+  }
+  if (category === SOUL_RING_EMBLEM_CATEGORY) {
+    return buildEmblemRowGroups(groups);
+  }
+
   return [
     ...(ANY_STAT_CATEGORIES.includes(category)
       ? [
@@ -604,7 +871,18 @@ export function PotentialTable({
                     return groupRows.map((row) => (
                       <tr key={row.label} className={cn("border-b last:border-b-0", isGroupMuted && "bg-muted")}>
                         <td className="border-r px-3 py-1">
-                          {isLoading ? <SkeletonCell className="h-4 w-20" /> : row.label}
+                          {isLoading ? (
+                            <SkeletonCell className="h-4 w-20" />
+                          ) : row.tooltip ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-default">{row.label}</span>
+                              </TooltipTrigger>
+                              <TooltipContent>{row.tooltip}</TooltipContent>
+                            </Tooltip>
+                          ) : (
+                            row.label
+                          )}
                         </td>
                         <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
                           {isLoading ? (
