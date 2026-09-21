@@ -47,6 +47,7 @@ import genesisBadge from "@/assets/enhance/equipment/pitched/genesis-badge.webp"
 import magicEyepatch from "@/assets/enhance/equipment/pitched/magic-eyepatch.webp";
 import mitrasRageWarrior from "@/assets/enhance/equipment/pitched/mitras-rage-warrior.webp";
 import sourceOfSuffering from "@/assets/enhance/equipment/pitched/source-of-suffering.webp";
+import ascendantPulseRing from "@/assets/enhance/equipment/radiance/ascendant-pulse-ring.png";
 import blissfulNightmare from "@/assets/enhance/equipment/radiance/blissful-nightmare.png";
 import immortalLegacy from "@/assets/enhance/equipment/radiance/immortal-legacy.png";
 import oathOfDeath from "@/assets/enhance/equipment/radiance/oath-of-death.png";
@@ -156,4 +157,5 @@ export const SET_ITEMS: Record<SetType, ItemEquipmentDetail[]> = {
     item("펜던트", "죽음의 맹세", oathOfDeath, 250),
     item("훈장", "불멸의 유산", immortalLegacy, 250),
   ],
+  [SetType.ASCENDANT]: [item("반지1", "어센던트 펄스 링", ascendantPulseRing, 130)],
 };

@@ -1,5 +1,6 @@
 import absolabs from "@/assets/enhance/set/absolabs.webp";
 import arcaneumbra from "@/assets/enhance/set/arcaneumbra.webp";
+import ascendantPulseRing from "@/assets/enhance/equipment/radiance/ascendant-pulse-ring.png";
 import boss from "@/assets/enhance/set/boss.webp";
 import dawn from "@/assets/enhance/set/dawn.webp";
 import eternal from "@/assets/enhance/set/eternal.webp";
@@ -16,6 +17,7 @@ export const SetType = {
   DAWN: "DAWN",
   PITCHED: "PITCHED",
   RADIANCE: "RADIANCE",
+  ASCENDANT: "ASCENDANT",
 } as const;
 
 export type SetType = (typeof SetType)[keyof typeof SetType];
@@ -29,15 +31,18 @@ export const SET_INFOS: Record<SetType, { name: string; icon: string }> = {
   [SetType.DAWN]: { name: "여명의 보스", icon: dawn },
   [SetType.PITCHED]: { name: "칠흑의 보스", icon: pitched },
   [SetType.RADIANCE]: { name: "광휘의 보스", icon: radiance },
+  [SetType.ASCENDANT]: { name: "어센던트 펄스 링", icon: ascendantPulseRing },
 };
 
 // Each pair's armor set and accessory set never use the same equipment slot,
-// so their items can be shown together on one grid.
-export const SET_COMBOS: [SetType, SetType][] = [
+// so their items can be shown together on one grid. A combo may also hold a
+// single SetType to show just one standalone item (no armor counterpart).
+export const SET_COMBOS: SetType[][] = [
   [SetType.ROOTABIS, SetType.BOSS],
   [SetType.ABSOLABS, SetType.DAWN],
   [SetType.ARCANEUMBRA, SetType.PITCHED],
   [SetType.ETERNAL, SetType.RADIANCE],
+  [SetType.ASCENDANT],
 ];
 
 export const PotentialGrade = {

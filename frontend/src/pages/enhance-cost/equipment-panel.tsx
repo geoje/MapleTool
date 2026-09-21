@@ -96,7 +96,7 @@ export function PresetTabs({
               type="button"
               variant={comboIndex === index ? "default" : "outline"}
               size="sm"
-              className={cn("gap-0.5 px-1.5", index === SET_COMBOS.length - 1 && "pr-2.5")}
+              className="gap-0.5 px-1.5"
               onClick={() => onSelectCombo(index)}
             >
               {combo.map((type) => (

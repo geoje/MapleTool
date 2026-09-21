@@ -996,9 +996,12 @@ function buildAdditionalLineQualityDistribution(group: CubeOptionGroup): Distrib
   return distribution;
 }
 
-// Line 1 always contributes a fixed 1, so only lines 2/3's combined
-// distribution determines whether the 1(fixed) + line2 + line3 total clears
-// 1.5 or 2.
+// "1.5줄급"/"2줄급"의 "줄 수"는 line1의 확정 1줄을 제외한, line2+line3만의 합으로
+// 판정한다 (line1은 뭐가 뜨든 항상 확정이라 별도 표기 없이 깔림). 값은 {0, 0.5, 1}
+// 뿐이므로 1.5 이상을 채우려면 두 줄 다 0이 아니어야 하고(한쪽만 맞고 한쪽이
+// 완전히 빗나가는 경우는 최대 1.0으로 탈락), 2.0은 두 줄 모두 공격력/이탈처럼
+// "꽉 찬" 값이어야 한다 - 그래서 단순 "주스탯 n%"(line1 하나만 맞아도 되는 낮은
+// 진입장벽) 행보다 평균 시도 횟수가 훨씬 높게 나온다.
 function buildAdditionalLineQualityRows(groups: CubeOptionGroup[]): OptionRow[] {
   const line2 = groups.find((group) => group.optionNumber === 2);
   const line3 = groups.find((group) => group.optionNumber === 3);
@@ -1015,9 +1018,9 @@ function buildAdditionalLineQualityRows(groups: CubeOptionGroup[]): OptionRow[] 
   };
 
   const rows: OptionRow[] = [];
-  const at1_5 = probabilityAtLeast(0.5);
+  const at1_5 = probabilityAtLeast(1.5);
   if (at1_5 > 0) rows.push({ label: "1.5줄급", averageTries: Math.ceil(1 / at1_5), rawTries: 1 / at1_5 });
-  const at2 = probabilityAtLeast(1);
+  const at2 = probabilityAtLeast(2);
   if (at2 > 0) rows.push({ label: "2줄급", averageTries: Math.ceil(1 / at2), rawTries: 1 / at2 });
   return rows;
 }
