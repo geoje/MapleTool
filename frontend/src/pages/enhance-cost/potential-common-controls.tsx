@@ -64,7 +64,7 @@ export function PotentialCommonControls({
 
       {/* Cube Selection */}
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">큐브</span>
+        <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">재료</span>
         <ButtonGroup>
           {POTENTIAL_CUBES.map((cube) => (
             <Tooltip key={cube}>

@@ -9,8 +9,7 @@ import {
   SET_COMBOS,
   SetType,
   CubeType,
-  POTENTIAL_CUBES,
-  ADDITIONAL_POTENTIAL_CUBES,
+  CUBE_PROBABILITY_SOURCE,
   EquipmentLevelTier,
   DEFAULT_EQUIPMENT_LEVEL_TIER,
 } from "@/constants/enhance";
@@ -59,8 +58,8 @@ export function EnhanceCostPage() {
     "enhance-cost:additional-potential-collapsed",
     false
   );
-  const [selectedCube, setSelectedCube] = useState<CubeType>(POTENTIAL_CUBES[0]);
-  const [selectedAdditionalCube, setSelectedAdditionalCube] = useState<CubeType | null>(ADDITIONAL_POTENTIAL_CUBES[0]);
+  const [selectedCube, setSelectedCube] = useState<CubeType>(CubeType.BLACK);
+  const [selectedAdditionalCube, setSelectedAdditionalCube] = useState<CubeType | null>(CubeType.ADDI);
   const [potentialCategory, setPotentialCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
   const [potentialLevel, setPotentialLevel] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
   const [additionalCategory, setAdditionalCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
@@ -147,12 +146,12 @@ export function EnhanceCostPage() {
   }, []);
 
   const { data: potentialData, isFetching: isFetchingPotential } = useCubeProbability(
-    selectedCube,
+    CUBE_PROBABILITY_SOURCE[selectedCube] ?? selectedCube,
     potentialCategory,
     potentialLevel
   );
   const { data: additionalPotentialData, isFetching: isFetchingAdditionalPotential } = useCubeProbability(
-    selectedAdditionalCube,
+    selectedAdditionalCube && (CUBE_PROBABILITY_SOURCE[selectedAdditionalCube] ?? selectedAdditionalCube),
     additionalCategory,
     additionalLevel
   );

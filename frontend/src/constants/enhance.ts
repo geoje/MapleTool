@@ -139,11 +139,15 @@ import silverCubeIcon from "@/assets/cube/silver.webp";
 import goldCubeIcon from "@/assets/cube/gold.webp";
 import whiteCubeIcon from "@/assets/cube/white.webp";
 import bronzeCubeIcon from "@/assets/cube/bronze.webp";
+import resetIcon from "@/assets/cube/reset.png";
+import resetAddiIcon from "@/assets/cube/reset-addi.png";
 
 export const CubeType = {
+  RESET: "reset",
   BLACK: "black",
   MASTER: "master",
   ARTISAN: "artisan",
+  ADDI_RESET: "addiReset",
   ADDI: "addi",
   STRANGE_ADDI: "strangeAddi",
 } as const;
@@ -151,9 +155,14 @@ export const CubeType = {
 export type CubeType = (typeof CubeType)[keyof typeof CubeType];
 
 export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: string; icon: string }> = {
+  [CubeType.RESET]: {
+    displayName: "재설정",
+    fullName: "잠재능력 재설정",
+    icon: resetIcon,
+  },
   [CubeType.BLACK]: {
     displayName: "블랙",
-    fullName: "잠재능력 재설정 / 블랙 큐브 / 프라임 큐브",
+    fullName: "블랙 큐브 / 프라임 큐브",
     icon: blackCubeIcon,
   },
   [CubeType.MASTER]: {
@@ -166,9 +175,14 @@ export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: strin
     fullName: "명장의 큐브 / 골드 큐브",
     icon: goldCubeIcon,
   },
+  [CubeType.ADDI_RESET]: {
+    displayName: "재설정",
+    fullName: "에디셔널 잠재능력 재설정",
+    icon: resetAddiIcon,
+  },
   [CubeType.ADDI]: {
     displayName: "화이트",
-    fullName: "에디셔널 잠재능력 재설정 / 에디셔널 큐브 / 화이트 에디셔널 큐브 / 프라임 에디셔널 큐브",
+    fullName: "에디셔널 큐브 / 화이트 에디셔널 큐브 / 프라임 에디셔널 큐브",
     icon: whiteCubeIcon,
   },
   [CubeType.STRANGE_ADDI]: {
@@ -178,6 +192,14 @@ export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: strin
   },
 };
 
-export const POTENTIAL_CUBES = [CubeType.BLACK, CubeType.MASTER, CubeType.ARTISAN] as const;
-export const ADDITIONAL_POTENTIAL_CUBES = [CubeType.ADDI, CubeType.STRANGE_ADDI] as const;
+// RESET/ADDI_RESET have no probability data of their own - they share the
+// same option-roll disclosure as BLACK/ADDI respectively and only differ in
+// grade-up guarantee count (see GRADE_UP_STEPS in potential-table.tsx).
+export const CUBE_PROBABILITY_SOURCE: Partial<Record<CubeType, CubeType>> = {
+  [CubeType.RESET]: CubeType.BLACK,
+  [CubeType.ADDI_RESET]: CubeType.ADDI,
+};
+
+export const POTENTIAL_CUBES = [CubeType.RESET, CubeType.BLACK, CubeType.MASTER, CubeType.ARTISAN] as const;
+export const ADDITIONAL_POTENTIAL_CUBES = [CubeType.ADDI_RESET, CubeType.ADDI, CubeType.STRANGE_ADDI] as const;
 

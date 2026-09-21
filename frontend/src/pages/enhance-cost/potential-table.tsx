@@ -48,19 +48,22 @@ interface GradeUpStep {
   probability: number;
   // Guaranteed-success try count ("등급 상승 보장 횟수"); undefined = no guarantee.
   pity?: number;
-  // ADDI only: separate guarantee count for "에디셔널 잠재능력 재설정", which Nexon
-  // discloses as its own column and does NOT match the 에디셔널/화이트 에디셔널 큐브
-  // column (verified against the live disclosure page - rare/epic differ, unique matches).
-  resetPity?: number;
 }
 
 // From-grade -> chance of moving up one tier, per cube. Source: Nexon's official
 // "등급 상승 확률표" / "등급 상승 보장 시스템" (게임산업법 시행령 공시).
-// BLACK's page discloses one merged "잠재능력 재설정/블랙 큐브" table, so no split
-// is needed there. ADDI's page discloses two separate tables (재설정 vs
-// 에디셔널/화이트 에디셔널 큐브) with different rare/epic guarantee counts - see
-// `resetPity` below. MASTER/ARTISAN/STRANGE_ADDI have no guarantee system.
+// RESET/ADDI_RESET are their own selectable buttons (잠재능력 재설정 /
+// 에디셔널 잠재능력 재설정) rather than rows folded into BLACK/ADDI. RESET shares
+// BLACK's numbers (Nexon discloses one merged table there). ADDI_RESET has its
+// own guarantee counts, disclosed as a separate column from ADDI's (rare/epic
+// differ, unique matches - verified against the live disclosure page).
+// MASTER/ARTISAN/STRANGE_ADDI have no guarantee system.
 const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpStep>>> = {
+  [CubeType.RESET]: {
+    rare: { probability: 0.15, pity: 10 },
+    epic: { probability: 0.035, pity: 42 },
+    unique: { probability: 0.014, pity: 107 },
+  },
   [CubeType.BLACK]: {
     rare: { probability: 0.15, pity: 10 },
     epic: { probability: 0.035, pity: 42 },
@@ -75,10 +78,15 @@ const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpS
     epic: { probability: 0.016959 },
     unique: { probability: 0.001996 },
   },
+  [CubeType.ADDI_RESET]: {
+    rare: { probability: 0.047619, pity: 62 },
+    epic: { probability: 0.019608, pity: 152 },
+    unique: { probability: 0.007, pity: 214 },
+  },
   [CubeType.ADDI]: {
-    rare: { probability: 0.047619, pity: 31, resetPity: 62 },
-    epic: { probability: 0.019608, pity: 76, resetPity: 152 },
-    unique: { probability: 0.007, pity: 214, resetPity: 214 },
+    rare: { probability: 0.047619, pity: 31 },
+    epic: { probability: 0.019608, pity: 76 },
+    unique: { probability: 0.007, pity: 214 },
   },
   [CubeType.STRANGE_ADDI]: {
     rare: { probability: 0.004 },
@@ -107,19 +115,10 @@ function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
   const miracleProbability = step.probability * MIRACLE_TIME_PROBABILITY_MULTIPLIER;
   const cubeTries = expectedGradeUpTries(step.probability, step.pity);
   const miracleCubeTries = expectedGradeUpTries(miracleProbability, step.pity);
-  const rows: OptionRow[] =
-    step.resetPity === undefined || step.resetPity === step.pity
-      ? [
-          { label: "등급업", averageTries: cubeTries },
-          { label: "등급업 (미라클)", averageTries: miracleCubeTries },
-        ]
-      : [
-          { label: "등급업 (재설정)", averageTries: expectedGradeUpTries(step.probability, step.resetPity) },
-          { label: "등급업 (미라클+재설정)", averageTries: expectedGradeUpTries(miracleProbability, step.resetPity) },
-          { label: "등급업 (큐브)", averageTries: cubeTries },
-          { label: "등급업 (미라클+큐브)", averageTries: miracleCubeTries },
-        ];
-  return rows.sort((a, b) => a.averageTries - b.averageTries);
+  return [
+    { label: "등급업", averageTries: cubeTries },
+    { label: "등급업 (미라클)", averageTries: miracleCubeTries },
+  ].sort((a, b) => a.averageTries - b.averageTries);
 }
 
 interface OptionRow {
