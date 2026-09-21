@@ -142,7 +142,7 @@ function EquipmentSlot({
   const grade = item ? getMaxPotentialGrade(item) : undefined;
 
   const boxClassName = cn(
-    "relative flex size-10 items-center justify-center justify-self-center overflow-hidden border bg-muted",
+    "relative flex size-10 items-center justify-center justify-self-center overflow-hidden border bg-muted transition-[background-color,translate] hover:bg-[color-mix(in_oklch,var(--muted),var(--foreground)_8%)] active:translate-y-px active:opacity-80",
     !grade && "rounded-sm"
   );
   const boxStyle = grade ? { borderColor: POTENTIAL_GRADE_INFOS[grade].borderColor } : undefined;
