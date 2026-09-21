@@ -1,10 +1,9 @@
 import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CollapsibleCard } from "@/components/collapsible-card";
-import { SectionTitle } from "@/components/section-title";
+import { CollapsedCardBar, CollapsibleCard } from "@/components/collapsible-card";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   SET_COMBOS,
   SetType,
@@ -48,6 +47,7 @@ export function EnhanceCostPage() {
   const { data: basic, isFetching: isFetchingBasic } = useCharacterBasic(name, searchToken);
   const { data: equipment, isFetching: isFetchingEquipment } = useItemEquipment(name, searchToken);
   const [selection, setSelection] = useState<Selection>(() => getDefaultSelection(!!equipment));
+  const [equipmentCollapsed, setEquipmentCollapsed] = usePersistedBoolean("enhance-cost:equipment-collapsed", false);
   const [starforceCollapsed, setStarforceCollapsed] = usePersistedBoolean("enhance-cost:starforce-collapsed", false);
   const [starforceLevel, setStarforceLevel] = useState(DEFAULT_STARFORCE_LEVEL);
   const [spareValue, setSpareValue] = useState(0);
@@ -170,6 +170,18 @@ export function EnhanceCostPage() {
       ? SET_COMBOS[selection.comboIndex].flatMap((set) => SET_ITEMS[set])
       : (characterItems ?? []);
 
+  const collapsedCards = [
+    { step: 1, title: "장비", collapsed: equipmentCollapsed, onExpand: () => setEquipmentCollapsed(false) },
+    { step: 2, title: "스타포스", collapsed: starforceCollapsed, onExpand: () => setStarforceCollapsed(false) },
+    { step: 3, title: "잠재능력", collapsed: potentialCollapsed, onExpand: () => setPotentialCollapsed(false) },
+    {
+      step: 4,
+      title: "에디잠재",
+      collapsed: additionalPotentialCollapsed,
+      onExpand: () => setAdditionalPotentialCollapsed(false),
+    },
+  ].filter((card) => card.collapsed);
+
   return (
     <div className="flex flex-col gap-4">
       {showNotice && (
@@ -191,34 +203,43 @@ export function EnhanceCostPage() {
         </Alert>
       )}
 
-      <div className="flex flex-wrap items-start gap-4">
-        <div className="flex w-full flex-col gap-4 md:w-auto">
-          <Card className="w-full md:w-auto">
-            <CardHeader>
-              <div className="flex items-center justify-between gap-3">
-                <SectionTitle step={1}>장비</SectionTitle>
-                <NameInput
-                  isFetching={isFetchingBasic || isFetchingEquipment}
-                  characterPreset={selection.type == "character" ? selection.preset : undefined}
-                  characterDisabled={!equipment}
-                  onSelectCharacterPreset={(preset) => setSelection({ type: "character", preset })}
-                />
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-3">
-              <PresetTabs
-                comboIndex={selection.type == "set" ? selection.comboIndex : undefined}
-                onSelectCombo={(comboIndex) => setSelection({ type: "set", comboIndex })}
-              />
-
-              <EquipmentGrid
-                characterImage={selection.type == "character" ? basic?.character_image : undefined}
-                items={items}
-                onSelectItem={handleSelectItem}
-              />
-            </CardContent>
-          </Card>
+      {collapsedCards.length > 0 && (
+        <div className="hidden flex-wrap items-start gap-4 md:flex">
+          {collapsedCards.map((card) => (
+            <CollapsedCardBar key={card.step} step={card.step} title={card.title} onExpand={card.onExpand} />
+          ))}
         </div>
+      )}
+
+      <div className="flex flex-wrap items-start gap-4">
+        <CollapsibleCard
+          step={1}
+          title="장비"
+          collapsed={equipmentCollapsed}
+          onCollapse={() => setEquipmentCollapsed(true)}
+          onExpand={() => setEquipmentCollapsed(false)}
+        >
+          <NameInput
+            isFetching={isFetchingBasic || isFetchingEquipment}
+            characterPreset={selection.type == "character" ? selection.preset : undefined}
+            characterDisabled={!equipment}
+            onSelectCharacterPreset={(preset) => setSelection({ type: "character", preset })}
+          />
+          <div className="relative h-5 text-xs">
+            <Separator className="absolute inset-0 top-1/2" />
+            <span className="relative mx-auto block w-fit bg-card px-2 text-muted-foreground">또는</span>
+          </div>
+          <PresetTabs
+            comboIndex={selection.type == "set" ? selection.comboIndex : undefined}
+            onSelectCombo={(comboIndex) => setSelection({ type: "set", comboIndex })}
+          />
+
+          <EquipmentGrid
+            characterImage={selection.type == "character" ? basic?.character_image : undefined}
+            items={items}
+            onSelectItem={handleSelectItem}
+          />
+        </CollapsibleCard>
 
         <StarforceCard
           collapsed={starforceCollapsed}

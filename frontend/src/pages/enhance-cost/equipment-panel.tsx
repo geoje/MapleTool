@@ -34,7 +34,7 @@ export function NameInput({
   };
 
   return (
-    <ButtonGroup className="min-w-40 flex-1">
+    <ButtonGroup className="w-full">
       <Input
         variant="outline"
         placeholder="캐릭터명을 입력하세요."

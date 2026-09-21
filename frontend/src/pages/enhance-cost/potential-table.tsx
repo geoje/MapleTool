@@ -952,6 +952,73 @@ function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
   ].filter((rows) => rows.length > 0);
 }
 
+// "1.5줄급"/"2줄급" - 에디셔널 잠재능력 에픽 등급(무기류 제외)에서 2,3번째 줄이
+// 얼마나 "실속 있는" 줄인지를 총합으로 보여주는 요약 그룹. 1번째 줄은 무엇이 뜨든
+// 항상 1줄로 취급하고, 2/3번째 줄은: 공격력 고정치(+n)면 항상 1줄, 주스탯/올스탯/
+// HP %가 해당 줄의 최저치(이탈 아님)로 뜨면 0.5줄, 이탈(더 높은 값)로 뜨면 1줄,
+// 그 외 플랫 스탯(STR+15, 방어력+n, 이동속도 등)은 0줄로 계산에서 제외한다.
+// 마력 +n은 공격력 +n과 대칭(주스탯이 STR%만 보는 것과 동일한 이유)이라 제외.
+const ADDITIONAL_ATTACK_FLAT_TEMPLATES = ["공격력 +n"];
+const ADDITIONAL_PERCENT_STAT_TEMPLATES = ["STR +n%", "DEX +n%", "INT +n%", "LUK +n%", "올스탯 +n%", "최대 HP +n%"];
+
+// A single line 2/3's contribution distribution: 0 (irrelevant flat stat or no
+// match), 0.5 (a %-stat baseline roll, no 이탈), or 1 (공격력/마력 고정치, or a
+// %-stat 이탈 roll).
+function buildAdditionalLineQualityDistribution(group: CubeOptionGroup): Distribution {
+  const percentBaselineByName = new Map<string, number>();
+  for (const item of group.items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (!ADDITIONAL_PERCENT_STAT_TEMPLATES.includes(name)) continue;
+    const current = percentBaselineByName.get(name);
+    if (current === undefined || value < current) percentBaselineByName.set(name, value);
+  }
+
+  let halfProbability = 0;
+  let fullProbability = 0;
+  for (const item of group.items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (ADDITIONAL_ATTACK_FLAT_TEMPLATES.includes(name)) {
+      fullProbability += item.probability;
+    } else if (ADDITIONAL_PERCENT_STAT_TEMPLATES.includes(name)) {
+      if (value <= percentBaselineByName.get(name)!) halfProbability += item.probability;
+      else fullProbability += item.probability;
+    }
+  }
+
+  const distribution: Distribution = new Map();
+  const zeroProbability = 1 - halfProbability - fullProbability;
+  if (zeroProbability > 0) distribution.set(0, zeroProbability);
+  if (halfProbability > 0) distribution.set(0.5, halfProbability);
+  if (fullProbability > 0) distribution.set(1, fullProbability);
+  return distribution;
+}
+
+// Line 1 always contributes a fixed 1, so only lines 2/3's combined
+// distribution determines whether the 1(fixed) + line2 + line3 total clears
+// 1.5 or 2.
+function buildAdditionalLineQualityRows(groups: CubeOptionGroup[]): OptionRow[] {
+  const line2 = groups.find((group) => group.optionNumber === 2);
+  const line3 = groups.find((group) => group.optionNumber === 3);
+  if (!line2 || !line3) return [];
+
+  const combined = convolve(buildAdditionalLineQualityDistribution(line2), buildAdditionalLineQualityDistribution(line3));
+
+  const probabilityAtLeast = (threshold: number): number => {
+    let total = 0;
+    for (const [sum, probability] of combined) {
+      if (sum >= threshold - 1e-9) total += probability;
+    }
+    return total;
+  };
+
+  const rows: OptionRow[] = [];
+  const at1_5 = probabilityAtLeast(0.5);
+  if (at1_5 > 0) rows.push({ label: "1.5줄급", averageTries: Math.ceil(1 / at1_5), rawTries: 1 / at1_5 });
+  const at2 = probabilityAtLeast(1);
+  if (at2 > 0) rows.push({ label: "2줄급", averageTries: Math.ceil(1 / at2), rawTries: 1 / at2 });
+  return rows;
+}
+
 // Only the "%" variants are shown - flat (non-percent) stat bumps are excluded.
 // 아무스탯 = P(STR>=n%) + P(DEX>=n%) + P(INT>=n%) + P(LUK>=n%) (see
 // buildAnyStatRows) - landing n%+ in any one of the four main stats. Shown
@@ -978,7 +1045,8 @@ function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
 function buildGradeRowGroups(
   groups: CubeOptionGroup[],
   category: string,
-  includeDropMeso: boolean
+  includeDropMeso: boolean,
+  grade: CubeGrade
 ): OptionRow[][] {
   if (SOUL_RING_WEAPON_CATEGORIES.includes(category)) {
     if (!includeDropMeso) return buildAttackOnlyRowGroups(groups);
@@ -1035,12 +1103,18 @@ function buildGradeRowGroups(
         )
       : [];
 
+  // 에디셔널 잠재능력(!includeDropMeso) 에픽 등급에만 보이는 요약 그룹 - 무기류/
+  // 엠블렘은 이 지점에 도달하기 전에 이미 별도 분기(buildAttackOnlyRowGroups/
+  // buildEmblemRowGroups)로 return되어 자동으로 제외된다.
+  const showLineQualityRows = !includeDropMeso && grade === "epic";
+
   return [
     ...(includeDropMesoSection
       ? [buildLineCountRows(groups, DROP_MESO_TEMPLATES, [2, 3], (count) => `드메 ${count}줄`)]
       : []),
     mergeComboRows(anyStatRows, anyStatComboRows),
     ...(secondaryOption ? [buildOptionRows(groups, [secondaryOption.template], secondaryOption.formatPure)] : []),
+    ...(showLineQualityRows ? [buildAdditionalLineQualityRows(groups)] : []),
     mergeComboRows(
       buildStatSectionRows(groups, ["STR +n%"], ["올스탯 +n%"], "주스탯", secondaryOption),
       buildDropMesoComboRows(["STR +n%"], ["올스탯 +n%"], "주스탯")
@@ -1195,7 +1269,7 @@ export function PotentialTable({
       {grades.map((grade, gradeIndex) => {
         const isExpanded = expandedGrades.has(grade);
         const isLastGrade = gradeIndex === grades.length - 1;
-        const optionRowGroups = buildGradeRowGroups(data[grade]!, category, includeDropMeso);
+        const optionRowGroups = buildGradeRowGroups(data[grade]!, category, includeDropMeso, grade);
 
         const gradeUpStep = !isLastGrade && cubeType ? GRADE_UP_STEPS[cubeType][grade as GradeUpFromGrade] : undefined;
         const gradeUpRows = buildGradeUpRows(gradeUpStep);
