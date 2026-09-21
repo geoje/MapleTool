@@ -57,8 +57,9 @@ interface GradeUpStep {
 // 에디셔널 잠재능력 재설정) rather than rows folded into BLACK/ADDI. RESET shares
 // BLACK's numbers (Nexon discloses one merged table there). ADDI_RESET has its
 // own guarantee counts, disclosed as a separate column from ADDI's (rare/epic
-// differ, unique matches - verified against the live disclosure page).
-// MASTER/ARTISAN/STRANGE_ADDI have no guarantee system.
+// differ, unique matches - verified against the live disclosure page). PRIME/
+// PRIME_ADDI reuse BLACK/ADDI's numbers - seeing/locking line 1 doesn't change
+// the grade-up mechanic. MASTER/ARTISAN/STRANGE_ADDI have no guarantee system.
 const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpStep>>> = {
   [CubeType.RESET]: {
     rare: { probability: 0.15, pity: 10 },
@@ -66,6 +67,11 @@ const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpS
     unique: { probability: 0.014, pity: 107 },
   },
   [CubeType.BLACK]: {
+    rare: { probability: 0.15, pity: 10 },
+    epic: { probability: 0.035, pity: 42 },
+    unique: { probability: 0.014, pity: 107 },
+  },
+  [CubeType.PRIME]: {
     rare: { probability: 0.15, pity: 10 },
     epic: { probability: 0.035, pity: 42 },
     unique: { probability: 0.014, pity: 107 },
@@ -89,10 +95,23 @@ const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpS
     epic: { probability: 0.019608, pity: 76 },
     unique: { probability: 0.007, pity: 214 },
   },
+  [CubeType.PRIME_ADDI]: {
+    rare: { probability: 0.047619, pity: 31 },
+    epic: { probability: 0.019608, pity: 76 },
+    unique: { probability: 0.007, pity: 214 },
+  },
   [CubeType.STRANGE_ADDI]: {
     rare: { probability: 0.004 },
   },
 };
+
+// Prime Cube / Prime Additional Cube reveal line 1's result before committing
+// to the reroll, so the table is restructured around "whatever line 1 could
+// be locked to" instead of the usual per-option-type sections - see
+// buildPrimeLockedSections.
+function isPrimeCubeType(cubeType: CubeType | null): boolean {
+  return cubeType === CubeType.PRIME || cubeType === CubeType.PRIME_ADDI;
+}
 
 // Exact (un-rounded) expected try count for a Bernoulli(probability) event,
 // where reaching `pity` consecutive failures forces a success on that attempt.
@@ -212,6 +231,25 @@ function slotOneMinimum(groups: CubeOptionGroup[], templates: string[]): number 
     if (minimum === null || value < minimum) minimum = value;
   }
   return minimum ?? 0;
+}
+
+// Line 1 can actually roll more than one tier of the same option (e.g. 모자's
+// 쿨감 can show either 1초 or 2초 on line 1, not just one fixed value) - a
+// Prime cube lock always assumes the best one, since you'd simply keep
+// re-rolling fresh Prime cubes until line 1 shows its strongest version of
+// whatever you're chasing. Used only for buildPrimeLockedSections' lock
+// selection, never for slotOneMinimum's floor-filtering role above.
+function slotOneMaximum(groups: CubeOptionGroup[], templates: string[]): number {
+  const firstSlot = groups.find((group) => group.optionNumber === 1);
+  if (!firstSlot) return 0;
+
+  let maximum = 0;
+  for (const item of firstSlot.items) {
+    const { name, value } = extractPotentialOptionValue(item.name);
+    if (!templates.includes(name)) continue;
+    if (value > maximum) maximum = value;
+  }
+  return maximum;
 }
 
 // `templates` are the "n"-substituted name shapes from extractPotentialOptionValue
@@ -1136,6 +1174,132 @@ function buildGradeRowGroups(
   ].filter((rows) => rows.length > 0);
 }
 
+interface PrimeLockedSection {
+  label: string;
+  rowGroups: OptionRow[][];
+}
+
+// SOUL_RING_WEAPON_CATEGORIES/SOUL_RING_EMBLEM_CATEGORY get their own 공/보스뎀/
+// 방무 lock scenarios below instead of 주스탯/올스탯/HP - buildAttackOnlyRowGroups/
+// buildSoulRingRowGroups/buildEmblemRowGroups never call buildStatSectionRows for
+// them, so a stat lock there would produce a section with nothing under it.
+const isWeaponLikeCategory = (category: string): boolean =>
+  SOUL_RING_WEAPON_CATEGORIES.includes(category) || category === SOUL_RING_EMBLEM_CATEGORY;
+
+// Which single-line options are worth their own "X 고정" scenario for Prime
+// cubes - one entry per template family buildGradeRowGroups already tracks
+// somewhere in its normal output, gated by the same category/includeDropMeso
+// checks that section uses. Anything else line 1 could roll (flat stat
+// bonuses, 방어력, 이동속도, ...) isn't tracked by any section there either, so
+// locking onto it wouldn't move a single displayed row and is skipped.
+const LOCKABLE_TEMPLATE_GROUPS: {
+  templates: string[];
+  formatLabel: (value: number) => string;
+  isApplicable: (category: string, includeDropMeso: boolean) => boolean;
+}[] = [
+  {
+    templates: DROP_MESO_TEMPLATES,
+    formatLabel: () => "드메",
+    isApplicable: (category, includeDropMeso) => includeDropMeso && DROP_MESO_CATEGORIES.includes(category),
+  },
+  {
+    templates: [COOLDOWN_TEMPLATE],
+    formatLabel: (value) => `쿨 ${value}초`,
+    isApplicable: (category) => category === HAT_CATEGORY,
+  },
+  {
+    templates: [CRIT_DAMAGE_TEMPLATE],
+    formatLabel: (value) => `크뎀 ${value}%`,
+    isApplicable: (category) => category === GLOVE_CATEGORY,
+  },
+  {
+    templates: [ATTACK_TEMPLATE],
+    formatLabel: (value) => `공 ${value}%`,
+    isApplicable: isWeaponLikeCategory,
+  },
+  {
+    templates: [BOSS_DAMAGE_TEMPLATE],
+    formatLabel: (value) => `보스뎀 ${value}%`,
+    isApplicable: isWeaponLikeCategory,
+  },
+  {
+    templates: ["STR +n%", "DEX +n%", "INT +n%", "LUK +n%"],
+    formatLabel: (value) => `주스탯 ${value}%`,
+    isApplicable: (category) => !isWeaponLikeCategory(category),
+  },
+  {
+    templates: ["올스탯 +n%"],
+    formatLabel: (value) => `올스탯 ${value}%`,
+    isApplicable: (category) => !isWeaponLikeCategory(category),
+  },
+  {
+    templates: ["최대 HP +n%"],
+    formatLabel: (value) => `HP ${value}%`,
+    isApplicable: (category) => !isWeaponLikeCategory(category),
+  },
+];
+
+// A row with rawTries<=1 is already 100% guaranteed by the locked line 1 value
+// alone, with nothing left for lines 2/3 to prove - exactly the section's own
+// header restated as a row, so it's dropped rather than shown again below it.
+function dropGuaranteedRows(rowGroups: OptionRow[][]): OptionRow[][] {
+  return rowGroups.map((rows) => rows.filter((row) => row.rawTries > 1 + 1e-9)).filter((rows) => rows.length > 0);
+}
+
+// Once line 1 is locked, a "plain" row (e.g. "주스탯 10%") and a combo row that
+// pairs the exact same target with the now-always-guaranteed lock (e.g. "쿨
+// 2초 + 주스탯 10%") need identical work from lines 2/3 - the lock was never in
+// question - so they land on the exact same average tries. The combo label
+// already says everything the plain one does plus the free lock, so the plain
+// one is dropped wherever a combo row ties it.
+function dropRowsSubsumedByCombo(rowGroups: OptionRow[][]): OptionRow[][] {
+  return rowGroups.map((rows) => {
+    const comboTries = rows.filter((row) => row.label.includes(" + ")).map((row) => row.rawTries);
+    return rows.filter(
+      (row) =>
+        row.label.includes(" + ") ||
+        !comboTries.some((tries) => Math.abs(tries - row.rawTries) < Math.max(tries, row.rawTries) * 1e-9 + 1e-9)
+    );
+  });
+}
+
+// Prime Cube / Prime Additional Cube reveal line 1 before committing to the
+// reroll, so instead of one 3-random-line table, the meaningful view is "for
+// each thing line 1 could plausibly be locked to, what can lines 2/3 still add
+// on top of it" (see isPrimeCubeType). Each lockable template becomes its own
+// section, built by literally re-running buildGradeRowGroups with line 1
+// replaced by a single guaranteed item at its best disclosed value (see
+// slotOneMaximum) - every downstream helper already treats groups
+// generically, so no other calculation code needs to know Prime cubes exist.
+function buildPrimeLockedSections(
+  groups: CubeOptionGroup[],
+  category: string,
+  includeDropMeso: boolean,
+  grade: CubeGrade
+): PrimeLockedSection[] {
+  const line1 = groups.find((group) => group.optionNumber === 1);
+  const restGroups = groups.filter((group) => group.optionNumber !== 1);
+  if (!line1) return [];
+
+  const sections: PrimeLockedSection[] = [];
+  for (const { templates, formatLabel, isApplicable } of LOCKABLE_TEMPLATE_GROUPS) {
+    if (!isApplicable(category, includeDropMeso)) continue;
+    const lockedValue = slotOneMaximum([line1], templates);
+    if (lockedValue <= 0) continue;
+
+    const lockedLine1: CubeOptionGroup = {
+      optionNumber: 1,
+      items: [{ name: templates[0].replace("n", String(lockedValue)), probability: 1 }],
+    };
+    const rowGroups = dropRowsSubsumedByCombo(
+      dropGuaranteedRows(buildGradeRowGroups([lockedLine1, ...restGroups], category, includeDropMeso, grade))
+    );
+    if (rowGroups.length === 0) continue;
+    sections.push({ label: `${formatLabel(lockedValue)} 고정`, rowGroups });
+  }
+  return sections;
+}
+
 // Renders either the plain try count or, when `costPerTry` is given (RESET/
 // ADDI_RESET), the average cost - row.rawTries (un-rounded) times the reset
 // cost for this grade, formatted the same way as StarforceCard's 평균 비용.
@@ -1209,6 +1373,55 @@ function GenericLoadingSkeleton() {
   );
 }
 
+function OptionRowsTable({
+  rowGroups,
+  isLoading,
+  costPerTry,
+}: {
+  rowGroups: OptionRow[][];
+  isLoading: boolean;
+  costPerTry: number | undefined;
+}) {
+  return (
+    <table className="border-collapse w-full text-xs">
+      <thead>
+        <tr className="border-b">
+          <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">옵션</th>
+          <th className="px-3 py-1 text-right font-medium text-muted-foreground">
+            {costPerTry != null ? "평균 비용" : "평균 횟수"}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {rowGroups.flatMap((groupRows, groupIndex) => {
+          const isGroupMuted = groupIndex % 2 === 1;
+          return groupRows.map((row) => (
+            <tr key={row.label} className={cn("border-b last:border-b-0", isGroupMuted && "bg-muted")}>
+              <td className="border-r px-3 py-1">
+                {isLoading ? (
+                  <SkeletonCell className="h-4 w-20" />
+                ) : row.tooltip ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="cursor-default">{row.label}</span>
+                    </TooltipTrigger>
+                    <TooltipContent>{row.tooltip}</TooltipContent>
+                  </Tooltip>
+                ) : (
+                  row.label
+                )}
+              </td>
+              <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
+                <TriesCell isLoading={isLoading} row={row} costPerTry={costPerTry} />
+              </td>
+            </tr>
+          ));
+        })}
+      </tbody>
+    </table>
+  );
+}
+
 export function PotentialTable({
   data,
   isLoading,
@@ -1226,16 +1439,28 @@ export function PotentialTable({
   category: string;
   includeDropMeso?: boolean;
 }) {
-  const grades = GRADE_ORDER.filter(
-    (grade) => (data?.[grade]?.length ?? 0) > 0 && !excludedGrades?.includes(grade)
-  );
+  const isPrimeCube = isPrimeCubeType(cubeType);
+
+  // Prime Cube / Prime Additional Cube are only worth burning on a piece
+  // that's already reached 레전드리, so instead of the usual rare/epic/
+  // unique/legendary ladder, the view collapses to just that one grade, split
+  // into one expandable card per thing line 1 could be locked to - see
+  // buildPrimeLockedSections.
+  const grades = isPrimeCube
+    ? []
+    : GRADE_ORDER.filter((grade) => (data?.[grade]?.length ?? 0) > 0 && !excludedGrades?.includes(grade));
+  const primeSections = isPrimeCube
+    ? buildPrimeLockedSections(data?.legendary ?? [], category, includeDropMeso, "legendary")
+    : [];
 
   // RESET/ADDI_RESET show 평균 비용 (cost) instead of 평균 횟수 (try count) - see
   // RESET_COSTS above.
   const costsByGrade = cubeType ? RESET_COSTS[cubeType]?.[levelTier] : undefined;
 
   const [expandedGrades, setExpandedGrades] = useState<Set<CubeGrade>>(new Set());
-  const hasInitializedRef = useRef(false);
+  const [expandedLocks, setExpandedLocks] = useState<Set<number>>(new Set());
+  const hasInitializedGradesRef = useRef(false);
+  const hasInitializedLocksRef = useRef(false);
 
   // Default to only the highest grade expanded, but only the very first time
   // data actually arrives - never again afterward. Switching cube/category can
@@ -1243,10 +1468,18 @@ export function PotentialTable({
   // when it does, it should come back exactly as the user left it rather than
   // snapping back to the "only the max grade" default.
   useEffect(() => {
-    if (hasInitializedRef.current || grades.length === 0) return;
-    hasInitializedRef.current = true;
+    if (hasInitializedGradesRef.current || grades.length === 0) return;
+    hasInitializedGradesRef.current = true;
     setExpandedGrades(new Set([grades[grades.length - 1]]));
   }, [grades]);
+
+  // Prime lock cards default to all expanded (there's no "highest" among them
+  // the way grades have one), again only the first time they actually arrive.
+  useEffect(() => {
+    if (hasInitializedLocksRef.current || primeSections.length === 0) return;
+    hasInitializedLocksRef.current = true;
+    setExpandedLocks(new Set(primeSections.map((_, index) => index)));
+  }, [primeSections]);
 
   const toggleGrade = (grade: CubeGrade) => {
     setExpandedGrades((prev) => {
@@ -1257,15 +1490,64 @@ export function PotentialTable({
     });
   };
 
-  // `grades` is empty both on a genuine "no data" result and on the very
+  const toggleLock = (index: number) => {
+    setExpandedLocks((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
+
+  // Both of these are empty on a genuine "no data" result and on the very
   // first load before anything has ever resolved (data is still null) - in
-  // the latter case there's no previous shape to skeletonize, so fall back
-  // to a generic guessed skeleton instead of collapsing to an empty state.
-  if (!data || grades.length === 0) {
+  // the latter case there's no previous shape to skeletonize, so fall back to
+  // a generic guessed skeleton instead of collapsing to an empty state.
+  const hasContent = isPrimeCube ? primeSections.length > 0 : grades.length > 0;
+  if (!data || !hasContent) {
     if (isLoading) return <GenericLoadingSkeleton />;
     return (
       <div className="flex items-center justify-center py-8">
         <p className="text-sm text-muted-foreground">데이터를 불러올 수 없습니다</p>
+      </div>
+    );
+  }
+
+  if (isPrimeCube) {
+    return (
+      <div className="space-y-2">
+        {primeSections.map((section, index) => {
+          const isExpanded = expandedLocks.has(index);
+          return (
+            <div key={section.label} className={cn("rounded-md border", isExpanded && "rounded-b-none")}>
+              <button
+                type="button"
+                onClick={() => toggleLock(index)}
+                className={cn(
+                  "flex w-full items-center justify-between gap-2 rounded-md bg-muted/50 px-3 py-1.5 text-left text-xs font-medium transition-colors hover:bg-muted",
+                  isExpanded && "rounded-b-none"
+                )}
+              >
+                <span className="flex items-center gap-1.5">
+                  <GradeBadge grade="legendary" />
+                  {`레전드리 (${section.label})`}
+                </span>
+                {isExpanded ? (
+                  <ChevronUp className="size-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="size-4 text-muted-foreground" />
+                )}
+              </button>
+              {isExpanded && (
+                <OptionRowsTable
+                  rowGroups={section.rowGroups}
+                  isLoading={isLoading}
+                  costPerTry={costsByGrade?.legendary}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
     );
   }

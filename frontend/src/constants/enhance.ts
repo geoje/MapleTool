@@ -144,16 +144,20 @@ import silverCubeIcon from "@/assets/cube/silver.webp";
 import goldCubeIcon from "@/assets/cube/gold.webp";
 import whiteCubeIcon from "@/assets/cube/white.webp";
 import bronzeCubeIcon from "@/assets/cube/bronze.webp";
+import primeCubeIcon from "@/assets/cube/prime.webp";
+import primeAddiCubeIcon from "@/assets/cube/prime-addi.webp";
 import resetIcon from "@/assets/cube/reset.png";
 import resetAddiIcon from "@/assets/cube/reset-addi.png";
 
 export const CubeType = {
   RESET: "reset",
   BLACK: "black",
+  PRIME: "prime",
   MASTER: "master",
   ARTISAN: "artisan",
   ADDI_RESET: "addiReset",
   ADDI: "addi",
+  PRIME_ADDI: "primeAddi",
   STRANGE_ADDI: "strangeAddi",
 } as const;
 
@@ -167,8 +171,13 @@ export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: strin
   },
   [CubeType.BLACK]: {
     displayName: "블랙",
-    fullName: "블랙 큐브 / 프라임 큐브",
+    fullName: "블랙 큐브",
     icon: blackCubeIcon,
+  },
+  [CubeType.PRIME]: {
+    displayName: "프라임",
+    fullName: "프라임 큐브",
+    icon: primeCubeIcon,
   },
   [CubeType.MASTER]: {
     displayName: "실버",
@@ -187,8 +196,13 @@ export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: strin
   },
   [CubeType.ADDI]: {
     displayName: "화이트",
-    fullName: "에디셔널 큐브 / 화이트 에디셔널 큐브 / 프라임 에디셔널 큐브",
+    fullName: "에디셔널 큐브 / 화이트 에디셔널 큐브",
     icon: whiteCubeIcon,
+  },
+  [CubeType.PRIME_ADDI]: {
+    displayName: "프라임",
+    fullName: "프라임 에디셔널 큐브",
+    icon: primeAddiCubeIcon,
   },
   [CubeType.STRANGE_ADDI]: {
     displayName: "브론즈",
@@ -200,11 +214,27 @@ export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: strin
 // RESET/ADDI_RESET have no probability data of their own - they share the
 // same option-roll disclosure as BLACK/ADDI respectively and only differ in
 // grade-up guarantee count (see GRADE_UP_STEPS in potential-table.tsx).
+// PRIME/PRIME_ADDI also share BLACK/ADDI's disclosure - Prime Cube only adds
+// the ability to see and lock the 1st line before rerolling, it doesn't
+// change the underlying option-roll odds.
 export const CUBE_PROBABILITY_SOURCE: Partial<Record<CubeType, CubeType>> = {
   [CubeType.RESET]: CubeType.BLACK,
+  [CubeType.PRIME]: CubeType.BLACK,
   [CubeType.ADDI_RESET]: CubeType.ADDI,
+  [CubeType.PRIME_ADDI]: CubeType.ADDI,
 };
 
-export const POTENTIAL_CUBES = [CubeType.RESET, CubeType.BLACK, CubeType.MASTER, CubeType.ARTISAN] as const;
-export const ADDITIONAL_POTENTIAL_CUBES = [CubeType.ADDI_RESET, CubeType.ADDI, CubeType.STRANGE_ADDI] as const;
+export const POTENTIAL_CUBES = [
+  CubeType.RESET,
+  CubeType.BLACK,
+  CubeType.PRIME,
+  CubeType.MASTER,
+  CubeType.ARTISAN,
+] as const;
+export const ADDITIONAL_POTENTIAL_CUBES = [
+  CubeType.ADDI_RESET,
+  CubeType.ADDI,
+  CubeType.PRIME_ADDI,
+  CubeType.STRANGE_ADDI,
+] as const;
 
