@@ -181,18 +181,15 @@ export function EnhanceCostPage() {
     applyItemPrice(DEFAULT_EQUIPPED_ITEM_NAME);
   }, []);
 
-  // While the ring is selected AND each side's own category/level still matches what clicking
-  // it set (반지 / 120~200), that side offers one extra cube option costed in 펄스 인핸서
-  // instead of meso (see PotentialTable's isPulseCubeType) - auto-selected the moment it becomes
-  // eligible. Manually changing category away from 반지 or level to 250 drops eligibility (and
-  // the extra option) immediately, reverting a still-selected pulse cube back to the plain reset
-  // cube; manually picking a different real cube while still eligible is left alone (the pulse
-  // option just stays available to pick again).
-  const isAscendantSelected = spareValuePriceInfo?.itemName === ASCENDANT_PULSE_RING_ITEM_NAME;
-  const isPotentialPulseEligible =
-    isAscendantSelected && potentialCategory === "반지" && potentialLevel === EquipmentLevelTier.LOW;
-  const isAdditionalPulseEligible =
-    isAscendantSelected && additionalCategory === "반지" && additionalLevel === EquipmentLevelTier.LOW;
+  // Whenever each side's own category/level is 반지 / 120~200, that side offers one extra cube
+  // option costed in 펄스 인핸서 instead of meso (see PotentialTable's isPulseCubeType) -
+  // auto-selected the moment it becomes eligible, regardless of whether the ascendant ring item
+  // itself was ever clicked. Manually changing category away from 반지 or level to 250 drops
+  // eligibility (and the extra option) immediately, reverting a still-selected pulse cube back to
+  // the plain reset cube; manually picking a different real cube while still eligible is left
+  // alone (the pulse option just stays available to pick again).
+  const isPotentialPulseEligible = potentialCategory === "반지" && potentialLevel === EquipmentLevelTier.LOW;
+  const isAdditionalPulseEligible = additionalCategory === "반지" && additionalLevel === EquipmentLevelTier.LOW;
 
   useEffect(() => {
     if (isPotentialPulseEligible) {
