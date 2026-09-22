@@ -24,6 +24,36 @@ export const ResetType = {
 
 export type ResetType = (typeof ResetType)[keyof typeof ResetType];
 
+// 일반(명성치) 재설정 요구 명성치 - 등급별 x 고정 개수별. 에픽/유니크 행은 참고용으로만 보관하고,
+// 실제 계산에는 레전드리 행만 쓴다 (1번째 줄만 레전드리가 나오는 구조라 나머지는 의미가 없음).
+// Source: https://maplestory.nexon.com/Guide/OtherProbability/ability/reputevalue
+export const NORMAL_RESET_REPUTATION_COST: Partial<Record<PotentialGrade, { none: number; one?: number; two?: number }>> = {
+  [PotentialGrade.EPIC]: { none: 200 },
+  [PotentialGrade.UNIQUE]: { none: 1500, one: 3000, two: 5500 },
+  [PotentialGrade.LEGENDARY]: { none: 8000, one: 11000, two: 16000 },
+};
+
+// 고급(서큘레이터) 재설정 요구 명성치/메소 - 잠금 개수(0/1/2)별.
+export const ADVANCED_RESET_COST_BY_LOCK_COUNT: { reputation: number; meso: number }[] = [
+  { reputation: 20_000, meso: 2_000_000 },
+  { reputation: 30_000, meso: 6_000_000 },
+  { reputation: 40_000, meso: 15_000_000 },
+];
+
+// 고급 재설정에서 2/3번째 줄이 레전드리로 나올 확률(%). 1번째 줄은 항상 100% 레전드리.
+export const ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY = 2;
+
+// 옵션의 레전드리 등급 수치 범위를 "최소~최대"로 채운 결과 문자열을 만든다. 예: 아드 -> "아드 18~20%".
+export function formatAbilityResultRange(option: AbilityOptionInfo): string {
+  const values = option.valueSteps
+    .map((step) => step.valueByGrade[PotentialGrade.LEGENDARY])
+    .filter((value): value is number => value !== undefined);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = min === max ? `${min}` : `${min}~${max}`;
+  return option.resultTemplate.replace("n", range);
+}
+
 export const ABILITY_OPTION_INFOS: AbilityOptionInfo[] = [
   {
     name: "공격력 증가",

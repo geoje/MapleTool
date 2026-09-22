@@ -42,7 +42,11 @@ export function SelectOption({
               <FieldContent>
                 <FieldTitle className="text-xs">{option.abbreviation}</FieldTitle>
               </FieldContent>
-              {checked && <GradeBadge grade={gradeForSelectionOrder(order, resetType)} />}
+              {checked ? (
+                <GradeBadge grade={gradeForSelectionOrder(order, resetType)} />
+              ) : (
+                !isFull && <GradeBadge grade={gradeForSelectionOrder(selectionOrder.length, resetType)} className="opacity-40" />
+              )}
             </Field>
           </FieldLabel>
         );

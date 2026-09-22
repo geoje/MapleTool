@@ -143,6 +143,29 @@ export function formatCostExact(value: number): string {
   return parts.join(" ");
 }
 
+// Same 조/억/만 breakdown as formatCostExact, but never drops the sub-만 remainder -
+// used for reputation costs, which need to stay readable down to the ones place
+// (e.g. "34만 1234") even once the value is well past 1만.
+export function formatCostFull(value: number): string {
+  const truncated = Math.trunc(value);
+  if (truncated === 0) return "0";
+
+  const jo = Math.floor(truncated / 1_000_000_000_000);
+  const afterJo = truncated % 1_000_000_000_000;
+  const eok = Math.floor(afterJo / 100_000_000);
+  const remainder = afterJo % 100_000_000;
+  const man = Math.floor(remainder / 10_000);
+  const rest = remainder % 10_000;
+
+  const parts = [];
+  if (jo > 0) parts.push(`${jo}조`);
+  if (eok > 0) parts.push(`${eok}억`);
+  if (man > 0) parts.push(`${man}만`);
+  if (rest > 0 || parts.length === 0) parts.push(`${rest}`);
+
+  return parts.join(" ");
+}
+
 export function formatCountDelta(delta: number): string | null {
   const truncated = truncateToOneDecimal(delta);
   if (truncated == 0) return null;

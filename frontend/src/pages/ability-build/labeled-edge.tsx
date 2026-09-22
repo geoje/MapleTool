@@ -1,10 +1,14 @@
 import { BaseEdge, EdgeLabelRenderer, getBezierPath } from "@xyflow/react";
 import type { EdgeProps } from "@xyflow/react";
 
-export interface LabeledEdgeData {
+export interface LabeledEdgeRow {
   icon: string;
-  name: string;
   value: string;
+}
+
+export interface LabeledEdgeData {
+  title?: string;
+  rows: LabeledEdgeRow[];
   [key: string]: unknown;
 }
 
@@ -28,12 +32,16 @@ export function LabeledEdge({
       {edgeData && (
         <EdgeLabelRenderer>
           <div
-            className="pointer-events-none absolute flex flex-col items-center gap-0.5 rounded-xl border bg-card px-2.5 py-2 text-center whitespace-nowrap shadow-md"
+            className="pointer-events-none absolute flex flex-col items-center gap-1 rounded-xl border bg-card px-2.5 py-2 text-center whitespace-nowrap shadow-md"
             style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
           >
-            <img src={edgeData.icon} alt="" className="size-5 shrink-0 object-contain" />
-            <span className="text-[11px] leading-tight text-muted-foreground">{edgeData.name}</span>
-            <span className="text-xs leading-tight font-semibold">{edgeData.value}</span>
+            {edgeData.title && <span className="text-[11px] leading-tight text-muted-foreground">{edgeData.title}</span>}
+            {edgeData.rows.map((row, i) => (
+              <div key={i} className="flex items-center gap-1.5">
+                <img src={row.icon} alt="" className="size-4 shrink-0 object-contain" />
+                <span className="text-xs leading-tight font-semibold tabular-nums">{row.value}</span>
+              </div>
+            ))}
           </div>
         </EdgeLabelRenderer>
       )}

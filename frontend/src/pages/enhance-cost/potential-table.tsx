@@ -30,16 +30,16 @@ const GRADE_BADGE_LETTERS: Record<CubeGrade, string> = {
 // Tailwind's standard palette, matching each grade's real in-game color
 // (rare cyan, epic purple, unique yellow, legendary green) via shadcn's usual
 // light/dark color-pair convention (see Alert's "warning" variant).
-const GRADE_BADGE_COLORS: Record<CubeGrade, string> = {
+export const GRADE_BADGE_COLORS: Record<CubeGrade, string> = {
   rare: "border-cyan-500/50 bg-cyan-50 text-cyan-900 dark:border-cyan-500/30 dark:bg-cyan-950/30 dark:text-cyan-300",
   epic: "border-purple-500/50 bg-purple-50 text-purple-900 dark:border-purple-500/30 dark:bg-purple-950/30 dark:text-purple-300",
   unique: "border-yellow-500/50 bg-yellow-50 text-yellow-900 dark:border-yellow-500/30 dark:bg-yellow-950/30 dark:text-yellow-300",
   legendary: "border-green-500/50 bg-green-50 text-green-900 dark:border-green-500/30 dark:bg-green-950/30 dark:text-green-300",
 };
 
-export function GradeBadge({ grade }: { grade: CubeGrade }) {
+export function GradeBadge({ grade, className }: { grade: CubeGrade; className?: string }) {
   return (
-    <Badge variant="outline" className={cn("h-4 min-w-4 justify-center rounded-sm px-1 text-[10px]", GRADE_BADGE_COLORS[grade])}>
+    <Badge variant="outline" className={cn("h-4 min-w-4 justify-center rounded-sm px-1 text-[10px]", GRADE_BADGE_COLORS[grade], className)}>
       {GRADE_BADGE_LETTERS[grade]}
     </Badge>
   );
