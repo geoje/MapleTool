@@ -1,8 +1,5 @@
-import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CollapsedCardBar, CollapsibleCard } from "@/components/collapsible-card";
-import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   SET_COMBOS,
@@ -71,7 +68,6 @@ export function EnhanceCostPage() {
   const [additionalCategory, setAdditionalCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
   const [additionalLevel, setAdditionalLevel] = useState<EquipmentLevelTier>(DEFAULT_EQUIPMENT_LEVEL_TIER);
   const [isLinked, setIsLinked] = useState(true);
-  const [showNotice, setShowNotice] = useState(true);
 
   // While linked, editing either side writes through to both so they never
   // drift apart. Unlinking freezes both at their current (equal) values;
@@ -246,25 +242,6 @@ export function EnhanceCostPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      {showNotice && (
-        <Alert variant="warning">
-          <AlertTriangle />
-          <AlertDescription>이 페이지는 현재 개발중입니다.</AlertDescription>
-          <AlertAction>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label="닫기"
-              className="size-6 text-current hover:bg-transparent hover:opacity-70"
-              onClick={() => setShowNotice(false)}
-            >
-              <X className="size-4" />
-            </Button>
-          </AlertAction>
-        </Alert>
-      )}
-
       {collapsedCards.length > 0 && (
         <div className="hidden flex-wrap items-start gap-4 md:flex">
           {collapsedCards.map((card) => (
