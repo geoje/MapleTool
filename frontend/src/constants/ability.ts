@@ -40,8 +40,15 @@ export const ADVANCED_RESET_COST_BY_LOCK_COUNT: { reputation: number; meso: numb
   { reputation: 40_000, meso: 15_000_000 },
 ];
 
-// 고급 재설정에서 2/3번째 줄이 레전드리로 나올 확률(%). 1번째 줄은 항상 100% 레전드리.
+// 고급 재설정에서 2/3번째 줄이 레전드리로 나올 확률(%) - 나머지는 에픽(83%)/유니크(15%). 1번째 줄은
+// 항상 100% 레전드리. 옵션별 probabilityByGrade[LEGENDARY]는 이 등급 자체가 뜰 확률과 별개로,
+// "레전드리가 뜬다면 그중 이 옵션일 조건부 확률"이라 이 등급 확률을 따로 곱해줘야 한다.
 export const ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY = 2;
+
+// 일반 재설정에서 2/3번째 줄이 유니크로 나올 확률(%) - 나머지 85%는 에픽(2/3번째 줄은 레전드리가 나올
+// 수 없는 구조). ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY와 마찬가지로, probabilityByGrade
+// 값에 이 등급 확률을 곱해야 실제 그 줄에서 이 옵션이 나올 절대 확률이 된다.
+export const NORMAL_RESET_SECOND_THIRD_UNIQUE_PROBABILITY = 15;
 
 // 옵션의 레전드리 등급 수치 범위를 "최소~최대"로 채운 결과 문자열을 만든다. 예: 아드 -> "아드 18~20%".
 export function formatAbilityResultRange(option: AbilityOptionInfo): string {

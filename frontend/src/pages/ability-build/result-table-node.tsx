@@ -1,12 +1,16 @@
 import { Handle, Position } from "@xyflow/react";
 import { ResetResultTable } from "@/pages/ability-build/reset-result-table";
-import type { ResultRowData } from "@/pages/ability-build/reset-result-table";
+import type { ResultTableData } from "@/pages/ability-build/reset-result-table";
 
-export function ResultTableNode({ data }: { data: { rows: (ResultRowData | null)[] } }) {
+export function ResultTableNode({ data }: { data: ResultTableData }) {
   return (
-    <div className="nodrag nopan pointer-events-auto">
+    // No nodrag/nopan/pointer-events-auto here (unlike OptionPanelNode) - this table has no
+    // interactive controls, so it should stay pass-through and pan the canvas like the empty
+    // background does, cursor included.
+    <div>
       <Handle type="target" position={Position.Left} className="!size-0 !min-w-0 !border-0 !bg-transparent" />
-      <ResetResultTable rows={data.rows} />
+      <ResetResultTable {...data} />
+      <Handle type="source" position={Position.Right} className="!size-0 !min-w-0 !border-0 !bg-transparent" />
     </div>
   );
 }
