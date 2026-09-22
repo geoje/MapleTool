@@ -49,14 +49,30 @@ export const ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY = 2;
 // ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY applies.
 export const NORMAL_RESET_SECOND_THIRD_UNIQUE_PROBABILITY = 15;
 
-export function formatAbilityResultRange(option: AbilityOptionInfo): string {
+export function formatAbilityResultRange(option: AbilityOptionInfo, grade: PotentialGrade = PotentialGrade.LEGENDARY): string {
   const values = option.valueSteps
-    .map((step) => step.valueByGrade[PotentialGrade.LEGENDARY])
+    .map((step) => step.valueByGrade[grade])
     .filter((value): value is number => value !== undefined);
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = min === max ? `${min}` : `${min}~${max}`;
   return option.resultTemplate.replace("n", range);
+}
+
+function maxValueStep(option: AbilityOptionInfo, grade: PotentialGrade): AbilityOptionValueStep {
+  const stepsAtGrade = option.valueSteps.filter((step) => step.valueByGrade[grade] !== undefined);
+  return stepsAtGrade.reduce((max, step) => (step.valueByGrade[grade]! > max.valueByGrade[grade]! ? step : max));
+}
+
+export function formatAbilityResultMax(option: AbilityOptionInfo, grade: PotentialGrade = PotentialGrade.LEGENDARY): string {
+  const max = maxValueStep(option, grade).valueByGrade[grade];
+  return option.resultTemplate.replace("n", `${max}`);
+}
+
+// Chance (%) that a circulator reroll (which keeps the option/grade and only rerolls the numeric
+// value) lands on the highest value tier for this option at the given grade.
+export function maxValueProbability(option: AbilityOptionInfo, grade: PotentialGrade = PotentialGrade.LEGENDARY): number {
+  return maxValueStep(option, grade).probability;
 }
 
 export const ABILITY_OPTION_INFOS: AbilityOptionInfo[] = [

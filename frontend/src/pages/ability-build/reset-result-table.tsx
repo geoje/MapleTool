@@ -5,7 +5,6 @@ import { GRADE_BADGE_COLORS } from "@/pages/enhance-cost/potential-table";
 export interface ResultCellData {
   text: string;
   grade: CubeGrade;
-  isNew: boolean;
 }
 
 // row2/row3 have identical odds and roll simultaneously, so they're merged into row2Col1/row2Col2
@@ -15,16 +14,6 @@ export interface ResultTableData {
   row2Col1: ResultCellData | null;
   row2Col2: ResultCellData | null;
 }
-
-// Uses a ring instead of a border: a plain border's square corners poked out past the container's
-// rounded overflow-hidden mask. Must stay inset - an outward ring on a "new" cell (z-10) would paint
-// over the neighboring cell's divider border.
-const GRADE_RING_COLORS: Record<CubeGrade, string> = {
-  rare: "ring-cyan-500/60",
-  epic: "ring-purple-500/60",
-  unique: "ring-yellow-500/60",
-  legendary: "ring-green-500/60",
-};
 
 // Every option text follows "{abbreviation} n{unit}", so splitting on the first space always
 // separates name from value.
@@ -40,9 +29,7 @@ function Cell({ data, splitLines, className }: { data: ResultCellData | null; sp
     <div
       className={cn(
         "flex min-h-12 flex-col items-center justify-center px-3 py-2 text-xs whitespace-nowrap tabular-nums",
-        data
-          ? cn("relative z-10 gap-0.5", GRADE_BADGE_COLORS[data.grade], data.isNew && cn("ring-2 ring-inset", GRADE_RING_COLORS[data.grade]))
-          : "text-muted-foreground/40",
+        data ? cn("border", GRADE_BADGE_COLORS[data.grade]) : "text-muted-foreground/40",
         className
       )}
     >
