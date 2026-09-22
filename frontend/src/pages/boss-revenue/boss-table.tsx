@@ -20,6 +20,13 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useBossStore } from "@/stores/boss-store";
 import type { BossOrder, BossPlan } from "@/types";
@@ -370,7 +377,15 @@ function BossRow({
       </div>
 
       <div className="flex items-center justify-center border-t py-1">
+        <MembersSelect
+          className="md:hidden"
+          members={members}
+          maxMembers={maxMembers}
+          isDisabled={isDisabled}
+          onMembersChange={onMembersChange}
+        />
         <MembersInput
+          className="hidden md:flex"
           members={members}
           maxMembers={maxMembers}
           isDisabled={isDisabled}
@@ -385,16 +400,51 @@ function BossRow({
   );
 }
 
-function MembersInput({
+function MembersSelect({
   members,
   maxMembers,
   isDisabled,
   onMembersChange,
+  className,
 }: {
   members: number;
   maxMembers: number;
   isDisabled?: boolean;
   onMembersChange: (members: number) => void;
+  className?: string;
+}) {
+  return (
+    <Select
+      value={String(members)}
+      onValueChange={(value) => onMembersChange(Number(value))}
+      disabled={isDisabled}
+    >
+      <SelectTrigger size="sm" variant="outline" className={cn("h-7 w-16", className)}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {Array.from({ length: maxMembers }, (_, i) => i + 1).map((value) => (
+          <SelectItem key={value} value={String(value)}>
+            {value}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+function MembersInput({
+  members,
+  maxMembers,
+  isDisabled,
+  onMembersChange,
+  className,
+}: {
+  members: number;
+  maxMembers: number;
+  isDisabled?: boolean;
+  onMembersChange: (members: number) => void;
+  className?: string;
 }) {
   const [text, setText] = useState(String(members));
   const isFocused = useRef(false);
@@ -408,7 +458,7 @@ function MembersInput({
   const atMax = members >= maxMembers;
 
   return (
-    <InputGroup className="h-7 w-auto rounded-full">
+    <InputGroup className={cn("h-7 w-auto rounded-full", className)}>
       <InputGroupAddon align="inline-start">
         <InputGroupButton
           size="icon-xs"
