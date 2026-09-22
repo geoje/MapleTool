@@ -2,12 +2,12 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
-export function ThemeToggle() {
+export function ThemeToggle({ variant = "ghost" }: { variant?: "ghost" | "outline" }) {
   const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <Button
-      variant="ghost"
+      variant={variant}
       size="icon"
       aria-label="toggle theme"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
