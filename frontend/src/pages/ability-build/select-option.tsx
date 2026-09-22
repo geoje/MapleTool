@@ -1,6 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldContent, FieldLabel, FieldTitle } from "@/components/ui/field";
 import { ABILITY_OPTION_INFOS, MAX_SELECTED_ABILITY_OPTIONS, ResetType } from "@/constants/ability";
+import { PotentialGrade } from "@/constants/enhance";
 import { cn } from "@/lib/utils";
 import { GradeBadge } from "@/pages/enhance-cost/potential-table";
 
@@ -20,13 +21,17 @@ export function SelectOption({
 }) {
   const isFull = selectedNames.size >= MAX_SELECTED_ABILITY_OPTIONS;
   const selectionOrder = Array.from(selectedNames);
+  // A new pick always lands after whatever's already selected, so in normal reset it targets
+  // unique unless nothing's picked yet - options with no unique-grade value can't fill that slot.
+  const nextPickTargetsUnique = resetType === ResetType.NORMAL && selectionOrder.length >= 1;
 
   return (
     <div className="flex flex-col gap-1">
       {ABILITY_OPTION_INFOS.map((option) => {
         const id = `select-option-${option.name}`;
         const checked = selectedNames.has(option.name);
-        const disabled = !checked && isFull;
+        const hasUniqueGrade = option.probabilityByGrade[PotentialGrade.UNIQUE] !== undefined;
+        const disabled = !checked && (isFull || (nextPickTargetsUnique && !hasUniqueGrade));
         const order = selectionOrder.indexOf(option.name);
 
         return (
