@@ -47,7 +47,12 @@ function Cell({ data, splitLines, className }: { data: ResultCellData | null; sp
 
 export function ResetResultTable({ row1, row2Col1, row2Col2, pinned }: ResultTableData & { pinned?: boolean }) {
   return (
-    <div className={cn("w-fit rounded-xl border bg-card shadow-lg", pinned && "border-blue-500 ring-2 ring-blue-500")}>
+    <div
+      className={cn(
+        "w-fit rounded-xl border bg-card shadow-lg transition-[border-color,box-shadow] duration-200",
+        pinned && "border-blue-500 ring-2 ring-blue-500"
+      )}
+    >
       <Cell data={row1} splitLines={false} className="rounded-t-xl border-b" />
       <div className="flex">
         <Cell data={row2Col1} splitLines className="min-h-24 flex-1 rounded-bl-xl border-r" />

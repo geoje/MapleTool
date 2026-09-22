@@ -37,12 +37,20 @@ export function LabeledEdge({
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} style={isHighlighted ? { stroke: "#3b82f6", strokeWidth: 2.5 } : style} />
+      <BaseEdge
+        id={id}
+        path={edgePath}
+        style={{
+          ...style,
+          ...(isHighlighted ? { stroke: "#3b82f6", strokeWidth: 2.5 } : {}),
+          transition: "stroke 0.2s ease, stroke-width 0.2s ease",
+        }}
+      />
       {edgeData && (
         <EdgeLabelRenderer>
           <div
             className={cn(
-              "pointer-events-none absolute flex flex-col items-center gap-1 rounded-xl border bg-card px-2.5 py-2 text-center whitespace-nowrap shadow-md",
+              "pointer-events-none absolute flex flex-col items-center gap-1 rounded-xl border bg-card px-2.5 py-2 text-center whitespace-nowrap shadow-md transition-colors duration-200",
               isHighlighted && "border-blue-500 bg-blue-50 dark:bg-blue-950/40"
             )}
             style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
