@@ -21,11 +21,14 @@ import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useCubeProbability } from "@/hooks/use-cube-probability";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
 import { usePersistedBoolean } from "@/hooks/use-persisted-boolean";
+import { useSoulProbability } from "@/hooks/use-soul-probability";
 import { fetchItemPrice, type ItemPriceInfo } from "@/lib/price-service";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-cost/equipment-panel";
 import { PotentialCommonControls } from "@/pages/enhance-cost/potential-common-controls";
 import { AdditionalPotentialControls } from "@/pages/enhance-cost/additional-potential-controls";
 import { PotentialTable } from "@/pages/enhance-cost/potential-table";
+import { SoulPotentialControls } from "@/pages/enhance-cost/soul-potential-controls";
+import { SoulPotentialTable } from "@/pages/enhance-cost/soul-potential-table";
 import { StarforceCard } from "@/pages/enhance-cost/starforce-panel";
 import { useEnhanceStore } from "@/stores/enhance-store";
 import type { ItemEquipmentDetail } from "@/types";
@@ -61,6 +64,8 @@ export function EnhanceCostPage() {
     "enhance-cost:additional-potential-collapsed",
     false
   );
+  const [soulCollapsed, setSoulCollapsed] = usePersistedBoolean("enhance-cost:soul-collapsed", false);
+  const [soulAmplifyLevel, setSoulAmplifyLevel] = useState(1);
   const [selectedCube, setSelectedCube] = useState<CubeType>(CubeType.RESET);
   const [selectedAdditionalCube, setSelectedAdditionalCube] = useState<CubeType | null>(CubeType.ADDI_RESET);
   const [potentialCategory, setPotentialCategory] = useState<string>(DEFAULT_EQUIPMENT_CATEGORY);
@@ -213,6 +218,7 @@ export function EnhanceCostPage() {
     additionalCategory,
     additionalLevel
   );
+  const { data: soulData, isFetching: isFetchingSoul } = useSoulProbability(soulAmplifyLevel);
 
   const characterItems =
     selection.type != "character"
@@ -238,6 +244,7 @@ export function EnhanceCostPage() {
       collapsed: additionalPotentialCollapsed,
       onExpand: () => setAdditionalPotentialCollapsed(false),
     },
+    { step: 5, title: "소울잠재", collapsed: soulCollapsed, onExpand: () => setSoulCollapsed(false) },
   ].filter((card) => card.collapsed);
 
   return (
@@ -347,6 +354,17 @@ export function EnhanceCostPage() {
             excludedGrades={["rare"]}
             category={additionalCategory}
           />
+        </CollapsibleCard>
+
+        <CollapsibleCard
+          step={5}
+          title="소울잠재"
+          collapsed={soulCollapsed}
+          onCollapse={() => setSoulCollapsed(true)}
+          onExpand={() => setSoulCollapsed(false)}
+        >
+          <SoulPotentialControls amplifyLevel={soulAmplifyLevel} onAmplifyLevelChange={setSoulAmplifyLevel} />
+          <SoulPotentialTable data={soulData} isLoading={isFetchingSoul} />
         </CollapsibleCard>
       </div>
     </div>

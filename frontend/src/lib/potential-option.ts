@@ -9,7 +9,9 @@ export interface PotentialOptionValue {
 // collapse to the same "n" name for later probability/value calculations.
 export function extractPotentialOptionValue(option: string): PotentialOptionValue {
   const [main, ...rest] = option.split("(");
-  const matches = main.match(/\d+/g);
+  // 소울 옵션은 "0.5%"/"1.5%" 같은 소수 값도 내려오므로, "0"과 "5"로 쪼개지 않고
+  // 소수점을 포함한 한 토큰으로 잡아야 name 치환과 value 둘 다 올바르게 나온다.
+  const matches = main.match(/\d+(?:\.\d+)?/g);
   if (!matches) return { name: option, value: 0 };
 
   const value = Number(matches[matches.length - 1]);

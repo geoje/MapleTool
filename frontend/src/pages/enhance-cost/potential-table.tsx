@@ -11,9 +11,9 @@ import type { CubeGrade, CubeOptionGroup, CubeProbabilityData } from "@/hooks/us
 import { extractPotentialOptionValue } from "@/lib/potential-option";
 import { formatCostExact, formatCostRounded, formatEnhancerCount } from "@/lib/format";
 
-const GRADE_ORDER: CubeGrade[] = ["rare", "epic", "unique", "legendary"];
+export const GRADE_ORDER: CubeGrade[] = ["rare", "epic", "unique", "legendary"];
 
-const GRADE_LABELS: Record<CubeGrade, string> = {
+export const GRADE_LABELS: Record<CubeGrade, string> = {
   rare: POTENTIAL_GRADE_INFOS[PotentialGrade.RARE].name,
   epic: POTENTIAL_GRADE_INFOS[PotentialGrade.EPIC].name,
   unique: POTENTIAL_GRADE_INFOS[PotentialGrade.UNIQUE].name,
@@ -37,7 +37,7 @@ const GRADE_BADGE_COLORS: Record<CubeGrade, string> = {
   legendary: "border-green-500/50 bg-green-50 text-green-900 dark:border-green-500/30 dark:bg-green-950/30 dark:text-green-300",
 };
 
-function GradeBadge({ grade }: { grade: CubeGrade }) {
+export function GradeBadge({ grade }: { grade: CubeGrade }) {
   return (
     <Badge variant="outline" className={cn("h-4 min-w-4 justify-center rounded-sm px-1 text-[10px]", GRADE_BADGE_COLORS[grade])}>
       {GRADE_BADGE_LETTERS[grade]}
@@ -47,7 +47,7 @@ function GradeBadge({ grade }: { grade: CubeGrade }) {
 
 type GradeUpFromGrade = Exclude<CubeGrade, "legendary">;
 
-interface GradeUpStep {
+export interface GradeUpStep {
   probability: number;
   // Guaranteed-success try count ("등급 상승 보장 횟수"); undefined = no guarantee.
   pity?: number;
@@ -146,7 +146,7 @@ function expectedGradeUpTriesRaw(probability: number, pity?: number): number {
 
 const MIRACLE_TIME_PROBABILITY_MULTIPLIER = 2;
 
-function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
+export function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
   if (!step) return [];
   const miracleProbability = step.probability * MIRACLE_TIME_PROBABILITY_MULTIPLIER;
   const cubeTriesRaw = expectedGradeUpTriesRaw(step.probability, step.pity);
@@ -199,7 +199,7 @@ function getCostUnitIcon(cubeType: CubeType | null): { icon: string; tooltip: st
   return { icon: CUBE_INFOS[cubeType].icon, tooltip: CUBE_INFOS[cubeType].displayName };
 }
 
-function CostHeaderLabel({ cubeType }: { cubeType: CubeType | null }) {
+export function CostHeaderLabel({ cubeType }: { cubeType: CubeType | null }) {
   const unit = getCostUnitIcon(cubeType);
   return (
     <span className="inline-flex items-center justify-end gap-1">
@@ -216,7 +216,7 @@ function CostHeaderLabel({ cubeType }: { cubeType: CubeType | null }) {
   );
 }
 
-interface OptionRow {
+export interface OptionRow {
   label: string;
   averageTries: number;
   // Exact (un-rounded) expected try count, used to compute RESET/ADDI_RESET's
@@ -313,7 +313,11 @@ function slotOneMaximum(groups: CubeOptionGroup[], templates: string[]): number 
 // Since all 3 lines can independently roll a matching option, the row for a given
 // total is the sum across every combination of per-line values that adds up to it
 // (e.g. 12+9+9 and 15+9+6 both count toward a "30%" row, if both are possible).
-function buildOptionRows(groups: CubeOptionGroup[], templates: string[], formatLabel: (value: number) => string): OptionRow[] {
+export function buildOptionRows(
+  groups: CubeOptionGroup[],
+  templates: string[],
+  formatLabel: (value: number) => string
+): OptionRow[] {
   const slotDistributions = groups.map((group) => buildSlotDistribution(group.items, templates));
   const combined = slotDistributions.reduce<Distribution>((acc, slot) => convolve(acc, slot), new Map([[0, 1]]));
   const atLeast = toAtLeastDistribution(combined);
@@ -796,8 +800,8 @@ const SOUL_RING_WEAPON_CATEGORIES: string[] = [
 ];
 const SOUL_RING_EMBLEM_CATEGORY = "엠블렘";
 
-const ATTACK_TEMPLATE = "공격력 +n%";
-const BOSS_DAMAGE_TEMPLATE = "보스 몬스터 데미지 +n%";
+export const ATTACK_TEMPLATE = "공격력 +n%";
+export const BOSS_DAMAGE_TEMPLATE = "보스 몬스터 데미지 +n%";
 const IGNORE_DEFENSE_TEMPLATE = "몬스터 방어율 무시 +n%";
 
 // One-character shorthand used in the "옵션" tooltip, so e.g. a 3-line combo
@@ -990,7 +994,7 @@ function dropOverCappedStates(states: Map<string, number>, capLimit: number): Ma
 // be 1 or 2 depending on whether line 1 is one of the 2 valid lines); 3줄
 // splits all 3 possibilities since line 1 always counts as one of the 3 and
 // never deviates, leaving exactly 0/1/2 deviated among lines 2-3.
-function buildSoulRingRows(
+export function buildSoulRingRows(
   groups: CubeOptionGroup[],
   templates: string[],
   labelPrefix: string,
@@ -1403,7 +1407,7 @@ function buildPrimeLockedSections(
 // the reset cost for this grade. Meso costs are formatted the same way as StarforceCard's 평균
 // 비용; 펄스 인핸서 costs (isEnhancerCost) use the same rounded-to-1-decimal item-count format as
 // the starforce panel's pulse-enhancer mode instead, since there's no 조/억/만 to abbreviate.
-function TriesCell({
+export function TriesCell({
   isLoading,
   row,
   costPerTry,
@@ -1437,7 +1441,7 @@ const SKELETON_ROW_COUNT = 4;
 
 // Overrides Skeleton's default bg-muted, which is invisible on rows that
 // already have a bg-muted background (every other option group).
-function SkeletonCell({ className }: { className: string }) {
+export function SkeletonCell({ className }: { className: string }) {
   return <Skeleton className={cn("bg-muted-foreground/20", className)} />;
 }
 
@@ -1486,7 +1490,7 @@ function GenericLoadingSkeleton({ cubeType }: { cubeType: CubeType | null }) {
   );
 }
 
-function OptionRowsTable({
+export function OptionRowsTable({
   rowGroups,
   isLoading,
   costPerTry,
