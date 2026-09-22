@@ -31,13 +31,13 @@ export const DEFAULT_EQUIPMENT_CATEGORY: (typeof EQUIPMENT_CATEGORIES)[number] =
 
 // Maps a clicked equipment item's `item_equipment_slot` (matches EQUIPMENT_SLOT_GRID's apiSlot
 // vocabulary, which real API data already uses directly) to the EQUIPMENT_CATEGORIES entry it
-// belongs to, so clicking any item in the 장비 grid can drive 잠재능력/에디잠재's category
-// select too. 반지1-4 and 펜던트/펜던트2 collapse to their unnumbered category; 기계 심장 (with
-// a space) maps to 기계심장 (no space) to match EQUIPMENT_CATEGORIES exactly. 보조무기 has no
-// reliable way to tell a soul ring/force shield apart from a plain secondary weapon from this
-// data alone, so it defaults to the more common "제외" category. 훈장/안드로이드/포켓 아이템/
-// 뱃지 have no corresponding category at all and are omitted - clicking one of those leaves
-// the category unchanged.
+// belongs to, so clicking any item in the equipment grid can drive the potential/additional
+// potential category select too. 반지1-4 and 펜던트/펜던트2 collapse to their unnumbered
+// category; 기계 심장 (with a space) maps to 기계심장 (no space) to match EQUIPMENT_CATEGORIES
+// exactly. 보조무기 has no reliable way to tell a soul ring/force shield apart from a plain
+// secondary weapon from this data alone, so it defaults to the more common "제외" category.
+// 훈장/안드로이드/포켓 아이템/뱃지 have no corresponding category at all and are omitted -
+// clicking one of those leaves the category unchanged.
 export const EQUIPMENT_SLOT_TO_CATEGORY: Partial<Record<string, (typeof EQUIPMENT_CATEGORIES)[number]>> = {
   무기: "무기",
   엠블렘: "엠블렘",
@@ -137,10 +137,10 @@ export const RESTORE_TABLE: Record<number, Record<number, [requiredSpareCount: n
   250: { 15: [1, 8.46], 16: [1, 20.4], 17: [1, 34.5], 18: [1, 78.3], 19: [2, 130], 20: [2, 229], 21: [3, 288], 22: [4, 473] },
 };
 
-// Ascendant Pulse Ring (어센던트 펄스 링) enhancement: unlike normal starforce, each attempt
-// consumes a fixed number of 펄스 인핸서 items (not meso) regardless of equipment level or
-// discounts, and the success/destroy rates below are the item's own fixed rates rather than
-// the shared STARFORCE_PROBABILITIES table.
+// 어센던트 펄스 링 enhancement: unlike normal starforce, each attempt consumes a fixed number
+// of 펄스 인핸서 items (not meso) regardless of equipment level or discounts, and the
+// success/destroy rates below are the item's own fixed rates rather than the shared
+// STARFORCE_PROBABILITIES table.
 export interface PulseEnhancerStepData {
   star: number;
   // 펄스 인핸서 consumed per attempt at this star.

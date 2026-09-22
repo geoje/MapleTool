@@ -17,14 +17,16 @@ import {
 } from "@/pages/enhance-cost/potential-table";
 import type { GradeUpStep, OptionRow } from "@/pages/enhance-cost/potential-table";
 
-// 소울 잠재는 장비분류/장비레벨/큐브 구분이 없는 단일 옵션 풀이라, 무기류처럼
-// 공격력%만 챙기면 된다 (보스 몬스터 데미지/방무 등은 표시하지 않는다).
+// Soul potential is a single option pool with no equipment-category/level/cube split, so
+// like weapon-type items, only attack power% needs to be tracked (boss monster damage,
+// ignore-defense, etc. aren't shown).
 function buildSoulOptionRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
   return [buildOptionRows(groups, [ATTACK_TEMPLATE], (value) => `공격력 ${value}%`)].filter((rows) => rows.length > 0);
 }
 
-// 넥슨 공식 "SOUL WEAPON 재설정 비용/재설정 횟수" 공시 수치. 레전드리는 등급업
-// 대상이 없어 SOUL_GRADE_UP_STEPS에는 없지만, 재설정 비용 자체는 여전히 존재한다.
+// Nexon's officially disclosed "SOUL WEAPON 재설정 비용/재설정 횟수" figures. Legendary has
+// no higher grade to move up to, so it's absent from SOUL_GRADE_UP_STEPS, but its reset
+// cost still exists.
 const SOUL_RESET_COSTS: Record<CubeGrade, number> = {
   rare: 20_000_000,
   epic: 40_000_000,
@@ -38,8 +40,9 @@ const SOUL_GRADE_UP_STEPS: Partial<Record<CubeGrade, GradeUpStep>> = {
   unique: { probability: 0.003322, pity: 451 },
 };
 
-// 소울에는 미라클 타임 같은 확률 2배 이벤트가 없으므로, 공용 buildGradeUpRows가
-// 함께 만들어주는 "등급업 (미라클)" 행은 걷어내고 "등급업" 행만 사용한다.
+// Soul potential has no 미라클 타임-style probability-doubling event, so the "등급업 (미라클)"
+// row that the shared buildGradeUpRows also generates is filtered out, keeping only the
+// plain "등급업" row.
 function buildSoulGradeUpRows(grade: CubeGrade): OptionRow[] {
   return buildGradeUpRows(SOUL_GRADE_UP_STEPS[grade]).filter((row) => row.label === "등급업");
 }
@@ -115,8 +118,8 @@ export function SoulPotentialTable({ data, isLoading }: { data: CubeProbabilityD
     <div className="space-y-2">
       {grades.map((grade) => {
         const isExpanded = expandedGrades.has(grade);
-        // 재설정 비용은 재설정 1회당 비용이라 옵션/등급업 어느 쪽을 노리든 동일하게
-        // 적용된다 - PotentialTable의 RESET_COSTS와 같은 취급.
+        // The reset cost is a per-attempt cost, so it applies the same whether you're chasing
+        // an option row or a grade-up row - treated the same way as PotentialTable's RESET_COSTS.
         const rowGroups = [buildSoulGradeUpRows(grade), ...buildSoulOptionRowGroups(data[grade]!)].filter(
           (rows) => rows.length > 0
         );

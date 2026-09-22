@@ -37,7 +37,6 @@ export function getStarforceCost(level: number, star: number): number | undefine
   return 1000 + 100 * Math.round(n / divisor / 100);
 }
 
-// Max achievable star by equip level bracket.
 export function getMaxStar(level: number): number {
   if (level <= 94) return 5;
   if (level <= 107) return 8;
@@ -101,7 +100,6 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
     const baseCost = getStarforceCost(level, star) ?? 0;
     const cost = baseCost * (1 - costDiscountRate);
 
-    // Option 1: base restore (drop to star 12 on destroy, re-climbing only the cost accrued since then)
     const costSinceBaseRestore = cumulativeCost - cumulativeCostAtBaseRestore;
     let bestCost = (cost + destroy * costSinceBaseRestore) / success;
     let bestSpareCount = (destroy * (1 + cumulativeSpareCount)) / success;
@@ -110,7 +108,6 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
     let useSafeguard = false;
     let useRestore = false;
 
-    // Option 2: safeguard
     if (SAFEGUARD_STAR_SET.has(star) && destroy > 0) {
       const safeguardCost = (cost * SAFEGUARD_COST_MULTIPLIER) / success;
       if (safeguardCost < bestTotal) {
@@ -122,7 +119,6 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
       }
     }
 
-    // Option 3: destroy restore
     if (RESTORE_STAR_SET.has(star) && destroy > 0) {
       const restoreInfo = RESTORE_TABLE[level]?.[star];
       if (restoreInfo && restoreInfo[0] > 0 && restoreInfo[1] > 0) {
@@ -162,20 +158,17 @@ export function computeStarforceTable(options: StarforceStepOptions, starCount =
 }
 
 // Computes the expected 펄스 인핸서 count / expected new-ring count needed to "succeed" enhancing
-// the Ascendant Pulse Ring from star n to n+1. Reuses StarforceStepResult's shape so the starforce
-// panel can render both tables the same way, but expectedCost here means "펄스 인핸서 consumed",
-// not meso.
+// the Ascendant Pulse Ring from star n to n+1. Reuses StarforceStepResult's shape, so expectedCost
+// here means "펄스 인핸서 consumed", not meso.
 //
-// 파괴방지 (safeguard/파방) is intentionally never applied here, by product decision - even though
-// PULSE_ENHANCER_TABLE's protectConsume documents its real (3x enhancer) cost, the ring is treated
-// as always risking destroy. 파괴복구 (destroy restore/파복) is instead borrowed wholesale from a
-// normal level-130 item's RESTORE_TABLE mechanic (paid in meso, using spareValue - the ring's
-// hardcoded 3억 price - as the meso value of the "spare" it consumes), auto-selected whenever it's
-// cheaper than the plain path (destroy -> buy a whole new ring, re-climbing from star 0). The two
-// options are compared purely in meso (spare-ring cost avoided vs. restore's own meso+spare fee) -
-// there's no known meso price for a single 펄스 인핸서 to fold the enhancer side into that
-// comparison, so it's left out of the decision (mirrored in computeStarforceTable's spareValue-only
-// comparisons too).
+// 파괴방지(파방) is intentionally never applied here, by product decision, even though
+// PULSE_ENHANCER_TABLE's protectConsume documents a real cost (3x the normal enhancer count) for
+// it - the ring is always treated as risking destroy. 파괴복구(파복) is borrowed from the normal
+// level-130 RESTORE_TABLE mechanic instead (paid in meso, using spareValue - the ring's hardcoded
+// 3억 price - as the meso value of the "spare" it consumes), chosen whenever it's cheaper than the
+// plain path (destroy -> buy a new ring, re-climb from star 0). The comparison is purely in meso;
+// there's no known meso price for a single 펄스 인핸서 to fold the enhancer side in, so it's left
+// out (same limitation as computeStarforceTable's spareValue-only comparisons).
 export function computePulseEnhancerTable(
   level: number,
   spareValue: number,
@@ -187,16 +180,12 @@ export function computePulseEnhancerTable(
   let cumulativeSpareCount = 0;
 
   for (const { star, consume, successRate, destroyRate } of PULSE_ENHANCER_TABLE) {
-    // Option 1 (plain): destroy loses the ring outright - buy a new one (spareValue) and
-    // re-climb the enhancer cost accrued since star 0.
     let enhancerCount = (consume + destroyRate * cumulativeEnhancerCount) / successRate;
     let spareCount = (destroyRate * (1 + cumulativeSpareCount)) / successRate;
     const plainMesoEquivalent = spareCount * spareValue;
     let bestMesoEquivalent = plainMesoEquivalent;
     let useRestore = false;
 
-    // Option 2 (restore): pay meso + consume some spare rings to retry the same star immediately,
-    // so destroy never forces a re-climb from 0.
     const restoreInfo = RESTORE_TABLE[level]?.[star];
     if (restoreInfo && restoreInfo[0] > 0 && restoreInfo[1] > 0 && destroyRate > 0) {
       const [restoreSpareCount, restoreMesoEok] = restoreInfo;

@@ -24,8 +24,8 @@ export const ResetType = {
 
 export type ResetType = (typeof ResetType)[keyof typeof ResetType];
 
-// 일반(명성치) 재설정 요구 명성치 - 등급별 x 고정 개수별. 에픽/유니크 행은 참고용으로만 보관하고,
-// 실제 계산에는 레전드리 행만 쓴다 (1번째 줄만 레전드리가 나오는 구조라 나머지는 의미가 없음).
+// Reputation cost for a normal reset, by grade and line count. Only the legendary row is
+// actually used - line 1 always rolls legendary, so the epic/unique rows exist for reference only.
 // Source: https://maplestory.nexon.com/Guide/OtherProbability/ability/reputevalue
 export const NORMAL_RESET_REPUTATION_COST: Partial<Record<PotentialGrade, { none: number; one?: number; two?: number }>> = {
   [PotentialGrade.EPIC]: { none: 200 },
@@ -33,24 +33,22 @@ export const NORMAL_RESET_REPUTATION_COST: Partial<Record<PotentialGrade, { none
   [PotentialGrade.LEGENDARY]: { none: 8000, one: 11000, two: 16000 },
 };
 
-// 고급(서큘레이터) 재설정 요구 명성치/메소 - 잠금 개수(0/1/2)별.
 export const ADVANCED_RESET_COST_BY_LOCK_COUNT: { reputation: number; meso: number }[] = [
   { reputation: 20_000, meso: 2_000_000 },
   { reputation: 30_000, meso: 6_000_000 },
   { reputation: 40_000, meso: 15_000_000 },
 ];
 
-// 고급 재설정에서 2/3번째 줄이 레전드리로 나올 확률(%) - 나머지는 에픽(83%)/유니크(15%). 1번째 줄은
-// 항상 100% 레전드리. 옵션별 probabilityByGrade[LEGENDARY]는 이 등급 자체가 뜰 확률과 별개로,
-// "레전드리가 뜬다면 그중 이 옵션일 조건부 확률"이라 이 등급 확률을 따로 곱해줘야 한다.
+// Chance (%) that lines 2/3 roll legendary in an advanced reset (remainder: epic 83%, unique
+// 15%; line 1 is always legendary). Each option's probabilityByGrade[LEGENDARY] is conditional
+// on legendary already hitting, so it must be multiplied by this value to get the absolute odds.
 export const ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY = 2;
 
-// 일반 재설정에서 2/3번째 줄이 유니크로 나올 확률(%) - 나머지 85%는 에픽(2/3번째 줄은 레전드리가 나올
-// 수 없는 구조). ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY와 마찬가지로, probabilityByGrade
-// 값에 이 등급 확률을 곱해야 실제 그 줄에서 이 옵션이 나올 절대 확률이 된다.
+// Chance (%) that lines 2/3 roll unique in a normal reset (remaining 85% is epic; these lines
+// can never roll legendary). Same multiplication rule as
+// ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY applies.
 export const NORMAL_RESET_SECOND_THIRD_UNIQUE_PROBABILITY = 15;
 
-// 옵션의 레전드리 등급 수치 범위를 "최소~최대"로 채운 결과 문자열을 만든다. 예: 아드 -> "아드 18~20%".
 export function formatAbilityResultRange(option: AbilityOptionInfo): string {
   const values = option.valueSteps
     .map((step) => step.valueByGrade[PotentialGrade.LEGENDARY])

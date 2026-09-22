@@ -164,9 +164,9 @@ export const CubeType = {
   ADDI: "addi",
   PRIME_ADDI: "primeAddi",
   STRANGE_ADDI: "strangeAddi",
-  // 어센던트 펄스 링 only - a 잠재능력/에디셔널 잠재능력 재설정 that costs 펄스 인핸서 instead
-  // of meso. Not part of POTENTIAL_CUBES/ADDITIONAL_POTENTIAL_CUBES; the cube-selector UI
-  // appends it only while the ring is selected (see enhance-cost-page.tsx).
+  // 어센던트 펄스 링 only - a potential/additional potential reset that costs 펄스 인핸서
+  // instead of meso. Not part of POTENTIAL_CUBES/ADDITIONAL_POTENTIAL_CUBES; the cube-selector
+  // UI appends it only while the ring is selected (see enhance-cost-page.tsx).
   PULSE_RESET: "pulseReset",
   PULSE_ADDI_RESET: "pulseAddiReset",
 } as const;

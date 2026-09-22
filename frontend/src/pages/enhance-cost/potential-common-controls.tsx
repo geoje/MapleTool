@@ -24,7 +24,7 @@ export function PotentialCommonControls({
   onCubeChange: (cube: CubeType) => void;
   isLinked: boolean;
   onToggleLink: () => void;
-  // 어센던트 펄스 링 selected: appended after the normal cube lineup as a one-off extra option.
+  // Set when 어센던트 펄스 링 is selected: appended after the normal cube lineup as a one-off extra option.
   extraCube?: CubeType;
 }) {
   const cubes = extraCube ? [...POTENTIAL_CUBES, extraCube] : POTENTIAL_CUBES;

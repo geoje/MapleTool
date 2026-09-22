@@ -978,8 +978,8 @@ function soulRingOutcomeProbability(
   return total;
 }
 
-// 방무는 실제로는 한 아이템에 1줄까지만 나올 수 있으므로, capTemplate이 2줄 이상
-// 걸린 상태는 애초에 나올 수 없는 조합으로 보고 확률에서 제외한다(재분배하지 않음).
+// 방무 can only actually appear on 1 line per item, so states where capTemplate matched 2+
+// lines are impossible and are simply dropped from the probability (not redistributed).
 function dropOverCappedStates(states: Map<string, number>, capLimit: number): Map<string, number> {
   const filtered = new Map<string, number>();
   for (const [key, probability] of states) {
@@ -1023,7 +1023,6 @@ export function buildSoulRingRows(
   return rows;
 }
 
-// 방무 1줄 포함 그룹(2줄/3줄)을 항상 먼저, 방무X 그룹(2줄/3줄)을 그 아래에 배치.
 function buildSoulRingRowGroups(
   groups: CubeOptionGroup[],
   includeIgnoreDefenseTemplates: string[],
@@ -1035,14 +1034,16 @@ function buildSoulRingRowGroups(
   ].filter((rows) => rows.length > 0);
 }
 
-// 에디셔널 잠재능력의 무기류/엠블렘은 방무/유효 N줄 표기를 전부 걷어내고 다른
-// 부위처럼 공 n% 합산으로만 보여준다 (잠재능력 쪽은 그대로 유지).
+// For additional potential (에디셔널 잠재능력), weapon-type/엠블렘 items drop the 방무/유효
+// N줄 notation entirely and show only a summed 공 n%, like other equipment types (잠재능력
+// keeps the usual notation).
 function buildAttackOnlyRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
   return [buildOptionRows(groups, [ATTACK_TEMPLATE], (value) => `공 ${value}%`)].filter((rows) => rows.length > 0);
 }
 
-// 엠블렘은 공격력 템플릿 하나뿐이라 "방무 제외 유효 N줄"이 그냥 공격력 총합%와
-// 동일한 의미라, 유효 N줄 표기 대신 다른 부위처럼 공 n% 합산 표기로 보여준다.
+// 엠블렘 only ever rolls the 공격력 template, so "방무 제외 유효 N줄" would mean the same
+// thing as a summed 공격력%, so it's shown as summed 공 n% like other equipment types
+// instead of the valid-N-lines notation.
 function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
   return [
     buildSoulRingRows(groups, [ATTACK_TEMPLATE, IGNORE_DEFENSE_TEMPLATE], "방무 1줄 포함", IGNORE_DEFENSE_TEMPLATE),
@@ -1050,15 +1051,16 @@ function buildEmblemRowGroups(groups: CubeOptionGroup[]): OptionRow[][] {
   ].filter((rows) => rows.length > 0);
 }
 
-// "1.5줄급"/"2줄급" - 에디셔널 잠재능력 에픽 등급(무기류 제외)에서 2,3번째 줄이
-// 얼마나 "실속 있는" 줄인지를 총합으로 보여주는 요약 그룹. 1번째 줄은 무엇이 뜨든
-// 항상 1줄로 취급하고, 2/3번째 줄은: 공격력 고정치(+n)면 항상 1줄, 주스탯/올스탯/
-// HP %가 해당 줄의 최저치(이탈 아님)로 뜨면 0.5줄, 이탈(더 높은 값)로 뜨면 1줄,
-// 그 외 플랫 스탯(STR+15, 방어력+n, 이동속도 등)은 0줄로 계산에서 제외한다.
-// 마력 +n은 공격력 +n과 대칭(주스탯이 STR%만 보는 것과 동일한 이유)이라 제외.
-// DEX/INT/LUK% 역시 STR%와 대칭이라 제외 - 캐릭터별로 의미 있는 주스탯은 하나뿐이라
-// 나머지 셋을 OR로 묶으면 실제보다 매칭 확률이 부풀려진다(buildStatSectionRows가
-// 주스탯 섹션에서 STR%만 대표로 쓰는 것과 동일한 이유).
+// "1.5줄급"/"2줄급" - a summary group, shown only for additional-potential epic grade
+// (weapon-type excluded), of how "worthwhile" lines 2/3 are in total. Line 1 always counts
+// as a full line no matter what it rolls. For lines 2/3: a flat 공격력 bonus (+n) always
+// counts as 1 line; a 주스탯/올스탯/HP % that rolls that line's minimum (not 이탈) counts as
+// 0.5; an 이탈 (higher) roll counts as 1; any other flat stat (STR+15, 방어력+n, move speed,
+// etc.) counts as 0 and is excluded.
+// 마력 +n is excluded as the symmetric counterpart to 공격력 +n (same reason 주스탯 only
+// tracks STR%). DEX/INT/LUK% are excluded as symmetric to STR% too - only one 주스탯 is ever
+// meaningful per character, so OR-ing the other three in would inflate the match probability
+// beyond reality (same reason buildStatSectionRows uses STR% alone to represent 주스탯).
 const ADDITIONAL_ATTACK_FLAT_TEMPLATES = ["공격력 +n"];
 const ADDITIONAL_PERCENT_STAT_TEMPLATES = ["STR +n%", "올스탯 +n%", "최대 HP +n%"];
 
@@ -1094,12 +1096,13 @@ function buildAdditionalLineQualityDistribution(group: CubeOptionGroup): Distrib
   return distribution;
 }
 
-// "1.5줄급"/"2줄급"의 "줄 수"는 line1의 확정 1줄을 제외한, line2+line3만의 합으로
-// 판정한다 (line1은 뭐가 뜨든 항상 확정이라 별도 표기 없이 깔림). 값은 {0, 0.5, 1}
-// 뿐이므로 1.5 이상을 채우려면 두 줄 다 0이 아니어야 하고(한쪽만 맞고 한쪽이
-// 완전히 빗나가는 경우는 최대 1.0으로 탈락), 2.0은 두 줄 모두 공격력/이탈처럼
-// "꽉 찬" 값이어야 한다 - 그래서 단순 "주스탯 n%"(line1 하나만 맞아도 되는 낮은
-// 진입장벽) 행보다 평균 시도 횟수가 훨씬 높게 나온다.
+// The "줄 수" behind "1.5줄급"/"2줄급" is judged purely from line2+line3 (line1's guaranteed
+// line is baked in silently, with no separate notation, since it's always full no matter what
+// it rolls). Since each line's value is only ever {0, 0.5, 1}, reaching >=1.5 requires both
+// lines to be nonzero (one line hitting fully while the other misses entirely caps out at
+// 1.0), and reaching 2.0 requires both lines to hit a "full" value like 공격력/이탈 - which is
+// why the average try count here is much higher than the plain "주스탯 n%" row, where line1
+// alone clearing it is already enough.
 function buildAdditionalLineQualityRows(groups: CubeOptionGroup[]): OptionRow[] {
   const line2 = groups.find((group) => group.optionNumber === 2);
   const line3 = groups.find((group) => group.optionNumber === 3);
@@ -1124,28 +1127,20 @@ function buildAdditionalLineQualityRows(groups: CubeOptionGroup[]): OptionRow[] 
 }
 
 // Only the "%" variants are shown - flat (non-percent) stat bumps are excluded.
-// 아무스탯 = P(STR>=n%) + P(DEX>=n%) + P(INT>=n%) + P(LUK>=n%) (see
-// buildAnyStatRows) - landing n%+ in any one of the four main stats. Shown
-// only for ANY_STAT_CATEGORIES.
-// 주스탯 = STR/DEX/INT/LUK % (all four are symmetric, so STR alone represents them),
-// with 올스탯 % riding along on top whenever a real STR line is also present.
-// HP % and 올스탯 % (standalone) are their own independent options.
-// 드메 n줄 (아이템 드롭률/메소 획득량, either one counting toward the line count)
-// only applies to the 잠재능력 table (not 에디셔널, per `includeDropMeso`) and
-// only to DROP_MESO_CATEGORIES (ANY_STAT_CATEGORIES minus 벨트). Its pure 2/3줄
-// section is shown first (above 아무스탯), and its 1/2줄 variants additionally
-// ride along as "드메 n줄 + 아무스탯/주스탯/올스탯/HP" combo rows merged into each
-// of those sections (드메 3줄 has no combo - it uses all 3 lines, leaving none
-// for a stat). SECONDARY_STAT_OPTIONS-listed categories (모자 -> 쿨감, 장갑 ->
-// 크뎀) similarly get an extra pure section (주스탯 위) plus their own
-// "secondary + 주스탯/올스탯/HP" combo rows - see buildStatSectionRows. Both
-// combo sources use mergeComboRows, re-sorting by average tries so they land
-// wherever they naturally belong among the plain stat rows.
-// Groups always render in this fixed order (드메 2/3줄(해당 부위만) -> 아무스탯 ->
-// 순수 쿨감/크뎀(해당 부위만) -> 주스탯 -> 올스탯 -> HP), each already sorted by
-// average tries ascending - never interleaved across groups (except the combo
-// rows merged inside their own section). Empty groups (e.g. a grade with no
-// HP option at all) are dropped entirely.
+// 아무스탯 (see buildAnyStatRows) is shown only for ANY_STAT_CATEGORIES. 주스탯 = STR/DEX/
+// INT/LUK % (all four are symmetric, so STR alone represents them), with 올스탯 % riding
+// along on top whenever a real STR line is also present. HP % and standalone 올스탯 % are
+// their own independent options.
+// 드메 n줄 only applies to the 잠재능력 table (not 에디셔널, per `includeDropMeso`) and only
+// to DROP_MESO_CATEGORIES (ANY_STAT_CATEGORIES minus 벨트). Its pure 2/3줄 section is shown
+// first (above 아무스탯), and its 1/2줄 variants additionally ride along as "드메 n줄 +
+// 아무스탯/주스탯/올스탯/HP" combo rows merged into each of those sections (드메 3줄 has no
+// combo - it uses all 3 lines, leaving none for a stat). SECONDARY_STAT_OPTIONS-listed
+// categories (모자 -> 쿨감, 장갑 -> 크뎀) similarly get an extra pure section plus their own
+// "secondary + stat" combo rows - see buildStatSectionRows.
+// Groups always render in this fixed order (드메 2/3줄(해당 부위만) -> 아무스탯 -> 순수
+// 쿨감/크뎀(해당 부위만) -> 주스탯 -> 올스탯 -> HP) - never interleaved across groups (except
+// the combo rows merged inside their own section). Empty groups are dropped entirely.
 function buildGradeRowGroups(
   groups: CubeOptionGroup[],
   category: string,
@@ -1207,9 +1202,8 @@ function buildGradeRowGroups(
         )
       : [];
 
-  // 에디셔널 잠재능력(!includeDropMeso) 에픽 등급에만 보이는 요약 그룹 - 무기류/
-  // 엠블렘은 이 지점에 도달하기 전에 이미 별도 분기(buildAttackOnlyRowGroups/
-  // buildEmblemRowGroups)로 return되어 자동으로 제외된다.
+  // Weapon-type/엠블렘 are already excluded before reaching this point (they return early via
+  // buildAttackOnlyRowGroups/buildEmblemRowGroups), so this only needs to gate on grade.
   const showLineQualityRows = !includeDropMeso && grade === "epic";
 
   return [

@@ -126,7 +126,7 @@ export function EnhanceCostPage() {
     setSpareValuePriceInfo(null);
   };
 
-  // Manually editing 스타포스 레벨 only drops the badge when it's the 어센던트 펄스 링's - a
+  // Manually editing the starforce level only drops the badge when it's 어센던트 펄스 링's - a
   // normal item's badge/price should stay put even if the level field is nudged afterward.
   const handleStarforceLevelChange = (value: number) => {
     setStarforceLevel(value);
@@ -156,9 +156,9 @@ export function EnhanceCostPage() {
   };
 
   // Clicking an equipped item jumps the starforce level to that item's level, fills in 노작
-  // 가격 if the item has a known market price, and drives 잠재능력/에디잠재's category (mapped
-  // from the item's slot) and level tier (<=200 -> 120~200, otherwise 250) - both sides
-  // regardless of the 잠재/에디잠재 link toggle, since a concrete equipped item should always
+  // 가격 if the item has a known market price, and drives the potential/additional potential
+  // category (mapped from the item's slot) and level tier (<=200 -> 120~200, otherwise 250) -
+  // both sides regardless of the link toggle, since a concrete equipped item should always
   // set both to match it.
   const handleSelectItem = (item: ItemEquipmentDetail) => {
     setStarforceLevel(item.item_base_option.base_equipment_level);

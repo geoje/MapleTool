@@ -4,8 +4,6 @@ import { ABILITY_OPTION_INFOS, MAX_SELECTED_ABILITY_OPTIONS, ResetType } from "@
 import { cn } from "@/lib/utils";
 import { GradeBadge } from "@/pages/enhance-cost/potential-table";
 
-// 일반 재설정은 첫 번째로 고른 옵션만 레전드리(초록), 나머지는 유니크(노랑) -
-// 고급 재설정은 셋 다 레전드리로 확정된다.
 function gradeForSelectionOrder(order: number, resetType: ResetType) {
   if (resetType === ResetType.ADVANCED) return "legendary";
   return order === 0 ? "legendary" : "unique";
