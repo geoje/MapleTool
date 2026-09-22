@@ -14,7 +14,12 @@ import {
   ASCENDANT_PULSE_RING_ITEM_NAME,
 } from "@/constants/enhance";
 import { SET_ITEMS } from "@/constants/enhance-set-items";
-import { ASCENDANT_RING_PRICE, DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
+import {
+  ASCENDANT_RING_PRICE,
+  DEFAULT_EQUIPMENT_CATEGORY,
+  DEFAULT_STARFORCE_LEVEL,
+  EQUIPMENT_SLOT_TO_CATEGORY,
+} from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useCubeProbability } from "@/hooks/use-cube-probability";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
@@ -120,6 +125,13 @@ export function EnhanceCostPage() {
     setSpareValuePriceInfo(null);
   };
 
+  // Manually editing 스타포스 레벨 only drops the badge when it's the 어센던트 펄스 링's - a
+  // normal item's badge/price should stay put even if the level field is nudged afterward.
+  const handleStarforceLevelChange = (value: number) => {
+    setStarforceLevel(value);
+    setSpareValuePriceInfo((prev) => (prev?.itemName === ASCENDANT_PULSE_RING_ITEM_NAME ? null : prev));
+  };
+
   const applyItemPrice = (itemName: string) => {
     // 어센던트 펄스 링 has no market price (untradable), so skip the backend lookup entirely
     // and hardcode its badge/price instead.
@@ -142,11 +154,25 @@ export function EnhanceCostPage() {
       .finally(() => setIsFetchingSpareValuePrice(false));
   };
 
-  // Clicking an equipped item both jumps the starforce level to that item's
-  // level and, if the item has a known market price, fills in 노작 가격.
+  // Clicking an equipped item jumps the starforce level to that item's level, fills in 노작
+  // 가격 if the item has a known market price, and drives 잠재능력/에디잠재's category (mapped
+  // from the item's slot) and level tier (<=200 -> 120~200, otherwise 250) - both sides
+  // regardless of the 잠재/에디잠재 link toggle, since a concrete equipped item should always
+  // set both to match it.
   const handleSelectItem = (item: ItemEquipmentDetail) => {
     setStarforceLevel(item.item_base_option.base_equipment_level);
     applyItemPrice(item.item_name);
+
+    const category = EQUIPMENT_SLOT_TO_CATEGORY[item.item_equipment_slot];
+    if (category) {
+      handlePotentialCategoryChange(category);
+      handleAdditionalCategoryChange(category);
+    }
+
+    const levelTier =
+      item.item_base_option.base_equipment_level <= 200 ? EquipmentLevelTier.LOW : EquipmentLevelTier.HIGH;
+    handlePotentialLevelChange(levelTier);
+    handleAdditionalLevelChange(levelTier);
   };
 
   // The page defaults to 에테르넬 나이트헬름 (모자, 250 레벨) as if it were
@@ -155,20 +181,34 @@ export function EnhanceCostPage() {
     applyItemPrice(DEFAULT_EQUIPPED_ITEM_NAME);
   }, []);
 
-  // While the ring is selected, 잠재능력/에디잠재 offer one extra cube option costed in 펄스
-  // 인핸서 instead of meso (see PotentialTable's isPulseCubeType) - auto-selected the moment the
-  // ring is picked, and reverted back to the plain reset cube once a different item is chosen.
+  // While the ring is selected AND each side's own category/level still matches what clicking
+  // it set (반지 / 120~200), that side offers one extra cube option costed in 펄스 인핸서
+  // instead of meso (see PotentialTable's isPulseCubeType) - auto-selected the moment it becomes
+  // eligible. Manually changing category away from 반지 or level to 250 drops eligibility (and
+  // the extra option) immediately, reverting a still-selected pulse cube back to the plain reset
+  // cube; manually picking a different real cube while still eligible is left alone (the pulse
+  // option just stays available to pick again).
   const isAscendantSelected = spareValuePriceInfo?.itemName === ASCENDANT_PULSE_RING_ITEM_NAME;
+  const isPotentialPulseEligible =
+    isAscendantSelected && potentialCategory === "반지" && potentialLevel === EquipmentLevelTier.LOW;
+  const isAdditionalPulseEligible =
+    isAscendantSelected && additionalCategory === "반지" && additionalLevel === EquipmentLevelTier.LOW;
 
   useEffect(() => {
-    if (isAscendantSelected) {
+    if (isPotentialPulseEligible) {
       setSelectedCube(CubeType.PULSE_RESET);
-      setSelectedAdditionalCube(CubeType.PULSE_ADDI_RESET);
     } else {
       setSelectedCube((prev) => (prev === CubeType.PULSE_RESET ? CubeType.RESET : prev));
+    }
+  }, [isPotentialPulseEligible]);
+
+  useEffect(() => {
+    if (isAdditionalPulseEligible) {
+      setSelectedAdditionalCube(CubeType.PULSE_ADDI_RESET);
+    } else {
       setSelectedAdditionalCube((prev) => (prev === CubeType.PULSE_ADDI_RESET ? CubeType.ADDI_RESET : prev));
     }
-  }, [isAscendantSelected]);
+  }, [isAdditionalPulseEligible]);
 
   const { data: potentialData, isFetching: isFetchingPotential } = useCubeProbability(
     CUBE_PROBABILITY_SOURCE[selectedCube] ?? selectedCube,
@@ -269,7 +309,7 @@ export function EnhanceCostPage() {
         <StarforceCard
           collapsed={starforceCollapsed}
           level={starforceLevel}
-          onLevelChange={setStarforceLevel}
+          onLevelChange={handleStarforceLevelChange}
           spareValue={spareValue}
           onSpareValueChange={handleSpareValueChange}
           spareValuePriceInfo={spareValuePriceInfo}
@@ -294,7 +334,7 @@ export function EnhanceCostPage() {
             onCubeChange={setSelectedCube}
             isLinked={isLinked}
             onToggleLink={togglePotentialLink}
-            extraCube={isAscendantSelected ? CubeType.PULSE_RESET : undefined}
+            extraCube={isPotentialPulseEligible ? CubeType.PULSE_RESET : undefined}
           />
           <PotentialTable
             data={potentialData}
@@ -323,7 +363,7 @@ export function EnhanceCostPage() {
             onCubeChange={setSelectedAdditionalCube}
             isLinked={isLinked}
             onToggleLink={toggleAdditionalLink}
-            extraCube={isAscendantSelected ? CubeType.PULSE_ADDI_RESET : undefined}
+            extraCube={isAdditionalPulseEligible ? CubeType.PULSE_ADDI_RESET : undefined}
           />
           <PotentialTable
             data={additionalPotentialData}

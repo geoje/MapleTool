@@ -29,6 +29,41 @@ export const EQUIPMENT_CATEGORIES = [
 // Matches the default equipped item (에테르넬 나이트헬름, a 모자).
 export const DEFAULT_EQUIPMENT_CATEGORY: (typeof EQUIPMENT_CATEGORIES)[number] = "모자";
 
+// Maps a clicked equipment item's `item_equipment_slot` (matches EQUIPMENT_SLOT_GRID's apiSlot
+// vocabulary, which real API data already uses directly) to the EQUIPMENT_CATEGORIES entry it
+// belongs to, so clicking any item in the 장비 grid can drive 잠재능력/에디잠재's category
+// select too. 반지1-4 and 펜던트/펜던트2 collapse to their unnumbered category; 기계 심장 (with
+// a space) maps to 기계심장 (no space) to match EQUIPMENT_CATEGORIES exactly. 보조무기 has no
+// reliable way to tell a soul ring/force shield apart from a plain secondary weapon from this
+// data alone, so it defaults to the more common "제외" category. 훈장/안드로이드/포켓 아이템/
+// 뱃지 have no corresponding category at all and are omitted - clicking one of those leaves
+// the category unchanged.
+export const EQUIPMENT_SLOT_TO_CATEGORY: Partial<Record<string, (typeof EQUIPMENT_CATEGORIES)[number]>> = {
+  무기: "무기",
+  엠블렘: "엠블렘",
+  보조무기: "보조무기(포스실드, 소울링 제외)",
+  방패: "방패",
+  모자: "모자",
+  상의: "상의",
+  한벌옷: "한벌옷",
+  하의: "하의",
+  신발: "신발",
+  장갑: "장갑",
+  망토: "망토",
+  벨트: "벨트",
+  어깨장식: "어깨장식",
+  얼굴장식: "얼굴장식",
+  눈장식: "눈장식",
+  귀고리: "귀고리",
+  반지1: "반지",
+  반지2: "반지",
+  반지3: "반지",
+  반지4: "반지",
+  펜던트: "펜던트",
+  펜던트2: "펜던트",
+  "기계 심장": "기계심장",
+};
+
 export interface MembershipGrade {
   key: string;
   label: string;
