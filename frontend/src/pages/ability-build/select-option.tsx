@@ -1,6 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldContent, FieldLabel, FieldTitle } from "@/components/ui/field";
-import { ABILITY_OPTION_INFOS, MAX_SELECTED_ABILITY_OPTIONS, ResetType } from "@/constants/ability";
+import { ABILITY_OPTION_INFOS, MAX_SELECTED_ABILITY_OPTIONS, resolveSelectedOptionOrder, ResetType } from "@/constants/ability";
 import { PotentialGrade } from "@/constants/enhance";
 import { cn } from "@/lib/utils";
 import { GradeBadge } from "@/pages/enhance-cost/potential-table";
@@ -20,7 +20,7 @@ export function SelectOption({
   resetType: ResetType;
 }) {
   const isFull = selectedNames.size >= MAX_SELECTED_ABILITY_OPTIONS;
-  const selectionOrder = Array.from(selectedNames);
+  const selectionOrder = resolveSelectedOptionOrder(selectedNames);
   // A new pick always lands after whatever's already selected, so in normal reset it targets
   // unique unless nothing's picked yet - options with no unique-grade value can't fill that slot.
   const nextPickTargetsUnique = resetType === ResetType.NORMAL && selectionOrder.length >= 1;

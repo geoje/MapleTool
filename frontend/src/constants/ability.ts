@@ -49,6 +49,21 @@ export const ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY = 2;
 // ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY applies.
 export const NORMAL_RESET_SECOND_THIRD_UNIQUE_PROBABILITY = 15;
 
+// An option with no UNIQUE-grade values (currently only "패시브 스킬 레벨 증가") can never land on
+// the unique-only row2/row3, so it's forced into the first slot (the always-legendary row1)
+// regardless of click order - otherwise it could end up picked as the 2nd/3rd option (e.g. after
+// being selected in advanced reset, where any slot order is allowed, then switching to normal
+// reset), where code targeting row2/row3 would look up UNIQUE values it doesn't have.
+export function resolveSelectedOptionOrder(selectedNames: Set<string>): string[] {
+  const names = Array.from(selectedNames);
+  const legendaryOnlyNames = names.filter((name) => {
+    const info = ABILITY_OPTION_INFOS.find((option) => option.name === name);
+    return info !== undefined && info.probabilityByGrade[PotentialGrade.UNIQUE] === undefined;
+  });
+  const rest = names.filter((name) => !legendaryOnlyNames.includes(name));
+  return [...legendaryOnlyNames, ...rest];
+}
+
 export function formatAbilityResultRange(option: AbilityOptionInfo, grade: PotentialGrade = PotentialGrade.LEGENDARY): string {
   const values = option.valueSteps
     .map((step) => step.valueByGrade[grade])

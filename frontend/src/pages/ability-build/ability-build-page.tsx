@@ -17,6 +17,7 @@ import {
   MAX_SELECTED_ABILITY_OPTIONS,
   NORMAL_RESET_REPUTATION_COST,
   NORMAL_RESET_SECOND_THIRD_UNIQUE_PROBABILITY,
+  resolveSelectedOptionOrder,
   ResetType,
 } from "@/constants/ability";
 import type { AbilityOptionInfo } from "@/constants/ability";
@@ -230,7 +231,7 @@ export function AbilityBuildPage() {
 
   const onToggleDiscount = useCallback(() => setReputationDiscount((prev) => !prev), []);
 
-  const firstSelectedName = Array.from(selectedOptionNames)[0];
+  const firstSelectedName = resolveSelectedOptionOrder(selectedOptionNames)[0];
   const firstOption = ABILITY_OPTION_INFOS.find((option) => option.name === firstSelectedName);
 
   // The 2nd/3rd picks both target the unique-only row2, where physical line order is irrelevant,
