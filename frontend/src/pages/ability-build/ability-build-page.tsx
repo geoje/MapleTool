@@ -61,11 +61,13 @@ export function AbilityBuildPage() {
     const legendaryChancePercent = firstOption.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
     const resultText = formatAbilityResultRange(firstOption);
 
+    const discountFactor = reputationDiscount ? 0.5 : 1;
+
     if (resetType === ResetType.NORMAL) {
       const costPerTry = NORMAL_RESET_REPUTATION_COST[PotentialGrade.LEGENDARY]?.none ?? 0;
       const fraction = legendaryChancePercent / 100;
       const expectedTries = fraction > 0 ? 1 / fraction : 0;
-      const reputationCost = expectedTries * costPerTry;
+      const reputationCost = expectedTries * costPerTry * discountFactor;
 
       return {
         branchNodes: [{ id: "result-0", type: "result", position: { x: RESULT_X, y: 300 }, data: { rows: blankRows(0, resultText) } }],
@@ -96,7 +98,7 @@ export function AbilityBuildPage() {
     slotLegendaryChancePercent.forEach((slotChancePercent, index) => {
       const fraction = (slotChancePercent / 100) * (legendaryChancePercent / 100);
       const expectedTries = fraction > 0 ? 1 / fraction : 0;
-      const reputationCost = expectedTries * reputationPerTry;
+      const reputationCost = expectedTries * reputationPerTry * discountFactor;
       const mesoCost = expectedTries * mesoPerTry;
 
       branchNodes.push({
@@ -121,7 +123,7 @@ export function AbilityBuildPage() {
     });
 
     return { branchNodes, branchEdges };
-  }, [firstOption, resetType]);
+  }, [firstOption, resetType, reputationDiscount]);
 
   const nodes = useMemo<Node[]>(
     () => [
