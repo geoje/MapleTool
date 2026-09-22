@@ -1462,7 +1462,7 @@ function SkeletonRows({ count }: { count: number }) {
 // section/row count while a new fetch is in flight.
 function GenericLoadingSkeleton({ cubeType }: { cubeType: CubeType | null }) {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-hidden">
       <div className="flex items-center gap-1.5 rounded-t-md bg-muted/50 px-3 py-1.5">
         <Skeleton className="h-4 w-4 rounded-sm bg-muted-foreground/20" />
         <Skeleton className="h-4 w-12 bg-muted-foreground/20" />
@@ -1632,7 +1632,7 @@ export function PotentialTable({
         {primeSections.map((section, index) => {
           const isExpanded = expandedLocks.has(index);
           return (
-            <div key={section.label} className={cn("rounded-md border", isExpanded && "rounded-b-none")}>
+            <div key={section.label} className="rounded-md border overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleLock(index)}
@@ -1678,7 +1678,7 @@ export function PotentialTable({
         const costPerTry = costsByGrade?.[grade];
 
         return (
-          <div key={grade} className={cn("rounded-md border", isExpanded && "rounded-b-none")}>
+          <div key={grade} className="rounded-md border overflow-hidden">
             <button
               type="button"
               onClick={() => toggleGrade(grade)}

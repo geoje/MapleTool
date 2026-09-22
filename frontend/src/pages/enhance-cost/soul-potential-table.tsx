@@ -51,7 +51,7 @@ const SKELETON_ROW_COUNT = 3;
 
 function SoulLoadingSkeleton() {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-hidden">
       <div className="flex items-center gap-1.5 rounded-t-md bg-muted/50 px-3 py-1.5">
         <Skeleton className="h-4 w-4 rounded-sm bg-muted-foreground/20" />
         <Skeleton className="h-4 w-12 bg-muted-foreground/20" />
@@ -125,7 +125,7 @@ export function SoulPotentialTable({ data, isLoading }: { data: CubeProbabilityD
         );
 
         return (
-          <div key={grade} className={cn("rounded-md border", isExpanded && "rounded-b-none")}>
+          <div key={grade} className="rounded-md border overflow-hidden">
             <button
               type="button"
               onClick={() => toggleGrade(grade)}
