@@ -58,6 +58,14 @@ function twoUniqueTable(leftText: string, rightText: string): ResultTableData {
   };
 }
 
+function allThreeTable(legendaryText: string, leftText: string, rightText: string): ResultTableData {
+  return {
+    row1: { text: legendaryText, grade: "legendary" },
+    row2Col1: { text: leftText, grade: "unique" },
+    row2Col2: { text: rightText, grade: "unique" },
+  };
+}
+
 // slotChancePercents are rows rolling simultaneously; a hit on any one counts as success, so cost
 // is based on the union probability (1 - chance all of them miss), not per-row odds.
 function advancedResetCost(
@@ -82,10 +90,18 @@ const NORMAL_RESET_LOCK_KEYS = ["none", "one", "two"] as const;
 // it must be multiplied by slotChancePercents (the chance that grade rolls at all) to get the
 // absolute per-row chance. The per-try cost always uses NORMAL_RESET_REPUTATION_COST's legendary row
 // regardless of target grade - actual cost depends only on how many rows are locked.
-function normalResetCost(slotChancePercents: number[], optionChancePercent: number, lockCount: number, discountFactor: number): number {
+// extraFactorPercent multiplies in one more independent per-try chance (e.g. also landing the max
+// value step in the same roll, for a reset that redraws the option/grade/value all at once).
+function normalResetCost(
+  slotChancePercents: number[],
+  optionChancePercent: number,
+  lockCount: number,
+  discountFactor: number,
+  extraFactorPercent = 100
+): number {
   const costPerTry = NORMAL_RESET_REPUTATION_COST[PotentialGrade.LEGENDARY]?.[NORMAL_RESET_LOCK_KEYS[lockCount]] ?? 0;
   const allMissFraction = slotChancePercents.reduce((acc, slotChancePercent) => {
-    const fraction = (slotChancePercent / 100) * (optionChancePercent / 100);
+    const fraction = (slotChancePercent / 100) * (optionChancePercent / 100) * (extraFactorPercent / 100);
     return acc * (1 - fraction);
   }, 1);
   const successFraction = 1 - allMissFraction;
@@ -353,6 +369,108 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(secondSingleLockedCost) }],
+            } satisfies LabeledEdgeData,
+          }
+        );
+
+        // From each 2-option table: circulate both already-placed options to their max value (1
+        // branch each), then lock those 2 lines and use a normal reset to pull the missing line
+        // as its option AND max value in one roll - all 3 paths converge on the same final table.
+        const secondMaxResultText = formatAbilityResultMax(secondOption, PotentialGrade.UNIQUE);
+        const thirdMaxResultText = formatAbilityResultMax(thirdOption, PotentialGrade.UNIQUE);
+        const secondMaxValueProbabilityPercent = maxValueProbability(secondOption, PotentialGrade.UNIQUE);
+        const thirdMaxValueProbabilityPercent = maxValueProbability(thirdOption, PotentialGrade.UNIQUE);
+
+        const n1MaxFraction = (maxValueProbabilityPercent / 100) * (secondMaxValueProbabilityPercent / 100);
+        const n2MaxFraction = (maxValueProbabilityPercent / 100) * (thirdMaxValueProbabilityPercent / 100);
+        const n3MaxFraction = (secondMaxValueProbabilityPercent / 100) * (thirdMaxValueProbabilityPercent / 100);
+
+        const thirdMissingCost = normalResetCost(
+          [NORMAL_RESET_SECOND_THIRD_UNIQUE_PROBABILITY],
+          thirdUniqueChancePercent,
+          2,
+          discountFactor,
+          thirdMaxValueProbabilityPercent
+        );
+        const secondMissingCost = normalResetCost(
+          [NORMAL_RESET_SECOND_THIRD_UNIQUE_PROBABILITY],
+          secondUniqueChancePercent,
+          2,
+          discountFactor,
+          secondMaxValueProbabilityPercent
+        );
+        const legendaryMissingCost = normalResetCost([100], legendaryChancePercent, 2, discountFactor, maxValueProbabilityPercent);
+
+        branchNodes.push(
+          { id: "result-n1-max", type: "result", position: { x: FINAL_X + 260, y: 100 }, data: legendaryPlusUniqueTable(maxResultText, secondMaxResultText, "row2Col1") },
+          { id: "result-n2-max", type: "result", position: { x: FINAL_X + 260, y: 440 }, data: legendaryPlusUniqueTable(maxResultText, thirdMaxResultText, "row2Col2") },
+          { id: "result-n3-max", type: "result", position: { x: FINAL_X + 260, y: 780 }, data: twoUniqueTable(secondMaxResultText, thirdMaxResultText) },
+          {
+            id: "result-final3",
+            type: "result",
+            position: { x: FINAL_X + 520, y: 440 },
+            data: allThreeTable(maxResultText, secondMaxResultText, thirdMaxResultText),
+          }
+        );
+        branchEdges.push(
+          {
+            id: "result-n1->result-n1-max",
+            source: "result-n1",
+            target: "result-n1-max",
+            type: "labeled",
+            data: {
+              title: `${firstOption.abbreviation} ${secondOption.abbreviation} 최대치`,
+              rows: [{ icon: [chaosCirculatorIcon, blackCirculatorIcon], value: `${formatCostDecimal(1 / n1MaxFraction)}회` }],
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-n2->result-n2-max",
+            source: "result-n2",
+            target: "result-n2-max",
+            type: "labeled",
+            data: {
+              title: `${firstOption.abbreviation} ${thirdOption.abbreviation} 최대치`,
+              rows: [{ icon: [chaosCirculatorIcon, blackCirculatorIcon], value: `${formatCostDecimal(1 / n2MaxFraction)}회` }],
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-n3->result-n3-max",
+            source: "result-n3",
+            target: "result-n3-max",
+            type: "labeled",
+            data: {
+              title: `${secondOption.abbreviation} ${thirdOption.abbreviation} 최대치`,
+              rows: [{ icon: [chaosCirculatorIcon, blackCirculatorIcon], value: `${formatCostDecimal(1 / n3MaxFraction)}회` }],
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-n1-max->result-final3",
+            source: "result-n1-max",
+            target: "result-final3",
+            type: "labeled",
+            data: {
+              title: `둘째줄 또는 셋째줄 ${thirdOption.abbreviation} 최대치`,
+              rows: [{ icon: abilityNavIcon, value: formatCostFull(thirdMissingCost) }],
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-n2-max->result-final3",
+            source: "result-n2-max",
+            target: "result-final3",
+            type: "labeled",
+            data: {
+              title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation} 최대치`,
+              rows: [{ icon: abilityNavIcon, value: formatCostFull(secondMissingCost) }],
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-n3-max->result-final3",
+            source: "result-n3-max",
+            target: "result-final3",
+            type: "labeled",
+            data: {
+              title: `첫째줄 ${firstOption.abbreviation} 최대치`,
+              rows: [{ icon: abilityNavIcon, value: formatCostFull(legendaryMissingCost) }],
             } satisfies LabeledEdgeData,
           }
         );
