@@ -11,9 +11,10 @@ import {
   CUBE_PROBABILITY_SOURCE,
   EquipmentLevelTier,
   DEFAULT_EQUIPMENT_LEVEL_TIER,
+  ASCENDANT_PULSE_RING_ITEM_NAME,
 } from "@/constants/enhance";
 import { SET_ITEMS } from "@/constants/enhance-set-items";
-import { DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
+import { ASCENDANT_RING_PRICE, DEFAULT_EQUIPMENT_CATEGORY, DEFAULT_STARFORCE_LEVEL } from "@/constants/starforce";
 import { useCharacterBasic } from "@/hooks/use-character-basic";
 import { useCubeProbability } from "@/hooks/use-cube-probability";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
@@ -120,6 +121,15 @@ export function EnhanceCostPage() {
   };
 
   const applyItemPrice = (itemName: string) => {
+    // 어센던트 펄스 링 has no market price (untradable), so skip the backend lookup entirely
+    // and hardcode its badge/price instead.
+    if (itemName === ASCENDANT_PULSE_RING_ITEM_NAME) {
+      setSpareValue(ASCENDANT_RING_PRICE);
+      setSpareValuePriceInfo({ itemName, price: ASCENDANT_RING_PRICE, date: "" });
+      setIsFetchingSpareValuePrice(false);
+      return;
+    }
+
     setSpareValue(0);
     setSpareValuePriceInfo(null);
     setIsFetchingSpareValuePrice(true);
@@ -144,6 +154,21 @@ export function EnhanceCostPage() {
   useEffect(() => {
     applyItemPrice(DEFAULT_EQUIPPED_ITEM_NAME);
   }, []);
+
+  // While the ring is selected, 잠재능력/에디잠재 offer one extra cube option costed in 펄스
+  // 인핸서 instead of meso (see PotentialTable's isPulseCubeType) - auto-selected the moment the
+  // ring is picked, and reverted back to the plain reset cube once a different item is chosen.
+  const isAscendantSelected = spareValuePriceInfo?.itemName === ASCENDANT_PULSE_RING_ITEM_NAME;
+
+  useEffect(() => {
+    if (isAscendantSelected) {
+      setSelectedCube(CubeType.PULSE_RESET);
+      setSelectedAdditionalCube(CubeType.PULSE_ADDI_RESET);
+    } else {
+      setSelectedCube((prev) => (prev === CubeType.PULSE_RESET ? CubeType.RESET : prev));
+      setSelectedAdditionalCube((prev) => (prev === CubeType.PULSE_ADDI_RESET ? CubeType.ADDI_RESET : prev));
+    }
+  }, [isAscendantSelected]);
 
   const { data: potentialData, isFetching: isFetchingPotential } = useCubeProbability(
     CUBE_PROBABILITY_SOURCE[selectedCube] ?? selectedCube,
@@ -269,6 +294,7 @@ export function EnhanceCostPage() {
             onCubeChange={setSelectedCube}
             isLinked={isLinked}
             onToggleLink={togglePotentialLink}
+            extraCube={isAscendantSelected ? CubeType.PULSE_RESET : undefined}
           />
           <PotentialTable
             data={potentialData}
@@ -297,6 +323,7 @@ export function EnhanceCostPage() {
             onCubeChange={setSelectedAdditionalCube}
             isLinked={isLinked}
             onToggleLink={toggleAdditionalLink}
+            extraCube={isAscendantSelected ? CubeType.PULSE_ADDI_RESET : undefined}
           />
           <PotentialTable
             data={additionalPotentialData}

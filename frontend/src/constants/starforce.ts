@@ -101,3 +101,48 @@ export const RESTORE_TABLE: Record<number, Record<number, [requiredSpareCount: n
   200: { 15: [1, 4.33], 16: [1, 10.5], 17: [1, 17.7], 18: [1, 40.1], 19: [2, 66.5], 20: [2, 118], 21: [3, 148], 22: [4, 242] },
   250: { 15: [1, 8.46], 16: [1, 20.4], 17: [1, 34.5], 18: [1, 78.3], 19: [2, 130], 20: [2, 229], 21: [3, 288], 22: [4, 473] },
 };
+
+// Ascendant Pulse Ring (어센던트 펄스 링) enhancement: unlike normal starforce, each attempt
+// consumes a fixed number of 펄스 인핸서 items (not meso) regardless of equipment level or
+// discounts, and the success/destroy rates below are the item's own fixed rates rather than
+// the shared STARFORCE_PROBABILITIES table.
+export interface PulseEnhancerStepData {
+  star: number;
+  // 펄스 인핸서 consumed per attempt at this star.
+  consume: number;
+  // Officially disclosed 펄스 인핸서 cost of 파괴방지 (destroy prevention) at this star; null
+  // where it isn't offered at all (e.g. 18-19 always risk destroy). Kept for reference only -
+  // by product decision, computePulseEnhancerTable never applies 파괴방지 for this ring (it's
+  // always shown unchecked), so this field currently drives no calculation.
+  protectConsume: number | null;
+  successRate: number;
+  destroyRate: number;
+}
+
+export const PULSE_ENHANCER_MAX_STAR = 20;
+
+export const PULSE_ENHANCER_TABLE: PulseEnhancerStepData[] = [
+  { star: 0, consume: 3, protectConsume: null, successRate: 0.9975, destroyRate: 0 },
+  { star: 1, consume: 4, protectConsume: null, successRate: 0.945, destroyRate: 0 },
+  { star: 2, consume: 5, protectConsume: null, successRate: 0.8925, destroyRate: 0 },
+  { star: 3, consume: 6, protectConsume: null, successRate: 0.8925, destroyRate: 0 },
+  { star: 4, consume: 7, protectConsume: null, successRate: 0.84, destroyRate: 0 },
+  { star: 5, consume: 8, protectConsume: null, successRate: 0.7875, destroyRate: 0 },
+  { star: 6, consume: 9, protectConsume: null, successRate: 0.735, destroyRate: 0 },
+  { star: 7, consume: 10, protectConsume: null, successRate: 0.6825, destroyRate: 0 },
+  { star: 8, consume: 12, protectConsume: null, successRate: 0.63, destroyRate: 0 },
+  { star: 9, consume: 14, protectConsume: null, successRate: 0.5775, destroyRate: 0 },
+  { star: 10, consume: 18, protectConsume: null, successRate: 0.525, destroyRate: 0 },
+  { star: 11, consume: 24, protectConsume: null, successRate: 0.4725, destroyRate: 0 },
+  { star: 12, consume: 40, protectConsume: null, successRate: 0.42, destroyRate: 0 },
+  { star: 13, consume: 65, protectConsume: null, successRate: 0.3675, destroyRate: 0 },
+  { star: 14, consume: 72, protectConsume: null, successRate: 0.315, destroyRate: 0 },
+  { star: 15, consume: 74, protectConsume: 222, successRate: 0.315, destroyRate: 0.02055 },
+  { star: 16, consume: 88, protectConsume: 264, successRate: 0.315, destroyRate: 0.02055 },
+  { star: 17, consume: 130, protectConsume: 390, successRate: 0.1575, destroyRate: 0.0674 },
+  { star: 18, consume: 320, protectConsume: null, successRate: 0.1575, destroyRate: 0.0674 },
+  { star: 19, consume: 600, protectConsume: null, successRate: 0.1575, destroyRate: 0.08425 },
+];
+
+// No live market price (untradable), so 노작 가격 is hardcoded to this instead of fetched.
+export const ASCENDANT_RING_PRICE = 300_000_000;

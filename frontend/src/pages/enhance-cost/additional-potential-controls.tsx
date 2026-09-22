@@ -14,6 +14,7 @@ export function AdditionalPotentialControls({
   onCubeChange,
   isLinked,
   onToggleLink,
+  extraCube,
 }: {
   category: string;
   onCategoryChange: (value: string) => void;
@@ -23,7 +24,10 @@ export function AdditionalPotentialControls({
   onCubeChange: (cube: CubeType) => void;
   isLinked: boolean;
   onToggleLink: () => void;
+  // 어센던트 펄스 링 selected: appended after the normal cube lineup as a one-off extra option.
+  extraCube?: CubeType;
 }) {
+  const cubes = extraCube ? [...ADDITIONAL_POTENTIAL_CUBES, extraCube] : ADDITIONAL_POTENTIAL_CUBES;
   return (
     <div className="flex w-full flex-col gap-3">
       {/* Equipment Category */}
@@ -66,7 +70,7 @@ export function AdditionalPotentialControls({
       <div className="flex items-center justify-between gap-2">
         <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">큐브</span>
         <ButtonGroup>
-          {ADDITIONAL_POTENTIAL_CUBES.map((cube) => (
+          {cubes.map((cube) => (
             <Tooltip key={cube}>
               <TooltipTrigger asChild>
                 <Button

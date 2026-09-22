@@ -1,13 +1,15 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import mesoIcon from "@/assets/enhance/meso.png";
+import pulseEnhancerIcon from "@/assets/enhance/pulse-enhancer.png";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { CubeType, EquipmentLevelTier, PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
+import { CUBE_INFOS, CubeType, EquipmentLevelTier, PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
 import type { CubeGrade, CubeOptionGroup, CubeProbabilityData } from "@/hooks/use-cube-probability";
 import { extractPotentialOptionValue } from "@/lib/potential-option";
-import { formatCostExact, formatCostRounded } from "@/lib/format";
+import { formatCostExact, formatCostRounded, formatEnhancerCount } from "@/lib/format";
 
 const GRADE_ORDER: CubeGrade[] = ["rare", "epic", "unique", "legendary"];
 
@@ -103,6 +105,18 @@ const GRADE_UP_STEPS: Record<CubeType, Partial<Record<GradeUpFromGrade, GradeUpS
   [CubeType.STRANGE_ADDI]: {
     rare: { probability: 0.004 },
   },
+  // Same reset mechanic/probability as RESET/ADDI_RESET - only the per-try cost differs
+  // (펄스 인핸서 instead of meso, see RESET_COSTS below).
+  [CubeType.PULSE_RESET]: {
+    rare: { probability: 0.15, pity: 10 },
+    epic: { probability: 0.035, pity: 42 },
+    unique: { probability: 0.014, pity: 107 },
+  },
+  [CubeType.PULSE_ADDI_RESET]: {
+    rare: { probability: 0.047619, pity: 62 },
+    epic: { probability: 0.019608, pity: 152 },
+    unique: { probability: 0.007, pity: 214 },
+  },
 };
 
 // Prime Cube / Prime Additional Cube reveal line 1's result before committing
@@ -143,12 +157,12 @@ function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
   ].sort((a, b) => a.averageTries - b.averageTries);
 }
 
-// RESET/ADDI_RESET show 평균 비용 (average cost) instead of 평균 횟수 (average
-// try count) - the reset cost per attempt depends on the item's current
-// potential grade (this table's column) and level tier, per Nexon's official
-// disclosure. BLACK/ADDI (real cube items with a market price) keep the plain
-// try-count display, since their cost depends on market price the app doesn't
-// track here.
+// RESET/ADDI_RESET/PULSE_RESET/PULSE_ADDI_RESET have a known per-attempt cost, so their rows
+// multiply row.rawTries by this to show an actual 평균 비용 (see TriesCell) - the reset cost per
+// attempt depends on the item's current potential grade (this table's column) and, for the meso
+// variants, level tier, per Nexon's official disclosure. BLACK/ADDI (real cube items with a
+// market price this app doesn't track) have no entry here, so their rows fall back to showing
+// the plain try count instead - see TriesCell's `costPerTry == null` branch.
 const RESET_COSTS: Partial<Record<CubeType, Record<EquipmentLevelTier, Record<CubeGrade, number>>>> = {
   [CubeType.RESET]: {
     [EquipmentLevelTier.HIGH]: { rare: 5_000_000, epic: 20_000_000, unique: 42_500_000, legendary: 50_000_000 },
@@ -158,7 +172,49 @@ const RESET_COSTS: Partial<Record<CubeType, Record<EquipmentLevelTier, Record<Cu
     [EquipmentLevelTier.HIGH]: { rare: 12_250_000, epic: 34_300_000, unique: 83_300_000, legendary: 98_000_000 },
     [EquipmentLevelTier.LOW]: { rare: 11_000_000, epic: 30_800_000, unique: 74_800_000, legendary: 88_000_000 },
   },
+  // Unit here is 펄스 인핸서 count, not meso (see isPulseCubeType/TriesCell) - and unlike
+  // RESET/ADDI_RESET, doesn't depend on equipment level tier, so both tiers repeat the same values.
+  [CubeType.PULSE_RESET]: {
+    [EquipmentLevelTier.HIGH]: { rare: 15, epic: 60, unique: 125, legendary: 150 },
+    [EquipmentLevelTier.LOW]: { rare: 15, epic: 60, unique: 125, legendary: 150 },
+  },
+  [CubeType.PULSE_ADDI_RESET]: {
+    [EquipmentLevelTier.HIGH]: { rare: 35, epic: 100, unique: 245, legendary: 290 },
+    [EquipmentLevelTier.LOW]: { rare: 35, epic: 100, unique: 245, legendary: 290 },
+  },
 };
+
+function isPulseCubeType(cubeType: CubeType | null): boolean {
+  return cubeType === CubeType.PULSE_RESET || cubeType === CubeType.PULSE_ADDI_RESET;
+}
+
+// Icon + tooltip shown to the left of the "평균 비용" label, indicating what unit the number is
+// in: 메소 for the plain resets, 펄스 인핸서 for the ring's special resets, or - for the real cube
+// items where no per-try cost is tracked and the number is actually a try count - the cube's own
+// icon, just as an at-a-glance reminder of which cube is selected.
+function getCostUnitIcon(cubeType: CubeType | null): { icon: string; tooltip: string } | null {
+  if (!cubeType) return null;
+  if (cubeType === CubeType.RESET || cubeType === CubeType.ADDI_RESET) return { icon: mesoIcon, tooltip: "메소" };
+  if (isPulseCubeType(cubeType)) return { icon: pulseEnhancerIcon, tooltip: "펄스 인핸서" };
+  return { icon: CUBE_INFOS[cubeType].icon, tooltip: CUBE_INFOS[cubeType].displayName };
+}
+
+function CostHeaderLabel({ cubeType }: { cubeType: CubeType | null }) {
+  const unit = getCostUnitIcon(cubeType);
+  return (
+    <span className="inline-flex items-center justify-end gap-1">
+      {unit && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img src={unit.icon} alt="" className="h-3.5 w-auto shrink-0 object-contain" />
+          </TooltipTrigger>
+          <TooltipContent side="top">{unit.tooltip}</TooltipContent>
+        </Tooltip>
+      )}
+      평균 비용
+    </span>
+  );
+}
 
 interface OptionRow {
   label: string;
@@ -1343,12 +1399,25 @@ function buildPrimeLockedSections(
 }
 
 // Renders either the plain try count or, when `costPerTry` is given (RESET/
-// ADDI_RESET), the average cost - row.rawTries (un-rounded) times the reset
-// cost for this grade, formatted the same way as StarforceCard's 평균 비용.
-function TriesCell({ isLoading, row, costPerTry }: { isLoading: boolean; row: OptionRow; costPerTry?: number }) {
+// ADDI_RESET/PULSE_RESET/PULSE_ADDI_RESET), the average cost - row.rawTries (un-rounded) times
+// the reset cost for this grade. Meso costs are formatted the same way as StarforceCard's 평균
+// 비용; 펄스 인핸서 costs (isEnhancerCost) use the same rounded-to-1-decimal item-count format as
+// the starforce panel's pulse-enhancer mode instead, since there's no 조/억/만 to abbreviate.
+function TriesCell({
+  isLoading,
+  row,
+  costPerTry,
+  isEnhancerCost,
+}: {
+  isLoading: boolean;
+  row: OptionRow;
+  costPerTry?: number;
+  isEnhancerCost?: boolean;
+}) {
   if (isLoading) return <SkeletonCell className="ml-auto h-4 w-10" />;
   if (costPerTry != null) {
     const cost = row.rawTries * costPerTry;
+    if (isEnhancerCost) return <span>{formatEnhancerCount(cost)}</span>;
     return (
       <Tooltip>
         <TooltipTrigger asChild>
@@ -1393,7 +1462,7 @@ function SkeletonRows({ count }: { count: number }) {
 // cached). Once any data has ever resolved, the real grade sections below
 // take over and skeletonize their own cells instead, keeping the same
 // section/row count while a new fetch is in flight.
-function GenericLoadingSkeleton() {
+function GenericLoadingSkeleton({ cubeType }: { cubeType: CubeType | null }) {
   return (
     <div className="rounded-md border">
       <div className="flex items-center gap-1.5 rounded-t-md bg-muted/50 px-3 py-1.5">
@@ -1404,7 +1473,9 @@ function GenericLoadingSkeleton() {
         <thead>
           <tr className="border-b">
             <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">옵션</th>
-            <th className="px-3 py-1 text-right font-medium text-muted-foreground">평균 횟수</th>
+            <th className="px-3 py-1 text-right font-medium text-muted-foreground">
+              <CostHeaderLabel cubeType={cubeType} />
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -1419,10 +1490,12 @@ function OptionRowsTable({
   rowGroups,
   isLoading,
   costPerTry,
+  cubeType,
 }: {
   rowGroups: OptionRow[][];
   isLoading: boolean;
   costPerTry: number | undefined;
+  cubeType: CubeType | null;
 }) {
   return (
     <table className="border-collapse w-full text-xs">
@@ -1430,7 +1503,7 @@ function OptionRowsTable({
         <tr className="border-b">
           <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">옵션</th>
           <th className="px-3 py-1 text-right font-medium text-muted-foreground">
-            {costPerTry != null ? "평균 비용" : "평균 횟수"}
+            <CostHeaderLabel cubeType={cubeType} />
           </th>
         </tr>
       </thead>
@@ -1454,7 +1527,7 @@ function OptionRowsTable({
                 )}
               </td>
               <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                <TriesCell isLoading={isLoading} row={row} costPerTry={costPerTry} />
+                <TriesCell isLoading={isLoading} row={row} costPerTry={costPerTry} isEnhancerCost={isPulseCubeType(cubeType)} />
               </td>
             </tr>
           ));
@@ -1495,8 +1568,8 @@ export function PotentialTable({
     ? buildPrimeLockedSections(data?.legendary ?? [], category, includeDropMeso, "legendary")
     : [];
 
-  // RESET/ADDI_RESET show 평균 비용 (cost) instead of 평균 횟수 (try count) - see
-  // RESET_COSTS above.
+  // Only set for cube types with a known per-attempt cost (RESET/ADDI_RESET/PULSE_RESET/
+  // PULSE_ADDI_RESET) - see RESET_COSTS above.
   const costsByGrade = cubeType ? RESET_COSTS[cubeType]?.[levelTier] : undefined;
 
   const [expandedGrades, setExpandedGrades] = useState<Set<CubeGrade>>(new Set());
@@ -1547,7 +1620,7 @@ export function PotentialTable({
   // a generic guessed skeleton instead of collapsing to an empty state.
   const hasContent = isPrimeCube ? primeSections.length > 0 : grades.length > 0;
   if (!data || !hasContent) {
-    if (isLoading) return <GenericLoadingSkeleton />;
+    if (isLoading) return <GenericLoadingSkeleton cubeType={cubeType} />;
     return (
       <div className="flex items-center justify-center py-8">
         <p className="text-sm text-muted-foreground">데이터를 불러올 수 없습니다</p>
@@ -1585,6 +1658,7 @@ export function PotentialTable({
                   rowGroups={section.rowGroups}
                   isLoading={isLoading}
                   costPerTry={costsByGrade?.legendary}
+                  cubeType={cubeType}
                 />
               )}
             </div>
@@ -1632,7 +1706,7 @@ export function PotentialTable({
                   <tr className="border-b">
                     <th className="border-r px-3 py-1 text-left font-medium text-muted-foreground">옵션</th>
                     <th className="px-3 py-1 text-right font-medium text-muted-foreground">
-                      {costsByGrade ? "평균 비용" : "평균 횟수"}
+                      <CostHeaderLabel cubeType={cubeType} />
                     </th>
                   </tr>
                 </thead>
@@ -1649,7 +1723,12 @@ export function PotentialTable({
                         {isLoading ? <SkeletonCell className="h-4 w-20" /> : gradeUpRow.label}
                       </td>
                       <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                        <TriesCell isLoading={isLoading} row={gradeUpRow} costPerTry={costPerTry} />
+                        <TriesCell
+                          isLoading={isLoading}
+                          row={gradeUpRow}
+                          costPerTry={costPerTry}
+                          isEnhancerCost={isPulseCubeType(cubeType)}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -1672,7 +1751,12 @@ export function PotentialTable({
                           )}
                         </td>
                         <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                          <TriesCell isLoading={isLoading} row={row} costPerTry={costPerTry} />
+                          <TriesCell
+                            isLoading={isLoading}
+                            row={row}
+                            costPerTry={costPerTry}
+                            isEnhancerCost={isPulseCubeType(cubeType)}
+                          />
                         </td>
                       </tr>
                     ));

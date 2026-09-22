@@ -1,12 +1,22 @@
 import { Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import mesoIcon from "@/assets/enhance/meso.png";
+import pulseEnhancerIcon from "@/assets/enhance/pulse-enhancer.png";
 import { CollapsibleCard } from "@/components/collapsible-card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { MEMBERSHIP_GRADES, PC_ROOM_DISCOUNT_RATE } from "@/constants/starforce";
+import { ASCENDANT_PULSE_RING_ITEM_NAME } from "@/constants/enhance";
+import { MEMBERSHIP_GRADES, PC_ROOM_DISCOUNT_RATE, PULSE_ENHANCER_TABLE } from "@/constants/starforce";
 import { cn } from "@/lib/utils";
-import { formatCostExact, formatCostRounded, formatSpareCountExact, formatSpareCountRounded } from "@/lib/format";
-import { computeStarforceTable, getMaxStar } from "@/lib/starforce-service";
+import {
+  formatCostDecimal,
+  formatCostExact,
+  formatCostRounded,
+  formatEnhancerCount,
+  formatSpareCountExact,
+  formatSpareCountRounded,
+} from "@/lib/format";
+import { computePulseEnhancerTable, computeStarforceTable, getMaxStar } from "@/lib/starforce-service";
 import type { ItemPriceInfo } from "@/lib/price-service";
 import { StarforceDiscountPanel } from "@/pages/enhance-cost/discount-panel";
 import { SparePriceInput } from "@/pages/enhance-cost/spare-price-input";
@@ -39,7 +49,11 @@ export function StarforceCard({
   const [membershipGrade, setMembershipGrade] = useState<string | null>(null);
   const [pcRoom, setPcRoom] = useState(false);
 
-  const maxStar = getMaxStar(level);
+  // 어센던트 펄스 링 uses its own fixed 펄스 인핸서 consumption/rates instead of the normal
+  // meso-based starforce table - detected from the badge applied by the equipment picker.
+  const isAscendant = spareValuePriceInfo?.itemName === ASCENDANT_PULSE_RING_ITEM_NAME;
+
+  const maxStar = isAscendant ? Math.min(getMaxStar(level), PULSE_ENHANCER_TABLE.length) : getMaxStar(level);
 
   const costDiscountRate =
     (activeSundayKeys.has("enhanceDiscount") ? 0.3 : 0) +
@@ -48,17 +62,19 @@ export function StarforceCard({
 
   const starforceTable = useMemo(
     () =>
-      computeStarforceTable(
-        {
-          level,
-          spareValue,
-          costDiscountRate,
-          destroyReductionActive: activeSundayKeys.has("destructionReduction"),
-          restoreMesoDiscountActive: activeSundayKeys.has("restoreDiscount"),
-        },
-        maxStar,
-      ),
-    [level, spareValue, costDiscountRate, activeSundayKeys, maxStar],
+      isAscendant
+        ? computePulseEnhancerTable(level, spareValue, activeSundayKeys.has("restoreDiscount")).slice(0, maxStar)
+        : computeStarforceTable(
+            {
+              level,
+              spareValue,
+              costDiscountRate,
+              destroyReductionActive: activeSundayKeys.has("destructionReduction"),
+              restoreMesoDiscountActive: activeSundayKeys.has("restoreDiscount"),
+            },
+            maxStar,
+          ),
+    [isAscendant, level, spareValue, costDiscountRate, activeSundayKeys, maxStar],
   );
   const starLevels = Array.from({ length: maxStar }, (_, star) => star);
 
@@ -117,7 +133,21 @@ export function StarforceCard({
             <tr className="border-b">
               <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">현재</th>
               <th className="border-r px-3 py-1 text-right font-medium text-muted-foreground">목표</th>
-              <th className="w-32 border-r px-3 py-1 text-right font-medium text-muted-foreground">평균 비용</th>
+              <th className="w-32 border-r px-3 py-1 text-right font-medium text-muted-foreground">
+                <span className="inline-flex items-center justify-end gap-1">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <img
+                        src={isAscendant ? pulseEnhancerIcon : mesoIcon}
+                        alt=""
+                        className="h-3.5 w-auto shrink-0"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent side="top">{isAscendant ? "펄스 인핸서" : "메소"}</TooltipContent>
+                  </Tooltip>
+                  평균 비용
+                </span>
+              </th>
               <th className="w-24 border-r px-3 py-1 text-right font-medium text-muted-foreground">노작 개수</th>
               <th className="border-r px-3 py-1 text-center font-medium text-muted-foreground">
                 <Tooltip>
@@ -168,14 +198,17 @@ export function StarforceCard({
                   </td>
                   <td className="border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">{target}</td>
                   <td className="w-32 border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">
-                    {cumulativeCost != null && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span>{formatCostRounded(cumulativeCost)}</span>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">{formatCostExact(cumulativeCost)}</TooltipContent>
-                      </Tooltip>
-                    )}
+                    {cumulativeCost != null &&
+                      (isAscendant ? (
+                        <span>{formatEnhancerCount(cumulativeCost)}</span>
+                      ) : (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span>{formatCostDecimal(cumulativeCost)}</span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">{formatCostExact(cumulativeCost)}</TooltipContent>
+                        </Tooltip>
+                      ))}
                   </td>
                   <td className="w-24 border-r px-3 py-1 text-right whitespace-nowrap tabular-nums">
                     {cumulativeSpareCount != null && (

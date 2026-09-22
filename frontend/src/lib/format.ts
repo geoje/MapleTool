@@ -49,6 +49,36 @@ export function roundToTwoDecimals(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+// Full precision (no 조/억/만 abbreviation), rounded to the nearest whole number - used for item
+// counts like 펄스 인핸서 consumption, where the amount is never large enough to need unit
+// breakdown and a fractional item doesn't make sense.
+export function formatEnhancerCount(value: number): string {
+  return Math.round(value).toLocaleString("en-US");
+}
+
+const COST_DECIMAL_UNITS: [unitValue: number, label: string][] = [
+  [1_000_000_000_000, "조"],
+  [100_000_000, "억"],
+  [10_000, "만"],
+];
+
+// Shows the largest applicable 조/억/만 unit with the value rounded to the nearest whole number in
+// that unit (no decimal shown) - unlike formatCostRounded/formatCostExact, this never breaks the
+// remainder out into a smaller unit.
+export function formatCostDecimal(value: number): string {
+  const isNegative = value < 0;
+  const abs = Math.abs(value);
+
+  for (const [unitValue, unitLabel] of COST_DECIMAL_UNITS) {
+    if (abs >= unitValue) {
+      const scaled = Math.round(abs / unitValue).toLocaleString("en-US");
+      return `${isNegative ? "-" : ""}${scaled}${unitLabel}`;
+    }
+  }
+
+  return `${isNegative ? "-" : ""}${Math.round(abs)}`;
+}
+
 function formatFixedPoint(value: number, decimals: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(decimals);
 }

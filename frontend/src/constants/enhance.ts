@@ -34,6 +34,10 @@ export const SET_INFOS: Record<SetType, { name: string; icon: string }> = {
   [SetType.ASCENDANT]: { name: "어센던트 펄스 링", icon: ascendantPulseRing },
 };
 
+// Shared with the starforce panel, which special-cases this item: it has no
+// market price (untradable), so its cost is hardcoded instead of fetched.
+export const ASCENDANT_PULSE_RING_ITEM_NAME = SET_INFOS[SetType.ASCENDANT].name;
+
 // Each pair's armor set and accessory set never use the same equipment slot,
 // so their items can be shown together on one grid. A combo may also hold a
 // single SetType to show just one standalone item (no armor counterpart).
@@ -148,6 +152,7 @@ import primeCubeIcon from "@/assets/cube/prime.webp";
 import primeAddiCubeIcon from "@/assets/cube/prime-addi.webp";
 import resetIcon from "@/assets/cube/reset.png";
 import resetAddiIcon from "@/assets/cube/reset-addi.png";
+import pulseEnhancerIcon from "@/assets/enhance/pulse-enhancer.png";
 
 export const CubeType = {
   RESET: "reset",
@@ -159,6 +164,11 @@ export const CubeType = {
   ADDI: "addi",
   PRIME_ADDI: "primeAddi",
   STRANGE_ADDI: "strangeAddi",
+  // 어센던트 펄스 링 only - a 잠재능력/에디셔널 잠재능력 재설정 that costs 펄스 인핸서 instead
+  // of meso. Not part of POTENTIAL_CUBES/ADDITIONAL_POTENTIAL_CUBES; the cube-selector UI
+  // appends it only while the ring is selected (see enhance-cost-page.tsx).
+  PULSE_RESET: "pulseReset",
+  PULSE_ADDI_RESET: "pulseAddiReset",
 } as const;
 
 export type CubeType = (typeof CubeType)[keyof typeof CubeType];
@@ -209,6 +219,16 @@ export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: strin
     fullName: "수상한 에디셔널 큐브 / 브론즈 에디셔널 큐브",
     icon: bronzeCubeIcon,
   },
+  [CubeType.PULSE_RESET]: {
+    displayName: "펄스 인핸서",
+    fullName: "잠재능력 재설정 펄스 인핸서",
+    icon: pulseEnhancerIcon,
+  },
+  [CubeType.PULSE_ADDI_RESET]: {
+    displayName: "펄스 인핸서",
+    fullName: "에디셔널 잠재능력 재설정 펄스 인핸서",
+    icon: pulseEnhancerIcon,
+  },
 };
 
 // RESET/ADDI_RESET have no probability data of their own - they share the
@@ -216,12 +236,16 @@ export const CUBE_INFOS: Record<CubeType, { displayName: string; fullName: strin
 // grade-up guarantee count (see GRADE_UP_STEPS in potential-table.tsx).
 // PRIME/PRIME_ADDI also share BLACK/ADDI's disclosure - Prime Cube only adds
 // the ability to see and lock the 1st line before rerolling, it doesn't
-// change the underlying option-roll odds.
+// change the underlying option-roll odds. PULSE_RESET/PULSE_ADDI_RESET are
+// the same reset mechanic priced in 펄스 인핸서 instead of meso, so they share
+// RESET/ADDI_RESET's own disclosure too.
 export const CUBE_PROBABILITY_SOURCE: Partial<Record<CubeType, CubeType>> = {
   [CubeType.RESET]: CubeType.BLACK,
   [CubeType.PRIME]: CubeType.BLACK,
   [CubeType.ADDI_RESET]: CubeType.ADDI,
   [CubeType.PRIME_ADDI]: CubeType.ADDI,
+  [CubeType.PULSE_RESET]: CubeType.BLACK,
+  [CubeType.PULSE_ADDI_RESET]: CubeType.ADDI,
 };
 
 export const POTENTIAL_CUBES = [
