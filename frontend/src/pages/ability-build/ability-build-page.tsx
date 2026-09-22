@@ -51,6 +51,16 @@ function legendaryPlusUniqueTable(legendaryText: string, uniqueText: string, uni
   return { row1: legendaryCell, row2Col1: null, row2Col2: null, [uniqueSlot]: uniqueCell };
 }
 
+// Advanced reset can land legendary on row1 AND row2/row3 at once, with either selected option
+// ending up on either row - so a completed 2-option build has 2 equally valid arrangements.
+function twoLegendaryTable(row1Text: string, row2Col1Text: string): ResultTableData {
+  return {
+    row1: { text: row1Text, grade: "legendary" },
+    row2Col1: { text: row2Col1Text, grade: "legendary" },
+    row2Col2: null,
+  };
+}
+
 function twoUniqueTable(leftText: string, rightText: string): ResultTableData {
   return {
     row1: null,
@@ -118,7 +128,12 @@ const TIE_EPSILON = 1e-6;
 // out of) to mark every edge on ANY route tied for cheapest - when several branches converge on the
 // same node/leaf with equal cost, all of them get marked, not just whichever the relaxation settled
 // on first. Nodes upstream of/unrelated to startNodeId are left out, since they're never reached.
-function findCheapestRouteEdgeIds(nodes: Node[], edges: Edge[], startNodeId: string): Set<string> {
+//
+// exclusiveLeafGroups marks sets of leaves that are mirrors of the same overall outcome (e.g. an
+// advanced 2-option build with the 2 options swapped between row1 and row2/row3) - only the
+// cheapest-to-reach member(s) of each group get backtracked from, so the pricier mirror still
+// renders on the canvas but its route isn't highlighted.
+function findCheapestRouteEdgeIds(nodes: Node[], edges: Edge[], startNodeId: string, exclusiveLeafGroups: string[][] = []): Set<string> {
   const bestCost = new Map<string, number>([[startNodeId, 0]]);
 
   let changed = true;
@@ -151,8 +166,20 @@ function findCheapestRouteEdgeIds(nodes: Node[], edges: Edge[], startNodeId: str
   }
 
   const nodesWithOutgoingEdge = new Set(edges.map((edge) => edge.source));
+  const groupedLeafIds = new Set(exclusiveLeafGroups.flat());
+  const ungroupedLeafIds = nodes.filter((node) => !nodesWithOutgoingEdge.has(node.id) && !groupedLeafIds.has(node.id)).map((node) => node.id);
+  const winningGroupLeafIds = exclusiveLeafGroups.flatMap((group) => {
+    const reachableCosts = group.map((id) => bestCost.get(id)).filter((cost): cost is number => cost !== undefined);
+    if (reachableCosts.length === 0) return [];
+    const minCost = Math.min(...reachableCosts);
+    return group.filter((id) => {
+      const cost = bestCost.get(id);
+      return cost !== undefined && cost - minCost < TIE_EPSILON;
+    });
+  });
+
   const highlightedEdgeIds = new Set<string>();
-  const queue = nodes.filter((node) => !nodesWithOutgoingEdge.has(node.id)).map((node) => node.id);
+  const queue = [...ungroupedLeafIds, ...winningGroupLeafIds];
   const visited = new Set<string>();
 
   while (queue.length > 0) {
@@ -206,8 +233,12 @@ export function AbilityBuildPage() {
     (option) => option.name !== firstSelectedName && selectedOptionNames.has(option.name)
   );
 
-  const { branchNodes, branchEdges: rawBranchEdges } = useMemo<{ branchNodes: Node[]; branchEdges: Edge[] }>(() => {
-    if (!firstOption) return { branchNodes: [], branchEdges: [] };
+  const {
+    branchNodes,
+    branchEdges: rawBranchEdges,
+    exclusiveLeafGroups,
+  } = useMemo<{ branchNodes: Node[]; branchEdges: Edge[]; exclusiveLeafGroups: string[][] }>(() => {
+    if (!firstOption) return { branchNodes: [], branchEdges: [], exclusiveLeafGroups: [] };
 
     const legendaryChancePercent = firstOption.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
     const resultText = formatAbilityResultRange(firstOption);
@@ -241,6 +272,7 @@ export function AbilityBuildPage() {
 
     let branchNodes: Node[];
     let branchEdges: Edge[];
+    let exclusiveLeafGroups: string[][] = [];
 
     if (resetType === ResetType.NORMAL) {
       // Normal reset can only roll legendary on row1 and unique on row2/row3, so the first-picked
@@ -610,14 +642,178 @@ export function AbilityBuildPage() {
       });
 
       if (!secondOption) {
-        const row1Max = buildValueMaxBranch("result-0", "row1", [chaosCirculatorIcon, blackCirculatorIcon], 80);
+        // Chaos/black circulators can't touch a row won through advanced reset - only the abyss
+        // circulator can, regardless of which row the legendary line landed on.
+        const row1Max = buildValueMaxBranch("result-0", "row1", abyssCirculatorIcon, 80);
         const row23Max = buildValueMaxBranch("result-1", "row2Col1", abyssCirculatorIcon, 520);
         branchNodes.push(row1Max.node, row23Max.node);
         branchEdges.push(row1Max.edge, row23Max.edge);
       }
+
+      // Unlike normal reset (where the 2nd pick can only ever be unique on row2/row3), advanced
+      // reset lets BOTH picks land legendary on EITHER row - so the completed build has 2 equally
+      // valid arrangements (first on row1/second on row2-3, or swapped). Both get built in full,
+      // but only the actually-cheaper arrangement should read as the recommended route (handled via
+      // exclusiveLeafGroups below), since the end result is the same option set either way.
+      if (secondOption && !thirdOption) {
+        const secondThirdSlots = [ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY, ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY];
+        const secondLegendaryChancePercent = secondOption.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
+        const secondResultText = formatAbilityResultRange(secondOption);
+
+        // Mirror of the result-0/result-1 branches above, but targeting the second-picked option -
+        // each is a 2nd starting point that the OTHER option's branch can also converge into.
+        const { reputationCost: secondRow1Cost, mesoCost: secondRow1Meso } = advancedResetCost([100], secondLegendaryChancePercent, 0, discountFactor);
+        const { reputationCost: secondRow23Cost, mesoCost: secondRow23Meso } = advancedResetCost(secondThirdSlots, secondLegendaryChancePercent, 0, discountFactor);
+
+        branchNodes.push(
+          { id: "result-0b", type: "result", position: { x: RESULT_X, y: 260 }, data: singleOptionTable("row1", secondResultText) },
+          { id: "result-1b", type: "result", position: { x: RESULT_X, y: 700 }, data: singleOptionTable("row2Col1", secondResultText) }
+        );
+        branchEdges.push(
+          {
+            id: "option->result-0b",
+            source: "option",
+            target: "result-0b",
+            type: "labeled",
+            data: {
+              title: `첫째줄 ${secondOption.abbreviation}`,
+              rows: [
+                { icon: abilityNavIcon, value: formatCostFull(secondRow1Cost) },
+                { icon: mesoIcon, value: formatCostDecimal(secondRow1Meso) },
+              ],
+              reputationCost: secondRow1Cost,
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "option->result-1b",
+            source: "option",
+            target: "result-1b",
+            type: "labeled",
+            data: {
+              title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
+              rows: [
+                { icon: abilityNavIcon, value: formatCostFull(secondRow23Cost) },
+                { icon: mesoIcon, value: formatCostDecimal(secondRow23Meso) },
+              ],
+              reputationCost: secondRow23Cost,
+            } satisfies LabeledEdgeData,
+          }
+        );
+
+        // finalA: first locked on row1, second fills row2/row3 - reachable either from result-0
+        // (lock row1, roll for second) or from result-1b (lock row2/row3, roll for first).
+        // finalB is the mirror (rows swapped).
+        const { reputationCost: addSecondToRow23Cost, mesoCost: addSecondToRow23Meso } = advancedResetCost(secondThirdSlots, secondLegendaryChancePercent, 1, discountFactor);
+        const { reputationCost: addFirstToRow1Cost, mesoCost: addFirstToRow1Meso } = advancedResetCost([100], legendaryChancePercent, 1, discountFactor);
+        const { reputationCost: addSecondToRow1Cost, mesoCost: addSecondToRow1Meso } = advancedResetCost([100], secondLegendaryChancePercent, 1, discountFactor);
+        const { reputationCost: addFirstToRow23Cost, mesoCost: addFirstToRow23Meso } = advancedResetCost(secondThirdSlots, legendaryChancePercent, 1, discountFactor);
+
+        branchNodes.push(
+          { id: "result-finalA", type: "result", position: { x: FINAL_X, y: 170 }, data: twoLegendaryTable(resultText, secondResultText) },
+          { id: "result-finalB", type: "result", position: { x: FINAL_X, y: 610 }, data: twoLegendaryTable(secondResultText, resultText) }
+        );
+        branchEdges.push(
+          {
+            id: "result-0->result-finalA",
+            source: "result-0",
+            target: "result-finalA",
+            type: "labeled",
+            data: {
+              title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
+              rows: [
+                { icon: abilityNavIcon, value: formatCostFull(addSecondToRow23Cost) },
+                { icon: mesoIcon, value: formatCostDecimal(addSecondToRow23Meso) },
+              ],
+              reputationCost: addSecondToRow23Cost,
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-1b->result-finalA",
+            source: "result-1b",
+            target: "result-finalA",
+            type: "labeled",
+            data: {
+              title: `첫째줄 ${firstOption.abbreviation}`,
+              rows: [
+                { icon: abilityNavIcon, value: formatCostFull(addFirstToRow1Cost) },
+                { icon: mesoIcon, value: formatCostDecimal(addFirstToRow1Meso) },
+              ],
+              reputationCost: addFirstToRow1Cost,
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-1->result-finalB",
+            source: "result-1",
+            target: "result-finalB",
+            type: "labeled",
+            data: {
+              title: `첫째줄 ${secondOption.abbreviation}`,
+              rows: [
+                { icon: abilityNavIcon, value: formatCostFull(addSecondToRow1Cost) },
+                { icon: mesoIcon, value: formatCostDecimal(addSecondToRow1Meso) },
+              ],
+              reputationCost: addSecondToRow1Cost,
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-0b->result-finalB",
+            source: "result-0b",
+            target: "result-finalB",
+            type: "labeled",
+            data: {
+              title: `둘째줄 또는 셋째줄 ${firstOption.abbreviation}`,
+              rows: [
+                { icon: abilityNavIcon, value: formatCostFull(addFirstToRow23Cost) },
+                { icon: mesoIcon, value: formatCostDecimal(addFirstToRow23Meso) },
+              ],
+              reputationCost: addFirstToRow23Cost,
+            } satisfies LabeledEdgeData,
+          }
+        );
+
+        // Chaos/black circulators can't touch a line won through advanced reset, regardless of
+        // row - only the abyss circulator can. Like the normal-reset combined max above, one
+        // application rerolls every placed row's value at once, so success needs both rows'
+        // independent max-tier odds to land in the same try (1 combined row, not 2).
+        const secondMaxResultText = formatAbilityResultMax(secondOption);
+        const secondMaxValueProbabilityPercent = maxValueProbability(secondOption);
+        const advancedCombinedMaxFraction = (maxValueProbabilityPercent / 100) * (secondMaxValueProbabilityPercent / 100);
+        const advancedCombinedMaxTries = advancedCombinedMaxFraction > 0 ? 1 / advancedCombinedMaxFraction : 0;
+
+        branchNodes.push(
+          { id: "result-finalA-max", type: "result", position: { x: FINAL_X + 260, y: 170 }, data: twoLegendaryTable(maxResultText, secondMaxResultText) },
+          { id: "result-finalB-max", type: "result", position: { x: FINAL_X + 260, y: 610 }, data: twoLegendaryTable(secondMaxResultText, maxResultText) }
+        );
+        branchEdges.push(
+          {
+            id: "result-finalA->result-finalA-max",
+            source: "result-finalA",
+            target: "result-finalA-max",
+            type: "labeled",
+            data: {
+              title: `${firstOption.abbreviation} ${secondOption.abbreviation} 최대치`,
+              rows: [{ icon: abyssCirculatorIcon, value: `${formatCostDecimal(advancedCombinedMaxTries)}회` }],
+            } satisfies LabeledEdgeData,
+          },
+          {
+            id: "result-finalB->result-finalB-max",
+            source: "result-finalB",
+            target: "result-finalB-max",
+            type: "labeled",
+            data: {
+              title: `${firstOption.abbreviation} ${secondOption.abbreviation} 최대치`,
+              rows: [{ icon: abyssCirculatorIcon, value: `${formatCostDecimal(advancedCombinedMaxTries)}회` }],
+            } satisfies LabeledEdgeData,
+          }
+        );
+
+        // Both arrangements reach the exact same 2-option outcome, just with the rows swapped -
+        // only the actually-cheaper one should be highlighted as the recommended route.
+        exclusiveLeafGroups = [["result-finalA-max", "result-finalB-max"]];
+      }
     }
 
-    return { branchNodes, branchEdges };
+    return { branchNodes, branchEdges, exclusiveLeafGroups };
   }, [firstOption, secondOption, thirdOption, resetType, reputationDiscount]);
 
   const nodes = useMemo<Node[]>(
@@ -644,12 +840,12 @@ export function AbilityBuildPage() {
   // onward to its goal - defaults to "option" (the whole-graph cheapest route) otherwise.
   const activeRouteNodeId = pinnedNodeId ?? hoveredNodeId;
   const branchEdges = useMemo(() => {
-    const cheapestRouteEdgeIds = findCheapestRouteEdgeIds(branchNodes, rawBranchEdges, activeRouteNodeId);
+    const cheapestRouteEdgeIds = findCheapestRouteEdgeIds(branchNodes, rawBranchEdges, activeRouteNodeId, exclusiveLeafGroups);
     if (cheapestRouteEdgeIds.size === 0) return rawBranchEdges;
     return rawBranchEdges.map((edge) =>
       cheapestRouteEdgeIds.has(edge.id) ? { ...edge, data: { ...(edge.data as LabeledEdgeData), highlighted: true } } : edge
     );
-  }, [rawBranchEdges, branchNodes, activeRouteNodeId]);
+  }, [rawBranchEdges, branchNodes, activeRouteNodeId, exclusiveLeafGroups]);
 
   return (
     <ReactFlow
