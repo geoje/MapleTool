@@ -58,6 +58,10 @@ export function countWeeklyBoss(bossPlan: BossPlan) {
   return bossPlan.boss.filter(({ type }) => (BOSS[type].category ?? "weekly") == "weekly").length;
 }
 
+export function countMonthlyBoss(bossPlan: BossPlan) {
+  return bossPlan.boss.filter(({ type }) => (BOSS[type].category ?? "weekly") == "monthly").length;
+}
+
 // Drops the cheapest weekly boss entries so at most MAX_BOSS_SELECTABLE remain selected.
 export function capBossPlan(bossPlan: BossPlan): BossPlan {
   const weekly = bossPlan.boss.filter(({ type }) => (BOSS[type].category ?? "weekly") == "weekly");

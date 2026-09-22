@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp, Copy, Loader2, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import crystalPurple from "@/assets/crystal/purple.png";
 import crystalYellow from "@/assets/crystal/yellow.png";
+import mesoIcon from "@/assets/enhance/meso.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -30,6 +31,7 @@ import {
   calculatePreviousMonthlyRevenue,
   calculatePreviousRevenue,
   calculateRevenue,
+  countMonthlyBoss,
   countWeeklyBoss,
 } from "@/lib/boss-service";
 import { formatCountDelta, formatCubeCount, formatDelta, formatNumber } from "@/lib/format";
@@ -557,6 +559,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
     { silver: 0, gold: 0 }
   );
   const totalCrystals = selectedPlans.reduce((acc, plan) => acc + countWeeklyBoss(plan), 0);
+  const totalMonthlyCrystals = selectedPlans.reduce((acc, plan) => acc + countMonthlyBoss(plan), 0);
 
   const totalPrevWeekly = showComparison
     ? selectedPlans.reduce((acc, plan) => acc + calculatePreviousRevenue(plan), 0)
@@ -604,7 +607,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
 
   return (
     <div className="w-full overflow-x-auto">
-      <div className="grid select-none grid-cols-[max-content_1fr_repeat(9,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
+      <div className="grid select-none grid-cols-[max-content_1fr_repeat(10,max-content)] items-center gap-x-3 gap-y-1.5 text-xs min-w-max">
         <div
           className="w-px self-stretch bg-border"
           style={{ gridColumn: 3, gridRow: `1 / ${lastRowEnd}` }}
@@ -616,8 +619,26 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
 
         <span />
         <span className="font-medium text-muted-foreground">캐릭터명</span>
-        <span className="text-right font-medium text-muted-foreground">주간 결정 개수</span>
-        <span className="text-right font-medium text-muted-foreground">주간 수익</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img
+              src={crystalPurple}
+              alt="주간 결정 개수"
+              className="h-4 w-auto shrink-0 justify-self-center"
+            />
+          </TooltipTrigger>
+          <TooltipContent>주간 결정 개수</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img
+              src={mesoIcon}
+              alt="주간 수익"
+              className="h-4 w-auto shrink-0 justify-self-center"
+            />
+          </TooltipTrigger>
+          <TooltipContent>주간 수익</TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <img
@@ -638,7 +659,26 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
           </TooltipTrigger>
           <TooltipContent>메멘토 골드 큐브 (주간)</TooltipContent>
         </Tooltip>
-        <span className="text-right font-medium text-muted-foreground">월간 수익</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img
+              src={crystalYellow}
+              alt="월간 결정 개수"
+              className="h-4 w-auto shrink-0 justify-self-center"
+            />
+          </TooltipTrigger>
+          <TooltipContent>월간 결정 개수</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <img
+              src={mesoIcon}
+              alt="월간 수익"
+              className="h-4 w-auto shrink-0 justify-self-center"
+            />
+          </TooltipTrigger>
+          <TooltipContent>월간 수익</TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <img
@@ -713,6 +753,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
                 align="center"
                 className={dim}
               />
+              <span className={cn("text-right", dim)}>{countMonthlyBoss(plan)}</span>
               <ValueWithDelta
                 value={formatNumber(monthlyRevenue)}
                 delta={monthlyDelta}
@@ -756,6 +797,7 @@ export function SummaryTable({ showComparison }: { showComparison?: boolean }) {
           align="center"
           className="font-medium"
         />
+        <span className="text-right font-medium">{totalMonthlyCrystals}</span>
         <ValueWithDelta
           value={formatNumber(totalMonthly)}
           delta={totalMonthlyDelta}

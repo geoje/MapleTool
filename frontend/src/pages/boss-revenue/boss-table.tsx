@@ -1,4 +1,5 @@
-import { ChevronsUpDown, ChevronUp, ChevronDown, RotateCcw } from "lucide-react";
+import { ChevronsUpDown, ChevronUp, ChevronDown, Minus, Plus, RotateCcw } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import {
   BOSS,
   BossDifficulty,
@@ -14,12 +15,11 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useBossStore } from "@/stores/boss-store";
 import type { BossOrder, BossPlan } from "@/types";
@@ -160,7 +160,7 @@ export function BossTableActions({ selected }: { selected: number }) {
         <TooltipTrigger asChild>
           <Button
             aria-label="reset"
-            variant="ghost"
+            variant="outline"
             size="icon"
             className="size-7 text-muted-foreground hover:text-foreground"
             onClick={() => clearBossItems(selected)}
@@ -370,27 +370,91 @@ function BossRow({
       </div>
 
       <div className="flex items-center justify-center border-t py-1">
-        <Select
-          value={String(members)}
-          onValueChange={(value) => onMembersChange(Number(value))}
-          disabled={isDisabled}
-        >
-          <SelectTrigger size="sm" variant="outline" className="h-7 w-16">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: maxMembers }, (_, i) => i + 1).map((value) => (
-              <SelectItem key={value} value={String(value)}>
-                {value}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MembersInput
+          members={members}
+          maxMembers={maxMembers}
+          isDisabled={isDisabled}
+          onMembersChange={onMembersChange}
+        />
       </div>
 
       <div className="flex items-center justify-end border-t py-1 pl-4 text-xs">
         {price && formatNumber(price / members)}
       </div>
     </>
+  );
+}
+
+function MembersInput({
+  members,
+  maxMembers,
+  isDisabled,
+  onMembersChange,
+}: {
+  members: number;
+  maxMembers: number;
+  isDisabled?: boolean;
+  onMembersChange: (members: number) => void;
+}) {
+  const [text, setText] = useState(String(members));
+  const isFocused = useRef(false);
+
+  useEffect(() => {
+    if (!isFocused.current) setText(String(members));
+  }, [members]);
+
+  const clamp = (value: number) => Math.min(maxMembers, Math.max(1, value));
+  const atMin = members <= 1;
+  const atMax = members >= maxMembers;
+
+  return (
+    <InputGroup className="h-7 w-auto rounded-full">
+      <InputGroupAddon align="inline-start">
+        <InputGroupButton
+          size="icon-xs"
+          aria-label="decrease members"
+          aria-disabled={atMin}
+          disabled={isDisabled}
+          className={cn("rounded-full", atMin && "pointer-events-none opacity-50")}
+          onClick={() => {
+            if (!atMin) onMembersChange(clamp(members - 1));
+          }}
+        >
+          <Minus />
+        </InputGroupButton>
+      </InputGroupAddon>
+      <InputGroupInput
+        inputMode="numeric"
+        disabled={isDisabled}
+        className="w-auto min-w-4 flex-none field-sizing-content px-1 text-center"
+        value={text}
+        onFocus={() => {
+          isFocused.current = true;
+        }}
+        onBlur={() => {
+          isFocused.current = false;
+          setText(String(members));
+        }}
+        onChange={(event) => {
+          const digits = event.target.value.replace(/[^0-9]/g, "");
+          setText(digits);
+          if (digits) onMembersChange(clamp(Number(digits)));
+        }}
+      />
+      <InputGroupAddon align="inline-end">
+        <InputGroupButton
+          size="icon-xs"
+          aria-label="increase members"
+          aria-disabled={atMax}
+          disabled={isDisabled}
+          className={cn("rounded-full", atMax && "pointer-events-none opacity-50")}
+          onClick={() => {
+            if (!atMax) onMembersChange(clamp(members + 1));
+          }}
+        >
+          <Plus />
+        </InputGroupButton>
+      </InputGroupAddon>
+    </InputGroup>
   );
 }

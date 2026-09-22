@@ -108,9 +108,11 @@ export function BossRevenuePage() {
 
         {selected >= 0 && (
           <Card className="w-full md:w-auto">
-            <CardHeader>
-              <SectionTitle step={2}>보스</SectionTitle>
-              <CardAction>
+            <CardHeader className="flex items-center">
+              <SectionTitle step={2} className="flex-1">
+                보스
+              </SectionTitle>
+              <CardAction className="self-center">
                 <BossTableActions selected={selected} />
               </CardAction>
             </CardHeader>
