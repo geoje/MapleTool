@@ -269,7 +269,7 @@ export function AbilityBuildPage() {
           target: targetId,
           type: "labeled",
           data: {
-            title: `${firstOption.abbreviation} 최대치`,
+            title: `${firstOption!.abbreviation} 최대치`,
             rows: [{ icon, value: `${formatCostDecimal(maxValueTries)}회` }],
           } satisfies LabeledEdgeData,
         },

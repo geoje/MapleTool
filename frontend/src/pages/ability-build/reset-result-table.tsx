@@ -9,11 +9,11 @@ export interface ResultCellData {
 
 // row2/row3 have identical odds and roll simultaneously, so they're merged into row2Col1/row2Col2
 // instead of separate row2/row3 fields.
-export interface ResultTableData {
+export type ResultTableData = {
   row1: ResultCellData | null;
   row2Col1: ResultCellData | null;
   row2Col2: ResultCellData | null;
-}
+};
 
 // Every option text follows "{abbreviation} n{unit}", so splitting on the first space always
 // separates name from value.
