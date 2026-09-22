@@ -15,14 +15,14 @@ const NAV_ITEMS = [
   { to: "/boss-revenue", label: "보스 수익", icon: crystalPurple },
   { to: "/enhance-cost", label: "강화 비용", icon: meso },
   { to: "/union-artifact", label: "유니온 아티팩트", icon: artifactNavIcon },
-  { to: "/ability-optimize", label: "어빌리티 최적화", icon: abilityNavIcon },
+  { to: "/ability-build", label: "어빌리티 빌드", icon: abilityNavIcon },
 ];
 
 const TITLES: Record<string, string> = {
   "/boss-revenue": "보스 수익",
   "/enhance-cost": "강화 비용",
   "/union-artifact": "유니온 아티팩트",
-  "/ability-optimize": "어빌리티 최적화",
+  "/ability-build": "어빌리티 빌드",
 };
 
 function NavLinkItem({

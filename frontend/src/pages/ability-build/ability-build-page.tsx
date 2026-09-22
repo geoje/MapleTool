@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
-export function AbilityOptimizePage() {
+export function AbilityBuildPage() {
   const [showNotice, setShowNotice] = useState(true);
 
   return (
