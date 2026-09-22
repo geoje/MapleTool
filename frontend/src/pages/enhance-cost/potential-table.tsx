@@ -1192,10 +1192,43 @@ const isWeaponLikeCategory = (category: string): boolean =>
 // checks that section uses. Anything else line 1 could roll (flat stat
 // bonuses, 방어력, 이동속도, ...) isn't tracked by any section there either, so
 // locking onto it wouldn't move a single displayed row and is skipped.
+// 주스탯/올스탯/HP are mutually exclusive outcomes for line 1 (it can only
+// disclose one of them), so once locked onto one, the sections for the other
+// two are just noise - see the statFamilyLabel filtering in
+// buildPrimeLockedSections. 드메/쿨감/크뎀/공/보스뎀 don't compete with each
+// other or with these three the same way, so their sections still show
+// alongside every other applicable section.
+const STAT_FAMILY_LABELS = ["주스탯", "올스탯", "HP"] as const;
+
+function isStatFamilyGroup(rows: OptionRow[], label: string): boolean {
+  return rows.every((row) => row.label.includes(label));
+}
+
+// SECONDARY_STAT_OPTIONS' own plain section (e.g. 모자's "쿨 1초"/"쿨 2초", 장갑's
+// "크뎀 n%") is computed straight off lines 2/3 once line 1 is locked onto a
+// stat, since the lock removes line 1's cooldown/크뎀 items entirely - unlike
+// the 쿨감 lock scenario where it's already guaranteed and dropped by
+// dropGuaranteedRows, here it's a genuine <100% result and survives, becoming
+// noise in a card that's supposed to be just "this stat, locked". Every row in
+// this section is a plain (non-combo) row that doesn't belong to any other
+// identifiable section - 드메/아무스탯 never coexist with a secondary option
+// (모자/장갑 aren't in ANY_STAT_CATEGORIES/DROP_MESO_CATEGORIES), so this check
+// only ever matches the secondary-option section.
+function isSecondaryOptionOnlyGroup(rows: OptionRow[]): boolean {
+  return rows.every(
+    (row) =>
+      !row.label.includes(" + ") &&
+      !row.label.includes("드메") &&
+      !row.label.includes("아무스탯") &&
+      !STAT_FAMILY_LABELS.some((label) => row.label.includes(label))
+  );
+}
+
 const LOCKABLE_TEMPLATE_GROUPS: {
   templates: string[];
   formatLabel: (value: number) => string;
   isApplicable: (category: string, includeDropMeso: boolean) => boolean;
+  statFamilyLabel?: (typeof STAT_FAMILY_LABELS)[number];
 }[] = [
   {
     templates: DROP_MESO_TEMPLATES,
@@ -1226,16 +1259,19 @@ const LOCKABLE_TEMPLATE_GROUPS: {
     templates: ["STR +n%", "DEX +n%", "INT +n%", "LUK +n%"],
     formatLabel: (value) => `주스탯 ${value}%`,
     isApplicable: (category) => !isWeaponLikeCategory(category),
+    statFamilyLabel: "주스탯",
   },
   {
     templates: ["올스탯 +n%"],
     formatLabel: (value) => `올스탯 ${value}%`,
     isApplicable: (category) => !isWeaponLikeCategory(category),
+    statFamilyLabel: "올스탯",
   },
   {
     templates: ["최대 HP +n%"],
     formatLabel: (value) => `HP ${value}%`,
     isApplicable: (category) => !isWeaponLikeCategory(category),
+    statFamilyLabel: "HP",
   },
 ];
 
@@ -1282,7 +1318,7 @@ function buildPrimeLockedSections(
   if (!line1) return [];
 
   const sections: PrimeLockedSection[] = [];
-  for (const { templates, formatLabel, isApplicable } of LOCKABLE_TEMPLATE_GROUPS) {
+  for (const { templates, formatLabel, isApplicable, statFamilyLabel } of LOCKABLE_TEMPLATE_GROUPS) {
     if (!isApplicable(category, includeDropMeso)) continue;
     const lockedValue = slotOneMaximum([line1], templates);
     if (lockedValue <= 0) continue;
@@ -1291,9 +1327,15 @@ function buildPrimeLockedSections(
       optionNumber: 1,
       items: [{ name: templates[0].replace("n", String(lockedValue)), probability: 1 }],
     };
-    const rowGroups = dropRowsSubsumedByCombo(
+    let rowGroups = dropRowsSubsumedByCombo(
       dropGuaranteedRows(buildGradeRowGroups([lockedLine1, ...restGroups], category, includeDropMeso, grade))
     );
+    if (statFamilyLabel) {
+      const otherStatLabels = STAT_FAMILY_LABELS.filter((label) => label !== statFamilyLabel);
+      rowGroups = rowGroups.filter(
+        (rows) => !otherStatLabels.some((label) => isStatFamilyGroup(rows, label)) && !isSecondaryOptionOnlyGroup(rows)
+      );
+    }
     if (rowGroups.length === 0) continue;
     sections.push({ label: `${formatLabel(lockedValue)} 고정`, rowGroups });
   }
