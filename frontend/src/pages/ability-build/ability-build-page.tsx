@@ -109,10 +109,81 @@ function normalResetCost(
   return expectedTries * costPerTry * discountFactor;
 }
 
+const TIE_EPSILON = 1e-6;
+
+// Finds, for every node reachable from startNodeId (typically the hovered table, or "option" for
+// the whole graph), the cheapest cumulative reputation cost to reach it (circulator edges cost 0
+// reputation) via a simple DAG relaxation, then backtracks from each leaf (a node nothing branches
+// out of) to mark every edge on ANY route tied for cheapest - when several branches converge on the
+// same node/leaf with equal cost, all of them get marked, not just whichever the relaxation settled
+// on first. Nodes upstream of/unrelated to startNodeId are left out, since they're never reached.
+function findCheapestRouteEdgeIds(nodes: Node[], edges: Edge[], startNodeId: string): Set<string> {
+  const bestCost = new Map<string, number>([[startNodeId, 0]]);
+
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const edge of edges) {
+      const sourceCost = bestCost.get(edge.source);
+      if (sourceCost === undefined) continue;
+      const reputationCost = (edge.data as LabeledEdgeData | undefined)?.reputationCost ?? 0;
+      const candidateCost = sourceCost + reputationCost;
+      const currentCost = bestCost.get(edge.target);
+      if (currentCost === undefined || candidateCost < currentCost - TIE_EPSILON) {
+        bestCost.set(edge.target, candidateCost);
+        changed = true;
+      }
+    }
+  }
+
+  // Now that every node's true minimum is settled, collect every edge that achieves it - there
+  // may be more than one per node.
+  const bestIncomingEdgeIds = new Map<string, string[]>();
+  for (const edge of edges) {
+    const sourceCost = bestCost.get(edge.source);
+    const targetCost = bestCost.get(edge.target);
+    if (sourceCost === undefined || targetCost === undefined) continue;
+    const reputationCost = (edge.data as LabeledEdgeData | undefined)?.reputationCost ?? 0;
+    if (Math.abs(sourceCost + reputationCost - targetCost) < TIE_EPSILON) {
+      bestIncomingEdgeIds.set(edge.target, [...(bestIncomingEdgeIds.get(edge.target) ?? []), edge.id]);
+    }
+  }
+
+  const nodesWithOutgoingEdge = new Set(edges.map((edge) => edge.source));
+  const highlightedEdgeIds = new Set<string>();
+  const queue = nodes.filter((node) => !nodesWithOutgoingEdge.has(node.id)).map((node) => node.id);
+  const visited = new Set<string>();
+
+  while (queue.length > 0) {
+    const nodeId = queue.pop()!;
+    if (visited.has(nodeId)) continue;
+    visited.add(nodeId);
+
+    for (const edgeId of bestIncomingEdgeIds.get(nodeId) ?? []) {
+      highlightedEdgeIds.add(edgeId);
+      const source = edges.find((edge) => edge.id === edgeId)?.source;
+      if (source) queue.push(source);
+    }
+  }
+
+  return highlightedEdgeIds;
+}
+
 export function AbilityBuildPage() {
   const [selectedOptionNames, setSelectedOptionNames] = useState<Set<string>>(new Set([DEFAULT_SELECTED_OPTION]));
   const [reputationDiscount, setReputationDiscount] = useState(false);
   const [resetType, setResetType] = useState<ResetType>(ResetType.ADVANCED);
+  // Defaults to "option" so the whole-graph cheapest route shows even before anything is hovered.
+  const [hoveredNodeId, setHoveredNodeId] = useState<string>("option");
+  // Touch devices have no hover - tapping a table pins its route so it stays shown after the tap
+  // ends. Pin wins over hover whenever it's set; tapping the same table again or tapping empty
+  // canvas clears it.
+  const [pinnedNodeId, setPinnedNodeId] = useState<string | null>(null);
+
+  const onNodeMouseEnter = useCallback((_: unknown, node: Node) => setHoveredNodeId(node.id), []);
+  const onNodeMouseLeave = useCallback(() => setHoveredNodeId("option"), []);
+  const onNodeClick = useCallback((_: unknown, node: Node) => setPinnedNodeId((prev) => (prev === node.id ? null : node.id)), []);
+  const onPaneClick = useCallback(() => setPinnedNodeId(null), []);
 
   const onChangeSelected = useCallback((name: string) => {
     setSelectedOptionNames((prev) => {
@@ -134,7 +205,7 @@ export function AbilityBuildPage() {
     (option) => option.name !== firstSelectedName && selectedOptionNames.has(option.name)
   );
 
-  const { branchNodes, branchEdges } = useMemo<{ branchNodes: Node[]; branchEdges: Edge[] }>(() => {
+  const { branchNodes, branchEdges: rawBranchEdges } = useMemo<{ branchNodes: Node[]; branchEdges: Edge[] }>(() => {
     if (!firstOption) return { branchNodes: [], branchEdges: [] };
 
     const legendaryChancePercent = firstOption.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
@@ -165,15 +236,18 @@ export function AbilityBuildPage() {
       };
     }
 
+    let branchNodes: Node[];
+    let branchEdges: Edge[];
+
     if (resetType === ResetType.NORMAL) {
       // Normal reset can only roll legendary on row1 and unique on row2/row3, so the first-picked
       // option always targets row1 and the second-picked option targets row2/row3.
       const legendaryCostUnlocked = normalResetCost([100], legendaryChancePercent, 0, discountFactor);
 
-      const branchNodes: Node[] = [
+      branchNodes = [
         { id: "result-0", type: "result", position: { x: RESULT_X, y: secondOption ? 80 : 200 }, data: singleOptionTable("row1", resultText) },
       ];
-      const branchEdges: Edge[] = [
+      branchEdges = [
         {
           id: "option->result-0",
           source: "option",
@@ -182,6 +256,7 @@ export function AbilityBuildPage() {
           data: {
             title: `첫째줄 ${firstOption.abbreviation}`,
             rows: [{ icon: abilityNavIcon, value: formatCostFull(legendaryCostUnlocked) }],
+            reputationCost: legendaryCostUnlocked,
           } satisfies LabeledEdgeData,
         },
       ];
@@ -215,6 +290,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(uniqueCostUnlocked) }],
+              reputationCost: uniqueCostUnlocked,
             } satisfies LabeledEdgeData,
           },
           {
@@ -225,6 +301,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(uniqueCostRow1Locked) }],
+              reputationCost: uniqueCostRow1Locked,
             } satisfies LabeledEdgeData,
           },
           {
@@ -235,6 +312,7 @@ export function AbilityBuildPage() {
             data: {
               title: `첫째줄 ${firstOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(legendaryCostRow2Locked) }],
+              reputationCost: legendaryCostRow2Locked,
             } satisfies LabeledEdgeData,
           }
         );
@@ -299,6 +377,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(secondUnlockedCost) }],
+              reputationCost: secondUnlockedCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -309,6 +388,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${thirdOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(thirdUnlockedCost) }],
+              reputationCost: thirdUnlockedCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -319,6 +399,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(secondUnionLockedCost) }],
+              reputationCost: secondUnionLockedCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -329,6 +410,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${thirdOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(thirdUnionLockedCost) }],
+              reputationCost: thirdUnionLockedCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -339,6 +421,7 @@ export function AbilityBuildPage() {
             data: {
               title: `첫째줄 ${firstOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(legendaryLockedCost) }],
+              reputationCost: legendaryLockedCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -349,6 +432,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${thirdOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(thirdSingleLockedCost) }],
+              reputationCost: thirdSingleLockedCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -359,6 +443,7 @@ export function AbilityBuildPage() {
             data: {
               title: `첫째줄 ${firstOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(legendaryLockedCost) }],
+              reputationCost: legendaryLockedCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -369,6 +454,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(secondSingleLockedCost) }],
+              reputationCost: secondSingleLockedCost,
             } satisfies LabeledEdgeData,
           }
         );
@@ -451,6 +537,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${thirdOption.abbreviation} 최대치`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(thirdMissingCost) }],
+              reputationCost: thirdMissingCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -461,6 +548,7 @@ export function AbilityBuildPage() {
             data: {
               title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation} 최대치`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(secondMissingCost) }],
+              reputationCost: secondMissingCost,
             } satisfies LabeledEdgeData,
           },
           {
@@ -471,58 +559,58 @@ export function AbilityBuildPage() {
             data: {
               title: `첫째줄 ${firstOption.abbreviation} 최대치`,
               rows: [{ icon: abilityNavIcon, value: formatCostFull(legendaryMissingCost) }],
+              reputationCost: legendaryMissingCost,
             } satisfies LabeledEdgeData,
           }
         );
       }
+    } else {
+      // row2 and row3 roll with identical odds simultaneously in advanced reset, so they're treated
+      // as one merged branch (row2col1) instead of two separate ones.
+      const branches: { id: string; title: string; slotChancePercents: number[]; slot: ResultSlot; y: number }[] = [
+        { id: "result-0", title: `첫째줄 ${firstOption.abbreviation}`, slotChancePercents: [100], slot: "row1", y: 80 },
+        {
+          id: "result-1",
+          title: `둘째줄 또는 셋째줄 ${firstOption.abbreviation}`,
+          slotChancePercents: [ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY, ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY],
+          slot: "row2Col1",
+          y: 520,
+        },
+      ];
 
-      return { branchNodes, branchEdges };
-    }
+      branchNodes = [];
+      branchEdges = [];
 
-    // row2 and row3 roll with identical odds simultaneously in advanced reset, so they're treated as
-    // one merged branch (row2col1) instead of two separate ones.
-    const branches: { id: string; title: string; slotChancePercents: number[]; slot: ResultSlot; y: number }[] = [
-      { id: "result-0", title: `첫째줄 ${firstOption.abbreviation}`, slotChancePercents: [100], slot: "row1", y: 80 },
-      {
-        id: "result-1",
-        title: `둘째줄 또는 셋째줄 ${firstOption.abbreviation}`,
-        slotChancePercents: [ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY, ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY],
-        slot: "row2Col1",
-        y: 520,
-      },
-    ];
+      branches.forEach(({ id, title, slotChancePercents, slot, y }) => {
+        const { reputationCost, mesoCost } = advancedResetCost(slotChancePercents, legendaryChancePercent, 0, discountFactor);
 
-    const branchNodes: Node[] = [];
-    const branchEdges: Edge[] = [];
-
-    branches.forEach(({ id, title, slotChancePercents, slot, y }) => {
-      const { reputationCost, mesoCost } = advancedResetCost(slotChancePercents, legendaryChancePercent, 0, discountFactor);
-
-      branchNodes.push({
-        id,
-        type: "result",
-        position: { x: RESULT_X, y },
-        data: singleOptionTable(slot, resultText),
+        branchNodes.push({
+          id,
+          type: "result",
+          position: { x: RESULT_X, y },
+          data: singleOptionTable(slot, resultText),
+        });
+        branchEdges.push({
+          id: `option->${id}`,
+          source: "option",
+          target: id,
+          type: "labeled",
+          data: {
+            title,
+            rows: [
+              { icon: abilityNavIcon, value: formatCostFull(reputationCost) },
+              { icon: mesoIcon, value: formatCostDecimal(mesoCost) },
+            ],
+            reputationCost,
+          } satisfies LabeledEdgeData,
+        });
       });
-      branchEdges.push({
-        id: `option->${id}`,
-        source: "option",
-        target: id,
-        type: "labeled",
-        data: {
-          title,
-          rows: [
-            { icon: abilityNavIcon, value: formatCostFull(reputationCost) },
-            { icon: mesoIcon, value: formatCostDecimal(mesoCost) },
-          ],
-        } satisfies LabeledEdgeData,
-      });
-    });
 
-    if (!secondOption) {
-      const { node, edge } = buildValueMaxBranch(80);
-      branchNodes.push(node);
-      branchEdges.push(edge);
+      if (!secondOption) {
+        const { node, edge } = buildValueMaxBranch(80);
+        branchNodes.push(node);
+        branchEdges.push(edge);
+      }
     }
 
     return { branchNodes, branchEdges };
@@ -543,10 +631,21 @@ export function AbilityBuildPage() {
           onChangeResetType: setResetType,
         } satisfies OptionPanelData,
       },
-      ...branchNodes,
+      ...branchNodes.map((node) => ({ ...node, data: { ...node.data, pinned: node.id === pinnedNodeId } })),
     ],
-    [selectedOptionNames, onChangeSelected, reputationDiscount, onToggleDiscount, resetType, branchNodes]
+    [selectedOptionNames, onChangeSelected, reputationDiscount, onToggleDiscount, resetType, branchNodes, pinnedNodeId]
   );
+
+  // Hovering (or, on touch, tapping/pinning) a table highlights the cheapest route from THAT table
+  // onward to its goal - defaults to "option" (the whole-graph cheapest route) otherwise.
+  const activeRouteNodeId = pinnedNodeId ?? hoveredNodeId;
+  const branchEdges = useMemo(() => {
+    const cheapestRouteEdgeIds = findCheapestRouteEdgeIds(branchNodes, rawBranchEdges, activeRouteNodeId);
+    if (cheapestRouteEdgeIds.size === 0) return rawBranchEdges;
+    return rawBranchEdges.map((edge) =>
+      cheapestRouteEdgeIds.has(edge.id) ? { ...edge, data: { ...(edge.data as LabeledEdgeData), highlighted: true } } : edge
+    );
+  }, [rawBranchEdges, branchNodes, activeRouteNodeId]);
 
   return (
     <ReactFlow
@@ -557,6 +656,10 @@ export function AbilityBuildPage() {
       edgeTypes={EDGE_TYPES}
       defaultEdgeOptions={DEFAULT_EDGE_OPTIONS}
       proOptions={{ hideAttribution: true }}
+      onNodeMouseEnter={onNodeMouseEnter}
+      onNodeMouseLeave={onNodeMouseLeave}
+      onNodeClick={onNodeClick}
+      onPaneClick={onPaneClick}
       nodesDraggable={false}
       nodesConnectable={false}
       elementsSelectable={false}

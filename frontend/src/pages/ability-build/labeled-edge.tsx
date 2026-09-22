@@ -1,5 +1,6 @@
 import { BaseEdge, EdgeLabelRenderer, getBezierPath } from "@xyflow/react";
 import type { EdgeProps } from "@xyflow/react";
+import { cn } from "@/lib/utils";
 
 export interface LabeledEdgeRow {
   // Multiple icons render as interchangeable alternatives, joined by "또는" (e.g. either
@@ -11,6 +12,11 @@ export interface LabeledEdgeRow {
 export interface LabeledEdgeData {
   title?: string;
   rows: LabeledEdgeRow[];
+  // Raw reputation cost this edge adds, used to find the cheapest end-to-end route - not shown
+  // directly (rows already hold the formatted display string).
+  reputationCost?: number;
+  // Marks this edge as part of the cheapest route to its branch's final table.
+  highlighted?: boolean;
   [key: string]: unknown;
 }
 
@@ -27,14 +33,18 @@ export function LabeledEdge({
 }: EdgeProps) {
   const [edgePath, labelX, labelY] = getBezierPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition });
   const edgeData = data as LabeledEdgeData | undefined;
+  const isHighlighted = edgeData?.highlighted === true;
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} style={style} />
+      <BaseEdge id={id} path={edgePath} style={isHighlighted ? { stroke: "#3b82f6", strokeWidth: 2.5 } : style} />
       {edgeData && (
         <EdgeLabelRenderer>
           <div
-            className="pointer-events-none absolute flex flex-col items-center gap-1 rounded-xl border bg-card px-2.5 py-2 text-center whitespace-nowrap shadow-md"
+            className={cn(
+              "pointer-events-none absolute flex flex-col items-center gap-1 rounded-xl border bg-card px-2.5 py-2 text-center whitespace-nowrap shadow-md",
+              isHighlighted && "border-blue-500 bg-blue-50 dark:bg-blue-950/40"
+            )}
             style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
           >
             {edgeData.title && <span className="text-[11px] leading-tight text-muted-foreground">{edgeData.title}</span>}
