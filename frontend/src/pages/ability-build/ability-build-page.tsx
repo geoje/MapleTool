@@ -3,6 +3,7 @@ import type { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useMemo, useState } from "react";
 import abilityNavIcon from "@/assets/ability/icon.png";
+import abyssCirculatorIcon from "@/assets/ability/abyss-circulator.webp";
 import blackCirculatorIcon from "@/assets/ability/black-circulator.webp";
 import chaosCirculatorIcon from "@/assets/ability/chaos-circulator.webp";
 import mesoIcon from "@/assets/enhance/meso.png";
@@ -213,24 +214,26 @@ export function AbilityBuildPage() {
 
     const discountFactor = reputationDiscount ? 0.5 : 1;
 
-    // Once row1 is at legendary, a circulator reroll (either item works) can still push its
-    // numeric value up to the max of the range - shown as one more step off result-0, only when
-    // a single option is selected for now.
+    // Once a row is at legendary, a circulator reroll can still push its numeric value up to the
+    // max of the range - shown as one more step off that row's result node, only when a single
+    // option is selected for now. Row1 accepts either chaos or black circulator; rows 2/3 only
+    // reach legendary via advanced reset and require the abyss circulator ("어서큘") instead.
     const maxResultText = formatAbilityResultMax(firstOption);
     const maxValueProbabilityPercent = maxValueProbability(firstOption);
     const maxValueTries = maxValueProbabilityPercent > 0 ? 1 / (maxValueProbabilityPercent / 100) : 0;
 
-    function buildValueMaxBranch(y: number): { node: Node; edge: Edge } {
+    function buildValueMaxBranch(sourceId: string, slot: ResultSlot, icon: string | string[], y: number): { node: Node; edge: Edge } {
+      const targetId = `${sourceId}-max`;
       return {
-        node: { id: "result-0-max", type: "result", position: { x: FINAL_X, y }, data: singleOptionTable("row1", maxResultText) },
+        node: { id: targetId, type: "result", position: { x: FINAL_X, y }, data: singleOptionTable(slot, maxResultText) },
         edge: {
-          id: "result-0->result-0-max",
-          source: "result-0",
-          target: "result-0-max",
+          id: `${sourceId}->${targetId}`,
+          source: sourceId,
+          target: targetId,
           type: "labeled",
           data: {
             title: `${firstOption.abbreviation} 최대치`,
-            rows: [{ icon: [chaosCirculatorIcon, blackCirculatorIcon], value: `${formatCostDecimal(maxValueTries)}회` }],
+            rows: [{ icon, value: `${formatCostDecimal(maxValueTries)}회` }],
           } satisfies LabeledEdgeData,
         },
       };
@@ -262,7 +265,7 @@ export function AbilityBuildPage() {
       ];
 
       if (!secondOption) {
-        const { node, edge } = buildValueMaxBranch(200);
+        const { node, edge } = buildValueMaxBranch("result-0", "row1", [chaosCirculatorIcon, blackCirculatorIcon], 200);
         branchNodes.push(node);
         branchEdges.push(edge);
       }
@@ -607,9 +610,10 @@ export function AbilityBuildPage() {
       });
 
       if (!secondOption) {
-        const { node, edge } = buildValueMaxBranch(80);
-        branchNodes.push(node);
-        branchEdges.push(edge);
+        const row1Max = buildValueMaxBranch("result-0", "row1", [chaosCirculatorIcon, blackCirculatorIcon], 80);
+        const row23Max = buildValueMaxBranch("result-1", "row2Col1", abyssCirculatorIcon, 520);
+        branchNodes.push(row1Max.node, row23Max.node);
+        branchEdges.push(row1Max.edge, row23Max.edge);
       }
     }
 
