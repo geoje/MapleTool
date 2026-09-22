@@ -19,6 +19,7 @@ import {
   NORMAL_RESET_SECOND_THIRD_UNIQUE_PROBABILITY,
   ResetType,
 } from "@/constants/ability";
+import type { AbilityOptionInfo } from "@/constants/ability";
 import { PotentialGrade } from "@/constants/enhance";
 import type { CubeGrade } from "@/hooks/use-cube-probability";
 import { formatCostDecimal, formatCostFull } from "@/lib/format";
@@ -51,13 +52,14 @@ function legendaryPlusUniqueTable(legendaryText: string, uniqueText: string, uni
   return { row1: legendaryCell, row2Col1: null, row2Col2: null, [uniqueSlot]: uniqueCell };
 }
 
-// Advanced reset can land legendary on row1 AND row2/row3 at once, with either selected option
-// ending up on either row - so a completed 2-option build has 2 equally valid arrangements.
-function twoLegendaryTable(row1Text: string, row2Col1Text: string): ResultTableData {
+// Advanced reset can land legendary on any row, with any selected option ending up on any row -
+// so a completed 2 or 3-option build has multiple equally valid arrangements, differing only in
+// which row each option occupies. null omits a row entirely (not yet locked in for this table).
+function legendaryCellsTable(row1Text: string | null, row2Col1Text: string | null, row2Col2Text: string | null): ResultTableData {
   return {
-    row1: { text: row1Text, grade: "legendary" },
-    row2Col1: { text: row2Col1Text, grade: "legendary" },
-    row2Col2: null,
+    row1: row1Text !== null ? { text: row1Text, grade: "legendary" } : null,
+    row2Col1: row2Col1Text !== null ? { text: row2Col1Text, grade: "legendary" } : null,
+    row2Col2: row2Col2Text !== null ? { text: row2Col2Text, grade: "legendary" } : null,
   };
 }
 
@@ -79,15 +81,19 @@ function allThreeTable(legendaryText: string, leftText: string, rightText: strin
 
 // slotChancePercents are rows rolling simultaneously; a hit on any one counts as success, so cost
 // is based on the union probability (1 - chance all of them miss), not per-row odds.
+// extraFactorPercent multiplies in one more independent per-try chance (e.g. also landing the max
+// value step in the same roll, for a reset that redraws the option/grade/value all at once) - same
+// role as normalResetCost's parameter of the same name.
 function advancedResetCost(
   slotChancePercents: number[],
   optionLegendaryChancePercent: number,
   lockCount: number,
-  discountFactor: number
+  discountFactor: number,
+  extraFactorPercent = 100
 ): { reputationCost: number; mesoCost: number } {
   const { reputation: reputationPerTry, meso: mesoPerTry } = ADVANCED_RESET_COST_BY_LOCK_COUNT[lockCount];
   const allMissFraction = slotChancePercents.reduce((acc, slotChancePercent) => {
-    const fraction = (slotChancePercent / 100) * (optionLegendaryChancePercent / 100);
+    const fraction = (slotChancePercent / 100) * (optionLegendaryChancePercent / 100) * (extraFactorPercent / 100);
     return acc * (1 - fraction);
   }, 1);
   const successFraction = 1 - allMissFraction;
@@ -602,214 +608,243 @@ export function AbilityBuildPage() {
     } else {
       // row2 and row3 roll with identical odds simultaneously in advanced reset, so they're treated
       // as one merged branch (row2col1) instead of two separate ones.
-      const branches: { id: string; title: string; slotChancePercents: number[]; slot: ResultSlot; y: number }[] = [
-        { id: "result-0", title: `첫째줄 ${firstOption.abbreviation}`, slotChancePercents: [100], slot: "row1", y: 80 },
-        {
-          id: "result-1",
-          title: `둘째줄 또는 셋째줄 ${firstOption.abbreviation}`,
-          slotChancePercents: [ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY, ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY],
-          slot: "row2Col1",
-          y: 520,
-        },
-      ];
+      const secondThirdSlots = [ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY, ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY];
+      const singleSecondThirdSlot = [ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY];
 
       branchNodes = [];
       branchEdges = [];
 
-      branches.forEach(({ id, title, slotChancePercents, slot, y }) => {
-        const { reputationCost, mesoCost } = advancedResetCost(slotChancePercents, legendaryChancePercent, 0, discountFactor);
-
-        branchNodes.push({
+      // An edge whose cost is a reputation+meso advanced reset try.
+      function advancedEdge(id: string, source: string, target: string, title: string, cost: { reputationCost: number; mesoCost: number }): Edge {
+        return {
           id,
-          type: "result",
-          position: { x: RESULT_X, y },
-          data: singleOptionTable(slot, resultText),
-        });
-        branchEdges.push({
-          id: `option->${id}`,
-          source: "option",
-          target: id,
+          source,
+          target,
           type: "labeled",
           data: {
             title,
             rows: [
-              { icon: abilityNavIcon, value: formatCostFull(reputationCost) },
-              { icon: mesoIcon, value: formatCostDecimal(mesoCost) },
+              { icon: abilityNavIcon, value: formatCostFull(cost.reputationCost) },
+              { icon: mesoIcon, value: formatCostDecimal(cost.mesoCost) },
             ],
-            reputationCost,
+            reputationCost: cost.reputationCost,
           } satisfies LabeledEdgeData,
-        });
-      });
-
-      if (!secondOption) {
-        // Chaos/black circulators can't touch a row won through advanced reset - only the abyss
-        // circulator can, regardless of which row the legendary line landed on.
-        const row1Max = buildValueMaxBranch("result-0", "row1", abyssCirculatorIcon, 80);
-        const row23Max = buildValueMaxBranch("result-1", "row2Col1", abyssCirculatorIcon, 520);
-        branchNodes.push(row1Max.node, row23Max.node);
-        branchEdges.push(row1Max.edge, row23Max.edge);
+        };
       }
 
-      // Unlike normal reset (where the 2nd pick can only ever be unique on row2/row3), advanced
-      // reset lets BOTH picks land legendary on EITHER row - so the completed build has 2 equally
-      // valid arrangements (first on row1/second on row2-3, or swapped). Both get built in full,
-      // but only the actually-cheaper arrangement should read as the recommended route (handled via
-      // exclusiveLeafGroups below), since the end result is the same option set either way.
-      if (secondOption && !thirdOption) {
-        const secondThirdSlots = [ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY, ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY];
-        const secondLegendaryChancePercent = secondOption.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
-        const secondResultText = formatAbilityResultRange(secondOption);
+      // Chaos/black circulators can't touch a row won through advanced reset - only the abyss
+      // circulator can. One application rerolls every already-placed row's value at once (0
+      // reputation cost, so it never affects the cheapest-route calculation).
+      function abyssMaxEdge(id: string, source: string, target: string, title: string, tries: number): Edge {
+        return {
+          id,
+          source,
+          target,
+          type: "labeled",
+          data: { title, rows: [{ icon: abyssCirculatorIcon, value: `${formatCostDecimal(tries)}회` }] } satisfies LabeledEdgeData,
+        };
+      }
 
-        // Mirror of the result-0/result-1 branches above, but targeting the second-picked option -
-        // each is a 2nd starting point that the OTHER option's branch can also converge into.
-        const { reputationCost: secondRow1Cost, mesoCost: secondRow1Meso } = advancedResetCost([100], secondLegendaryChancePercent, 0, discountFactor);
-        const { reputationCost: secondRow23Cost, mesoCost: secondRow23Meso } = advancedResetCost(secondThirdSlots, secondLegendaryChancePercent, 0, discountFactor);
+      if (!thirdOption) {
+        const branches: { id: string; title: string; slotChancePercents: number[]; slot: ResultSlot; y: number }[] = [
+          { id: "result-0", title: `첫째줄 ${firstOption.abbreviation}`, slotChancePercents: [100], slot: "row1", y: 80 },
+          { id: "result-1", title: `둘째줄 또는 셋째줄 ${firstOption.abbreviation}`, slotChancePercents: secondThirdSlots, slot: "row2Col1", y: 520 },
+        ];
 
-        branchNodes.push(
-          { id: "result-0b", type: "result", position: { x: RESULT_X, y: 260 }, data: singleOptionTable("row1", secondResultText) },
-          { id: "result-1b", type: "result", position: { x: RESULT_X, y: 700 }, data: singleOptionTable("row2Col1", secondResultText) }
-        );
-        branchEdges.push(
-          {
-            id: "option->result-0b",
-            source: "option",
-            target: "result-0b",
-            type: "labeled",
-            data: {
-              title: `첫째줄 ${secondOption.abbreviation}`,
-              rows: [
-                { icon: abilityNavIcon, value: formatCostFull(secondRow1Cost) },
-                { icon: mesoIcon, value: formatCostDecimal(secondRow1Meso) },
-              ],
-              reputationCost: secondRow1Cost,
-            } satisfies LabeledEdgeData,
-          },
-          {
-            id: "option->result-1b",
-            source: "option",
-            target: "result-1b",
-            type: "labeled",
-            data: {
-              title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
-              rows: [
-                { icon: abilityNavIcon, value: formatCostFull(secondRow23Cost) },
-                { icon: mesoIcon, value: formatCostDecimal(secondRow23Meso) },
-              ],
-              reputationCost: secondRow23Cost,
-            } satisfies LabeledEdgeData,
-          }
-        );
+        branches.forEach(({ id, title, slotChancePercents, slot, y }) => {
+          const cost = advancedResetCost(slotChancePercents, legendaryChancePercent, 0, discountFactor);
+          branchNodes.push({ id, type: "result", position: { x: RESULT_X, y }, data: singleOptionTable(slot, resultText) });
+          branchEdges.push(advancedEdge(`option->${id}`, "option", id, title, cost));
+        });
 
-        // finalA: first locked on row1, second fills row2/row3 - reachable either from result-0
-        // (lock row1, roll for second) or from result-1b (lock row2/row3, roll for first).
-        // finalB is the mirror (rows swapped).
-        const { reputationCost: addSecondToRow23Cost, mesoCost: addSecondToRow23Meso } = advancedResetCost(secondThirdSlots, secondLegendaryChancePercent, 1, discountFactor);
-        const { reputationCost: addFirstToRow1Cost, mesoCost: addFirstToRow1Meso } = advancedResetCost([100], legendaryChancePercent, 1, discountFactor);
-        const { reputationCost: addSecondToRow1Cost, mesoCost: addSecondToRow1Meso } = advancedResetCost([100], secondLegendaryChancePercent, 1, discountFactor);
-        const { reputationCost: addFirstToRow23Cost, mesoCost: addFirstToRow23Meso } = advancedResetCost(secondThirdSlots, legendaryChancePercent, 1, discountFactor);
+        if (!secondOption) {
+          const row1Max = buildValueMaxBranch("result-0", "row1", abyssCirculatorIcon, 80);
+          const row23Max = buildValueMaxBranch("result-1", "row2Col1", abyssCirculatorIcon, 520);
+          branchNodes.push(row1Max.node, row23Max.node);
+          branchEdges.push(row1Max.edge, row23Max.edge);
+        }
 
-        branchNodes.push(
-          { id: "result-finalA", type: "result", position: { x: FINAL_X, y: 170 }, data: twoLegendaryTable(resultText, secondResultText) },
-          { id: "result-finalB", type: "result", position: { x: FINAL_X, y: 610 }, data: twoLegendaryTable(secondResultText, resultText) }
-        );
-        branchEdges.push(
-          {
-            id: "result-0->result-finalA",
-            source: "result-0",
-            target: "result-finalA",
-            type: "labeled",
-            data: {
-              title: `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
-              rows: [
-                { icon: abilityNavIcon, value: formatCostFull(addSecondToRow23Cost) },
-                { icon: mesoIcon, value: formatCostDecimal(addSecondToRow23Meso) },
-              ],
-              reputationCost: addSecondToRow23Cost,
-            } satisfies LabeledEdgeData,
-          },
-          {
-            id: "result-1b->result-finalA",
-            source: "result-1b",
-            target: "result-finalA",
-            type: "labeled",
-            data: {
-              title: `첫째줄 ${firstOption.abbreviation}`,
-              rows: [
-                { icon: abilityNavIcon, value: formatCostFull(addFirstToRow1Cost) },
-                { icon: mesoIcon, value: formatCostDecimal(addFirstToRow1Meso) },
-              ],
-              reputationCost: addFirstToRow1Cost,
-            } satisfies LabeledEdgeData,
-          },
-          {
-            id: "result-1->result-finalB",
-            source: "result-1",
-            target: "result-finalB",
-            type: "labeled",
-            data: {
-              title: `첫째줄 ${secondOption.abbreviation}`,
-              rows: [
-                { icon: abilityNavIcon, value: formatCostFull(addSecondToRow1Cost) },
-                { icon: mesoIcon, value: formatCostDecimal(addSecondToRow1Meso) },
-              ],
-              reputationCost: addSecondToRow1Cost,
-            } satisfies LabeledEdgeData,
-          },
-          {
-            id: "result-0b->result-finalB",
-            source: "result-0b",
-            target: "result-finalB",
-            type: "labeled",
-            data: {
-              title: `둘째줄 또는 셋째줄 ${firstOption.abbreviation}`,
-              rows: [
-                { icon: abilityNavIcon, value: formatCostFull(addFirstToRow23Cost) },
-                { icon: mesoIcon, value: formatCostDecimal(addFirstToRow23Meso) },
-              ],
-              reputationCost: addFirstToRow23Cost,
-            } satisfies LabeledEdgeData,
-          }
-        );
+        // Unlike normal reset (where the 2nd pick can only ever be unique on row2/row3), advanced
+        // reset lets BOTH picks land legendary on EITHER row - so the completed build has 2 equally
+        // valid arrangements (first on row1/second on row2-3, or swapped). Both get built in full,
+        // but only the actually-cheaper arrangement should read as the recommended route (handled
+        // via exclusiveLeafGroups below), since the end result is the same option set either way.
+        if (secondOption) {
+          const secondLegendaryChancePercent = secondOption.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
+          const secondResultText = formatAbilityResultRange(secondOption);
 
-        // Chaos/black circulators can't touch a line won through advanced reset, regardless of
-        // row - only the abyss circulator can. Like the normal-reset combined max above, one
-        // application rerolls every placed row's value at once, so success needs both rows'
-        // independent max-tier odds to land in the same try (1 combined row, not 2).
-        const secondMaxResultText = formatAbilityResultMax(secondOption);
-        const secondMaxValueProbabilityPercent = maxValueProbability(secondOption);
-        const advancedCombinedMaxFraction = (maxValueProbabilityPercent / 100) * (secondMaxValueProbabilityPercent / 100);
-        const advancedCombinedMaxTries = advancedCombinedMaxFraction > 0 ? 1 / advancedCombinedMaxFraction : 0;
+          // Mirror of the result-0/result-1 branches above, but targeting the second-picked option -
+          // each is a 2nd starting point that the OTHER option's branch can also converge into.
+          branchNodes.push(
+            { id: "result-0b", type: "result", position: { x: RESULT_X, y: 260 }, data: singleOptionTable("row1", secondResultText) },
+            { id: "result-1b", type: "result", position: { x: RESULT_X, y: 700 }, data: singleOptionTable("row2Col1", secondResultText) }
+          );
+          branchEdges.push(
+            advancedEdge("option->result-0b", "option", "result-0b", `첫째줄 ${secondOption.abbreviation}`, advancedResetCost([100], secondLegendaryChancePercent, 0, discountFactor)),
+            advancedEdge(
+              "option->result-1b",
+              "option",
+              "result-1b",
+              `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
+              advancedResetCost(secondThirdSlots, secondLegendaryChancePercent, 0, discountFactor)
+            )
+          );
 
-        branchNodes.push(
-          { id: "result-finalA-max", type: "result", position: { x: FINAL_X + 260, y: 170 }, data: twoLegendaryTable(maxResultText, secondMaxResultText) },
-          { id: "result-finalB-max", type: "result", position: { x: FINAL_X + 260, y: 610 }, data: twoLegendaryTable(secondMaxResultText, maxResultText) }
-        );
-        branchEdges.push(
-          {
-            id: "result-finalA->result-finalA-max",
-            source: "result-finalA",
-            target: "result-finalA-max",
-            type: "labeled",
-            data: {
-              title: `${firstOption.abbreviation} ${secondOption.abbreviation} 최대치`,
-              rows: [{ icon: abyssCirculatorIcon, value: `${formatCostDecimal(advancedCombinedMaxTries)}회` }],
-            } satisfies LabeledEdgeData,
-          },
-          {
-            id: "result-finalB->result-finalB-max",
-            source: "result-finalB",
-            target: "result-finalB-max",
-            type: "labeled",
-            data: {
-              title: `${firstOption.abbreviation} ${secondOption.abbreviation} 최대치`,
-              rows: [{ icon: abyssCirculatorIcon, value: `${formatCostDecimal(advancedCombinedMaxTries)}회` }],
-            } satisfies LabeledEdgeData,
-          }
-        );
+          // finalA: first locked on row1, second fills row2/row3 - reachable either from result-0
+          // (lock row1, roll for second) or from result-1b (lock row2/row3, roll for first).
+          // finalB is the mirror (rows swapped).
+          branchNodes.push(
+            { id: "result-finalA", type: "result", position: { x: FINAL_X, y: 170 }, data: legendaryCellsTable(resultText, secondResultText, null) },
+            { id: "result-finalB", type: "result", position: { x: FINAL_X, y: 610 }, data: legendaryCellsTable(secondResultText, resultText, null) }
+          );
+          branchEdges.push(
+            advancedEdge(
+              "result-0->result-finalA",
+              "result-0",
+              "result-finalA",
+              `둘째줄 또는 셋째줄 ${secondOption.abbreviation}`,
+              advancedResetCost(secondThirdSlots, secondLegendaryChancePercent, 1, discountFactor)
+            ),
+            advancedEdge("result-1b->result-finalA", "result-1b", "result-finalA", `첫째줄 ${firstOption.abbreviation}`, advancedResetCost([100], legendaryChancePercent, 1, discountFactor)),
+            advancedEdge("result-1->result-finalB", "result-1", "result-finalB", `첫째줄 ${secondOption.abbreviation}`, advancedResetCost([100], secondLegendaryChancePercent, 1, discountFactor)),
+            advancedEdge(
+              "result-0b->result-finalB",
+              "result-0b",
+              "result-finalB",
+              `둘째줄 또는 셋째줄 ${firstOption.abbreviation}`,
+              advancedResetCost(secondThirdSlots, legendaryChancePercent, 1, discountFactor)
+            )
+          );
 
-        // Both arrangements reach the exact same 2-option outcome, just with the rows swapped -
-        // only the actually-cheaper one should be highlighted as the recommended route.
-        exclusiveLeafGroups = [["result-finalA-max", "result-finalB-max"]];
+          // 1 combined abyss-circulator try maxes both already-placed rows at once.
+          const secondMaxResultText = formatAbilityResultMax(secondOption);
+          const secondMaxValueProbabilityPercent = maxValueProbability(secondOption);
+          const combinedMaxFraction = (maxValueProbabilityPercent / 100) * (secondMaxValueProbabilityPercent / 100);
+          const combinedMaxTries = combinedMaxFraction > 0 ? 1 / combinedMaxFraction : 0;
+
+          branchNodes.push(
+            { id: "result-finalA-max", type: "result", position: { x: FINAL_X + 260, y: 170 }, data: legendaryCellsTable(maxResultText, secondMaxResultText, null) },
+            { id: "result-finalB-max", type: "result", position: { x: FINAL_X + 260, y: 610 }, data: legendaryCellsTable(secondMaxResultText, maxResultText, null) }
+          );
+          branchEdges.push(
+            abyssMaxEdge("result-finalA->result-finalA-max", "result-finalA", "result-finalA-max", `${firstOption.abbreviation} ${secondOption.abbreviation} 최대치`, combinedMaxTries),
+            abyssMaxEdge("result-finalB->result-finalB-max", "result-finalB", "result-finalB-max", `${firstOption.abbreviation} ${secondOption.abbreviation} 최대치`, combinedMaxTries)
+          );
+
+          // Both arrangements reach the exact same 2-option outcome, just with the rows swapped -
+          // only the actually-cheaper one should be highlighted as the recommended route.
+          exclusiveLeafGroups = [["result-finalA-max", "result-finalB-max"]];
+        }
+      } else {
+        // 3 selected options can each land on any of the 3 rows, so a completed build has 3 equally
+        // valid "anchor" arrangements - whichever option ends up on row1 (the always-legendary row),
+        // with the other 2 filling row2/row3 (assigned by original pick order, since row2 vs row3
+        // doesn't affect cost - they're interchangeable). All 3 render in full; only the actually
+        // cheapest anchor is highlighted (via exclusiveLeafGroups), same principle as the 2-option
+        // case above, just tripled - one full n1/n2/n3-style sub-DAG per anchor choice.
+        function buildTripleArrangement(
+          anchor: AbilityOptionInfo,
+          colA: AbilityOptionInfo,
+          colB: AbilityOptionInfo,
+          idPrefix: string,
+          y: number
+        ): { nodes: Node[]; edges: Edge[]; finalId: string } {
+          const anchorChance = anchor.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
+          const colAChance = colA.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
+          const colBChance = colB.probabilityByGrade[PotentialGrade.LEGENDARY] ?? 0;
+
+          const anchorText = formatAbilityResultRange(anchor);
+          const colAText = formatAbilityResultRange(colA);
+          const colBText = formatAbilityResultRange(colB);
+
+          const row1Id = `${idPrefix}-row1`;
+          const colAId = `${idPrefix}-colA`;
+          const colBId = `${idPrefix}-colB`;
+          const n1Id = `${idPrefix}-n1`;
+          const n2Id = `${idPrefix}-n2`;
+          const n3Id = `${idPrefix}-n3`;
+          const n1MaxId = `${idPrefix}-n1-max`;
+          const n2MaxId = `${idPrefix}-n2-max`;
+          const n3MaxId = `${idPrefix}-n3-max`;
+          const finalId = `${idPrefix}-final`;
+
+          const nodes: Node[] = [
+            { id: row1Id, type: "result", position: { x: RESULT_X, y: y - 120 }, data: legendaryCellsTable(anchorText, null, null) },
+            { id: colAId, type: "result", position: { x: RESULT_X, y: y + 60 }, data: legendaryCellsTable(null, colAText, null) },
+            { id: colBId, type: "result", position: { x: RESULT_X, y: y + 240 }, data: legendaryCellsTable(null, null, colBText) },
+            { id: n1Id, type: "result", position: { x: FINAL_X, y: y - 100 }, data: legendaryCellsTable(anchorText, colAText, null) },
+            { id: n2Id, type: "result", position: { x: FINAL_X, y: y + 100 }, data: legendaryCellsTable(anchorText, null, colBText) },
+            { id: n3Id, type: "result", position: { x: FINAL_X, y: y + 300 }, data: legendaryCellsTable(null, colAText, colBText) },
+          ];
+
+          const edges: Edge[] = [
+            advancedEdge(`option->${row1Id}`, "option", row1Id, `첫째줄 ${anchor.abbreviation}`, advancedResetCost([100], anchorChance, 0, discountFactor)),
+            advancedEdge(`option->${colAId}`, "option", colAId, `둘째줄 또는 셋째줄 ${colA.abbreviation}`, advancedResetCost(secondThirdSlots, colAChance, 0, discountFactor)),
+            advancedEdge(`option->${colBId}`, "option", colBId, `둘째줄 또는 셋째줄 ${colB.abbreviation}`, advancedResetCost(secondThirdSlots, colBChance, 0, discountFactor)),
+            advancedEdge(`${row1Id}->${n1Id}`, row1Id, n1Id, `둘째줄 또는 셋째줄 ${colA.abbreviation}`, advancedResetCost(secondThirdSlots, colAChance, 1, discountFactor)),
+            advancedEdge(`${row1Id}->${n2Id}`, row1Id, n2Id, `둘째줄 또는 셋째줄 ${colB.abbreviation}`, advancedResetCost(secondThirdSlots, colBChance, 1, discountFactor)),
+            advancedEdge(`${colAId}->${n1Id}`, colAId, n1Id, `첫째줄 ${anchor.abbreviation}`, advancedResetCost([100], anchorChance, 1, discountFactor)),
+            advancedEdge(`${colBId}->${n2Id}`, colBId, n2Id, `첫째줄 ${anchor.abbreviation}`, advancedResetCost([100], anchorChance, 1, discountFactor)),
+            advancedEdge(`${colAId}->${n3Id}`, colAId, n3Id, `둘째줄 또는 셋째줄 ${colB.abbreviation}`, advancedResetCost(singleSecondThirdSlot, colBChance, 1, discountFactor)),
+            advancedEdge(`${colBId}->${n3Id}`, colBId, n3Id, `둘째줄 또는 셋째줄 ${colA.abbreviation}`, advancedResetCost(singleSecondThirdSlot, colAChance, 1, discountFactor)),
+          ];
+
+          // From each 2-option table: max both already-placed options in 1 combined abyss-circulator
+          // try, then lock those 2 rows and use an advanced reset to pull the missing row as its
+          // option AND max value at once - all 3 paths converge on the same final table.
+          const anchorMaxText = formatAbilityResultMax(anchor);
+          const colAMaxText = formatAbilityResultMax(colA);
+          const colBMaxText = formatAbilityResultMax(colB);
+          const anchorMaxProbabilityPercent = maxValueProbability(anchor);
+          const colAMaxProbabilityPercent = maxValueProbability(colA);
+          const colBMaxProbabilityPercent = maxValueProbability(colB);
+
+          const n1MaxFraction = (anchorMaxProbabilityPercent / 100) * (colAMaxProbabilityPercent / 100);
+          const n2MaxFraction = (anchorMaxProbabilityPercent / 100) * (colBMaxProbabilityPercent / 100);
+          const n3MaxFraction = (colAMaxProbabilityPercent / 100) * (colBMaxProbabilityPercent / 100);
+
+          nodes.push(
+            { id: n1MaxId, type: "result", position: { x: FINAL_X + 260, y: y - 100 }, data: legendaryCellsTable(anchorMaxText, colAMaxText, null) },
+            { id: n2MaxId, type: "result", position: { x: FINAL_X + 260, y: y + 100 }, data: legendaryCellsTable(anchorMaxText, null, colBMaxText) },
+            { id: n3MaxId, type: "result", position: { x: FINAL_X + 260, y: y + 300 }, data: legendaryCellsTable(null, colAMaxText, colBMaxText) },
+            { id: finalId, type: "result", position: { x: FINAL_X + 520, y: y + 100 }, data: legendaryCellsTable(anchorMaxText, colAMaxText, colBMaxText) }
+          );
+          edges.push(
+            abyssMaxEdge(`${n1Id}->${n1MaxId}`, n1Id, n1MaxId, `${anchor.abbreviation} ${colA.abbreviation} 최대치`, n1MaxFraction > 0 ? 1 / n1MaxFraction : 0),
+            abyssMaxEdge(`${n2Id}->${n2MaxId}`, n2Id, n2MaxId, `${anchor.abbreviation} ${colB.abbreviation} 최대치`, n2MaxFraction > 0 ? 1 / n2MaxFraction : 0),
+            abyssMaxEdge(`${n3Id}->${n3MaxId}`, n3Id, n3MaxId, `${colA.abbreviation} ${colB.abbreviation} 최대치`, n3MaxFraction > 0 ? 1 / n3MaxFraction : 0)
+          );
+          edges.push(
+            advancedEdge(
+              `${n1MaxId}->${finalId}`,
+              n1MaxId,
+              finalId,
+              `둘째줄 또는 셋째줄 ${colB.abbreviation} 최대치`,
+              advancedResetCost(singleSecondThirdSlot, colBChance, 2, discountFactor, colBMaxProbabilityPercent)
+            ),
+            advancedEdge(
+              `${n2MaxId}->${finalId}`,
+              n2MaxId,
+              finalId,
+              `둘째줄 또는 셋째줄 ${colA.abbreviation} 최대치`,
+              advancedResetCost(singleSecondThirdSlot, colAChance, 2, discountFactor, colAMaxProbabilityPercent)
+            ),
+            advancedEdge(`${n3MaxId}->${finalId}`, n3MaxId, finalId, `첫째줄 ${anchor.abbreviation} 최대치`, advancedResetCost([100], anchorChance, 2, discountFactor, anchorMaxProbabilityPercent))
+          );
+
+          return { nodes, edges, finalId };
+        }
+
+        const arrangement1 = buildTripleArrangement(firstOption, secondOption, thirdOption, "result-t1", 140);
+        const arrangement2 = buildTripleArrangement(secondOption, firstOption, thirdOption, "result-t2", 680);
+        const arrangement3 = buildTripleArrangement(thirdOption, firstOption, secondOption, "result-t3", 1220);
+
+        branchNodes.push(...arrangement1.nodes, ...arrangement2.nodes, ...arrangement3.nodes);
+        branchEdges.push(...arrangement1.edges, ...arrangement2.edges, ...arrangement3.edges);
+
+        // All 3 anchor arrangements reach the exact same 3-option outcome, just with the rows
+        // permuted - only the actually-cheapest one should be highlighted as the recommended route.
+        exclusiveLeafGroups = [[arrangement1.finalId, arrangement2.finalId, arrangement3.finalId]];
       }
     }
 
