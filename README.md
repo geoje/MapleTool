@@ -1,22 +1,38 @@
 ## 🍁 소개
-<img src="https://github.com/user-attachments/assets/678dd4d3-8ed6-4207-bd82-03433a9f282a" />
-<img src="https://github.com/user-attachments/assets/20d467f4-7322-417f-a5a9-ecc3feaf7b14" />
-<img src="https://github.com/user-attachments/assets/65fe92cf-972e-45c4-ad21-6a8e5ee5714e" />
-<img src="https://github.com/user-attachments/assets/6a787d85-79ca-4f2c-a9c0-617a73ade9de" />
+
+<table>
+<tr>
+  <th align="center">💎 보스 수익</th>
+  <th align="center">🔨 강화 비용</th>
+</tr>
+<tr>
+  <td><img src="https://github.com/user-attachments/assets/20d467f4-7322-417f-a5a9-ecc3feaf7b14" /></td>
+  <td><img src="https://github.com/user-attachments/assets/65fe92cf-972e-45c4-ad21-6a8e5ee5714e" /></td>
+</tr>
+<tr>
+  <th align="center">🔮 유니온 아티팩트</th>
+  <th align="center">🏅 어빌리티 빌드</th>
+</tr>
+<tr>
+  <td><img src="https://github.com/user-attachments/assets/6a787d85-79ca-4f2c-a9c0-617a73ade9de" /></td>
+  <td><img src="https://github.com/user-attachments/assets/678dd4d3-8ed6-4207-bd82-03433a9f282a" /></td>
+</tr>
+</table>
 
 ## ⚰️ 메이플 도구 (MAR 2023 ~ SEP 2026)
 
 **메이플 유니온 배치기**를 대체하기 위해 시작한 프로젝트입니다.
 
-다양한 기술을 학습용으로 적용하다 보니 점점 오버엔지니어링된 구조가 되었습니다.
-이를 정리하기 위해 프론트엔드는 **Chakra UI**에서 **Shadcn UI**로, 백엔드는 **Spring Boot**에서 **Hono**로 마이그레이션했습니다.
+오버엔지니어링을 제거하며 AI와 함께 개발하기 위해 프레임워들을 교체하였습니다.
+
+프론트엔드는 **Chakra UI**에서 **Shadcn UI**로, 백엔드는 **Spring Boot**에서 **Hono**로 마이그레이션했습니다.
 
 <table>
 <tr>
-  <th>🏠 홈</th>
-  <th>🔨 강화</th>
-  <th>🔮 유니온 아티팩트</th>
-  <th>💎 보스 수익</th>
+  <th align="center">🏠 홈</th>
+  <th align="center">🔨 강화</th>
+  <th align="center">🔮 유니온 아티팩트</th>
+  <th align="center">💎 보스 수익</th>
 </tr>
 <tr>
   <td><img src="https://github.com/user-attachments/assets/9c064dc4-dcdd-4fca-a9ae-75a238c3d83c" /></td>
@@ -36,11 +52,11 @@
 
 <table>
 <tr>
-  <th>배정</th>
-  <th>저장</th>
-  <th>업데이트</th>
-  <th>매뉴얼</th>
-  <th>모바일</th>
+  <th align="center">배정</th>
+  <th align="center">저장</th>
+  <th align="center">업데이트</th>
+  <th align="center">매뉴얼</th>
+  <th align="center">모바일</th>
 </tr>
 <tr>
   <td><img src="https://github.com/user-attachments/assets/8633ec47-c0ee-4589-8df4-ecdd7e2b190a" /></td>
