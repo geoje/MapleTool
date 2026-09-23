@@ -44,6 +44,21 @@ export const ADVANCED_RESET_COST_BY_LOCK_COUNT: { reputation: number; meso: numb
 // on legendary already hitting, so it must be multiplied by this value to get the absolute odds.
 export const ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY = 2;
 
+// 명예의 훈장 grants a fixed 명성치 amount per use regardless of its meso price, so this ratio -
+// together with the user-entered price - converts a 명성치 cost into a meso equivalent for
+// comparing advanced reset routes purely in meso.
+export const HONOR_MEDAL_REPUTATION_PER_USE = 5000;
+
+export const HONOR_MEDAL_DEFAULT_PRICE = 3_000_000;
+
+// 심연의 서큘레이터's price in 메이플포인트 (Maple Points), converted to meso via the live
+// meso-market exchange rate.
+export const ABYSS_CIRCULATOR_POINT_COST = 4900;
+
+export function convertReputationToMeso(reputationCost: number, honorMedalPrice: number): number {
+  return (reputationCost / HONOR_MEDAL_REPUTATION_PER_USE) * honorMedalPrice;
+}
+
 // Chance (%) that lines 2/3 roll unique in a normal reset (remaining 85% is epic; these lines
 // can never roll legendary). Same multiplication rule as
 // ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY applies.

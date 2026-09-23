@@ -1,7 +1,7 @@
 import { Background, BackgroundVariant, ReactFlow } from "@xyflow/react";
 import type { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import abilityNavIcon from "@/assets/ability/icon.png";
 import abyssCirculatorIcon from "@/assets/ability/abyss-circulator.webp";
 import blackCirculatorIcon from "@/assets/ability/black-circulator.webp";
@@ -9,10 +9,13 @@ import chaosCirculatorIcon from "@/assets/ability/chaos-circulator.webp";
 import mesoIcon from "@/assets/enhance/meso.png";
 import {
   ABILITY_OPTION_INFOS,
+  ABYSS_CIRCULATOR_POINT_COST,
   ADVANCED_RESET_COST_BY_LOCK_COUNT,
   ADVANCED_RESET_SECOND_THIRD_LEGENDARY_PROBABILITY,
+  convertReputationToMeso,
   formatAbilityResultMax,
   formatAbilityResultRange,
+  HONOR_MEDAL_DEFAULT_PRICE,
   maxValueProbability,
   MAX_SELECTED_ABILITY_OPTIONS,
   NORMAL_RESET_REPUTATION_COST,
@@ -23,6 +26,7 @@ import {
 import { PotentialGrade } from "@/constants/enhance";
 import type { CubeGrade } from "@/hooks/use-cube-probability";
 import { formatCostDecimal, formatCostFull } from "@/lib/format";
+import { convertPointsToMeso, fetchMesoMarketRate } from "@/lib/meso-market-service";
 import { LabeledEdge } from "@/pages/ability-build/labeled-edge";
 import type { LabeledEdgeData } from "@/pages/ability-build/labeled-edge";
 import { OPTION_PANEL_WIDTH, OptionPanelNode } from "@/pages/ability-build/option-panel-node";
@@ -139,7 +143,18 @@ const TIE_EPSILON = 1e-6;
 // advanced 2-option build with the 2 options swapped between row1 and row2/row3) - only the
 // cheapest-to-reach member(s) of each group get backtracked from, so the pricier mirror still
 // renders on the canvas but its route isn't highlighted.
-function findCheapestRouteEdgeIds(nodes: Node[], edges: Edge[], startNodeId: string, exclusiveLeafGroups: string[][] = []): Set<string> {
+//
+// getEdgeCost picks which currency an edge's cost is measured in - defaults to reputationCost
+// (명성치), but advanced reset passes a meso-only cost (reputation converted via the 명예의 훈장
+// price, plus meso cost, plus circulator meso-equivalent price) so routes can be compared purely
+// in meso.
+function findCheapestRouteEdgeIds(
+  nodes: Node[],
+  edges: Edge[],
+  startNodeId: string,
+  exclusiveLeafGroups: string[][] = [],
+  getEdgeCost: (edge: Edge) => number = (edge) => (edge.data as LabeledEdgeData | undefined)?.reputationCost ?? 0
+): Set<string> {
   const bestCost = new Map<string, number>([[startNodeId, 0]]);
 
   let changed = true;
@@ -148,8 +163,8 @@ function findCheapestRouteEdgeIds(nodes: Node[], edges: Edge[], startNodeId: str
     for (const edge of edges) {
       const sourceCost = bestCost.get(edge.source);
       if (sourceCost === undefined) continue;
-      const reputationCost = (edge.data as LabeledEdgeData | undefined)?.reputationCost ?? 0;
-      const candidateCost = sourceCost + reputationCost;
+      const edgeCost = getEdgeCost(edge);
+      const candidateCost = sourceCost + edgeCost;
       const currentCost = bestCost.get(edge.target);
       if (currentCost === undefined || candidateCost < currentCost - TIE_EPSILON) {
         bestCost.set(edge.target, candidateCost);
@@ -165,8 +180,8 @@ function findCheapestRouteEdgeIds(nodes: Node[], edges: Edge[], startNodeId: str
     const sourceCost = bestCost.get(edge.source);
     const targetCost = bestCost.get(edge.target);
     if (sourceCost === undefined || targetCost === undefined) continue;
-    const reputationCost = (edge.data as LabeledEdgeData | undefined)?.reputationCost ?? 0;
-    if (Math.abs(sourceCost + reputationCost - targetCost) < TIE_EPSILON) {
+    const edgeCost = getEdgeCost(edge);
+    if (Math.abs(sourceCost + edgeCost - targetCost) < TIE_EPSILON) {
       bestIncomingEdgeIds.set(edge.target, [...(bestIncomingEdgeIds.get(edge.target) ?? []), edge.id]);
     }
   }
@@ -207,6 +222,20 @@ export function AbilityBuildPage() {
   const [selectedOptionNames, setSelectedOptionNames] = useState<Set<string>>(new Set([DEFAULT_SELECTED_OPTION]));
   const [reputationDiscount, setReputationDiscount] = useState(false);
   const [resetType, setResetType] = useState<ResetType>(ResetType.ADVANCED);
+  const [honorMedalPrice, setHonorMedalPrice] = useState(HONOR_MEDAL_DEFAULT_PRICE);
+  const [circulatorPrice, setCirculatorPrice] = useState(0);
+  const [isFetchingCirculatorPrice, setIsFetchingCirculatorPrice] = useState(true);
+
+  // The abyss circulator has no in-game meso price - only a 메이플포인트 price - so its meso
+  // equivalent is derived once from the live meso-market exchange rate and used as the default;
+  // the user can still override it afterward like any other price input.
+  useEffect(() => {
+    fetchMesoMarketRate()
+      .then((rate) => {
+        if (rate) setCirculatorPrice(convertPointsToMeso(ABYSS_CIRCULATOR_POINT_COST, rate));
+      })
+      .finally(() => setIsFetchingCirculatorPrice(false));
+  }, []);
   // Defaults to "option" so the whole-graph cheapest route shows even before anything is hovered.
   const [hoveredNodeId, setHoveredNodeId] = useState<string>("option");
   // Touch devices have no hover - tapping a table pins its route so it stays shown after the tap
@@ -628,20 +657,26 @@ export function AbilityBuildPage() {
               { icon: mesoIcon, value: formatCostDecimal(cost.mesoCost) },
             ],
             reputationCost: cost.reputationCost,
+            mesoCost: cost.mesoCost,
           } satisfies LabeledEdgeData,
         };
       }
 
       // Chaos/black circulators can't touch a row won through advanced reset - only the abyss
       // circulator can. One application rerolls every already-placed row's value at once (0
-      // reputation cost, so it never affects the cheapest-route calculation).
+      // reputation cost, so it never affects the reputation-only cheapest-route calculation) but
+      // does cost meso (via circulatorPrice), which factors into the meso-only comparison instead.
       function abyssMaxEdge(id: string, source: string, target: string, title: string, tries: number): Edge {
         return {
           id,
           source,
           target,
           type: "labeled",
-          data: { title, rows: [{ icon: abyssCirculatorIcon, value: `${formatCostDecimal(tries)}회` }] } satisfies LabeledEdgeData,
+          data: {
+            title,
+            rows: [{ icon: abyssCirculatorIcon, value: `${formatCostDecimal(tries)}회` }],
+            mesoCost: tries * circulatorPrice,
+          } satisfies LabeledEdgeData,
         };
       }
 
@@ -807,7 +842,7 @@ export function AbilityBuildPage() {
     }
 
     return { branchNodes, branchEdges, exclusiveLeafGroups };
-  }, [firstOption, secondOption, thirdOption, resetType, reputationDiscount]);
+  }, [firstOption, secondOption, thirdOption, resetType, reputationDiscount, circulatorPrice]);
 
   const nodes = useMemo<Node[]>(
     () => [
@@ -822,23 +857,52 @@ export function AbilityBuildPage() {
           onToggleDiscount,
           resetType,
           onChangeResetType: setResetType,
+          honorMedalPrice,
+          onHonorMedalPriceChange: setHonorMedalPrice,
+          circulatorPrice,
+          onCirculatorPriceChange: setCirculatorPrice,
+          isFetchingCirculatorPrice,
         } satisfies OptionPanelData,
       },
       ...branchNodes.map((node) => ({ ...node, data: { ...node.data, pinned: node.id === pinnedNodeId } })),
     ],
-    [selectedOptionNames, onChangeSelected, reputationDiscount, onToggleDiscount, resetType, branchNodes, pinnedNodeId]
+    [
+      selectedOptionNames,
+      onChangeSelected,
+      reputationDiscount,
+      onToggleDiscount,
+      resetType,
+      honorMedalPrice,
+      circulatorPrice,
+      isFetchingCirculatorPrice,
+      branchNodes,
+      pinnedNodeId,
+    ]
   );
 
   // Hovering (or, on touch, tapping/pinning) a table highlights the cheapest route from THAT table
   // onward to its goal - defaults to "option" (the whole-graph cheapest route) otherwise.
   const activeRouteNodeId = pinnedNodeId ?? hoveredNodeId;
+
+  // Normal reset's circulator has no meso value, so its routes stay compared by 명성치 alone.
+  // Advanced reset converts everything (reputation via the 명예의 훈장 price, plus meso costs) into
+  // meso so the cheapest route reflects real spend, not just reputation.
+  const getEdgeCost = useCallback(
+    (edge: Edge) => {
+      const edgeData = edge.data as LabeledEdgeData | undefined;
+      if (resetType !== ResetType.ADVANCED) return edgeData?.reputationCost ?? 0;
+      return convertReputationToMeso(edgeData?.reputationCost ?? 0, honorMedalPrice) + (edgeData?.mesoCost ?? 0);
+    },
+    [resetType, honorMedalPrice]
+  );
+
   const branchEdges = useMemo(() => {
-    const cheapestRouteEdgeIds = findCheapestRouteEdgeIds(branchNodes, rawBranchEdges, activeRouteNodeId, exclusiveLeafGroups);
+    const cheapestRouteEdgeIds = findCheapestRouteEdgeIds(branchNodes, rawBranchEdges, activeRouteNodeId, exclusiveLeafGroups, getEdgeCost);
     if (cheapestRouteEdgeIds.size === 0) return rawBranchEdges;
     return rawBranchEdges.map((edge) =>
       cheapestRouteEdgeIds.has(edge.id) ? { ...edge, data: { ...(edge.data as LabeledEdgeData), highlighted: true } } : edge
     );
-  }, [rawBranchEdges, branchNodes, activeRouteNodeId, exclusiveLeafGroups]);
+  }, [rawBranchEdges, branchNodes, activeRouteNodeId, exclusiveLeafGroups, getEdgeCost]);
 
   return (
     <ReactFlow

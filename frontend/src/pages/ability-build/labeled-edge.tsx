@@ -15,6 +15,10 @@ export interface LabeledEdgeData {
   // Raw reputation cost this edge adds, used to find the cheapest end-to-end route - not shown
   // directly (rows already hold the formatted display string).
   reputationCost?: number;
+  // Raw meso cost this edge adds (advanced reset try cost and/or circulator meso-equivalent
+  // price), used to find the cheapest end-to-end route when comparing purely in meso - not shown
+  // directly (rows already hold the formatted display string).
+  mesoCost?: number;
   // Marks this edge as part of the cheapest route to its branch's final table.
   highlighted?: boolean;
   [key: string]: unknown;

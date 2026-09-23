@@ -1,5 +1,8 @@
 import { Handle, Position } from "@xyflow/react";
-import type { ResetType } from "@/constants/ability";
+import honorMedalIcon from "@/assets/ability/honor-medal.png";
+import abyssCirculatorIcon from "@/assets/ability/abyss-circulator.webp";
+import { ResetType } from "@/constants/ability";
+import { IconPriceRow } from "@/pages/ability-build/icon-price-row";
 import { ResetTypePanel } from "@/pages/ability-build/reset-type-panel";
 import { SelectOption } from "@/pages/ability-build/select-option";
 import { SundayPanel } from "@/pages/ability-build/sunday-panel";
@@ -13,6 +16,11 @@ export interface OptionPanelData {
   onToggleDiscount: () => void;
   resetType: ResetType;
   onChangeResetType: (type: ResetType) => void;
+  honorMedalPrice: number;
+  onHonorMedalPriceChange: (value: number) => void;
+  circulatorPrice: number;
+  onCirculatorPriceChange: (value: number) => void;
+  isFetchingCirculatorPrice: boolean;
 }
 
 export function OptionPanelNode({ data }: { data: OptionPanelData }) {
@@ -26,6 +34,23 @@ export function OptionPanelNode({ data }: { data: OptionPanelData }) {
     >
       <span className="text-xs font-semibold">옵션</span>
       <ResetTypePanel resetType={data.resetType} onChange={data.onChangeResetType} />
+      {data.resetType === ResetType.ADVANCED && (
+        <>
+          <IconPriceRow
+            icon={honorMedalIcon}
+            tooltip="명예의 훈장"
+            value={data.honorMedalPrice}
+            onChange={data.onHonorMedalPriceChange}
+          />
+          <IconPriceRow
+            icon={abyssCirculatorIcon}
+            tooltip="심연의 서큘레이터"
+            value={data.circulatorPrice}
+            onChange={data.onCirculatorPriceChange}
+            isLoading={data.isFetchingCirculatorPrice}
+          />
+        </>
+      )}
       <SundayPanel reputationDiscount={data.reputationDiscount} onToggle={data.onToggleDiscount} />
       <SelectOption selectedNames={data.selectedNames} onChange={data.onChangeSelected} resetType={data.resetType} />
       <Handle type="source" position={Position.Right} className="!size-0 !min-w-0 !border-0 !bg-transparent" />

@@ -7,8 +7,10 @@ import { character } from "./routes/character.js";
 import { union } from "./routes/union.js";
 import { probability } from "./routes/probability.js";
 import { price } from "./routes/price.js";
+import { mesomarket } from "./routes/mesomarket.js";
 import { scrapeAll } from "./scrape.js";
 import { startItemPriceSchedule } from "./price-store.js";
+import { startMesoMarketSchedule } from "./mesomarket-store.js";
 
 const app = new Hono();
 
@@ -21,6 +23,7 @@ app.route("/api/character", character);
 app.route("/api/union", union);
 app.route("/api/probability", probability);
 app.route("/api/price", price);
+app.route("/api/mesomarket", mesomarket);
 
 app.notFound((c) => c.json({ title: "Not Found", status: 400, detail: "잘못된 요청입니다." }, 400));
 
@@ -30,3 +33,4 @@ serve({ fetch: app.fetch, port: config.port }, (info) => {
 
 scrapeAll().catch((error) => console.error("[src/index.ts] Fatal error:", error));
 startItemPriceSchedule();
+startMesoMarketSchedule();

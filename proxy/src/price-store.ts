@@ -1,6 +1,5 @@
 import { fetchItemPrices, type ItemPrice } from "./price-scraper.js";
-
-const ONE_HOUR_MS = 60 * 60 * 1000;
+import { runHourlyAligned } from "./schedule.js";
 
 // Keyed by item name; each refresh overwrites with the latest snapshot, so
 // only the most recent price per item is ever kept in memory.
@@ -20,21 +19,8 @@ async function refreshItemPrices(): Promise<void> {
   }
 }
 
-function msUntilNextHour(): number {
-  const now = new Date();
-  const next = new Date(now);
-  next.setMinutes(0, 0, 0);
-  next.setHours(next.getHours() + 1);
-  return next.getTime() - now.getTime();
-}
-
 // Fetches once immediately on startup, then aligns to the top of the hour and
 // repeats every hour on the hour from there.
 export function startItemPriceSchedule(): void {
-  refreshItemPrices();
-
-  setTimeout(() => {
-    refreshItemPrices();
-    setInterval(refreshItemPrices, ONE_HOUR_MS);
-  }, msUntilNextHour());
+  runHourlyAligned(refreshItemPrices);
 }
