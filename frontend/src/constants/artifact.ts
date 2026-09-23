@@ -541,7 +541,7 @@ export const EFFECT_INFOS = [
   {
     expression: /^아이템 드롭률 \d+% 증가/,
     full: "아이템 드롭률 증가",
-    abbreviate: "아드",
+    abbreviate: "아획",
   },
   {
     expression: /^크리티컬 확률 \d+% 증가/,
