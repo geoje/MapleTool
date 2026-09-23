@@ -294,8 +294,8 @@ export const ABILITY_OPTION_INFOS: AbilityOptionInfo[] = [
   },
   {
     name: "아이템 드롭률 % 증가",
-    abbreviation: "아드",
-    resultTemplate: "아드 n%",
+    abbreviation: "아획",
+    resultTemplate: "아획 n%",
     probabilityByGrade: {
       [PotentialGrade.RARE]: 3.4602,
       [PotentialGrade.EPIC]: 2.7804,
