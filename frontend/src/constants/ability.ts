@@ -85,9 +85,15 @@ export function formatAbilityResultMax(option: AbilityOptionInfo, grade: Potenti
 }
 
 // Chance (%) that a circulator reroll (which keeps the option/grade and only rerolls the numeric
-// value) lands on the highest value tier for this option at the given grade.
+// value) lands on the highest value tier for this option at the given grade. Several of the 6
+// value steps often share the same (highest) value - e.g. "패시브 스킬 레벨 증가" is 1 on all 6 steps -
+// so every step tied for the max counts as a hit, not just whichever one maxValueStep happens to
+// return.
 export function maxValueProbability(option: AbilityOptionInfo, grade: PotentialGrade = PotentialGrade.LEGENDARY): number {
-  return maxValueStep(option, grade).probability;
+  const max = maxValueStep(option, grade).valueByGrade[grade];
+  return option.valueSteps
+    .filter((step) => step.valueByGrade[grade] === max)
+    .reduce((sum, step) => sum + step.probability, 0);
 }
 
 export const ABILITY_OPTION_INFOS: AbilityOptionInfo[] = [
