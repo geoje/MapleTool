@@ -8,6 +8,13 @@ export class ValidationError extends Error {
   }
 }
 
+export class ConfigError extends Error {
+  constructor(public readonly key: string) {
+    super(`${key} 환경변수가 설정되지 않아 이 기능을 사용할 수 없습니다.`);
+    this.name = "ConfigError";
+  }
+}
+
 export function requireName(c: Context): string {
   const name = c.req.query("name");
   if (!name || !name.trim()) {

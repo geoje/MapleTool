@@ -1,9 +1,3 @@
-function required(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing required env var: ${name}`);
-  return value;
-}
-
 function int(name: string, fallback: number): number {
   const value = process.env[name];
   if (!value) return fallback;
@@ -16,7 +10,7 @@ export const config = {
   port: int("PORT", 3000),
   nexon: {
     baseUrl: process.env.NEXON_BASE_URL ?? "https://open.api.nexon.com/maplestory/v1",
-    apiKey: required("NEXON_API_KEY"),
+    apiKey: process.env.NEXON_API_KEY,
   },
   rateLimit: {
     windowMs: int("RATE_LIMIT_WINDOW_MS", 60_000),

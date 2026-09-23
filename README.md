@@ -28,6 +28,11 @@ NEXON_API_KEY=여기에_발급받은_키_입력
 
 git clone https://github.com/geoje/MapleTool.git
 cd MapleTool
+command -v fnm >/dev/null 2>&1 || curl -fsSL https://fnm.vercel.app/install | bash
+FNM_BIN="$(command -v fnm || echo "$HOME/.local/share/fnm/fnm")"
+eval "$("$FNM_BIN" env)"
+"$FNM_BIN" install
+"$FNM_BIN" use
 echo "NEXON_API_KEY=$NEXON_API_KEY" > proxy/.env
 (cd proxy && npm install && npm run dev &)
 cd frontend && npm install && npm run dev
