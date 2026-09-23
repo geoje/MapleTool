@@ -703,6 +703,11 @@ export function AbilityBuildPage() {
           const row23Max = buildValueMaxBranch("result-1", "row2Col1", abyssCirculatorIcon, 520);
           branchNodes.push(row1Max.node, row23Max.node);
           branchEdges.push(row1Max.edge, row23Max.edge);
+
+          // Landing the lone selected option on row1 vs row2/row3 are 2 alternative ways to reach
+          // the exact same goal (that option at max legendary, on any row) - only the actually
+          // cheaper one should be highlighted as the recommended route.
+          exclusiveLeafGroups = [[row1Max.node.id, row23Max.node.id]];
         }
 
         // Unlike normal reset (where the 2nd pick can only ever be unique on row2/row3), advanced
