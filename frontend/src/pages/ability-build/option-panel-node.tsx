@@ -14,6 +14,7 @@ export interface OptionPanelData {
   onChangeSelected: (name: string) => void;
   reputationDiscount: boolean;
   onToggleDiscount: () => void;
+  mapleSundayDate?: string;
   resetType: ResetType;
   onChangeResetType: (type: ResetType) => void;
   honorMedalPrice: number;
@@ -51,7 +52,11 @@ export function OptionPanelNode({ data }: { data: OptionPanelData }) {
           />
         </>
       )}
-      <SundayPanel reputationDiscount={data.reputationDiscount} onToggle={data.onToggleDiscount} />
+      <SundayPanel
+        reputationDiscount={data.reputationDiscount}
+        onToggle={data.onToggleDiscount}
+        date={data.mapleSundayDate}
+      />
       <SelectOption selectedNames={data.selectedNames} onChange={data.onChangeSelected} resetType={data.resetType} />
       <Handle type="source" position={Position.Right} className="!size-0 !min-w-0 !border-0 !bg-transparent" />
     </div>

@@ -1,7 +1,7 @@
 import { Background, BackgroundVariant, ReactFlow } from "@xyflow/react";
 import type { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import abilityNavIcon from "@/assets/ability/icon.png";
 import abyssCirculatorIcon from "@/assets/ability/abyss-circulator.webp";
 import blackCirculatorIcon from "@/assets/ability/black-circulator.webp";
@@ -27,6 +27,7 @@ import { PotentialGrade } from "@/constants/enhance";
 import type { CubeGrade } from "@/hooks/use-cube-probability";
 import { formatCostDecimal, formatCostFull } from "@/lib/format";
 import { convertPointsToMeso, fetchMaplechartRate } from "@/lib/maplechart-service";
+import { fetchMapleSundayInfo } from "@/lib/maplesunday-service";
 import { LabeledEdge } from "@/pages/ability-build/labeled-edge";
 import type { LabeledEdgeData } from "@/pages/ability-build/labeled-edge";
 import { OPTION_PANEL_WIDTH, OptionPanelNode } from "@/pages/ability-build/option-panel-node";
@@ -221,10 +222,31 @@ function findCheapestRouteEdgeIds(
 export function AbilityBuildPage() {
   const [selectedOptionNames, setSelectedOptionNames] = useState<Set<string>>(new Set([DEFAULT_SELECTED_OPTION]));
   const [reputationDiscount, setReputationDiscount] = useState(false);
+  const [mapleSundayDate, setMapleSundayDate] = useState<string | undefined>(undefined);
+  // True only while 명성치 할인 still reflects the server-detected sunday event as-is - cleared
+  // the moment the user manually touches the toggle, so the date badge only ever shows a state
+  // that's actually backed by this week's real sunday event, not just "whatever's checked".
+  const [isSundayAutoDetected, setIsSundayAutoDetected] = useState(false);
   const [resetType, setResetType] = useState<ResetType>(ResetType.ADVANCED);
   const [honorMedalPrice, setHonorMedalPrice] = useState(HONOR_MEDAL_DEFAULT_PRICE);
   const [circulatorPrice, setCirculatorPrice] = useState(0);
   const [isFetchingCirculatorPrice, setIsFetchingCirculatorPrice] = useState(true);
+
+  // Auto-checks 명성치 할인 from the scraped maplessunday.com benefit text the first time it loads,
+  // without overriding whatever the user has manually toggled since.
+  const hasAppliedSundayAutoDetectRef = useRef(false);
+  useEffect(() => {
+    fetchMapleSundayInfo().then((info) => {
+      if (!info) return;
+      setMapleSundayDate(info.date);
+      if (hasAppliedSundayAutoDetectRef.current) return;
+      hasAppliedSundayAutoDetectRef.current = true;
+      if (info.benefit.includes("명성치")) {
+        setReputationDiscount(true);
+        setIsSundayAutoDetected(true);
+      }
+    });
+  }, []);
 
   // The abyss circulator has no in-game meso price - only a 메이플포인트 price - so its meso
   // equivalent is derived once from the live meso-market exchange rate and used as the default;
@@ -257,7 +279,10 @@ export function AbilityBuildPage() {
     });
   }, []);
 
-  const onToggleDiscount = useCallback(() => setReputationDiscount((prev) => !prev), []);
+  const onToggleDiscount = useCallback(() => {
+    setIsSundayAutoDetected(false);
+    setReputationDiscount((prev) => !prev);
+  }, []);
 
   const firstSelectedName = resolveSelectedOptionOrder(selectedOptionNames)[0];
   const firstOption = ABILITY_OPTION_INFOS.find((option) => option.name === firstSelectedName);
@@ -849,6 +874,9 @@ export function AbilityBuildPage() {
     return { branchNodes, branchEdges, exclusiveLeafGroups };
   }, [firstOption, secondOption, thirdOption, resetType, reputationDiscount, circulatorPrice]);
 
+  // Only shown while the toggle still reflects the server-detected sunday event as-is.
+  const displaySundayDate = isSundayAutoDetected ? mapleSundayDate : undefined;
+
   const nodes = useMemo<Node[]>(
     () => [
       {
@@ -860,6 +888,7 @@ export function AbilityBuildPage() {
           onChangeSelected,
           reputationDiscount,
           onToggleDiscount,
+          mapleSundayDate: displaySundayDate,
           resetType,
           onChangeResetType: setResetType,
           honorMedalPrice,
@@ -876,6 +905,7 @@ export function AbilityBuildPage() {
       onChangeSelected,
       reputationDiscount,
       onToggleDiscount,
+      displaySundayDate,
       resetType,
       honorMedalPrice,
       circulatorPrice,

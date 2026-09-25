@@ -19,7 +19,9 @@ export function SparePriceInput({
       <div className="flex items-center gap-1.5">
         <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">노작 가격</span>
         {priceInfo ? (
-          <Badge variant="secondary">{priceInfo.itemName}</Badge>
+          <Badge variant="outline" className="border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            {priceInfo.itemName}
+          </Badge>
         ) : (
           isLoadingPriceInfo && <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />
         )}

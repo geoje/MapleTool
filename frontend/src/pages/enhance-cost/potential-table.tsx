@@ -7,9 +7,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { CUBE_INFOS, CubeType, EquipmentLevelTier, PotentialGrade, POTENTIAL_GRADE_INFOS } from "@/constants/enhance";
+import { MIRACLE_TIME_EFFECT } from "@/constants/sunday-maple";
 import type { CubeGrade, CubeOptionGroup, CubeProbabilityData } from "@/hooks/use-cube-probability";
 import { extractPotentialOptionValue } from "@/lib/potential-option";
 import { formatCostExact, formatCostRounded, formatEnhancerCount } from "@/lib/format";
+import { fetchMapleSundayInfo } from "@/lib/maplesunday-service";
 
 export const GRADE_ORDER: CubeGrade[] = ["rare", "epic", "unique", "legendary"];
 
@@ -145,6 +147,7 @@ function expectedGradeUpTriesRaw(probability: number, pity?: number): number {
 }
 
 const MIRACLE_TIME_PROBABILITY_MULTIPLIER = 2;
+export const MIRACLE_GRADE_UP_LABEL = "등급업 (미라클)";
 
 export function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
   if (!step) return [];
@@ -153,7 +156,7 @@ export function buildGradeUpRows(step: GradeUpStep | undefined): OptionRow[] {
   const miracleCubeTriesRaw = expectedGradeUpTriesRaw(miracleProbability, step.pity);
   return [
     { label: "등급업", averageTries: Math.ceil(cubeTriesRaw), rawTries: cubeTriesRaw },
-    { label: "등급업 (미라클)", averageTries: Math.ceil(miracleCubeTriesRaw), rawTries: miracleCubeTriesRaw },
+    { label: MIRACLE_GRADE_UP_LABEL, averageTries: Math.ceil(miracleCubeTriesRaw), rawTries: miracleCubeTriesRaw },
   ].sort((a, b) => a.averageTries - b.averageTries);
 }
 
@@ -1575,6 +1578,19 @@ export function PotentialTable({
   const hasInitializedGradesRef = useRef(false);
   const hasInitializedLocksRef = useRef(false);
 
+  // Shows a date badge on the "등급업 (미라클)" row whenever this week's scraped
+  // maplessunday.com benefit is actually 미라클 타임 (it doubles grade-up probability,
+  // matching MIRACLE_TIME_PROBABILITY_MULTIPLIER above).
+  const [mapleSundayDate, setMapleSundayDate] = useState<string | undefined>(undefined);
+  const [hasMiracleTime, setHasMiracleTime] = useState(false);
+  useEffect(() => {
+    fetchMapleSundayInfo().then((info) => {
+      if (!info) return;
+      setMapleSundayDate(info.date);
+      setHasMiracleTime(info.benefit.includes(MIRACLE_TIME_EFFECT.label));
+    });
+  }, []);
+
   // Default to only the highest grade expanded, but only the very first time
   // data actually arrives - never again afterward. Switching cube/category can
   // make a grade disappear and later reappear (e.g. 골드 -> 실버 -> 골드), and
@@ -1718,7 +1734,21 @@ export function PotentialTable({
                       )}
                     >
                       <td className="border-r px-3 py-1">
-                        {isLoading ? <SkeletonCell className="h-4 w-20" /> : gradeUpRow.label}
+                        {isLoading ? (
+                          <SkeletonCell className="h-4 w-20" />
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5">
+                            {gradeUpRow.label}
+                            {gradeUpRow.label === MIRACLE_GRADE_UP_LABEL && hasMiracleTime && mapleSundayDate && (
+                              <Badge
+                                variant="outline"
+                                className="border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                              >
+                                {mapleSundayDate}
+                              </Badge>
+                            )}
+                          </span>
+                        )}
                       </td>
                       <td className="px-3 py-1 text-right whitespace-nowrap tabular-nums">
                         <TriesCell

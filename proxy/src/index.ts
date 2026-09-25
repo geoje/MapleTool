@@ -8,9 +8,11 @@ import { union } from "./routes/union.js";
 import { probability } from "./routes/probability.js";
 import { itemprice } from "./routes/itemprice.js";
 import { maplechart } from "./routes/maplechart.js";
+import { maplesunday } from "./routes/maplesunday.js";
 import { scrapeAll } from "./scrape.js";
 import { startItemPriceSchedule } from "./itemprice-store.js";
 import { startMaplechartSchedule } from "./maplechart-store.js";
+import { startMapleSundaySchedule } from "./maplesunday-store.js";
 
 const app = new Hono();
 
@@ -24,6 +26,7 @@ app.route("/api/union", union);
 app.route("/api/probability", probability);
 app.route("/api/itemprice", itemprice);
 app.route("/api/maplechart", maplechart);
+app.route("/api/maplesunday", maplesunday);
 
 app.notFound((c) => c.json({ title: "Not Found", status: 400, detail: "잘못된 요청입니다." }, 400));
 
@@ -34,3 +37,4 @@ serve({ fetch: app.fetch, port: config.port }, (info) => {
 scrapeAll().catch((error) => console.error("[src/index.ts] Fatal error:", error));
 startItemPriceSchedule();
 startMaplechartSchedule();
+startMapleSundaySchedule();

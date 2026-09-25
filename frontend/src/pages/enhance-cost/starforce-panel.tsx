@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import mesoIcon from "@/assets/enhance/meso.png";
 import pulseEnhancerIcon from "@/assets/enhance/pulse-enhancer.png";
 import { CollapsibleCard } from "@/components/collapsible-card";
@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ASCENDANT_PULSE_RING_ITEM_NAME } from "@/constants/enhance";
 import { MEMBERSHIP_GRADES, PC_ROOM_DISCOUNT_RATE, PULSE_ENHANCER_TABLE } from "@/constants/starforce";
+import { detectSundayStarforceKeys } from "@/constants/sunday-maple";
 import { cn } from "@/lib/utils";
 import {
   formatCostDecimal,
@@ -18,6 +19,7 @@ import {
 } from "@/lib/format";
 import { computePulseEnhancerTable, computeStarforceTable, getMaxStar } from "@/lib/starforce-service";
 import type { ItemPriceInfo } from "@/lib/itemprice-service";
+import { fetchMapleSundayInfo } from "@/lib/maplesunday-service";
 import { StarforceDiscountPanel } from "@/pages/enhance-cost/discount-panel";
 import { SparePriceInput } from "@/pages/enhance-cost/spare-price-input";
 import { StarforceLevelInput } from "@/pages/enhance-cost/starforce-level-input";
@@ -46,8 +48,30 @@ export function StarforceCard({
 }) {
   const [currentStar, setCurrentStar] = useState(0);
   const [activeSundayKeys, setActiveSundayKeys] = useState<Set<string>>(new Set());
+  const [mapleSundayDate, setMapleSundayDate] = useState<string | undefined>(undefined);
+  // True only while activeSundayKeys still reflects the server-detected sunday event as-is -
+  // cleared the moment the user manually touches any toggle, so the date badge only ever shows
+  // a selection that's actually backed by this week's real sunday event.
+  const [isSundayAutoDetected, setIsSundayAutoDetected] = useState(false);
   const [membershipGrade, setMembershipGrade] = useState<string | null>(null);
   const [pcRoom, setPcRoom] = useState(false);
+
+  // Auto-selects the matching sunday effect(s) from the scraped maplessunday.com benefit text the
+  // first time it loads, without overriding whatever the user has manually toggled since.
+  const hasAppliedSundayAutoDetectRef = useRef(false);
+  useEffect(() => {
+    fetchMapleSundayInfo().then((info) => {
+      if (!info) return;
+      setMapleSundayDate(info.date);
+      if (hasAppliedSundayAutoDetectRef.current) return;
+      hasAppliedSundayAutoDetectRef.current = true;
+      const detectedKeys = detectSundayStarforceKeys(info.benefit);
+      if (detectedKeys.size > 0) {
+        setActiveSundayKeys((prev) => new Set([...prev, ...detectedKeys]));
+        setIsSundayAutoDetected(true);
+      }
+    });
+  }, []);
 
   // 어센던트 펄스 링 uses its own fixed 펄스 인핸서 consumption/rates instead of the normal
   // meso-based starforce table - detected from the badge applied by the equipment picker.
@@ -95,6 +119,7 @@ export function StarforceCard({
   }, [maxStar]);
 
   const toggleSundayEffect = (key: string) => {
+    setIsSundayAutoDetected(false);
     setActiveSundayKeys((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
@@ -116,7 +141,11 @@ export function StarforceCard({
         priceInfo={spareValuePriceInfo}
         isLoadingPriceInfo={isFetchingSpareValuePrice}
       />
-      <SundayStarforcePanel activeKeys={activeSundayKeys} onToggle={toggleSundayEffect} />
+      <SundayStarforcePanel
+        activeKeys={activeSundayKeys}
+        onToggle={toggleSundayEffect}
+        date={isSundayAutoDetected ? mapleSundayDate : undefined}
+      />
       <StarforceDiscountPanel
         membershipGrade={membershipGrade}
         onSelectMembershipGrade={selectMembershipGrade}
