@@ -8,7 +8,7 @@ async function getJson(path: string, params: Record<string, string>): Promise<Ne
   for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
 
   const response = await fetch(url, {
-    headers: { "x-nxopen-api-key": config.nexon.apiKey },
+    headers: config.nexon.apiKey ? { "x-nxopen-api-key": config.nexon.apiKey } : undefined,
   });
 
   if (!response.ok) throw await toNexonApiError(response);
