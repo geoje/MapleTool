@@ -106,21 +106,25 @@ export function BossRevenuePage() {
           </Card>
         )}
 
-        {selected >= 0 && (
-          <Card className="w-full md:w-auto">
-            <CardHeader className="flex items-center">
-              <SectionTitle step={2} className="flex-1">
-                보스
-              </SectionTitle>
-              <CardAction className="self-center">
-                <BossTableActions selected={selected} />
-              </CardAction>
-            </CardHeader>
-            <CardContent className="w-full">
+        <Card className="w-full md:w-auto">
+          <CardHeader className="flex items-center">
+            <SectionTitle step={2} className="flex-1">
+              보스
+            </SectionTitle>
+            <CardAction className="self-center">
+              <BossTableActions selected={selected} />
+            </CardAction>
+          </CardHeader>
+          <CardContent className="w-full">
+            {selected >= 0 ? (
               <BossTable selected={selected} />
-            </CardContent>
-          </Card>
-        )}
+            ) : (
+              <div className="flex items-center justify-center py-8">
+                <p className="text-sm text-muted-foreground">캐릭터를 선택해주세요</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       <ShareDialog />

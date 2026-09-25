@@ -10,7 +10,6 @@ import artifactNavIcon from "@/assets/union-artifact/point.png";
 import { CanvasControls } from "@/components/layout/canvas-controls";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -92,7 +91,7 @@ function AppLayoutContent() {
     <div
       className={cn(
         "flex min-h-svh flex-col",
-        !isCanvasRoute && "bg-[linear-gradient(to_bottom,var(--color-background),var(--gradient-end)_320px)]"
+        !isCanvasRoute && "bg-[linear-gradient(to_bottom,var(--color-background),var(--gradient-end)_240px)]"
       )}
     >
       <Collapsible
@@ -116,7 +115,6 @@ function AppLayoutContent() {
           </nav>
           <div className="flex-1" />
           {isCanvasRoute && <CanvasControls />}
-          <ThemeToggle variant={isCanvasRoute ? "outline" : "ghost"} />
         </header>
         <CollapsibleContent className="md:hidden">
           <nav className="flex flex-wrap gap-1 px-4 pt-0 pb-3">
