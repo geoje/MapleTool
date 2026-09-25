@@ -10,7 +10,7 @@ export async function fetchItemPrice(itemName: string): Promise<ItemPriceInfo | 
   if (cache.has(itemName)) return cache.get(itemName) ?? null;
 
   try {
-    const response = await fetch(`/api/price?name=${encodeURIComponent(itemName)}`);
+    const response = await fetch(`/api/itemprice?name=${encodeURIComponent(itemName)}`);
     const result = response.ok ? ((await response.json()) as ItemPriceInfo) : null;
     cache.set(itemName, result);
     return result;

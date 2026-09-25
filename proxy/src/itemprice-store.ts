@@ -1,4 +1,4 @@
-import { fetchItemPrices, type ItemPrice } from "./price-scraper.js";
+import { fetchItemPrices, type ItemPrice } from "./itemprice-scraper.js";
 import { runHourlyAligned } from "./schedule.js";
 
 // Keyed by item name; each refresh overwrites with the latest snapshot, so
@@ -13,9 +13,9 @@ async function refreshItemPrices(): Promise<void> {
   try {
     const prices = await fetchItemPrices();
     for (const price of prices) store.set(price.itemName, price);
-    console.log(`[src/price-store.ts] refreshed ${prices.length} item prices`);
+    console.log(`[src/itemprice-store.ts] refreshed ${prices.length} item prices`);
   } catch (error) {
-    console.error("[src/price-store.ts] Failed to refresh item prices:", error);
+    console.error("[src/itemprice-store.ts] Failed to refresh item prices:", error);
   }
 }
 

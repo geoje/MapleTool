@@ -22,7 +22,7 @@ import { useCubeProbability } from "@/hooks/use-cube-probability";
 import { useItemEquipment } from "@/hooks/use-item-equipment";
 import { usePersistedBoolean } from "@/hooks/use-persisted-boolean";
 import { useSoulProbability } from "@/hooks/use-soul-probability";
-import { fetchItemPrice, type ItemPriceInfo } from "@/lib/price-service";
+import { fetchItemPrice, type ItemPriceInfo } from "@/lib/itemprice-service";
 import { EquipmentGrid, NameInput, PresetTabs } from "@/pages/enhance-cost/equipment-panel";
 import { PotentialCommonControls } from "@/pages/enhance-cost/potential-common-controls";
 import { AdditionalPotentialControls } from "@/pages/enhance-cost/additional-potential-controls";

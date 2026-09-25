@@ -17,7 +17,7 @@ import {
   formatSpareCountRounded,
 } from "@/lib/format";
 import { computePulseEnhancerTable, computeStarforceTable, getMaxStar } from "@/lib/starforce-service";
-import type { ItemPriceInfo } from "@/lib/price-service";
+import type { ItemPriceInfo } from "@/lib/itemprice-service";
 import { StarforceDiscountPanel } from "@/pages/enhance-cost/discount-panel";
 import { SparePriceInput } from "@/pages/enhance-cost/spare-price-input";
 import { StarforceLevelInput } from "@/pages/enhance-cost/starforce-level-input";

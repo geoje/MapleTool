@@ -26,7 +26,7 @@ import {
 import { PotentialGrade } from "@/constants/enhance";
 import type { CubeGrade } from "@/hooks/use-cube-probability";
 import { formatCostDecimal, formatCostFull } from "@/lib/format";
-import { convertPointsToMeso, fetchMesoMarketRate } from "@/lib/meso-market-service";
+import { convertPointsToMeso, fetchMaplechartRate } from "@/lib/maplechart-service";
 import { LabeledEdge } from "@/pages/ability-build/labeled-edge";
 import type { LabeledEdgeData } from "@/pages/ability-build/labeled-edge";
 import { OPTION_PANEL_WIDTH, OptionPanelNode } from "@/pages/ability-build/option-panel-node";
@@ -230,7 +230,7 @@ export function AbilityBuildPage() {
   // equivalent is derived once from the live meso-market exchange rate and used as the default;
   // the user can still override it afterward like any other price input.
   useEffect(() => {
-    fetchMesoMarketRate()
+    fetchMaplechartRate()
       .then((rate) => {
         if (rate) setCirculatorPrice(convertPointsToMeso(ABYSS_CIRCULATOR_POINT_COST, rate));
       })

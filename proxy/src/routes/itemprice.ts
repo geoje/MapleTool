@@ -1,11 +1,11 @@
 import { Hono } from "hono";
-import { getItemPrice } from "../price-store.js";
+import { getItemPrice } from "../itemprice-store.js";
 
-const price = new Hono();
+const itemprice = new Hono();
 
-// Pure lookup - never scrapes on request. Data is filled in by price-store.ts,
+// Pure lookup - never scrapes on request. Data is filled in by itemprice-store.ts,
 // which refreshes on server startup and every hour on the hour.
-price.get("/", (c) => {
+itemprice.get("/", (c) => {
   const name = c.req.query("name");
   if (!name || !name.trim()) {
     return c.json({ error: "Invalid name" }, 400);
@@ -19,4 +19,4 @@ price.get("/", (c) => {
   return c.json(data);
 });
 
-export { price };
+export { itemprice };

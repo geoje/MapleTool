@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { MoneyInput } from "@/components/money-input";
-import type { ItemPriceInfo } from "@/lib/price-service";
+import type { ItemPriceInfo } from "@/lib/itemprice-service";
 
 export function SparePriceInput({
   value,
