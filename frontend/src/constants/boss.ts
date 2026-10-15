@@ -198,7 +198,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { NORMAL: 8_350_000, HARD: 48_900_000, EXTREME: 545_000_000 },
     previousPrices: { NORMAL: 8_350_000, HARD: 48_900_000, EXTREME: 545_000_000 },
     cubes: { HARD: { silver: 0 } },
-    previousCubes: { HARD: { silver: 1 } },
+    previousCubes: { HARD: { silver: 0 } },
   },
   DAMIEN: {
     name: "데미안",
@@ -207,7 +207,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { NORMAL: 8_750_000, HARD: 46_400_000 },
     previousPrices: { NORMAL: 8_750_000, HARD: 46_400_000 },
     cubes: { HARD: { silver: 0 } },
-    previousCubes: { HARD: { silver: 1 } },
+    previousCubes: { HARD: { silver: 0 } },
   },
   GUARDIAN_ANGEL_SLIME: {
     name: "가디언 엔젤 슬라임",
@@ -216,7 +216,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { NORMAL: 12_700_000, CHAOS: 71_300_000 },
     previousPrices: { NORMAL: 12_700_000, CHAOS: 71_300_000 },
     cubes: { CHAOS: { silver: 1 } },
-    previousCubes: { CHAOS: { silver: 2 } },
+    previousCubes: { CHAOS: { silver: 1 } },
   },
   LUCID: {
     name: "루시드",
@@ -225,7 +225,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { EASY: 14_900_000, NORMAL: 17_800_000, HARD: 59_700_000 },
     previousPrices: { EASY: 14_900_000, NORMAL: 17_800_000, HARD: 59_700_000 },
     cubes: { HARD: { silver: 1 } },
-    previousCubes: { HARD: { silver: 2 } },
+    previousCubes: { HARD: { silver: 1 } },
   },
   WILL: {
     name: "윌",
@@ -234,7 +234,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { EASY: 16_100_000, NORMAL: 20_500_000, HARD: 73_200_000 },
     previousPrices: { EASY: 16_100_000, NORMAL: 20_500_000, HARD: 73_200_000 },
     cubes: { HARD: { silver: 1 } },
-    previousCubes: { HARD: { silver: 2 } },
+    previousCubes: { HARD: { silver: 1 } },
   },
   GLOOM: {
     name: "더스크",
@@ -243,7 +243,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { NORMAL: 22_000_000, CHAOS: 66_300_000 },
     previousPrices: { NORMAL: 22_000_000, CHAOS: 66_300_000 },
     cubes: { CHAOS: { silver: 1 } },
-    previousCubes: { CHAOS: { silver: 2 } },
+    previousCubes: { CHAOS: { silver: 1 } },
   },
   VERUS_HILLA: {
     name: "진 힐라",
@@ -252,7 +252,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { NORMAL: 67_600_000, HARD: 100_000_000 },
     previousPrices: { NORMAL: 67_600_000, HARD: 100_000_000 },
     cubes: { NORMAL: { silver: 0 }, HARD: { silver: 1 } },
-    previousCubes: { NORMAL: { silver: 1 }, HARD: { silver: 2 } },
+    previousCubes: { NORMAL: { silver: 0 }, HARD: { silver: 1 } },
   },
   DARKNELL: {
     name: "듄켈",
@@ -261,7 +261,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { NORMAL: 23_700_000, HARD: 89_600_000 },
     previousPrices: { NORMAL: 23_700_000, HARD: 89_600_000 },
     cubes: { HARD: { silver: 1 } },
-    previousCubes: { HARD: { silver: 2 } },
+    previousCubes: { HARD: { silver: 1 } },
   },
   CHOSEN_SEREN: {
     name: "선택받은 세렌",
@@ -270,7 +270,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { NORMAL: 167_000_000, HARD: 302_000_000, EXTREME: 1_840_000_000 },
     previousPrices: { NORMAL: 167_000_000, HARD: 302_000_000, EXTREME: 1_840_000_000 },
     cubes: { NORMAL: { silver: 2, gold: 0 }, HARD: { gold: 2 } },
-    previousCubes: { NORMAL: { silver: 0, gold: 1 }, HARD: { gold: 2 } },
+    previousCubes: { NORMAL: { silver: 2, gold: 0 }, HARD: { gold: 2 } }
   },
   KALOS_THE_GUARDIAN: {
     name: "감시자 칼로스",
@@ -289,7 +289,7 @@ export const BOSS: Record<BossType, Boss> = {
       EXTREME: 4_104_000_000,
     },
     cubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
-    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 0 } },
+    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
   },
   THE_FIRST_ADVERSARY: {
     name: "최초의 대적자",
@@ -308,7 +308,7 @@ export const BOSS: Record<BossType, Boss> = {
       EXTREME: 4_712_000_000,
     },
     cubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
-    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 0 } },
+    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
   },
   KALING: {
     name: "카링",
@@ -327,7 +327,7 @@ export const BOSS: Record<BossType, Boss> = {
       EXTREME: 5_387_000_000,
     },
     cubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
-    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 0 } },
+    previousCubes: { EASY: { gold: 2 }, NORMAL: { gold: 3 } },
   },
   RADIANT_MALEFIC_STAR: {
     name: "찬란한 흉성",
@@ -336,7 +336,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { NORMAL: 576_000_000, HARD: 2_678_000_000 },
     previousPrices: { NORMAL: 576_000_000, HARD: 2_678_000_000 },
     cubes: { NORMAL: { gold: 3 } },
-    previousCubes: { NORMAL: { gold: 0 } },
+    previousCubes: { NORMAL: { gold: 3 } }
   },
   BELLONA: {
     name: "벨로나",
@@ -345,7 +345,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { EASY: 396_000_000, NORMAL: 824_000_000, HARD: 2_950_000_000 },
     previousPrices: { EASY: 396_000_000, NORMAL: 824_000_000, HARD: 2_950_000_000 },
     cubes: { EASY: { gold: 2 } },
-    previousCubes: { EASY: { gold: 0 } },
+    previousCubes: { EASY: { gold: 2 } }
   },
   LIMBO: {
     name: "림보",
@@ -376,7 +376,7 @@ export const BOSS: Record<BossType, Boss> = {
     prices: { HARD: 465_000_000, EXTREME: 5_680_000_000 },
     previousPrices: { HARD: 465_000_000, EXTREME: 5_680_000_000 },
     cubes: { HARD: { silver: 8, gold: 0 } },
-    previousCubes: { HARD: { silver: 0, gold: 8 } },
+    previousCubes: { HARD: { silver: 8, gold: 0 } }
   },
 };
 
