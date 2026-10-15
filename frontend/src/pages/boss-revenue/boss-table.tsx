@@ -394,7 +394,7 @@ function BossRow({
       </div>
 
       <div className="flex items-center justify-end border-t py-1 pl-4 text-xs">
-        {price && formatNumber(price / members)}
+        {price != undefined && formatNumber(price / members)}
       </div>
     </>
   );
